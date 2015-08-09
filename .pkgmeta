@@ -1,1 +1,2 @@
-license-output: LICENSE.txt
+ignore:
+  - screenshots
