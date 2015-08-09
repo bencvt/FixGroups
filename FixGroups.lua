@@ -613,9 +613,7 @@ function FixGroups:AnnounceComplete()
   end
   msg = format("%s (%d %s, %d %s.%s)", msg, self.run.stepCount, self.run.stepCount == 1 and "step" or "steps", seconds, seconds == 1 and "second" or "seconds", msg2)
   if self.run.stepCount > 0 and (self.options.announceChatAlways or (self.options.announceChatPRN and self.lastSortMode ~= self.run.sortMode)) then
-  --  TODO
-    --SendChatMessage(format("[%s] %s", self.name, msg), self:GetChannel())
-    self:Print(format("[%s] %s", self.name, msg), self:GetChannel())
+    SendChatMessage(format("[%s] %s", self.name, msg), self:GetChannel())
   else
     self:Print(msg)
   end
@@ -917,7 +915,7 @@ function FixGroups:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   end
   cmd, message = strsplit(":", message, 2)
   if cmd == "v" and not self.newVersion then
-    if message and tonumber(message) and tonumber(message) > tonumber(self.version) then
+    if message and (message > self.version) then
       self:Print(format("A newer version of %s (%s) is available.", self.name, message))
       self.newVersion = message
     end
