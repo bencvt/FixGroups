@@ -776,7 +776,7 @@ function FixGroups:PrintHelp()
   print("  |cff1784d1/fg split|r - split raid into two sides based on overall damage/healing done")
   print("  |cff1784d1/fg|r - fix groups")
   if self.options.showMinimapIconAlways or self.options.showMinimapIconPRN then
-    print("Left click minimap icon to fix groups; right click for config.")
+    print("You can also use the minimap icon to fix groups.")
   end
 end
 
