@@ -864,6 +864,7 @@ function FixGroups:OnDisable()
   self.enabled = false
   self:StopProcessingNoResume()
   self:CancelAllTimers()
+  self:UnregisterAllEvents()
   self:UpdateUI()
 end
 
