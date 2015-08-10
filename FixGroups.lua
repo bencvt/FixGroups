@@ -871,6 +871,7 @@ end
 
 function FixGroups:PLAYER_ENTERING_WORLD(event)
   self:UpdateUI()
+  self.lastSortMode = nil
 end
 
 function FixGroups:PLAYER_REGEN_ENABLED(event)
