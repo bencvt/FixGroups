@@ -846,6 +846,7 @@ end
 
 function FixGroups:OnEnable()
   self.enabled = true
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE")
   self:RegisterEvent("CHAT_MSG_INSTANCE_CHAT")
@@ -865,6 +866,10 @@ function FixGroups:OnDisable()
   self:StopProcessingNoResume()
   self:CancelAllTimers()
   self:UnregisterAllEvents()
+  self:UpdateUI()
+end
+
+function FixGroups:PLAYER_ENTERING_WORLD(event)
   self:UpdateUI()
 end
 
