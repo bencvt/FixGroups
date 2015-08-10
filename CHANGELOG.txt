@@ -1,0 +1,10 @@
+v1.0.2:
+  - resolve ticket #1: issue with chat announcing
+  - resolve ticket #3: issue with minimap icon lingering
+  - additional cleanup if addon disabled
+
+v1.0.1:
+  - enable announcing to raid chat
+
+v1.0:
+  - initial release
