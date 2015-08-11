@@ -140,7 +140,7 @@ function M:AnnounceComplete()
   end
   msg = format("%s (%d %s, %d %s.%s)", msg, M.stepCount, M.stepCount == 1 and L["step"] or L["steps"], seconds, seconds == 1 and L["second"] or L["seconds"], msg2)
   if M.stepCount > 0 and (A.options.announceChatAlways or (A.options.announceChatPRN and M.lastSortMode ~= M.sortMode)) then
-    SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetChannel())
+    SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetGroupChannel())
   else
     A.console:Print(msg)
   end

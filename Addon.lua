@@ -3,7 +3,6 @@ local A = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceConsole-3.0", "AceEven
 A.name = addonName
 A.version = GetAddOnMetadata(addonName, "Version")
 A.author = GetAddOnMetadata(addonName, "Author")
-A.addonChannelPrefix = "FIXGROUPS"
 local L = LibStub("AceLocale-3.0"):GetLocale(A.name)
 addonTable[1] = A
 addonTable[2] = L
@@ -22,8 +21,6 @@ function A:OnEnable()
   A:RegisterEvent("CHAT_MSG_RAID_LEADER")
   A:RegisterEvent("CHAT_MSG_SAY")
   A:RegisterEvent("CHAT_MSG_WHISPER")
-  A:RegisterEvent("CHAT_MSG_ADDON")
-  RegisterAddonMessagePrefix("FIXGROUPS")
 end
 
 function A:OnDisable()
@@ -41,9 +38,6 @@ function A:PLAYER_REGEN_ENABLED(event)
 end
 
 function A:GROUP_ROSTER_UPDATE(event)
-  if not A.broadcastVersionTimer then
-    A.broadcastVersionTimer = A:ScheduleTimer("BroadcastVersion", 15)
-  end
   A.sorter:GROUP_ROSTER_UPDATE(event)
   A.gui:Refresh()
 end
@@ -65,34 +59,6 @@ function A:CHAT_MSG_SAY(event, message, sender)
 end
 function A:CHAT_MSG_WHISPER(event, message, sender)
   A:ScanForKeywords(message, sender)
-end
-
-function A:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
-  --A.console:Debug(format("CHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", prefix, message, channel, sender))
-  if prefix ~= A.addonChannelPrefix or sender == UnitName("player") then
-    return
-  end
-  cmd, message = strsplit(":", message, 2)
-  if cmd == "v" and not A.newVersion then
-    if message and (message > A.version) then
-      A.console:Print(format(L["A newer version of %s (%s) is available."], A.name, message))
-      A.newVersion = message
-    end
-  elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and sender and UnitIsRaidOfficer(sender) then
-    A.marker:FixRaid(true)
-  end
-end
-
-function A:BroadcastAddonMessage(message)
-  SendAddonMessage(A.addonChannelPrefix, message, A.util:GetChannel())
-end
-
-function A:BroadcastVersion(event)
-  if A.broadcastVersionTimer then
-    A:CancelTimer(broadcastVersionTimer)
-  end
-  A.broadcastVersionTimer = nil
-  A:BroadcastAddonMessage("v:"..A.version)
 end
 
 function A:ScanForKeywords(message, sender)

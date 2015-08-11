@@ -52,7 +52,7 @@ function M:GetAddonNameAndVersion(name)
   return name
 end
 
-function M:GetChannel()
+function M:GetGroupChannel()
   if IsInRaid() then
     return IsInRaid(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "RAID"
   end

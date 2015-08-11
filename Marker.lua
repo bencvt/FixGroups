@@ -84,7 +84,7 @@ function M:FixRaid(isRequestFromAssist)
     -- There is no guarantee that the raid leader is running the addon as well
     -- and has the same fixOfflineML/tankAssist options set, but send the
     -- request regardless.
-    A:BroadcastAddonMessage("f")
+    A.addonChannel:Broadcast("f")
   end
 
   if A.options.tankMark then
