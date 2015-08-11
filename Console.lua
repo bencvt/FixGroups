@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Console")
+local M = A:NewModule("Console", "AceConsole-3.0")
 A.console = M
 
 local format, print = format, print
@@ -8,15 +8,15 @@ function M:OnEnable()
   local function slashCmd(args)
     M:Command(args)
   end
-  A:RegisterChatCommand("fixgroups", slashCmd)
-  A:RegisterChatCommand("fixgroup", slashCmd)
-  A:RegisterChatCommand("fg", slashCmd)
+  M:RegisterChatCommand("fixgroups", slashCmd)
+  M:RegisterChatCommand("fixgroup", slashCmd)
+  M:RegisterChatCommand("fg", slashCmd)
 end
 
 function M:OnDisable()
-  A:UnregisterChatCommand("fixgroups")
-  A:UnregisterChatCommand("fixgroup")
-  A:UnregisterChatCommand("fg")
+  M:UnregisterChatCommand("fixgroups")
+  M:UnregisterChatCommand("fixgroup")
+  M:UnregisterChatCommand("fg")
 end
 
 function M:Print(...)
