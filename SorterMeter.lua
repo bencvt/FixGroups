@@ -119,9 +119,9 @@ function M:BuildSnapshot()
     return
   end
   if success then
-    A.console:Print(format(L["Using damage/healing data from %s."], A.util:GetAddonNameAndVersion(addon)))
+    A.console:Print(format(L["Using damage/healing data from %s."], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
   else
-    A.console:Print(format(L["There is currently no data available from %s."], A.util:GetAddonNameAndVersion(addon)))
+    A.console:Print(format(L["There is currently no data available from %s."], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
   end
   calculateAverages()
 end
