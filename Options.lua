@@ -12,8 +12,7 @@ local defaults = {
       resumeAfterCombat = true,
       tankMainTankAlways = false,
       tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
-      openRaidTabAlways = false,
-      openRaidTabPRN = true, -- ignored (implied false) if openRaidTabAlways == true
+      openRaidTabPRN = true,
       tankMark = true,
       tankMarkIcons = {4, 6, 1, 2, 3, 7, 9, 9},
       partyMark = true,
@@ -239,16 +238,10 @@ local optionsTable = {
     openRaidTab = {
       order = RAIDASSIST+50,
       name = L["Open raid tab when main tank needs to be set"],
-      type = "select",
-      width = "double",
-      style = "dropdown",
-      values = {
-        [1] = L["Always"],
-        [2] = "TODO remove this option",
-        [3] = L["Never"],
-      },
-      get = function(i) if O.openRaidTabAlways then return 1 elseif O.openRaidTabPRN then return 2 end return 3 end,
-      set = function(i,v) O.openRaidTabAlways, O.openRaidTabPRN = (v==1), (v==2) end,
+      type = "toggle",
+      width = "full",
+      get = function(i) return O.openRaidTabPRN end,
+      set = function(i,v) O.openRaidTabPRN = v end,
     },
     tankMark = {
       order = RAIDASSIST+60,

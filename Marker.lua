@@ -118,16 +118,12 @@ function M:FixRaid(isRequestFromAssist)
       end
     end
     if bad then
-      if A.options.openRaidTabPRN or A.options.openRaidTabAlways then
+      if A.options.openRaidTabPRN then
         A.console:Print(L["To fix tanks, use the raid tab. WoW addons cannot set main tanks."])
         A.gui:OpenRaidTab()
         return
       end
       A.console:Print(L["To fix tanks, press O to open the raid tab. WoW addons cannot set main tanks."])
     end
-  end
-  -- TODO: remove this option
-  if A.options.openRaidTabAlways then
-    A.gui:OpenRaidTab()
   end
 end
