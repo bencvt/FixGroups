@@ -12,6 +12,7 @@ Locale_en.lua
 Locale_es.lua
 
 Addon.lua
+AddonChannel.lua
 Options.lua
 Console.lua
 GUI.lua
