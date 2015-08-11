@@ -46,7 +46,12 @@ function M:StopProcessingNoResume()
   M:StopProcessing()
 end
 
-function M:PauseIfInCombat()
+function M:StopProcessingIfNeeded()
+  if not A.util:IsLeaderOrAssist() or not IsInRaid() then
+    A.console:Print(L["You must be a raid leader or assistant to fix groups."])
+    M:StopProcessingNoResume()
+    return true
+  end
   if InCombatLockdown() then
     if A.options.resumeAfterCombat then
       A.console:Print(L["Rearranging players paused due to combat."])
@@ -60,6 +65,21 @@ function M:PauseIfInCombat()
   end
 end
 
+function M:Begin(sortMode)
+  M.sortMode = sortMode
+  if M:StopProcessingIfNeeded() then
+    return
+  end
+  -- Groups are built every step.
+  M.core:BuildGroups()
+  if M:IsSortingByMeter() or M:IsSplittingRaid() then
+    -- Damage/healing meter snapshot is built once at the beginning,
+    -- not once every step.
+    M.meter:BuildSnapshot()
+  end
+  M:ProcessStep()
+end
+
 function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
     A.console:Print(L["Resumed rearranging players."])
@@ -70,12 +90,7 @@ function M:ResumeIfPaused()
 end
 
 function M:ProcessStep()
-  if not A.util:IsLeaderOrAssist() or not IsInRaid() then
-    A.console:Print(L["You must be a raid leader or assistant to fix groups."])
-    M:StopProcessing()
-    return
-  end
-  if M:PauseIfInCombat() then
+  if M:StopProcessingIfNeeded() then
     return
   end
   if M.timeoutTimer then

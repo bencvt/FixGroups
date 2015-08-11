@@ -80,16 +80,7 @@ function M:Command(args)
   end
 
   -- Sort groups.
-  -- TODO: move to sorter module
-  A.sorter.sortMode = sortMode
-  if A.sorter:PauseIfInCombat() then
-    return
-  end
-  A.sorter.core:BuildGroups()
-  if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
-    A.sorter.meter:BuildSnapshot()
-  end
-  A.sorter:ProcessStep()
+  A.sorter:Begin(sortMode)
 end
 
 function M:Debug(...)
