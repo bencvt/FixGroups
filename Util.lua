@@ -3,6 +3,8 @@ local M = A:NewModule("Util")
 A.util = M
 
 local floor, max, select, strmatch, tconcat = math.floor, math.max, select, string.match, table.concat
+local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
 
 function M:tconcat2(t)
   local sz = #t
@@ -55,4 +57,12 @@ function M:GetChannel()
     return IsInRaid(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "RAID"
   end
   return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "PARTY"
+end
+
+function M:UnitNameWithColor(unitID)
+  local c = select(2, UnitClass(unitID))
+  if c and RAID_CLASS_COLORS[c] then
+    c = RAID_CLASS_COLORS[c].colorStr
+  end
+  return "|c"..(c or "ff00991a")..(UnitName(unitID) or "Unknown").."|r"
 end

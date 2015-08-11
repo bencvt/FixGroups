@@ -69,11 +69,11 @@ function M:FixRaid(isRequestFromAssist)
         tinsert(marks, {key=name, unitID=unitID})
         if raidRole ~= "MAINTANK" then
           -- Can't call protected func: SetPartyAssignment("MAINTANK", unitID)
-          tinsert(unsetTanks, name)
+          tinsert(unsetTanks, A.util:UnitNameWithColor(unitID))
         end
       elseif raidRole == "MAINTANK" then
         -- Can't call protected func: SetPartyAssignment(nil, unitID)
-        tinsert(setNonTanks, name)
+        tinsert(setNonTanks, A.util:UnitNameWithColor(unitID))
       end
     end
   end
@@ -103,7 +103,6 @@ function M:FixRaid(isRequestFromAssist)
     if #unsetTanks > 0 then
       bad = true
       if #unsetTanks == 1 then
-        -- TODO: class colors instead
         A.console:Print(format(L["%s is not set as main tank!"], A.util:tconcat2(unsetTanks)))
       else
         A.console:Print(format(L["%s are not set as main tanks!"], A.util:tconcat2(unsetTanks)))
