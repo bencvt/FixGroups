@@ -32,7 +32,7 @@ function A:OnDisable()
 end
 
 function A:PLAYER_ENTERING_WORLD(event)
-  A.sorter.lastSortMode = nil
+  A.sorter:PLAYER_ENTERING_WORLD(event)
   A.gui:Refresh()
 end
 

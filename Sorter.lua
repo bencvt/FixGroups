@@ -169,6 +169,10 @@ function M:ScheduleTimeout()
   end, TIMEOUT_SECONDS)
 end
 
+function M:PLAYER_ENTERING_WORLD(event)
+  M.lastSortMode = nil
+end
+
 function M:GROUP_ROSTER_UPDATE(event)
   if M:IsProcessing() then
     M.core:BuildGroups()
