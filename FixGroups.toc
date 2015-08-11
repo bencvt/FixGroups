@@ -8,6 +8,9 @@
 
 embeds.xml
 
+Locale_en.lua
+Locale_es.lua
+
 Addon.lua
 Options.lua
 Console.lua

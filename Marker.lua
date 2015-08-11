@@ -104,29 +104,29 @@ function M:FixRaid(isRequestFromAssist)
       bad = true
       if #unsetTanks == 1 then
         -- TODO: class colors instead
-        A.console:Print(format("|cff1784d1%s|r is not set as main tank!", A.util:tconcat2(unsetTanks)))
+        A.console:Print(format(L["%s is not set as main tank!"], A.util:tconcat2(unsetTanks)))
       else
-        A.console:Print(format("|cff1784d1%s|r are not set as main tanks!", A.util:tconcat2(unsetTanks)))
+        A.console:Print(format(L["%s are not set as main tanks!"], A.util:tconcat2(unsetTanks)))
       end
     end
     if #setNonTanks > 0 then
       bad = true
       if #setNonTanks == 1 then
-        A.console:Print(format("|cff1784d1%s|r is incorrectly set as main tank!", A.util:tconcat2(setNonTanks)))
+        A.console:Print(format(L["%s is incorrectly set as main tank!"], A.util:tconcat2(setNonTanks)))
       else
-        A.console:Print(format("|cff1784d1%s|r are incorrectly set as main tanks!", A.util:tconcat2(setNonTanks)))
+        A.console:Print(format(L["%s are incorrectly set as main tanks!"], A.util:tconcat2(setNonTanks)))
       end
     end
     if bad then
       if A.options.openRaidTabPRN or A.options.openRaidTabAlways then
-        A.console:Print("To fix tanks, use the raid tab. WoW addons cannot set main tanks.")
+        A.console:Print(L["To fix tanks, use the raid tab. WoW addons cannot set main tanks."])
         A.gui:OpenRaidTab()
         return
       end
-      A.console:Print("To fix tanks, press O to open the raid tab. WoW addons cannot set main tanks.")
+      A.console:Print(L["To fix tanks, press O to open the raid tab. WoW addons cannot set main tanks."])
     end
   end
-  -- TODO: probably remove this option
+  -- TODO: remove this option
   if A.options.openRaidTabAlways then
     A.gui:OpenRaidTab()
   end

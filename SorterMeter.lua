@@ -114,13 +114,13 @@ function M:BuildSnapshot()
   elseif Details then
     addon, success = loadDetails()
   else
-    A.console:Print("No supported damage/healing meter addon found.")
+    A.console:Print(L["No supported damage/healing meter addon found."])
     return
   end
   if success then
-    A.console:Print(format("Using damage/healing data from %s.", A.util:GetAddonNameAndVersion(addon)))
+    A.console:Print(format(L["Using damage/healing data from %s."], A.util:GetAddonNameAndVersion(addon)))
   else
-    A.console:Print(format("There is currently no data available from %s.", A.util:GetAddonNameAndVersion(addon)))
+    A.console:Print(format(L["There is currently no data available from %s."], A.util:GetAddonNameAndVersion(addon)))
   end
   calculateAverages()
 end

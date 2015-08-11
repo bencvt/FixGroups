@@ -1,3 +1,9 @@
+v1.1:
+  - resolve ticket #2: locale support
+  - use class colors when printing player names
+  - simplify option to open raid tab when main tank needs to be set
+  - major code refactoring
+
 v1.0.2:
   - resolve ticket #1: issue with chat announcing
   - resolve ticket #3: issue with minimap icon lingering

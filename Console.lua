@@ -2,6 +2,8 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("Console")
 A.console = M
 
+local format, print = format, print
+
 function M:OnEnable()
   local function slashCmd(args)
     M:Command(args)
@@ -22,18 +24,15 @@ function M:Print(...)
 end
 
 function M:PrintHelp()
-  M:Print(format("v%s by |cff33ff99%s|r", A.version, A.author))
-  print("Arguments for the |cff1784d1/fixgroups|r command (or |cff1784d1/fg|r):")
-  print("  |cff1784d1/fg help|r or |cff1784d1/fg about|r - you're reading it")
-  print(format("  |cff1784d1/fg config|r or |cff1784d1/fg options|r - same as Esc>Interface>AddOns>%s", A.name))
-  print("  |cff1784d1/fg cancel|r - stop rearranging players")
-  print("  |cff1784d1/fg nosort|r - fix groups, no sorting")
-  print("  |cff1784d1/fg meter|r or |cff1784d1/fg dps|r - fix groups, sort by overall damage/healing done")
-  print("  |cff1784d1/fg split|r - split raid into two sides based on overall damage/healing done")
-  print("  |cff1784d1/fg|r - fix groups")
-  if A.options.showMinimapIconAlways or A.options.showMinimapIconPRN then
-    print("Left click minimap icon to fix groups; right click for config.")
-  end
+  M:Print(format(L["v%s by %s"], A.version, "|cff33ff99"..A.author.."|r"))
+  print(format(L["Arguments for the %s command (or %s):"], "|cff1784d1/fixgroups|r", "|cff1784d1/fg|r"))
+  print("  |cff1784d1/fg help|r "..L["or"].." |cff1784d1/fg about|r - "..L["you're reading it"])
+  print("  |cff1784d1/fg config|r "..L["or"].." |cff1784d1/fg options|r - "..format(L["same as Esc>Interface>AddOns>%s"], A.name))
+  print("  |cff1784d1/fg cancel|r - "..L["stop rearranging players"])
+  print("  |cff1784d1/fg nosort|r - "..L["fix groups, no sorting"])
+  print("  |cff1784d1/fg meter|r "..L["or"].." |cff1784d1/fg dps|r - "..L["fix groups, sort by overall damage/healing done"])
+  print("  |cff1784d1/fg split|r - "..L["split raid into two sides based on overall damage/healing done"])
+  print("  |cff1784d1/fg|r - "..L["fix groups"])
 end
 
 function M:Command(args)
@@ -50,40 +49,42 @@ function M:Command(args)
   end
 
   -- Okay, we have some actual work to do then.
-  A.sorter:StopProcessing()
+  A.sorter:StopProcessingNoResume()
 
   -- Set tank marks and such.
   if IsInGroup() and not IsInRaid() then
     A.marker:FixParty()
-    if args and strmatch(args, " *") and args ~= "nosort" and args ~= "default" then
-      M:Print("Groups can only be sorted while in a raid.")
+    if args ~= "" and args ~= "nosort" and args ~= "default" then
+      M:Print(L["Groups can only be sorted while in a raid."])
     end
     return
   end
   A.marker:FixRaid(false)
 
   -- Determine sort mode.
+  local sortMode
   if args == "nosort" then
     return
   elseif args == "meter" or args == "dps" then
-    A.sorter.sortMode = "meter"
+    sortMode = "meter"
   elseif args == "split" then
-    A.sorter.sortMode = "split"
-  else
-    A.sorter.sortMode = "default"
-    if args ~= "default" and not strmatch(args, " *") then
-      M:Print(format("Unknown argument \"%s\". Type |cff1784d1/fg help|r for valid arguments.", args))
-    end
+    sortMode = "split"
+  elseif args == "" or args == "default" then
     if A.options.sortMode == "nosort" then
       return
     end
-  end
-  if A.sorter:PauseIfInCombat() then
+    sortMode = "default"
+  else
+    M:Print(format(L["Unknown argument %s. Type %s for valid arguments."], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r"))
     return
   end
 
   -- Sort groups.
   -- TODO: move to sorter module
+  A.sorter.sortMode = sortMode
+  if A.sorter:PauseIfInCombat() then
+    return
+  end
   A.sorter.core:BuildGroups()
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
     A.sorter.meter:BuildSnapshot()
@@ -94,8 +95,6 @@ end
 function M:Debug(...)
   print("|cff33ff99"..A.name.."|r DEBUG ["..date("%H:%M:%S").."] ", ...)
 end
-
--- TODO fix refs
 
 function M:DebugPrintGroups()
   for g = 1, 8 do

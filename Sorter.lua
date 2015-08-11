@@ -37,7 +37,7 @@ function M:StopProcessing()
 end
 
 function M:StopProcessingTimedOut()
-  A.console:Print("Stopped rearranging players because it's taking too long. Perhaps someone else is simultaneously rearranging players?")
+  A.console:Print(L["Stopped rearranging players because it's taking too long. Perhaps someone else is simultaneously rearranging players?"])
   M:StopProcessing()
 end
 
@@ -49,10 +49,10 @@ end
 function M:PauseIfInCombat()
   if InCombatLockdown() then
     if A.options.resumeAfterCombat then
-      A.console:Print("Rearranging players paused due to combat.")
+      A.console:Print(L["Rearranging players paused due to combat."])
       M.resumeAfterCombat = M.sortMode
     else
-      A.console:Print("Rearranging players cancelled due to combat.")
+      A.console:Print(L["Rearranging players cancelled due to combat."])
       M.resumeAfterCombat = nil
     end
     M:StopProcessing()
@@ -60,9 +60,18 @@ function M:PauseIfInCombat()
   end
 end
 
+function M:ResumeIfPaused()
+  if M:IsPaused() and not InCombatLockdown() then
+    A.console:Print(L["Resumed rearranging players."])
+    local mode = M.resumeAfterCombat 
+    M.resumeAfterCombat = nil
+    A.console:Command(mode)
+  end
+end
+
 function M:ProcessStep()
   if not A.util:IsLeaderOrAssist() or not IsInRaid() then
-    A.console:Print("You must be a raid leader or assistant to fix groups.")
+    A.console:Print(L["You must be a raid leader or assistant to fix groups."])
     M:StopProcessing()
     return
   end
@@ -104,17 +113,17 @@ function M:AnnounceComplete()
   local seconds = floor(time() - M.startTime)
   local msg
   if M:IsSplittingRaid() then
-    msg = format("Split players: groups %s.", M.core:GetSplitGroups())
+    msg = format(L["Split players: groups %s."], M.core:GetSplitGroups())
   elseif M:IsSortingByMeter() then
-    msg = "Sorted players by damage/healing done."
+    msg = L["Sorted players by damage/healing done."]
   else
-    msg = "Rearranged players."
+    msg = L["Rearranged players."]
   end
   local msg2 = ""
   if M.core.sitting > 0 then
-    msg2 = format(" Excluded %d %s sitting in groups %d-8.", M.core.sitting, M.core.sitting == 1 and "player" or "players", A.util:GetMaxGroupsForInstance()+1)
+    msg2 = " "..format(L["Excluded %d %s sitting in groups %d-8."], M.core.sitting, M.core.sitting == 1 and L["player"] or L["players"], A.util:GetMaxGroupsForInstance()+1)
   end
-  msg = format("%s (%d %s, %d %s.%s)", msg, M.stepCount, M.stepCount == 1 and "step" or "steps", seconds, seconds == 1 and "second" or "seconds", msg2)
+  msg = format("%s (%d %s, %d %s.%s)", msg, M.stepCount, M.stepCount == 1 and L["step"] or L["steps"], seconds, seconds == 1 and L["second"] or L["seconds"], msg2)
   if M.stepCount > 0 and (A.options.announceChatAlways or (A.options.announceChatPRN and M.lastSortMode ~= M.sortMode)) then
     SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetChannel())
   else

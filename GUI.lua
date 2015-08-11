@@ -28,20 +28,20 @@ local function setTooltip(tooltip, isRaidTab)
     tooltip:AddLine(FixGroups.name)
   end
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine("Left Click", "Fix groups", 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(L["Left Click"], L["Fix groups"], 1, 1, 1, 1, 1, 0)
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine("Right Click", "Split raid into two sides based on", 1, 1, 1, 1, 1, 0)
-  tooltip:AddDoubleLine(" ",           "overall damage/healing done", 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(L["Right Click"], L["Split raid into two sides based on"], 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(" ",              L["overall damage/healing done"], 1, 1, 1, 1, 1, 0)
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine("Hold Shift + Left Click", "Open config", 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(L["Hold Shift + Left Click"], L["Open config"], 1, 1, 1, 1, 1, 0)
   --tooltip:AddLine(" ")
-  --tooltip:AddDoubleLine("Hold Shift + Right Click", "Fix groups, sorting by", 1, 1, 1, 1, 1, 0)
-  --tooltip:AddDoubleLine(" ",                        "overall damage/healing done", 1, 1, 1, 1, 1, 0)
+  --tooltip:AddDoubleLine(L["Hold Shift + Right Click"], L["Fix groups, sorting by"], 1, 1, 1, 1, 1, 0)
+  --tooltip:AddDoubleLine(" ",                        L["overall damage/healing done"], 1, 1, 1, 1, 1, 0)
   --tooltip:AddLine(" ")
-  --tooltip:AddDoubleLine("Hold Ctrl + Left Click", "Fix tanks and ML only, no sorting", 1, 1, 1, 1, 1, 0)
+  --tooltip:AddDoubleLine(L["Hold Ctrl + Left Click"], L["Fix tanks and ML only, no sorting"], 1, 1, 1, 1, 1, 0)
   if not isRaidTab then
     tooltip:AddLine(" ")
-    tooltip:AddDoubleLine("Hold Left Click + Drag", "Move minimap icon", 1, 1, 1, 1, 1, 0)
+    tooltip:AddDoubleLine(L["Hold Left Click + Drag"], L["Move minimap icon"], 1, 1, 1, 1, 1, 0)
   end
   tooltip:Show()
 end
@@ -66,7 +66,7 @@ function M:OnEnable()
     b:SetPoint("TOPRIGHT", RaidFrameRaidInfoButton, "TOPLEFT", 0, 0)
     b:SetSize(RaidFrameRaidInfoButton:GetWidth(), RaidFrameRaidInfoButton:GetHeight())
     b:GetFontString():SetFont(RaidFrameRaidInfoButton:GetFontString():GetFont())
-    b:SetText("Fix Groups")
+    b:SetText(L["Fix Groups"])
     b:RegisterForClicks("AnyUp")
     b:SetScript("OnClick", handleClick)
     b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") setTooltip(GameTooltip, true) end)
@@ -141,15 +141,15 @@ function M:Refresh()
     return
   end
   if A.sorter:IsProcessing() then
-    setUI(false, "Rearranging...", "Interface\\TIMEMANAGER\\FFButton")
+    setUI(false, L["Rearranging..."], "Interface\\TIMEMANAGER\\FFButton")
   elseif A.sorter:IsPaused() then
-    setUI(false, "In Combat...", "Interface\\TIMEMANAGER\\PauseButton")
+    setUI(false, L["In Combat..."], "Interface\\TIMEMANAGER\\PauseButton")
   elseif A.util:IsLeader() then
-    setUI(true, "Fix Groups", "Interface\\GROUPFRAME\\UI-Group-LeaderIcon")
+    setUI(true, L["Fix Groups"], "Interface\\GROUPFRAME\\UI-Group-LeaderIcon")
   elseif A.util:IsLeaderOrAssist() then
-    setUI(true, "Fix Groups", "Interface\\GROUPFRAME\\UI-GROUP-ASSISTANTICON")
+    setUI(true, L["Fix Groups"], "Interface\\GROUPFRAME\\UI-GROUP-ASSISTANTICON")
   else
-    setUI(true, "Fix Groups", "Interface\\ICONS\\INV_Misc_GroupLooking")
+    setUI(true, L["Fix Groups"], "Interface\\ICONS\\INV_Misc_GroupLooking")
   end
   if A.options.showMinimapIconAlways or (A.options.showMinimapIconPRN and A.util:IsLeaderOrAssist()) then
     M.icon:Show(A.name)

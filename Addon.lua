@@ -4,10 +4,13 @@ A.name = addonName
 A.version = GetAddOnMetadata(addonName, "Version")
 A.author = GetAddOnMetadata(addonName, "Author")
 A.addonChannelPrefix = "FIXGROUPS"
-local L = {} --TODO: local L = LibStub("AceLocale-3.0"):GetLocale(addonName, false);
+local L = LibStub("AceLocale-3.0"):GetLocale(A.name)
 addonTable[1] = A
 addonTable[2] = L
 _G[addonName] = addonTable
+
+local strfind, strsplit = string.find, strsplit
+local InCombatLockdown, IsInRaid, UnitName = InCombatLockdown, IsInRaid, UnitName
 
 function A:OnEnable()
 	A:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -34,12 +37,7 @@ function A:PLAYER_ENTERING_WORLD(event)
 end
 
 function A:PLAYER_REGEN_ENABLED(event)
-  if A.sorter:IsPaused() then
-    A.console:Print("Resumed rearranging players.")
-    local mode = A.sorter.resumeAfterCombat 
-    A.sorter.resumeAfterCombat = nil
-    A.console:Command(mode)
-  end
+  A.sorter:ResumeIfPaused()
 end
 
 function A:GROUP_ROSTER_UPDATE(event)
@@ -77,7 +75,7 @@ function A:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   cmd, message = strsplit(":", message, 2)
   if cmd == "v" and not A.newVersion then
     if message and (message > A.version) then
-      A.console:Print(format("A newer version of %s (%s) is available.", A.name, message))
+      A.console:Print(format(L["A newer version of %s (%s) is available."], A.name, message))
       A.newVersion = message
     end
   elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and sender and UnitIsRaidOfficer(sender) then
@@ -89,17 +87,22 @@ function A:BroadcastAddonMessage(message)
   SendAddonMessage(A.addonChannelPrefix, message, A.util:GetChannel())
 end
 
-function A:ScanForKeywords(message, sender)
-  if A.options.watchChat and not A.sorter:IsProcessing() and not A.sorter:IsPaused() and not InCombatLockdown() and IsInRaid() and A.util:IsLeaderOrAssist() and sender ~= UnitName("player") and message and (strfind(message, "fix group") or strfind(message, "mark tank")) then
-    A.gui:OpenRaidTab()
-    A.gui:FlashRaidTabButton()
-  end
-end
-
 function A:BroadcastVersion(event)
   if A.broadcastVersionTimer then
     A:CancelTimer(broadcastVersionTimer)
   end
   A.broadcastVersionTimer = nil
   A:BroadcastAddonMessage("v:"..A.version)
+end
+
+function A:ScanForKeywords(message, sender)
+  if A.options.watchChat and not A.sorter:IsProcessing() and not A.sorter:IsPaused() and not InCombatLockdown() then
+    if IsInRaid() and A.util:IsLeaderOrAssist() and sender ~= UnitName("player") and message then
+      -- Search for both the default and the localized keywords.
+      if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["fix group"]) or strfind(message, L["mark tank"]) then
+        A.gui:OpenRaidTab()
+        A.gui:FlashRaidTabButton()
+      end
+    end
+  end
 end
