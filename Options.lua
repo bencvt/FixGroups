@@ -1,16 +1,6 @@
--- Defines FixGroups:SetupDB
-
-local MARKS = {
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
-  "none",
-}
+local A, L = unpack(select(2, ...))
+local M = A:NewModule("Options")
+A.options = M
 
 local defaults = {
   profile = {
@@ -39,6 +29,18 @@ local defaults = {
   },
 }
 
+local MARKS = {
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t",
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t",
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t",
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t",
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t",
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t",
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t",
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
+  "none",
+}
+
 local O
 
 local function getOptionMark(arr, index)
@@ -50,7 +52,7 @@ end
 
 local function setOptionMark(arr, index, value)
   if arr ~= O.partyMarkIcons then
-    FixGroups:StopProcessingNoResume()
+    A.sorter:StopProcessingNoResume()
   end
   if value <= 0 or value > 8 then
     value = 9
@@ -64,7 +66,7 @@ local BUTTONS, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, RESET = 100, 200, 300, 400
 
 local optionsTable = {
   type = "group",
-  name = FixGroups.name,
+  name = format("|cff33ff99%s|r v%s by |cff33ff99%s|r", A.name, A.version, A.author),
   args = {
     desc = {
       order = 0,
@@ -76,7 +78,7 @@ local optionsTable = {
       order = BUTTONS+10,
       type = "execute",
       name = "Fix groups",
-      func = function() FixGroups:Command("default") end,
+      func = function() A.console:Command("default") end,
       --disabled = function(i) return not IsInGroup() end,
     },
     buttonCommandSplit = {
@@ -84,7 +86,7 @@ local optionsTable = {
       type = "execute",
       name = "Split groups",
       desc = "Split raid into two sides based on overall damage/healing done.",
-      func = function() FixGroups:Command("split") end,
+      func = function() A.console:Command("split") end,
       --disabled = function(i) return not IsInRaid() end,
     },
     buttonCommandHelp = {
@@ -92,7 +94,7 @@ local optionsTable = {
       type = "execute",
       name = "/fg command info",
       desc = "Print the various options for the |cff1784d1/fg|r console/macro command.",
-      func = function() FixGroups:Command("help") end,
+      func = function() A.console:Command("help") end,
     },
     -- -------------------------------------------------------------------------
     headerUI = {
@@ -112,7 +114,7 @@ local optionsTable = {
         [3] = "Never",
       },
       get = function(i) if O.showMinimapIconAlways then return 1 elseif O.showMinimapIconPRN then return 2 end return 3 end,
-      set = function(i,v) O.showMinimapIconAlways, O.showMinimapIconPRN = (v==1), (v==2) FixGroups:UpdateUI() end,
+      set = function(i,v) O.showMinimapIconAlways, O.showMinimapIconPRN = (v==1), (v==2) A.gui:Refresh() end,
     },
     addButtonToRaidTab = {
       order = UI+20,
@@ -121,7 +123,7 @@ local optionsTable = {
       type = "toggle",
       width = "full",
       get = function(i) return O.addButtonToRaidTab end,
-      set = function(i,v) O.addButtonToRaidTab = v FixGroups:UpdateUI() end,
+      set = function(i,v) O.addButtonToRaidTab = v A.gui:Refresh() end,
     },
     -- -------------------------------------------------------------------------
     --headerCHAT = {
@@ -184,7 +186,7 @@ local optionsTable = {
     sortMode = {
       order = RAIDASSIST+10,
       name = "Rearrange players",
-      desc = "The overall damage/healing done sort method will only work if Recount, Skada, or Details is running.|n|nThis sort method can be useful for making quick decisions on who's worth an emergency heal or brez in PUGs.|n|nYou can also type |cff1784d1/fg meter|r to do a one-off sort without changing the setting.",
+      desc = "The overall damage/healing done sort method will only work if Recount, Skada, or Details is running.|n|nThis sort method can be useful for making quick decisions on who's worth an emergency heal or brez in PUGs.|n|nYou can also type |cff1784d1/fg meter|r or to do a one-off sort without changing the setting.",
       type = "select",
       width = "double",
       style = "dropdown",
@@ -202,7 +204,7 @@ local optionsTable = {
         end
       end,
       set = function(i,v)
-        FixGroups:StopProcessingNoResume()
+        A.sorter:StopProcessingNoResume()
         if v == 4 then O.sortMode = "nosort"
         elseif v == 3 then O.sortMode = "meter"
         elseif v == 2 then O.sortMode = "THMUR"
@@ -216,7 +218,7 @@ local optionsTable = {
       type = "toggle",
       width = "full",
       get = function(i) return O.resumeAfterCombat end,
-      set = function(i,v) FixGroups:StopProcessingNoResume() O.resumeAfterCombat = v end,
+      set = function(i,v) A.sorter:StopProcessingNoResume() O.resumeAfterCombat = v end,
     },
     tankMainTank = {
       order = RAIDASSIST+40,
@@ -358,7 +360,7 @@ local optionsTable = {
       type = "toggle",
       width = "full",
       get = function(i) return O.splitOddEven end,
-      set = function(i,v) FixGroups:StopProcessingNoResume() O.splitOddEven = v end,
+      set = function(i,v) A.sorter:StopProcessingNoResume() O.splitOddEven = v end,
     },
     -- -------------------------------------------------------------------------
     headerPARTY = {
@@ -447,26 +449,25 @@ local optionsTable = {
       name = "Reset all options to default",
       func = function()
         local pos = O.minimapIcon.minimapPos
-        FixGroups.db:ResetProfile()
-        FixGroups.options = FixGroups.db.profile.options
-        O = FixGroups.options
+        M.db:ResetProfile()
+        A.options = M.db.profile.options
+        O = A.options
         O.minimapIcon.minimapPos = pos
-        FixGroups:Print("All options reset to default.")
+        A.console:Print("All options reset to default.")
       end,
     },
   },
 }
 
-function FixGroups:SetupDB()
-  if self.db then
+function M:OnEnable()
+  if M.db then
     return
   end
-  self.db = LibStub("AceDB-3.0"):New("FixGroupsDB", defaults, true)
-  self.options = self.db.profile.options
-  O = self.options
+  M.db = LibStub("AceDB-3.0"):New("FixGroupsDB", defaults, true)
+  -- Intentionally overwriting the module reference
+  A.options = M.db.profile.options
+  O = A.options
 
-  optionsTable.name = format("|cff33ff99%s|r v%s by |cff33ff99%s|r", self.name, self.version, GetAddOnMetadata(self.name, "Author"))
-
-  LibStub("AceConfig-3.0"):RegisterOptionsTable(self.name, optionsTable)
-  LibStub("AceConfigDialog-3.0"):AddToBlizOptions(self.name, self.name)
+  LibStub("AceConfig-3.0"):RegisterOptionsTable(A.name, optionsTable)
+  LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.name, A.name)
 end

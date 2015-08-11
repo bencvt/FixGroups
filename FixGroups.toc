@@ -8,6 +8,12 @@
 
 embeds.xml
 
-FixGroups.lua
+Addon.lua
 Options.lua
-UserInterface.lua
+Console.lua
+GUI.lua
+Marker.lua
+Sorter.lua
+SorterCore.lua
+SorterMeter.lua
+Util.lua
