@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Sorter")
+local M = A:NewModule("Sorter", "AceEvent-3.0")
 A.sorter = M
 
 local MAX_STEPS = 30
@@ -7,6 +7,33 @@ local MAX_TIMEOUTS = 20
 local TIMEOUT_SECONDS = 1.0
 
 local floor, format, time = math.floor, string.format, time
+
+function M:OnEnable()
+  M:RegisterEvent("PLAYER_ENTERING_WORLD")
+  M:RegisterEvent("PLAYER_REGEN_ENABLED")
+  M:RegisterEvent("GROUP_ROSTER_UPDATE")
+end
+
+function M:OnDisable()
+  M:UnregisterAllEvents()
+end
+
+function M:PLAYER_ENTERING_WORLD(event)
+  M.lastSortMode = nil
+end
+
+function M:PLAYER_REGEN_ENABLED(event)
+  M:ResumeIfPaused()
+end
+
+function M:GROUP_ROSTER_UPDATE(event)
+  if M:IsProcessing() then
+    M.core:BuildGroups()
+    if M.core:DidActionFinish() then
+      M:ProcessStep()
+    end
+  end
+end
 
 function M:IsSortingByMeter()
   return A.options.sortMode == "meter" or M.sortMode == "meter"
@@ -167,17 +194,4 @@ function M:ScheduleTimeout()
     M.core:BuildGroups()
     M:ProcessStep()
   end, TIMEOUT_SECONDS)
-end
-
-function M:PLAYER_ENTERING_WORLD(event)
-  M.lastSortMode = nil
-end
-
-function M:GROUP_ROSTER_UPDATE(event)
-  if M:IsProcessing() then
-    M.core:BuildGroups()
-    if M.core:DidActionFinish() then
-      M:ProcessStep()
-    end
-  end
 end

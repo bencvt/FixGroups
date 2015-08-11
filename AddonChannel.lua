@@ -2,6 +2,9 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("AddonChannel", "AceEvent-3.0")
 A.addonChannel = M
 
+local strsplit = string.split
+local SendAddonMessage, UnitName = SendAddonMessage, UnitName
+
 M.addonChannelPrefix = "FIXGROUPS"
 
 function M:OnEnable()
