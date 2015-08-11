@@ -92,10 +92,11 @@ local function calculateAverages()
   local countDamage, totalDamage = 0, 0
   local countHealing, totalHealing = 0, 0
   for key, amount in pairs(M.snapshot) do
-    if keyIsDps(key) then
+    -- Ignore tanks.
+    if A.sorter.core:KeyIsDps(key) then
       countDamage = countDamage + 1
       totalDamage = totalDamage + amount
-    elseif keyIsHealer(key) then
+    elseif A.sorter.core:KeyIsHealer(key) then
       countHealing = countHealing + 1
       totalHealing = totalHealing + amount
     end
