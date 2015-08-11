@@ -15,7 +15,7 @@ L["In Combat..."] = true
 L["Reset all options to default"] = true
 
 -- Options dropdown values
-L["Always"] = "siempre"
+L["Always"] = true
 L["Never"] = true
 L["Only when lead or assist"] = true
 L["Only after changing group sorting method"] = true
