@@ -12,12 +12,13 @@ locales\en.lua
 locales\es.lua
 
 Addon.lua
-AddonChannel.lua
-Options.lua
-Console.lua
-GUI.lua
-Marker.lua
-Sorter.lua
-SorterCore.lua
-SorterMeter.lua
-Util.lua
+
+modules\Options.lua
+modules\AddonChannel.lua
+modules\Console.lua
+modules\GUI.lua
+modules\Marker.lua
+modules\Sorter.lua
+modules\SorterCore.lua
+modules\SorterMeter.lua
+modules\Util.lua
