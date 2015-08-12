@@ -2,7 +2,7 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("Console", "AceConsole-3.0")
 A.console = M
 
-local format, print = format, print
+local format, print, tconcat = format, print, table.concat
 
 function M:OnEnable()
   local function slashCmd(args)
@@ -72,6 +72,14 @@ end
 
 function M:Debug(...)
   print("|cff33ff99"..A.name.."|r DEBUG ["..date("%H:%M:%S").."] ", ...)
+end
+
+function M:DebugDump(...)
+  local t = {}
+  for i = 1, select("#", ...) do
+    tinsert(t, tostring(select(i, ...) or "<nil>"))
+  end
+  M:Debug(tconcat(t, ", "))
 end
 
 function M:DebugPrintGroups()
