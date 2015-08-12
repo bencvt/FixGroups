@@ -3,7 +3,7 @@ local M = A:NewModule("AddonChannel", "AceEvent-3.0", "AceTimer-3.0")
 A.addonChannel = M
 
 local strsplit = string.split
-local SendAddonMessage, UnitName = SendAddonMessage, UnitName
+local IsInGroup, SendAddonMessage, UnitName = IsInGroup, SendAddonMessage, UnitName
 
 M.addonChannelPrefix = "FIXGROUPS"
 
@@ -42,5 +42,7 @@ function M:GROUP_ROSTER_UPDATE(event)
 end
 
 function M:Broadcast(message)
-  SendAddonMessage(M.addonChannelPrefix, message, A.util:GetGroupChannel())
+  if IsInGroup() then
+    SendAddonMessage(M.addonChannelPrefix, message, A.util:GetGroupChannel())
+  end
 end
