@@ -126,8 +126,8 @@ L["Stopped rearranging players because it's taking too long. Perhaps someone els
 L["You must be a raid leader or assistant to fix groups."] = true
 L["sortMode.split"] = "Split players: groups %s."
 L["sortMode.meter"] = "Rearranged players by damage/healing done."
-L["sortMode.TMURH"] = "Rearranged players: tanks>melee>ranged>healers."
-L["sortMode.THMUR"] = "Rearranged players: tanks>healers>melee>ranged."
+L["sortMode.TMURH"] = "Rearranged tanks>melee>ranged>healers."
+L["sortMode.THMUR"] = "Rearranged tanks>healers>melee>ranged."
 L["Excluded %d %s sitting in groups %d-8."] = true
 L["player"] = true
 L["players"] = true
