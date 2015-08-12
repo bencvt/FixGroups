@@ -13,10 +13,6 @@ function M:OnEnable()
   RegisterAddonMessagePrefix(M.addonChannelPrefix)
 end
 
-function M:OnDisable()
-  M:UnregisterAllEvents()
-end
-
 function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   --A.console:Debug(format("CHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", prefix, message, channel, sender))
   if prefix ~= M.addonChannelPrefix or sender == UnitName("player") then

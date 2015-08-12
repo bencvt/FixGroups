@@ -30,7 +30,6 @@ function M:OnEnable()
 end
 
 function M:OnDisable()
-  M:UnregisterAllEvents()
   M:Refresh()
 end
 

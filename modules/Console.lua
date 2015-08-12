@@ -13,12 +13,6 @@ function M:OnEnable()
   M:RegisterChatCommand("fg", slashCmd)
 end
 
-function M:OnDisable()
-  M:UnregisterChatCommand("fixgroups")
-  M:UnregisterChatCommand("fixgroup")
-  M:UnregisterChatCommand("fg")
-end
-
 function M:Print(...)
   print("|cff33ff99"..A.name.."|r:", ...)
 end

@@ -14,10 +14,6 @@ function M:OnEnable()
   M:RegisterEvent("GROUP_ROSTER_UPDATE")
 end
 
-function M:OnDisable()
-  M:UnregisterAllEvents()
-end
-
 function M:PLAYER_ENTERING_WORLD(event)
   M.lastSortMode = nil
 end
@@ -130,7 +126,7 @@ function M:ResumeIfPaused()
     A.console:Print(L["Resumed rearranging players."])
     local mode = M.resumeAfterCombat 
     M.resumeAfterCombat = nil
-    A.console:Command(mode)
+    beginSort(mode)
   end
 end
 
