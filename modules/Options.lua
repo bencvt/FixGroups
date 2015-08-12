@@ -473,10 +473,7 @@ local optionsTable = {
   },
 }
 
-function M:OnEnable()
-  if M.db then
-    return
-  end
+function M:OnInitialize()
   M.db = LibStub("AceDB-3.0"):New("FixGroupsDB", defaults, true)
   -- Intentionally overwriting the module reference
   A.options = M.db.profile.options

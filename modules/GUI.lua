@@ -5,42 +5,6 @@ A.gui = M
 local strfind = string.find
 local InCombatLockdown, IsInRaid, UnitName = InCombatLockdown, IsInRaid, UnitName
 
-local function watchChat(event, message, sender)
-  --A.console:Debug(format("watchChat event=%s message=%s sender=%s", event, message, sender))
-  if A.options.watchChat and not A.sorter:IsProcessing() and not A.sorter:IsPaused() and not InCombatLockdown() then
-    if IsInRaid() and A.util:IsLeaderOrAssist() and sender ~= UnitName("player") and message then
-      -- Search for both the default and the localized keywords.
-      if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["fix group"]) or strfind(message, L["mark tank"]) then
-        M:OpenRaidTab()
-        M:FlashRaidTabButton()
-      end
-    end
-  end
-end
-
-function M:OnEnable()
-	M:RegisterEvent("PLAYER_ENTERING_WORLD")
-	M:RegisterEvent("GROUP_ROSTER_UPDATE")
-  M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT",         watchChat)
-  M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT_LEADER",  watchChat)
-  M:RegisterEvent("CHAT_MSG_RAID",                  watchChat)
-  M:RegisterEvent("CHAT_MSG_RAID_LEADER",           watchChat)
-  M:RegisterEvent("CHAT_MSG_SAY",                   watchChat)
-  M:RegisterEvent("CHAT_MSG_WHISPER",               watchChat)
-end
-
-function M:OnDisable()
-  M:Refresh()
-end
-
-function M:PLAYER_ENTERING_WORLD(event)
-  M:Refresh()
-end
-
-function M:GROUP_ROSTER_UPDATE(event)
-  M:Refresh()
-end
-
 local function handleClick(_, button)
   if button == "RightButton" then
     if IsShiftKeyDown() then
@@ -57,10 +21,6 @@ local function handleClick(_, button)
       A.console:Command("default")
     end
   end
-end
-
-function M:ButtonPress(button)
-  handleClick(button)
 end
 
 local function setTooltip(tooltip, isRaidTab)
@@ -89,7 +49,29 @@ local function setTooltip(tooltip, isRaidTab)
   tooltip:Show()
 end
 
+local function watchChat(event, message, sender)
+  --A.console:Debug(format("watchChat event=%s message=%s sender=%s", event, message, sender))
+  if A.options.watchChat and not A.sorter:IsProcessing() and not A.sorter:IsPaused() and not InCombatLockdown() then
+    if IsInRaid() and A.util:IsLeaderOrAssist() and sender ~= UnitName("player") and message then
+      -- Search for both the default and the localized keywords.
+      if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["fix group"]) or strfind(message, L["mark tank"]) then
+        M:OpenRaidTab()
+        M:FlashRaidTabButton()
+      end
+    end
+  end
+end
+
 function M:OnEnable()
+  M:RegisterEvent("PLAYER_ENTERING_WORLD")
+  M:RegisterEvent("GROUP_ROSTER_UPDATE")
+  M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT",         watchChat)
+  M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT_LEADER",  watchChat)
+  M:RegisterEvent("CHAT_MSG_RAID",                  watchChat)
+  M:RegisterEvent("CHAT_MSG_RAID_LEADER",           watchChat)
+  M:RegisterEvent("CHAT_MSG_SAY",                   watchChat)
+  M:RegisterEvent("CHAT_MSG_WHISPER",               watchChat)
+
   if not M.icon then
     -- Create minimap icon
     M.iconLDB = LibStub("LibDataBroker-1.1"):NewDataObject(A.name, {
@@ -129,8 +111,22 @@ function M:OnEnable()
     end
     M.raidTabButton = b
   end
+end
 
+function M:OnDisable()
   M:Refresh()
+end
+
+function M:PLAYER_ENTERING_WORLD(event)
+  M:Refresh()
+end
+
+function M:GROUP_ROSTER_UPDATE(event)
+  M:Refresh()
+end
+
+function M:ButtonPress(button)
+  handleClick(button)
 end
 
 function M:OpenRaidTab()

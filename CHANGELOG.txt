@@ -1,5 +1,6 @@
 v1.1:
   - resolve ticket #2: locale support
+  - resolve ticket #5: issue with minimap icon lingering, again
   - use class colors when printing player names
   - remove useless option to always open raid tab when rearranging players
   - make the 3 Fix Group buttons (minimap icon, raid tab, options pane) function the same way 
