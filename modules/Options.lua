@@ -52,7 +52,7 @@ end
 
 local function setOptionMark(arr, index, value)
   if arr ~= O.partyMarkIcons then
-    A.sorter:StopProcessingNoResume()
+    A.sorter:Stop()
   end
   if value <= 0 or value > 8 then
     value = 9
@@ -224,7 +224,7 @@ local optionsTable = {
         end
       end,
       set = function(i,v)
-        A.sorter:StopProcessingNoResume()
+        A.sorter:Stop()
         if v == 4 then O.sortMode = "nosort"
         elseif v == 3 then O.sortMode = "meter"
         elseif v == 2 then O.sortMode = "THMUR"
@@ -238,7 +238,7 @@ local optionsTable = {
       type = "toggle",
       width = "full",
       get = function(i) return O.resumeAfterCombat end,
-      set = function(i,v) A.sorter:StopProcessingNoResume() O.resumeAfterCombat = v end,
+      set = function(i,v) A.sorter:Stop() O.resumeAfterCombat = v end,
     },
     tankMainTank = {
       order = RAIDASSIST+40,
@@ -374,7 +374,7 @@ local optionsTable = {
       type = "toggle",
       width = "full",
       get = function(i) return O.splitOddEven end,
-      set = function(i,v) A.sorter:StopProcessingNoResume() O.splitOddEven = v end,
+      set = function(i,v) A.sorter:Stop() O.splitOddEven = v end,
     },
     -- -------------------------------------------------------------------------
     headerPARTY = {

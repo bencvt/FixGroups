@@ -38,12 +38,12 @@ function M:Command(args)
     A.gui.OpenConfig()
     return
   elseif args == "cancel" then
-    A.sorter:StopProcessingNoResume()
+    A.sorter:Stop()
     return
   end
 
   -- Okay, we have some actual work to do then.
-  A.sorter:StopProcessingNoResume()
+  A.sorter:Stop()
 
   -- Set tank marks and such.
   if IsInGroup() and not IsInRaid() then
@@ -55,15 +55,15 @@ function M:Command(args)
   end
   A.marker:FixRaid(false)
 
-  -- Begin sort.
+  -- Start sort.
   if args == "nosort" then
     return
   elseif args == "meter" or args == "dps" then
-    A.sorter:BeginMeter()
+    A.sorter:StartMeter()
   elseif args == "split" then
-    A.sorter:BeginSplit()
+    A.sorter:StartSplit()
   elseif args == "" or args == "default" then
-    A.sorter:BeginDefault()
+    A.sorter:StartDefault()
   else
     M:Print(format(L["Unknown argument %s. Type %s for valid arguments."], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r"))
     return

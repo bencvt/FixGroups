@@ -31,6 +31,14 @@ function M:GROUP_ROSTER_UPDATE(event)
   end
 end
 
+function M:IsSortingByMeter()
+  return M.sortMode == "meter"
+end
+
+function M:IsSplittingRaid()
+  return M.sortMode == "split"
+end
+
 function M:IsProcessing()
   return M.stepCount and true or false
 end
@@ -39,29 +47,31 @@ function M:IsPaused()
   return M.resumeAfterCombat and true or false
 end
 
-function M:StopProcessing()
+local function stop(allowResume)
   M.core:CancelAction()
   M:ClearTimeout(true)
   M.stepCount = nil
   M.startTime = nil
   M.sortMode = nil
+  if not allowResume then
+    M.resumeAfterCombat = nil
+  end
   A.gui:Refresh()
 end
 
-function M:StopProcessingTimedOut()
-  A.console:Print(L["Stopped rearranging players because it's taking too long. Perhaps someone else is simultaneously rearranging players?"])
-  M:StopProcessing()
+function M:Stop()
+  stop(false)
 end
 
-function M:StopProcessingNoResume()
-  M.resumeAfterCombat = nil
-  M:StopProcessing()
+function M:StopTimedOut()
+  A.console:Print(L["console.timedOut"])
+  M:Stop()
 end
 
-function M:StopProcessingIfNeeded()
+function M:StopIfNeeded()
   if not A.util:IsLeaderOrAssist() or not IsInRaid() then
     A.console:Print(L["You must be a raid leader or assistant to fix groups."])
-    M:StopProcessingNoResume()
+    M:Stop()
     return true
   end
   if InCombatLockdown() then
@@ -72,49 +82,41 @@ function M:StopProcessingIfNeeded()
       A.console:Print(L["Rearranging players cancelled due to combat."])
       M.resumeAfterCombat = nil
     end
-    M:StopProcessing()
+    stop(true)
     return true
   end
 end
 
-function M:IsSortingByMeter()
-  return M.sortMode == "meter"
-end
-
-function M:IsSplittingRaid()
-  return M.sortMode == "split"
-end
-
-local function beginSort(mode)
-  M:StopProcessingNoResume()
+local function start(mode)
+  M:Stop()
   M.sortMode = mode
-  if M:StopProcessingIfNeeded() then
+  if M:StopIfNeeded() then
     return
   end
   -- Groups are built every step.
   M.core:BuildGroups()
   if M:IsSortingByMeter() or M:IsSplittingRaid() then
-    -- Damage/healing meter snapshot is built once at the beginning,
+    -- Damage/healing meter snapshot is built once at the start,
     -- not once every step.
     M.meter:BuildSnapshot()
   end
   M:ProcessStep()
 end
 
-function M:BeginMeter()
-  beginSort("meter")
+function M:StartMeter()
+  start("meter")
 end
 
-function M:BeginSplit()
-  beginSort("split")
+function M:StartSplit()
+  start("split")
 end
 
-function M:BeginDefault()
+function M:StartDefault()
   local m = A.options.sortMode
   if m == "TMURH" or m == "THMUR" or m == "meter" then
-    beginSort(m)
+    start(m)
   else
-    M:StopProcessingNoResume()
+    M:Stop()
     if m ~= "nosort" then
       A.console:Print(format("Internal error: invalid sort mode %s.", tostring(m or "<nil>")))
     end
@@ -126,12 +128,12 @@ function M:ResumeIfPaused()
     A.console:Print(L["Resumed rearranging players."])
     local mode = M.resumeAfterCombat 
     M.resumeAfterCombat = nil
-    beginSort(mode)
+    start(mode)
   end
 end
 
 function M:ProcessStep()
-  if M:StopProcessingIfNeeded() then
+  if M:StopIfNeeded() then
     return
   end
   M:ClearTimeout(false)
@@ -144,10 +146,10 @@ function M:ProcessStep()
   --A.console:DebugPrintDelta()
   if M.core:IsDeltaEmpty() then
     M:AnnounceComplete()
-    M:StopProcessing()
+    M:Stop()
     return
   elseif M.stepCount > MAX_STEPS then
-    M:StopProcessingTimedOut()
+    M:StopTimedOut()
     return
   end
   M.core:ProcessDelta()
@@ -158,7 +160,7 @@ function M:ProcessStep()
     M:ScheduleTimeout()
     A.gui:Refresh()
   else
-    M:StopProcessing()
+    M:Stop()
   end
 end
 
@@ -205,7 +207,7 @@ function M:ScheduleTimeout()
     M.timeoutCount = (M.timeoutCount or 0) + 1
     --A.console:Debug(format("Timeout %d of %d.", M.timeoutCount, MAX_TIMEOUTS)
     if M.timeoutCount >= MAX_TIMEOUTS then
-      M:StopProcessingTimedOut()
+      M:StopTimedOut()
       return
     end
     M.core:BuildGroups()

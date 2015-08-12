@@ -120,7 +120,7 @@ L["To fix tanks, press O to open the raid tab. WoW addons cannot set main tanks.
 L["Rearranging players paused due to combat."] = true
 L["Rearranging players cancelled due to combat."] = true
 L["Resumed rearranging players."] = true
-L["Stopped rearranging players because it's taking too long. Perhaps someone else is simultaneously rearranging players?"] = true
+L["console.timedOut"] = "Stopped rearranging players because it's taking too long. Perhaps someone else is simultaneously rearranging players?"
 L["You must be a raid leader or assistant to fix groups."] = true
 L["sortMode.split"] = "Split players: groups %s."
 L["sortMode.meter"] = "Rearranged players by damage/healing done."
