@@ -6,10 +6,10 @@
 ## DefaultState: Enabled
 ## SavedVariables: FixGroupsDB
 
-embeds.xml
+libs\libs.xml
 
-Locale_en.lua
-Locale_es.lua
+locales\en.lua
+locales\es.lua
 
 Addon.lua
 AddonChannel.lua
