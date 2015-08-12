@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Sorter", "AceEvent-3.0")
+local M = A:NewModule("Sorter", "AceEvent-3.0", "AceTimer-3.0")
 A.sorter = M
 
 local MAX_STEPS = 30
@@ -45,10 +45,7 @@ end
 
 function M:StopProcessing()
   M.core:CancelAction()
-  if M.timeoutTimer then
-    A:CancelTimer(M.timeoutTimer)
-    M.timeoutTimer = nil
-  end
+  M:ClearTimeout(true)
   M.stepCount = nil
   M.startTime = nil
   M.sortMode = nil
@@ -141,10 +138,7 @@ function M:ProcessStep()
   if M:StopProcessingIfNeeded() then
     return
   end
-  if M.timeoutTimer then
-    A:CancelTimer(M.timeoutTimer)
-    M.timeoutTimer = nil
-  end
+  M:ClearTimeout(false)
   if not M:IsProcessing() then
     M.stepCount = 0
     M.startTime = time()
@@ -193,17 +187,25 @@ function M:AnnounceComplete()
   M.lastSortMode = M.sortMode
 end
 
+function M:ClearTimeout(resetCount)
+  if M.timeoutTimer then
+    M:CancelTimer(M.timeoutTimer)
+  end
+  M.timeoutTimer = nil
+  if resetCount then
+    M.timeoutCount = nil
+  end
+end
+
 -- Timeouts can happen for a variety of reasons.
 -- Example: While the raid leader's original request to move a player is en
 -- route to the server, that player leaves the group or is moved to a different
 -- group by someone else.
 -- Another example: Good old-fashioned lag.
 function M:ScheduleTimeout()
-  if M.timeoutTimer then
-    A:CancelTimer(M.timeoutTimer)
-  end
-  M.timeoutTimer = A:ScheduleTimer(function ()
-    M.timeoutTimer = nil
+  M:ClearTimeout(false)
+  M.timeoutTimer = M:ScheduleTimer(function ()
+    M:ClearTimeout(false)
     M.timeoutCount = (M.timeoutCount or 0) + 1
     --A.console:Debug(format("Timeout %d of %d.", M.timeoutCount, MAX_TIMEOUTS)
     if M.timeoutCount >= MAX_TIMEOUTS then

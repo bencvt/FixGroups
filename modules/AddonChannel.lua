@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("AddonChannel", "AceEvent-3.0")
+local M = A:NewModule("AddonChannel", "AceEvent-3.0", "AceTimer-3.0")
 A.addonChannel = M
 
 local strsplit = string.split
@@ -35,9 +35,9 @@ end
 
 function M:GROUP_ROSTER_UPDATE(event)
   if not M.broadcastVersionTimer then
-    M.broadcastVersionTimer = A:ScheduleTimer(function ()
+    M.broadcastVersionTimer = M:ScheduleTimer(function ()
       if M.broadcastVersionTimer then
-        A:CancelTimer(M.broadcastVersionTimer)
+        M:CancelTimer(M.broadcastVersionTimer)
       end
       M.broadcastVersionTimer = nil
       M:Broadcast("v:"..A.version)

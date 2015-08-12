@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("GUI", "AceEvent-3.0")
+local M = A:NewModule("GUI", "AceEvent-3.0", "AceTimer-3.0")
 A.gui = M
 
 local strfind = string.find
@@ -156,7 +156,7 @@ function M:FlashRaidTabButton()
       M.raidTabButton:LockHighlight()
     end
     if count > 0 then
-      M.flashTimer = A:ScheduleTimer(flash, 0.5)
+      M.flashTimer = M:ScheduleTimer(flash, 0.5)
     else
       M.flashTimer = nil
     end

@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Options")
+local M = A:NewModule("Options", "AceTimer-3.0")
 A.options = M
 
 local defaults = {
@@ -84,7 +84,7 @@ local optionsTable = {
         --
         -- We use a short timer to delay the tree walk: at the time the hidden
         -- function is called, the tree hasn't been built yet.
-        A:ScheduleTimer(function()
+        M:ScheduleTimer(function()
           for _, g in ipairs(optionsGUI.obj.children[1].frame.obj.children) do
             if g.type == "Button" then
               -- Enable right-click on all buttons in the options pane.

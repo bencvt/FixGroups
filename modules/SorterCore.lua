@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A.sorter:NewModule("SorterCore")
+local M = A.sorter:NewModule("SorterCore", "AceTimer-3.0")
 A.sorter.core = M
 
 local ACTION_DELAY_SECONDS = 0.1
@@ -217,7 +217,7 @@ end
 
 function M:CancelAction(reason)
   if M.action.timer then
-    A:CancelTimer(M.action.timer)
+    M:CancelTimer(M.action.timer)
   end
   wipe(M.action)
   M.action.debug = reason or "cancelled"
@@ -227,7 +227,7 @@ function M:StartAction(key, group, func, desc)
   M:CancelAction()
   M.action.name = M:KeyGetName(key)
   M.action.group = group
-  M.action.timer = A:ScheduleTimer(func, ACTION_DELAY_SECONDS)
+  M.action.timer = M:ScheduleTimer(func, ACTION_DELAY_SECONDS)
   M.action.debug = desc or "<nil>"
 end
 
