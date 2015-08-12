@@ -41,6 +41,7 @@ local MARKS = {
 }
 
 local O
+local optionsGUI
 
 local function getOptionMark(arr, index)
   if arr[index] and arr[index] <= 8 then
@@ -72,13 +73,32 @@ local optionsTable = {
       type = "description",
       name = L["options.desc"].."|n",
       fontSize = "medium",
+      hidden = function(i)
+        -- For consistency's sake, we want the Fix Groups button in the options
+        -- pane to be right-click-able, just like its twin on the raid tab.
+        --
+        -- Getting a reference to the button frame is a little kludgey.
+        -- It's auto-created by Ace libraries, which doesn't give us an easy
+        -- reference to the frame. So we walk the AceGUI tree each time the
+        -- options pane is displayed.
+        --
+        -- We use a short timer to delay the tree walk: at the time the hidden
+        -- function is called, the tree hasn't been built yet.
+        A:ScheduleTimer(function()
+          for _, g in ipairs(optionsGUI.obj.children[1].frame.obj.children) do
+            if g.type == "Button" then
+              -- Enable right-click on all buttons in the options pane.
+              g.frame:RegisterForClicks("AnyUp")
+            end
+          end
+        end, 0.1)
+      end,
     },
     buttonCommandDefault = {
       order = BUTTONS+10,
       type = "execute",
       name = L["Fix Groups"],
-      -- TODO make this button accept right-clicks to be consistent
-      func = function() A.console:Command("default") end,
+      func = function(_, button) A.gui:ButtonPress(button) end,
       --disabled = function(i) return not IsInGroup() end,
     },
     buttonCommandSplit = {
@@ -463,5 +483,5 @@ function M:OnEnable()
   O = A.options
 
   LibStub("AceConfig-3.0"):RegisterOptionsTable(A.name, optionsTable)
-  LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.name, A.name)
+  optionsGUI = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.name, A.name)
 end

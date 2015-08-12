@@ -60,6 +60,10 @@ local function handleClick(_, button)
   end
 end
 
+function M:ButtonPress(button)
+  handleClick(button)
+end
+
 local function setTooltip(tooltip, isRaidTab)
   -- Commented-out lines are undocumented shortcuts that are subject to
   -- change or removal in a future version of this addon.
