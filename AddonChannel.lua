@@ -35,7 +35,7 @@ end
 
 function M:GROUP_ROSTER_UPDATE(event)
   if not M.broadcastVersionTimer then
-    M.broadcastVersionTimer = M:ScheduleTimer(function ()
+    M.broadcastVersionTimer = A:ScheduleTimer(function ()
       if M.broadcastVersionTimer then
         A:CancelTimer(M.broadcastVersionTimer)
       end
