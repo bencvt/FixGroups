@@ -25,7 +25,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   cmd, message = strsplit(":", message, 2)
   if cmd == "v" and not M.newerVersion then
     if message and (message > A.version) then
-      A.console:Print(format(L["A newer version of %s (%s) is available."], A.name, message))
+      A.console:Print(format(L["console.newerVersion"], A.name, "|cff1784d1"..message.."|r", A.version))
       M.newerVersion = message
     end
   elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and sender and UnitIsRaidOfficer(sender) then

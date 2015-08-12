@@ -35,14 +35,6 @@ function M:GROUP_ROSTER_UPDATE(event)
   end
 end
 
-function M:IsSortingByMeter()
-  return A.options.sortMode == "meter" or M.sortMode == "meter"
-end
-
-function M:IsSplittingRaid()
-  return M.sortMode == "split"
-end
-
 function M:IsProcessing()
   return M.stepCount and true or false
 end
@@ -92,8 +84,17 @@ function M:StopProcessingIfNeeded()
   end
 end
 
-function M:Begin(sortMode)
-  M.sortMode = sortMode
+function M:IsSortingByMeter()
+  return M.sortMode == "meter"
+end
+
+function M:IsSplittingRaid()
+  return M.sortMode == "split"
+end
+
+local function beginSort(mode)
+  M:StopProcessingNoResume()
+  M.sortMode = mode
   if M:StopProcessingIfNeeded() then
     return
   end
@@ -105,6 +106,26 @@ function M:Begin(sortMode)
     M.meter:BuildSnapshot()
   end
   M:ProcessStep()
+end
+
+function M:BeginMeter()
+  beginSort("meter")
+end
+
+function M:BeginSplit()
+  beginSort("split")
+end
+
+function M:BeginDefault()
+  local m = A.options.sortMode
+  if m == "TMURH" or m == "THMUR" or m == "meter" then
+    beginSort(m)
+  else
+    M:StopProcessingNoResume()
+    if m ~= "nosort" then
+      A.console:Print(format("Internal error: invalid sort mode %s.", tostring(m or "<nil>")))
+    end
+  end
 end
 
 function M:ResumeIfPaused()
@@ -155,11 +176,9 @@ function M:AnnounceComplete()
   local seconds = floor(time() - M.startTime)
   local msg
   if M:IsSplittingRaid() then
-    msg = format(L["Split players: groups %s."], M.core:GetSplitGroups())
-  elseif M:IsSortingByMeter() then
-    msg = L["Sorted players by damage/healing done."]
+    msg = format(L["sortMode.split"], M.core:GetSplitGroups())
   else
-    msg = L["Rearranged players."]
+    msg = L["sortMode."..M.sortMode]
   end
   local msg2 = ""
   if M.core.sitting > 0 then

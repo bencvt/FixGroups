@@ -61,7 +61,7 @@ function M:KeyIsDps(key)
 end
 
 function M:BuildGroups()
-  M.sortRoles = (A.options.sortMode == "THMUR") and SORT_ROLES_THMUR or SORT_ROLES_TMURH
+  M.sortRoles = (A.sorter.sortMode == "THMUR") and SORT_ROLES_THMUR or SORT_ROLES_TMURH
   for g = 1, 8 do
     wipe(M.groups[g])
     M.groupSizes[g] = 0

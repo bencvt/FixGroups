@@ -61,26 +61,19 @@ function M:Command(args)
   end
   A.marker:FixRaid(false)
 
-  -- Determine sort mode.
-  local sortMode
+  -- Begin sort.
   if args == "nosort" then
     return
   elseif args == "meter" or args == "dps" then
-    sortMode = "meter"
+    A.sorter:BeginMeter()
   elseif args == "split" then
-    sortMode = "split"
+    A.sorter:BeginSplit()
   elseif args == "" or args == "default" then
-    if A.options.sortMode == "nosort" then
-      return
-    end
-    sortMode = "default"
+    A.sorter:BeginDefault()
   else
     M:Print(format(L["Unknown argument %s. Type %s for valid arguments."], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r"))
     return
   end
-
-  -- Sort groups.
-  A.sorter:Begin(sortMode)
 end
 
 function M:Debug(...)

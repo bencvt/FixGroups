@@ -4,7 +4,7 @@ L["and"] = true
 L["or"] = true
 L["none"] = true
 
-L["A newer version of %s (%s) is available."] = true
+L["console.newerVersion"] = "A newer version of %s (%s) is available. You're currently running %s."
 
 -- button labels
 L["Fix Groups"] = true
@@ -122,9 +122,10 @@ L["Rearranging players cancelled due to combat."] = true
 L["Resumed rearranging players."] = true
 L["Stopped rearranging players because it's taking too long. Perhaps someone else is simultaneously rearranging players?"] = true
 L["You must be a raid leader or assistant to fix groups."] = true
-L["Split players: groups %s."] = true
-L["Sorted players by damage/healing done."] = true
-L["Rearranged players."] = true
+L["sortMode.split"] = "Split players: groups %s."
+L["sortMode.meter"] = "Rearranged players by damage/healing done."
+L["sortMode.TMURH"] = "Rearranged players: tanks>melee>ranged>healers."
+L["sortMode.THMUR"] = "Rearranged players: tanks>healers>melee>ranged."
 L["Excluded %d %s sitting in groups %d-8."] = true
 L["player"] = true
 L["players"] = true
