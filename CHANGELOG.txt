@@ -1,3 +1,6 @@
+v1.1.1:
+  - fix issue with minimap icon not appearing after resetting options
+
 v1.1:
   - resolve ticket #2: locale support
   - resolve ticket #5: issue with minimap icon lingering, again

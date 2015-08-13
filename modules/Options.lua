@@ -468,6 +468,7 @@ local optionsTable = {
         O = A.options
         O.minimapIcon = minimapIcon
         A.console:Print(L["All options reset to default."])
+        A.gui:Refresh()
       end,
     },
   },
