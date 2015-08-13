@@ -1,11 +1,5 @@
 # FixGroups by bencvt
 
-Main project site: http://wow.curseforge.com/addons/fixgroups/
-
-GitHub mirror: https://github.com/bencvt/FixGroups
-
-## About
-
 Organizing groups is an important, if sometimes tedious, part of running a raid. This addon helps automate the process.
 
 Instead of manually dragging players around in the raid tab, just click a **single button** to set things up the way you want:
@@ -15,3 +9,15 @@ Instead of manually dragging players around in the raid tab, just click a **sing
  * **Mark** tanks and ensure they have **assist**.
 
  * **Split** your raid into two roughly equal sides for raid encounters that need it. Manually combing through damage meters to ensure that your heavy hitters are spread appropriately is for the birds. FixGroups takes care of that for you, integrating with your damage meter addon directly. Recount, Skada, and Details! are all supported.
+
+## Links
+
+For players:
+
+ * Download and install this addon from http://www.curse.com/addons/wow/fixgroups
+
+For developers:
+
+ * Main project site: http://wow.curseforge.com/addons/fixgroups/
+
+ * GitHub mirror: https://github.com/bencvt/FixGroups
