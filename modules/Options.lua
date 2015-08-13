@@ -12,7 +12,7 @@ local defaults = {
       resumeAfterCombat = true,
       tankMainTankAlways = false,
       tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
-      openRaidTabPRN = true,
+      openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
       tankMark = true,
       tankMarkIcons = {4, 6, 1, 2, 3, 7, 9, 9},
       partyMark = true,
@@ -37,7 +37,7 @@ local MARKS = {
   "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t",
   "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t",
   "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
-  L["none"],
+  L["options.value.noMark"],
 }
 
 local O
@@ -71,7 +71,7 @@ local optionsTable = {
     desc = {
       order = 0,
       type = "description",
-      name = L["options.desc"].."|n",
+      name = L["options.widget.top.desc"].."|n",
       fontSize = "medium",
       hidden = function(i)
         -- For consistency's sake, we want the Fix Groups button in the options
@@ -97,49 +97,50 @@ local optionsTable = {
     buttonCommandDefault = {
       order = BUTTONS+10,
       type = "execute",
-      name = L["Fix Groups"],
+      name = L["button.fixGroups.text"],
+      desc = L["button.fixGroups.desc"],
       func = function(_, button) A.gui:ButtonPress(button) end,
       --disabled = function(i) return not IsInGroup() end,
     },
     buttonCommandSplit = {
       order = BUTTONS+20,
       type = "execute",
-      name = L["Split Groups"],
-      desc = L["options.buttonCommandSplit.desc"],
+      name = L["button.splitGroups.text"],
+      desc = L["button.splitGroups.desc"],
       func = function() A.console:Command("split") end,
       --disabled = function(i) return not IsInRaid() end,
     },
     buttonCommandHelp = {
       order = BUTTONS+30,
       type = "execute",
-      name = L["/fg command info"],
-      desc = format(L["options.buttonCommandHelp.desc"], "|cff1784d1/fg|r"),
+      name = L["button.commandInfo.text"],
+      desc = format(L["button.commandInfo.desc"], "|cff1784d1/fg|r"),
       func = function() A.console:Command("help") end,
     },
     -- -------------------------------------------------------------------------
     headerUI = {
       order = UI,
       type = "header",
-      name = L["User interface and chat"],
+      name = L["options.header.uiAndChat"],
     },
     showMinimapIcon = {
       order = UI+10,
-      name = L["Show minimap icon"],
+      name = L["options.widget.showMinimapIcon.text"],
       type = "select",
       width = "double",
       style = "dropdown",
       values = {
-        [1] = L["Always"],
-        [2] = L["Only when lead or assist"],
-        [3] = L["Never"],
+        [1] = L["options.value.always"],
+        [2] = L["options.value.onlyWhenLeadOrAssist"],
+        [3] = L["options.value.never"],
       },
       get = function(i) if O.showMinimapIconAlways then return 1 elseif O.showMinimapIconPRN then return 2 end return 3 end,
       set = function(i,v) O.showMinimapIconAlways, O.showMinimapIconPRN = (v==1), (v==2) A.gui:Refresh() end,
     },
     addButtonToRaidTab = {
       order = UI+20,
-      name = L["Add button to raid tab"],
-      desc = format(L["options.addButtonToRaidTab.desc"], "|cff1784d1"..L["Fix Groups"].."|r"),
+      name = L["options.widget.addButtonToRaidTab.text"],
+      desc = format(L["options.widget.addButtonToRaidTab.desc"], "|cff1784d1"..L["button.fixGroups.text"].."|r"),
       type = "toggle",
       width = "full",
       get = function(i) return O.addButtonToRaidTab end,
@@ -149,12 +150,12 @@ local optionsTable = {
     --headerCHAT = {
     --  order = CHAT,
     --  type = "header",
-    --  name = "Chat",
+    --  name = ...,
     --},
     watchChat = {
       order = CHAT+10,
-      name = L["Watch chat for requests to fix groups"],
-      desc = L["options.watchChat.desc"],
+      name = L["options.widget.watchChat.text"],
+      desc = L["options.widget.watchChat.desc"],
       type = "toggle",
       width = "full",
       get = function(i) return O.watchChat end,
@@ -162,14 +163,14 @@ local optionsTable = {
     },
     announceChat = {
       order = CHAT+20,
-      name = L["Announce when players have been rearranged to instance chat"],
+      name = L["options.widget.announceChat.text"],
       type = "select",
       width = "double",
       style = "dropdown",
       values = {
-        [1] = L["Always"],
-        [2] = L["Only after changing group sorting method"],
-        [3] = L["Never"],
+        [1] = L["options.value.always"],
+        [2] = L["options.value.announceChatLimited"],
+        [3] = L["options.value.never"],
       },
       get = function(i) if O.announceChatAlways then return 1 elseif O.announceChatPRN then return 2 end return 3 end,
       set = function(i,v) O.announceChatAlways, O.announceChatPRN = (v==1), (v==2) end,
@@ -178,11 +179,11 @@ local optionsTable = {
     headerRAIDLEAD = {
       order = RAIDLEAD,
       type = "header",
-      name = L["When raid leader"],
+      name = L["options.header.raidLead"],
     },
     tankAssist = {
       order = RAIDLEAD+10,
-      name = L["Give tanks assist"],
+      name = L["options.widget.tankAssist.text"],
       type = "toggle",
       width = "full",
       get = function(i) return O.tankAssist end,
@@ -190,8 +191,8 @@ local optionsTable = {
     },
     fixOfflineML = {
       order = RAIDLEAD+20,
-      name = L["Fix offline master looter"],
-      desc = L["options.fixOfflineML.desc"],
+      name = L["options.widget.fixOfflineML.text"],
+      desc = L["options.widget.fixOfflineML.desc"],
       type = "toggle",
       width = "full",
       get = function(i) return O.fixOfflineML end,
@@ -201,20 +202,20 @@ local optionsTable = {
     headerRAIDASSIST = {
       order = RAIDASSIST,
       type = "header",
-      name = L["When raid leader or assist"],
+      name = L["options.header.raidAssist"],
     },
     sortMode = {
       order = RAIDASSIST+10,
-      name = L["Rearrange players"],
-      desc = format(L["options.sortMode.desc"], "|cff1784d1/fg meter|r"),
+      name = L["options.widget.sortMode.text"],
+      desc = format(L["options.widget.sortMode.desc"], "|cff1784d1/fg meter|r", "|cff1784d1"..L["button.fixGroups.text"].."|r"),
       type = "select",
       width = "double",
       style = "dropdown",
       values = {
-        [1] = L["Tanks > Melee > Ranged > Healers"],
-        [2] = L["Tanks > Healers > Melee > Ranged"],
-        [3] = L["Overall damage/healing done"],
-        [4] = L["Do not rearrange players"],
+        [1] = L["options.value.sortMode.TMURH"],
+        [2] = L["options.value.sortMode.THMUR"],
+        [3] = L["options.value.sortMode.meter"],
+        [4] = L["options.value.sortMode.nosort"],
       },
       get = function(i)
         if O.sortMode == "nosort" then return 4
@@ -234,7 +235,7 @@ local optionsTable = {
     },
     resumeAfterCombat = {
       order = RAIDASSIST+20,
-      name = L["Resume rearranging players when interrupted by combat"],
+      name = L["options.widget.resumeAfterCombat.text"],
       type = "toggle",
       width = "full",
       get = function(i) return O.resumeAfterCombat end,
@@ -242,30 +243,31 @@ local optionsTable = {
     },
     tankMainTank = {
       order = RAIDASSIST+40,
-      name = L["Check whether main tanks are set"],
-      desc = L["options.tankMainTank.desc"],
+      name = L["options.widget.tankMainTank.text"],
+      desc = L["options.widget.tankMainTank.desc"],
       type = "select",
       width = "double",
       style = "dropdown",
       values = {
-        [1] = L["Always"],
-        [2] = L["Only in instances"],
-        [3] = L["Never"],
+        [1] = L["options.value.always"],
+        [2] = L["options.value.onlyInRaidInstances"],
+        [3] = L["options.value.never"],
       },
       get = function(i) if O.tankMainTankAlways then return 1 elseif O.tankMainTankPRN then return 2 end return 3 end,
       set = function(i,v) O.tankMainTankAlways, O.tankMainTankPRN = (v==1), (v==2) end,
     },
     openRaidTab = {
       order = RAIDASSIST+50,
-      name = L["Open raid tab when main tank needs to be set"],
+      name = L["options.widget.openRaidTab.text"],
       type = "toggle",
       width = "full",
       get = function(i) return O.openRaidTabPRN end,
       set = function(i,v) O.openRaidTabPRN = v end,
+      disabled = function(i) return not O.tankMainTankAlways and not O.tankMainTankPRN end,
     },
     tankMark = {
       order = RAIDASSIST+60,
-      name = L["Put target markers on tanks"],
+      name = L["options.widget.tankMark.text"],
       type = "toggle",
       width = "full",
       get = function(i) return O.tankMark end,
@@ -273,8 +275,8 @@ local optionsTable = {
     },
     tankMarkIcon1 = {
       order = RAIDASSIST+60+1,
-      name = L["Tank 1"],
-      desc = L["Tanks are sorted alphabetically."],
+      name = L["options.widget.raidTank1.text"],
+      desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -285,8 +287,8 @@ local optionsTable = {
     },
     tankMarkIcon2 = {
       order = RAIDASSIST+60+2,
-      name = L["Tank 2"],
-      desc = L["Tanks are sorted alphabetically."],
+      name = L["options.widget.raidTank2.text"],
+      desc = L["options.widget.raidTank.desc"],
        type = "select",
       width = "half",
       style = "dropdown",
@@ -297,8 +299,8 @@ local optionsTable = {
     },
     tankMarkIcon3 = {
       order = RAIDASSIST+60+3,
-      name = L["Tank 3"],
-      desc = L["Tanks are sorted alphabetically."],
+      name = L["options.widget.raidTank3.text"],
+      desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -309,8 +311,8 @@ local optionsTable = {
     },
     tankMarkIcon4 = {
       order = RAIDASSIST+60+4,
-      name = L["Tank 4"],
-      desc = L["Tanks are sorted alphabetically."],
+      name = L["options.widget.raidTank4.text"],
+      desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -321,8 +323,8 @@ local optionsTable = {
     },
     tankMarkIcon5 = {
       order = RAIDASSIST+60+5,
-      name = L["Tank 5"],
-      desc = L["Tanks are sorted alphabetically."],
+      name = L["options.widget.raidTank5.text"],
+      desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -333,8 +335,8 @@ local optionsTable = {
     },
     tankMarkIcon6 = {
       order = RAIDASSIST+60+6,
-      name = L["Tank 6"],
-      desc = L["Tanks are sorted alphabetically."],
+      name = L["options.widget.raidTank6.text"],
+      desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -345,8 +347,8 @@ local optionsTable = {
     },
     tankMarkIcon7 = {
       order = RAIDASSIST+60+7,
-      name = L["Tank 7"],
-      desc = L["Tanks are sorted alphabetically."],
+      name = L["options.widget.raidTank7.text"],
+      desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -357,8 +359,8 @@ local optionsTable = {
     },
     tankMarkIcon8 = {
       order = RAIDASSIST+60+8,
-      name = L["Tank 8"],
-      desc = L["Tanks are sorted alphabetically."],
+      name = L["options.widget.raidTank8.text"],
+      desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -369,8 +371,8 @@ local optionsTable = {
     },
     splitOddEven = {
       order = RAIDASSIST+70,
-      name = L["When splitting groups, use odd/even groups"],
-      desc = format(L["options.splitOddEven.desc"], "|cff1784d1/fg split|r", "|cff1784d1"..L["Split Groups"].."|r"),
+      name = L["options.widget.splitOddEven.text"],
+      desc = format(L["options.widget.splitOddEven.desc"], "|cff1784d1/fg split|r", "|cff1784d1"..L["button.splitGroups.text"].."|r"),
       type = "toggle",
       width = "full",
       get = function(i) return O.splitOddEven end,
@@ -380,11 +382,12 @@ local optionsTable = {
     headerPARTY = {
       order = PARTY,
       type = "header",
-      name = L["When in party (5 man content)"],
+      name = L["options.header.party"],
     },
     partyMark = {
       order = PARTY+10,
-      name = L["Put target markers on party members"],
+      name = L["options.widget.partyMark.text"],
+      desc = format(L["options.widget.partyMark.desc"], "|cff1784d1"..L["button.fixGroups.text"].."|r"),
       type = "toggle",
       width = "full",
       get = function(i) return O.partyMark end,
@@ -392,8 +395,8 @@ local optionsTable = {
     },
     partyMarkIcon1 = {
       order = PARTY+10+1,
-      name = L["Tank"],
-      desc = L["options.partyMarkIcon1.desc"].."|n|n"..L["Party members are sorted alphabetically."],
+      name = L["options.widget.partyMarkIcon1.text"],
+      desc = L["options.widget.partyMarkIcon1.desc"].."|n|n"..L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -404,8 +407,8 @@ local optionsTable = {
     },
     partyMarkIcon2 = {
       order = PARTY+10+2,
-      name = L["Healer"],
-      desc = L["options.partyMarkIcon2.desc"].."|n|n"..L["Party members are sorted alphabetically."],
+      name = L["options.widget.partyMarkIcon2.text"],
+      desc = L["options.widget.partyMarkIcon2.desc"].."|n|n"..L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -416,8 +419,8 @@ local optionsTable = {
     },
     partyMarkIcon3 = {
       order = PARTY+10+3,
-      name = L["DPS 1"],
-      desc = L["Party members are sorted alphabetically."],
+      name = L["options.widget.partyMarkIcon3.text"],
+      desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -428,8 +431,8 @@ local optionsTable = {
     },
     partyMarkIcon4 = {
       order = PARTY+10+4,
-      name = L["DPS 2"],
-      desc = L["Party members are sorted alphabetically."],
+      name = L["options.widget.partyMarkIcon4.text"],
+      desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -440,8 +443,8 @@ local optionsTable = {
     },
     partyMarkIcon5 = {
       order = PARTY+10+5,
-      name = L["DPS 3"],
-      desc = L["Party members are sorted alphabetically."],
+      name = L["options.widget.partyMarkIcon5.text"],
+      desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
       style = "dropdown",
@@ -460,14 +463,14 @@ local optionsTable = {
       order = RESET+10,
       type = "execute",
       width = "full",
-      name = L["Reset all options to default"],
+      name = L["button.resetAllOptions.text"],
       func = function()
         local minimapIcon = O.minimapIcon
         M.db:ResetProfile()
         A.options = M.db.profile.options
         O = A.options
         O.minimapIcon = minimapIcon
-        A.console:Print(L["All options reset to default."])
+        A.console:Print(L["button.resetAllOptions.print"])
         A.gui:Refresh()
       end,
     },

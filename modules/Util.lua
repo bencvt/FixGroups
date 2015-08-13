@@ -13,10 +13,10 @@ function M:tconcat2(t)
   elseif sz == 1 then
     return t[1]
   elseif sz == 2 then
-    return t[1].." "..L["and"].." "..t[2]
+    return t[1].." "..L["word.and"].." "..t[2]
   end
   local tmp = t[sz]
-  t[sz] = L["and"].." "..t[sz]
+  t[sz] = L["word.and"].." "..t[sz]
   local result = tconcat(t, ", ")
   t[sz] = tmp
   return result

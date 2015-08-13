@@ -195,7 +195,7 @@ function M:GetSplitGroups()
     numGroups = numGroups + 1
   end
   if numGroups < 2 then
-    return "1 "..L["and"].." 2"
+    return "1 "..L["word.and"].." 2"
   end
   if A.options.splitOddEven then
     local split = wipe(tmp1)
@@ -204,10 +204,10 @@ function M:GetSplitGroups()
     for i = 1, numGroups do
       tinsert(split[(i % 2) + 1], tostring(i))
     end
-    return tconcat(split[2], "/").." "..L["and"].." "..tconcat(split[1], "/")
+    return tconcat(split[2], "/").." "..L["word.and"].." "..tconcat(split[1], "/")
   else
     numGroups = floor(numGroups / 2)
-    return "1-"..numGroups.." "..L["and"].." "..(numGroups + 1).."-"..(numGroups * 2)
+    return "1-"..numGroups.." "..L["word.and"].." "..(numGroups + 1).."-"..(numGroups * 2)
   end
 end
 

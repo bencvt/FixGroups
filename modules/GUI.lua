@@ -24,27 +24,27 @@ local function handleClick(_, button)
 end
 
 local function setTooltip(tooltip, isRaidTab)
-  -- Commented-out lines are undocumented shortcuts that are subject to
-  -- change or removal in a future version of this addon.
   tooltip:ClearLines()
   if not isRaidTab then
     tooltip:AddLine(FixGroups.name)
   end
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["Left Click"], L["Fix groups"], 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(L["tooltip.left.clickLeft"],        L["tooltip.right.fixGroups"], 1, 1, 1, 1, 1, 0)
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["Right Click"], L["Split raid into two sides based on"], 1, 1, 1, 1, 1, 0)
-  tooltip:AddDoubleLine(" ",              L["overall damage/healing done"], 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(L["tooltip.left.clickRight"],       L["tooltip.right.split.1"], 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(" ",                                L["tooltip.right.split.2"], 1, 1, 1, 1, 1, 0)
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["Hold Shift + Left Click"], L["Open config"], 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(L["tooltip.left.shiftClickLeft"],   L["tooltip.right.config"], 1, 1, 1, 1, 1, 0)
+  tooltip:AddLine(" ")
+  tooltip:AddDoubleLine(L["tooltip.left.shiftClickRight"],  L["tooltip.right.meter.1"], 1, 1, 1, 1, 1, 0)
+  tooltip:AddDoubleLine(" ",                                L["tooltip.right.meter.2"], 1, 1, 1, 1, 1, 0)
+  -- Ctrl + Left Click is an undocumented shortcut, subject to change or removal
+  -- in a future version of this addon.
   --tooltip:AddLine(" ")
-  --tooltip:AddDoubleLine(L["Hold Shift + Right Click"], L["Fix groups, sorting by"], 1, 1, 1, 1, 1, 0)
-  --tooltip:AddDoubleLine(" ",                        L["overall damage/healing done"], 1, 1, 1, 1, 1, 0)
-  --tooltip:AddLine(" ")
-  --tooltip:AddDoubleLine(L["Hold Ctrl + Left Click"], L["Fix tanks and ML only, no sorting"], 1, 1, 1, 1, 1, 0)
+  --tooltip:AddDoubleLine(L["tooltip.left.ctrlClickLeft"],    L["tooltip.right.nosort"], 1, 1, 1, 1, 1, 0)
   if not isRaidTab then
     tooltip:AddLine(" ")
-    tooltip:AddDoubleLine(L["Hold Left Click + Drag"], L["Move minimap icon"], 1, 1, 1, 1, 1, 0)
+    tooltip:AddDoubleLine(L["tooltip.left.drag"],           L["tooltip.right.moveMinimapIcon"], 1, 1, 1, 1, 1, 0)
   end
   tooltip:Show()
 end
@@ -54,7 +54,7 @@ local function watchChat(event, message, sender)
   if A.options.watchChat and not A.sorter:IsProcessing() and not A.sorter:IsPaused() and not InCombatLockdown() then
     if IsInRaid() and A.util:IsLeaderOrAssist() and sender ~= UnitName("player") and message then
       -- Search for both the default and the localized keywords.
-      if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["fix group"]) or strfind(message, L["mark tank"]) then
+      if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["chatKeyword.fixGroup"]) or strfind(message, L["chatKeyword.markTank"]) then
         M:OpenRaidTab()
         M:FlashRaidTabButton()
       end
@@ -91,7 +91,7 @@ function M:OnEnable()
     b:SetPoint("TOPRIGHT", RaidFrameRaidInfoButton, "TOPLEFT", 0, 0)
     b:SetSize(RaidFrameRaidInfoButton:GetWidth(), RaidFrameRaidInfoButton:GetHeight())
     b:GetFontString():SetFont(RaidFrameRaidInfoButton:GetFontString():GetFont())
-    b:SetText(L["Fix Groups"])
+    b:SetText(L["button.fixGroups.text"])
     b:RegisterForClicks("AnyUp")
     b:SetScript("OnClick", handleClick)
     b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") setTooltip(GameTooltip, true) end)
@@ -159,10 +159,10 @@ function M:FlashRaidTabButton()
   flash()
 end
 
-local function setUI(buttonEnable, buttonText, iconTexture)
+local function setUI(buttonText, iconTexture)
   M.iconLDB.icon = iconTexture
-  M.raidTabButton:SetText(buttonText)
-  if buttonEnable then
+  M.raidTabButton:SetText(L[buttonText])
+  if buttonText == "button.fixGroups.text" then
     M.raidTabButton:Enable()
   else
     M.raidTabButton:Disable()
@@ -176,15 +176,15 @@ function M:Refresh()
     return
   end
   if A.sorter:IsProcessing() then
-    setUI(false, L["Rearranging..."], "Interface\\TIMEMANAGER\\FFButton")
+    setUI("button.fixGroups.working.text", "Interface\\TIMEMANAGER\\FFButton")
   elseif A.sorter:IsPaused() then
-    setUI(false, L["In Combat..."], "Interface\\TIMEMANAGER\\PauseButton")
+    setUI("button.fixGroups.paused.text", "Interface\\TIMEMANAGER\\PauseButton")
   elseif A.util:IsLeader() then
-    setUI(true, L["Fix Groups"], "Interface\\GROUPFRAME\\UI-Group-LeaderIcon")
+    setUI("button.fixGroups.text", "Interface\\GROUPFRAME\\UI-Group-LeaderIcon")
   elseif A.util:IsLeaderOrAssist() then
-    setUI(true, L["Fix Groups"], "Interface\\GROUPFRAME\\UI-GROUP-ASSISTANTICON")
+    setUI("button.fixGroups.text", "Interface\\GROUPFRAME\\UI-GROUP-ASSISTANTICON")
   else
-    setUI(true, L["Fix Groups"], "Interface\\ICONS\\INV_Misc_GroupLooking")
+    setUI("button.fixGroups.text", "Interface\\ICONS\\INV_Misc_GroupLooking")
   end
   if A.options.showMinimapIconAlways or (A.options.showMinimapIconPRN and A.util:IsLeaderOrAssist()) then
     M.icon:Show(A.name)

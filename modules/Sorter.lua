@@ -64,22 +64,22 @@ function M:Stop()
 end
 
 function M:StopTimedOut()
-  A.console:Print(L["console.timedOut"])
+  A.console:Print(L["sorter.print.timedOut"])
   M:Stop()
 end
 
 function M:StopIfNeeded()
   if not A.util:IsLeaderOrAssist() or not IsInRaid() then
-    A.console:Print(L["You must be a raid leader or assistant to fix groups."])
+    A.console:Print(L["sorter.print.needRank"])
     M:Stop()
     return true
   end
   if InCombatLockdown() then
     if A.options.resumeAfterCombat then
-      A.console:Print(L["Rearranging players paused due to combat."])
+      A.console:Print(L["sorter.print.combatPaused"])
       M.resumeAfterCombat = M.sortMode
     else
-      A.console:Print(L["Rearranging players cancelled due to combat."])
+      A.console:Print(L["sorter.print.combatCancelled"])
       M.resumeAfterCombat = nil
     end
     stop(true)
@@ -125,7 +125,7 @@ end
 
 function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
-    A.console:Print(L["Resumed rearranging players."])
+    A.console:Print(L["sorter.print.combatResumed"])
     local mode = M.resumeAfterCombat 
     M.resumeAfterCombat = nil
     start(mode)
@@ -168,15 +168,15 @@ function M:AnnounceComplete()
   local seconds = floor(time() - M.startTime)
   local msg
   if M:IsSplittingRaid() then
-    msg = format(L["sortMode.split"], M.core:GetSplitGroups())
+    msg = format(L["sorter.mode.split"], M.core:GetSplitGroups())
   else
-    msg = L["sortMode."..M.sortMode]
+    msg = L["sorter.mode."..M.sortMode]
   end
   local msg2 = ""
   if M.core.sitting > 0 then
-    msg2 = " "..format(L["Excluded %d %s sitting in groups %d-8."], M.core.sitting, M.core.sitting == 1 and L["player"] or L["players"], A.util:GetMaxGroupsForInstance()+1)
+    msg2 = " "..format(L["sorter.print.excludedSitting"], M.core.sitting, M.core.sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
   end
-  msg = format("%s (%d %s, %d %s.%s)", msg, M.stepCount, M.stepCount == 1 and L["step"] or L["steps"], seconds, seconds == 1 and L["second"] or L["seconds"], msg2)
+  msg = format("%s (%d %s, %d %s.%s)", msg, M.stepCount, M.stepCount == 1 and L["word.step"] or L["word.steps"], seconds, seconds == 1 and L["word.second"] or L["word.seconds"], msg2)
   if M.stepCount > 0 and (A.options.announceChatAlways or (A.options.announceChatPRN and M.lastSortMode ~= M.sortMode)) then
     SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetGroupChannel())
   else

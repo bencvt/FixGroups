@@ -18,15 +18,15 @@ function M:Print(...)
 end
 
 function M:PrintHelp()
-  M:Print(format(L["v%s by %s"], A.version, "|cff33ff99"..A.author.."|r"))
-  print(format(L["Arguments for the %s command (or %s):"], "|cff1784d1/fixgroups|r", "|cff1784d1/fg|r"))
-  print("  |cff1784d1/fg help|r "..L["or"].." |cff1784d1/fg about|r - "..L["you're reading it"])
-  print("  |cff1784d1/fg config|r "..L["or"].." |cff1784d1/fg options|r - "..format(L["same as Esc>Interface>AddOns>%s"], A.name))
-  print("  |cff1784d1/fg cancel|r - "..L["stop rearranging players"])
-  print("  |cff1784d1/fg nosort|r - "..L["fix groups, no sorting"])
-  print("  |cff1784d1/fg meter|r "..L["or"].." |cff1784d1/fg dps|r - "..L["fix groups, sort by overall damage/healing done"])
-  print("  |cff1784d1/fg split|r - "..L["split raid into two sides based on overall damage/healing done"])
-  print("  |cff1784d1/fg|r - "..L["fix groups"])
+  M:Print(format(L["console.help.versionAuthor"], A.version, "|cff33ff99"..A.author.."|r"))
+  print(format(L["console.help.header"], "|cff1784d1/fixgroups|r", "|cff1784d1/fg|r"))
+  print("  |cff1784d1/fg help|r "..L["word.or"].." |cff1784d1/fg about|r - "..L["console.help.help"])
+  print("  |cff1784d1/fg config|r "..L["word.or"].." |cff1784d1/fg options|r - "..format(L["console.help.config"], A.name))
+  print("  |cff1784d1/fg cancel|r - "..L["console.help.cancel"])
+  print("  |cff1784d1/fg nosort|r - "..L["console.help.nosort"])
+  print("  |cff1784d1/fg meter|r "..L["word.or"].." |cff1784d1/fg dps|r - "..L["console.help.meter"])
+  print("  |cff1784d1/fg split|r - "..L["console.help.split"])
+  print("  |cff1784d1/fg|r - "..L["console.help.blank"])
 end
 
 function M:Command(args)
@@ -49,7 +49,7 @@ function M:Command(args)
   if IsInGroup() and not IsInRaid() then
     A.marker:FixParty()
     if args ~= "" and args ~= "nosort" and args ~= "default" then
-      M:Print(L["Groups can only be sorted while in a raid."])
+      M:Print(L["console.print.notInRaid"])
     end
     return
   end
@@ -65,7 +65,7 @@ function M:Command(args)
   elseif args == "" or args == "default" then
     A.sorter:StartDefault()
   else
-    M:Print(format(L["Unknown argument %s. Type %s for valid arguments."], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r"))
+    M:Print(format(L["console.print.badArgument"], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r"))
     return
   end
 end
