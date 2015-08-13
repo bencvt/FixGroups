@@ -141,7 +141,7 @@ L["sorter.mode.TMURH"] = "Rearranged tanks>melee>ranged>healers."
 L["sorter.mode.THMUR"] = "Rearranged tanks>healers>melee>ranged."
 L["sorter.print.excludedSitting"] = "Excluded %d %s sitting in groups %d-8."
 
--- SorterMeter module
-L["sorter.meter.print.noAddon"] = "No supported damage/healing meter addon found."
-L["sorter.meter.print.usingDataFrom"] = "Using damage/healing data from %s."
-L["sorter.meter.print.noDataFrom"] = "There is currently no data available from %s."
+-- Meter module
+L["meter.print.noAddon"] = "No supported damage/healing meter addon found."
+L["meter.print.usingDataFrom"] = "Using damage/healing data from %s."
+L["meter.print.noDataFrom"] = "There is currently no data available from %s."

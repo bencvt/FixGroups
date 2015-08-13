@@ -1,6 +1,6 @@
 local A, L = unpack(select(2, ...))
-local M = A.sorter:NewModule("SorterMeter")
-A.sorter.meter = M
+local M = A:NewModule("Meter")
+A.meter = M
 
 local tmp1 = {}
 local format, ipairs, pairs, select, strsplit, tinsert, wipe = string.format, ipairs, pairs, select, strsplit, table.insert, wipe
@@ -115,13 +115,13 @@ function M:BuildSnapshot()
   elseif Details then
     addon, success = loadDetails()
   else
-    A.console:Print(L["sorter.meter.print.noAddon"])
+    A.console:Print(L["meter.print.noAddon"])
     return
   end
   if success then
-    A.console:Print(format(L["sorter.meter.print.usingDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
+    A.console:Print(format(L["meter.print.usingDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
   else
-    A.console:Print(format(L["sorter.meter.print.noDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
+    A.console:Print(format(L["meter.print.noDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
   end
   calculateAverages()
 end

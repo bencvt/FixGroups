@@ -98,7 +98,7 @@ local function start(mode)
   if M:IsSortingByMeter() or M:IsSplittingRaid() then
     -- Damage/healing meter snapshot is built once at the start,
     -- not once every step.
-    M.meter:BuildSnapshot()
+    A.meter:BuildSnapshot()
   end
   M:ProcessStep()
 end
