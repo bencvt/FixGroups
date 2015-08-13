@@ -1,6 +1,10 @@
 FixGroups by bencvt
 -------------------
 
+Main project site: http://wow.curseforge.com/addons/fixgroups/
+
+GitHub mirror: https://github.com/bencvt/FixGroups
+
 Organizing groups is an important, if sometimes tedious, part of running a raid. This addon helps automate the process.
 
 Instead of manually dragging players around in the raid tab, just click a **single button** to set things up the way you want:
