@@ -131,7 +131,7 @@ function M:GetPlayer(key)
   if snapshot[key] then
     return snapshot[key]
   end
-  return snapshot[A.sorterCore.KeyIsHealer(key) and "_averageHealing" or "_averageDamage"] or 0
+  return snapshot[A.sorterCore:KeyIsHealer(key) and "_averageHealing" or "_averageDamage"] or 0
 end
 
 function M:DebugPrintMeterSnapshot()
