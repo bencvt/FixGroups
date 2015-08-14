@@ -11,14 +11,14 @@ libs\libs.xml
 locales\en.lua
 locales\es.lua
 
-Addon.lua
+addon.lua
 
-modules\Options.lua
-modules\AddonChannel.lua
-modules\Console.lua
-modules\GUI.lua
-modules\Marker.lua
-modules\Sorter.lua
-modules\SorterCore.lua
-modules\SorterMeter.lua
-modules\Util.lua
+modules\options.lua
+modules\addonChannel.lua
+modules\console.lua
+modules\gui.lua
+modules\marker.lua
+modules\sorter.lua
+modules\sorterCore.lua
+modules\meter.lua
+modules\util.lua

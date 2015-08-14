@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("GUI", "AceEvent-3.0", "AceTimer-3.0")
+local M = A:NewModule("gui", "AceEvent-3.0", "AceTimer-3.0")
 A.gui = M
 
 local strfind = string.find

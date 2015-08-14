@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Console", "AceConsole-3.0")
+local M = A:NewModule("console", "AceConsole-3.0")
 A.console = M
 
 local format, print, tconcat = format, print, table.concat

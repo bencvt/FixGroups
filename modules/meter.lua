@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Meter")
+local M = A:NewModule("meter")
 A.meter = M
 
 local format, ipairs, pairs, select, strsplit, tinsert, wipe = string.format, ipairs, pairs, select, strsplit, table.insert, wipe
@@ -17,8 +17,8 @@ local function loadSkada()
   local playerKeys = wipe(tmp1)
   local name
   for g = 1, 8 do
-    for key, _ in pairs(A.sorter.core.groups[g]) do
-      name = A.sorter.core:KeyGetName(key)
+    for key, _ in pairs(A.sorterCore.groups[g]) do
+      name = A.sorterCore:KeyGetName(key)
       name = select(1, strsplit("-", name, 2)) or name
       playerKeys[name] = key
     end
@@ -38,8 +38,8 @@ local function loadRecount()
   local playerKeys = wipe(tmp1)
   local name, c
   for g = 1, 8 do
-    for key, _ in pairs(A.sorter.core.groups[g]) do
-      name = A.sorter.core:KeyGetName(key)
+    for key, _ in pairs(A.sorterCore.groups[g]) do
+      name = A.sorterCore:KeyGetName(key)
       playerKeys[name] = key
       c = Recount.db2.combatants[name]
       if c and c.Fights and c.Fights.OverallData then
@@ -73,8 +73,8 @@ local function loadDetails()
       found = true
       local name, damage, healing
       for g = 1, 8 do
-        for key, _ in pairs(A.sorter.core.groups[g]) do
-          name = A.sorter.core:KeyGetName(key)
+        for key, _ in pairs(A.sorterCore.groups[g]) do
+          name = A.sorterCore:KeyGetName(key)
           damage = Details:GetActor(segment, 1, name)
           healing = Details:GetActor(segment, 2, name)
           snapshot[key] = (damage and damage.total or 0) + (healing and healing.total or 0)
@@ -93,10 +93,10 @@ local function calculateAverages()
   local countHealing, totalHealing = 0, 0
   for key, amount in pairs(snapshot) do
     -- Ignore tanks.
-    if A.sorter.core:KeyIsDps(key) then
+    if A.sorterCore:KeyIsDps(key) then
       countDamage = countDamage + 1
       totalDamage = totalDamage + amount
-    elseif A.sorter.core:KeyIsHealer(key) then
+    elseif A.sorterCore:KeyIsHealer(key) then
       countHealing = countHealing + 1
       totalHealing = totalHealing + amount
     end
@@ -131,7 +131,7 @@ function M:GetPlayer(key)
   if snapshot[key] then
     return snapshot[key]
   end
-  return snapshot[A.sorter.core.KeyIsHealer(key) and "_averageHealing" or "_averageDamage"] or 0
+  return snapshot[A.sorterCore.KeyIsHealer(key) and "_averageHealing" or "_averageDamage"] or 0
 end
 
 function M:DebugPrintMeterSnapshot()

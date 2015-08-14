@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Sorter", "AceEvent-3.0", "AceTimer-3.0")
+local M = A:NewModule("sorter", "AceEvent-3.0", "AceTimer-3.0")
 A.sorter = M
 
 local MAX_STEPS = 30
@@ -24,8 +24,8 @@ end
 
 function M:GROUP_ROSTER_UPDATE(event)
   if M:IsProcessing() then
-    M.core:BuildGroups()
-    if M.core:DidActionFinish() then
+    A.sorterCore:BuildGroups()
+    if A.sorterCore:DidActionFinish() then
       M:ProcessStep()
     end
   end
@@ -48,7 +48,7 @@ function M:IsPaused()
 end
 
 local function stop(allowResume)
-  M.core:CancelAction()
+  A.sorterCore:CancelAction()
   M:ClearTimeout(true)
   M.stepCount = nil
   M.startTime = nil
@@ -94,7 +94,7 @@ local function start(mode)
     return
   end
   -- Groups are built every step.
-  M.core:BuildGroups()
+  A.sorterCore:BuildGroups()
   if M:IsSortingByMeter() or M:IsSplittingRaid() then
     -- Damage/healing meter snapshot is built once at the start,
     -- not once every step.
@@ -142,9 +142,9 @@ function M:ProcessStep()
     M.startTime = time()
   end
   --A.console:DebugPrintGroups()
-  M.core:BuildDelta()
+  A.sorterCore:BuildDelta()
   --A.console:DebugPrintDelta()
-  if M.core:IsDeltaEmpty() then
+  if A.sorterCore:IsDeltaEmpty() then
     M:AnnounceComplete()
     M:Stop()
     return
@@ -152,10 +152,10 @@ function M:ProcessStep()
     M:StopTimedOut()
     return
   end
-  M.core:ProcessDelta()
+  A.sorterCore:ProcessDelta()
   --A.console:DebugPrintAction()
-  M.core:SaveGroups()
-  if M.core:IsActionScheduled() then
+  A.sorterCore:SaveGroups()
+  if A.sorterCore:IsActionScheduled() then
     M.stepCount = M.stepCount + 1
     M:ScheduleTimeout()
     A.gui:Refresh()
@@ -168,13 +168,13 @@ function M:AnnounceComplete()
   local seconds = floor(time() - M.startTime)
   local msg
   if M:IsSplittingRaid() then
-    msg = format(L["sorter.mode.split"], M.core:GetSplitGroups())
+    msg = format(L["sorter.mode.split"], A.sorterCore:GetSplitGroups())
   else
     msg = L["sorter.mode."..M.sortMode]
   end
   local msg2 = ""
-  if M.core.sitting > 0 then
-    msg2 = " "..format(L["sorter.print.excludedSitting"], M.core.sitting, M.core.sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
+  if A.sorterCore.sitting > 0 then
+    msg2 = " "..format(L["sorter.print.excludedSitting"], A.sorterCore.sitting, A.sorterCore.sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
   end
   msg = format("%s (%d %s, %d %s.%s)", msg, M.stepCount, M.stepCount == 1 and L["word.step"] or L["word.steps"], seconds, seconds == 1 and L["word.second"] or L["word.seconds"], msg2)
   if M.stepCount > 0 and (A.options.announceChatAlways or (A.options.announceChatPRN and M.lastSortMode ~= M.sortMode)) then
@@ -210,7 +210,7 @@ function M:ScheduleTimeout()
       M:StopTimedOut()
       return
     end
-    M.core:BuildGroups()
+    A.sorterCore:BuildGroups()
     M:ProcessStep()
   end, TIMEOUT_SECONDS)
 end

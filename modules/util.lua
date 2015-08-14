@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Util")
+local M = A:NewModule("util")
 A.util = M
 
 local floor, max, pairs, select, strmatch, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, string.match, table.concat, table.insert, table.remove, wipe

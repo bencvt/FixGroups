@@ -1,6 +1,6 @@
 local A, L = unpack(select(2, ...))
-local M = A.sorter:NewModule("SorterCore", "AceTimer-3.0")
-A.sorter.core = M
+local M = A:NewModule("sorterCore", "AceTimer-3.0")
+A.sorterCore = M
 
 local ACTION_DELAY_SECONDS = 0.1
 local SR_TANK, SR_MELEE, SR_UNKNOWN, SR_RANGED, SR_HEALER = 1, 2, 3, 4, 5

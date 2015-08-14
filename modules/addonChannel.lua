@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("AddonChannel", "AceEvent-3.0", "AceTimer-3.0")
+local M = A:NewModule("addonChannel", "AceEvent-3.0", "AceTimer-3.0")
 A.addonChannel = M
 
 local strsplit = string.split

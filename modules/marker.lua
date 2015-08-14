@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Marker")
+local M = A:NewModule("marker")
 A.marker = M
 
 local tmp1, tmp2, tmp3 = {}, {}, {}

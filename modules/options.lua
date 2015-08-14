@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("Options", "AceTimer-3.0")
+local M = A:NewModule("options", "AceTimer-3.0")
 A.options = M
 
 local defaults = {
