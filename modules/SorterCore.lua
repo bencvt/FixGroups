@@ -137,7 +137,7 @@ function M:BuildDelta()
       elseif M:KeyIsHealer(p.key) then
         p.isHealer = true
       end
-      p.meter = A.meter.snapshot[p.key] or A.meter.snapshot[p.isHealer and "_averageHealing" or "_averageDamage"] or 0
+      p.meter = A.meter:GetPlayer(p.key)
     end 
     sort(players, function(a, b)
       if a.isTank or b.isTank or (a.meter == 0 and b.meter == 0) then

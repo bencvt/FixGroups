@@ -2,10 +2,10 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("Meter")
 A.meter = M
 
-local tmp1 = {}
 local format, ipairs, pairs, select, strsplit, tinsert, wipe = string.format, ipairs, pairs, select, strsplit, table.insert, wipe
 
-M.snapshot = {}
+local snapshot = {}
+local tmp1 = {}
 
 local function loadSkada()
   if not Skada.total or not Skada.total.players then
@@ -25,7 +25,7 @@ local function loadSkada()
   end
   for _, p in pairs(Skada.total.players) do
     if playerKeys[p.name] then
-      M.snapshot[playerKeys[p.name]] = (p.damage or 0) + (p.healing or 0)
+      snapshot[playerKeys[p.name]] = (p.damage or 0) + (p.healing or 0)
     end
   end
   return "Skada", true
@@ -43,24 +43,24 @@ local function loadRecount()
       playerKeys[name] = key
       c = Recount.db2.combatants[name]
       if c and c.Fights and c.Fights.OverallData then
-        -- Recount stores healings and absorbs separately internally.
-        M.snapshot[key] = (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
+        -- Recount stores healing and absorbs separately internally.
+        snapshot[key] = (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
       else
-        M.snapshot[key] = 0
+        snapshot[key] = 0
       end
     end
   end
-  -- Merge pet data
+  -- Merge pet data.
   for _, c in pairs(Recount.db2.combatants) do
     if c.type == "Pet" and c.Fights and c.Fights.OverallData and c.Owner and playerKeys[c.Owner] then
-      M.snapshot[playerKeys[c.Owner]] = M.snapshot[playerKeys[c.Owner]] + (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
+      snapshot[playerKeys[c.Owner]] = snapshot[playerKeys[c.Owner]] + (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
     end
   end
   return "Recount", true
 end
 
 local function loadDetails()
-  -- Details has a different concept of what "overall" means. Trash and even
+  -- Details! has a different concept of what "overall" means. Trash and even
   -- boss fights, except previous attempts on the current boss, are excluded by
   -- default. So it's entirely possible that there is a current segment but no
   -- overall segment. We check for both: some data is better than no data.
@@ -77,7 +77,7 @@ local function loadDetails()
           name = A.sorter.core:KeyGetName(key)
           damage = Details:GetActor(segment, 1, name)
           healing = Details:GetActor(segment, 2, name)
-          M.snapshot[key] = (damage and damage.total or 0) + (healing and healing.total or 0)
+          snapshot[key] = (damage and damage.total or 0) + (healing and healing.total or 0)
         end
       end
     end
@@ -91,7 +91,7 @@ end
 local function calculateAverages()
   local countDamage, totalDamage = 0, 0
   local countHealing, totalHealing = 0, 0
-  for key, amount in pairs(M.snapshot) do
+  for key, amount in pairs(snapshot) do
     -- Ignore tanks.
     if A.sorter.core:KeyIsDps(key) then
       countDamage = countDamage + 1
@@ -101,12 +101,12 @@ local function calculateAverages()
       totalHealing = totalHealing + amount
     end
   end
-  M.snapshot["_averageDamage"] = (countDamage > 0) and (totalDamage / countDamage) or 0
-  M.snapshot["_averageHealing"] = (countHealing > 0) and (totalHealing / countHealing) or 0
+  snapshot["_averageDamage"] = (countDamage > 0) and (totalDamage / countDamage) or 0
+  snapshot["_averageHealing"] = (countHealing > 0) and (totalHealing / countHealing) or 0
 end
 
 function M:BuildSnapshot()
-  wipe(M.snapshot)
+  wipe(snapshot)
   local addon, success
   if Skada then
     addon, success = loadSkada()
@@ -124,4 +124,20 @@ function M:BuildSnapshot()
     A.console:Print(format(L["meter.print.noDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
   end
   calculateAverages()
+  --M:DebugPrintMeterSnapshot()
+end
+
+function M:GetPlayer(key)
+  if snapshot[key] then
+    return snapshot[key]
+  end
+  return snapshot[A.sorter.core.KeyIsHealer(key) and "_averageHealing" or "_averageDamage"] or 0
+end
+
+function M:DebugPrintMeterSnapshot()
+  A.console:Debug("meter.snapshot:")
+  local sorted = A.util:SortedKeys(snapshot, tmp)
+  for _, k in ipairs(sorted) do
+    A.console:Debug("  "..k.."="..snapshot[k])
+  end
 end

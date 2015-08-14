@@ -16,7 +16,7 @@ For players:
 
  * Download and install this addon from http://www.curse.com/addons/wow/fixgroups
 
-For developers:
+For developers, beta testers, and translators:
 
  * Main project site: http://wow.curseforge.com/addons/fixgroups/
 

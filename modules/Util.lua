@@ -2,9 +2,11 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("Util")
 A.util = M
 
-local floor, max, select, strmatch, tconcat = math.floor, math.max, select, string.match, table.concat
-local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local floor, max, pairs, select, strmatch, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, string.match, table.concat, table.insert, table.remove, wipe
+local GetAddOnMetadata, GetLocale, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetLocale, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
+
+local SERIAL_COMMA = ((GetLocale() == "enUS") and "," or "")
 
 function M:tconcat2(t)
   local sz = #t
@@ -15,11 +17,22 @@ function M:tconcat2(t)
   elseif sz == 2 then
     return t[1].." "..L["word.and"].." "..t[2]
   end
-  local tmp = t[sz]
-  t[sz] = L["word.and"].." "..t[sz]
+  -- Temporarily modify the table get the ", and " in, then restore.
+  local saveY, saveZ = t[sz-1], t[sz]
+  t[sz-1] = t[sz-1]..SERIAL_COMMA.." "..L["word.and"].." "..t[sz]
+  tremove(t)
   local result = tconcat(t, ", ")
-  t[sz] = tmp
+  t[sz-1], t[sz] = saveY, saveZ
   return result
+end
+
+function M:SortedKeys(tbl, keys)
+  keys = wipe(keys or {})
+  for k, _ in pairs(tbl) do
+    tinsert(keys, k)
+  end
+  sort(keys)
+  return keys
 end
 
 function M:IsLeader()
@@ -59,10 +72,14 @@ function M:GetGroupChannel()
   return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "PARTY"
 end
 
-function M:UnitNameWithColor(unitID)
+function M:UnitClassColor(unitID)
   local c = select(2, UnitClass(unitID))
   if c and RAID_CLASS_COLORS[c] then
     c = RAID_CLASS_COLORS[c].colorStr
   end
-  return "|c"..(c or "ff00991a")..(UnitName(unitID) or "Unknown").."|r"
+  return (c or "ff00991a")
+end
+
+function M:UnitNameWithColor(unitID)
+  return "|c"..M:UnitClassColor(unitID)..(UnitName(unitID) or "Unknown").."|r"
 end

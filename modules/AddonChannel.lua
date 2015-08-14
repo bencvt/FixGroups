@@ -14,8 +14,11 @@ function M:OnEnable()
 end
 
 function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
-  --A.console:Debug(format("CHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", prefix, message, channel, sender))
-  if prefix ~= M.addonChannelPrefix or sender == UnitName("player") then
+  if prefix ~= M.addonChannelPrefix then
+    return
+  end
+  --A.console:Debug(format("CHAT_MSG_ADDON prefix=%s message=|cff1784d1%s|r channel=%s sender=%s", prefix, message, channel, sender))
+  if sender == UnitName("player") then
     return
   end
   cmd, message = strsplit(":", message, 2)

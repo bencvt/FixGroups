@@ -92,13 +92,6 @@ function M:DebugPrintGroups()
   end
 end
 
-function M:DebugPrintMeterSnapshot()
-  M:Debug("sorter.meter.snapshot:")
-  for k, v in pairs(A.sorter.meter.snapshot) do
-    M:Debug("  "..k..": "..v)
-  end
-end
-
 function M:DebugPrintDelta()
   M:Debug(format("delta=%d players in incorrect groups:", #A.sorter.core.delta))
   for _, p in ipairs(A.sorter.core.delta) do
