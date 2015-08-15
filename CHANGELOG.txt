@@ -1,4 +1,5 @@
-v1.1.1:
+v1.2:
+  - added mostly-complete German translation, Dankeschön @pas06
   - fix issue with minimap icon not appearing after resetting options
 
 v1.1:
