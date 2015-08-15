@@ -12,7 +12,7 @@ local R = M.private
 local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
-local strfind, unpack = string.find, unpack
+local strfind, strlower, unpack = string.find, string.lower, unpack
 local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName
 
 local function handleClick(_, button)
@@ -63,6 +63,7 @@ local function watchChat(event, message, sender)
   --A.console:Debug(format("watchChat event=%s message=%s sender=%s", event, message, sender))
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
     -- Search for both the default and the localized keywords.
+    message = strlower(message)
     if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["chatKeyword.fixGroup"]) or strfind(message, L["chatKeyword.markTank"]) then
       M:OpenRaidTab()
       M:FlashRaidTabButton()
