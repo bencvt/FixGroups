@@ -7,7 +7,7 @@ M.private = {
 }
 local R = M.private
 
-local format, ipairs, pairs, select, strsplit, tinsert, wipe = string.format, ipairs, pairs, select, strsplit, table.insert, wipe
+local format, ipairs, pairs, select, tinsert, wipe = string.format, ipairs, pairs, select, table.insert, wipe
 
 local function loadSkada()
   if not Skada.total or not Skada.total.players then
@@ -20,8 +20,7 @@ local function loadSkada()
   local name
   for g = 1, 8 do
     for key, _ in pairs(A.sorterCore:GetGroup(g)) do
-      name = A.sorterCore:KeyGetName(key)
-      name = select(1, strsplit("-", name, 2)) or name
+      name = A.util:StripRealm(A.sorterCore:KeyGetName(key))
       playerKeys[name] = key
     end
   end

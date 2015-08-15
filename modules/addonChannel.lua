@@ -11,6 +11,7 @@ local strsplit = string.split
 local IsInGroup, SendAddonMessage, UnitName = IsInGroup, SendAddonMessage, UnitName
 
 local PREFIX = "FIXGROUPS"
+local DELAY_BROADCAST_VERSION = 15
 
 function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_ADDON")
@@ -19,10 +20,13 @@ function M:OnEnable()
 end
 
 function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
-  if prefix ~= PREFIX then
+  if prefix ~= PREFIX or not sender then
     return
   end
-  --A.console:Debug(format("CHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s|r", prefix, message, channel, sender))
+  if not UnitExists(sender) then
+    sender = A.util:StripRealm(sender)
+  end
+  --A.console:Debug(format("%sCHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s|r", ((sender ~= UnitName("player")) and "|cff1784d1" or ""), prefix, message, channel, sender))
   if sender == UnitName("player") then
     return
   end
@@ -32,7 +36,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
       A.console:Print(format(L["addonChannel.print.newerVersion"], A.name, "|cff1784d1"..message.."|r", A.version))
       R.newerVersion = message
     end
-  elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and sender and UnitIsRaidOfficer(sender) then
+  elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and UnitIsRaidOfficer(sender) then
     A.marker:FixRaid(true)
   end
 end
@@ -45,7 +49,7 @@ function M:GROUP_ROSTER_UPDATE(event)
       end
       R.broadcastVersionTimer = false
       M:Broadcast("v:"..A.version)
-    end, 15)
+    end, DELAY_BROADCAST_VERSION)
   end
 end
 
