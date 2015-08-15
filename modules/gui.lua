@@ -58,13 +58,11 @@ end
 
 local function watchChat(event, message, sender)
   --A.console:Debug(format("watchChat event=%s message=%s sender=%s", event, message, sender))
-  if A.options.watchChat and not A.sorter:IsProcessing() and not A.sorter:IsPaused() and not InCombatLockdown() then
-    if IsInRaid() and A.util:IsLeaderOrAssist() and sender ~= UnitName("player") and message then
-      -- Search for both the default and the localized keywords.
-      if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["chatKeyword.fixGroup"]) or strfind(message, L["chatKeyword.markTank"]) then
-        M:OpenRaidTab()
-        M:FlashRaidTabButton()
-      end
+  if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
+    -- Search for both the default and the localized keywords.
+    if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["chatKeyword.fixGroup"]) or strfind(message, L["chatKeyword.markTank"]) then
+      M:OpenRaidTab()
+      M:FlashRaidTabButton()
     end
   end
 end

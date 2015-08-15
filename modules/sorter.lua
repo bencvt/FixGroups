@@ -17,6 +17,7 @@ local MAX_TIMEOUTS = 20
 local TIMEOUT_SECONDS = 1.0
 
 local floor, format, time = math.floor, string.format, time
+local InCombatLockdown, IsInRaid = InCombatLockdown, IsInRaid
 
 function M:OnEnable()
   M:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -59,6 +60,10 @@ end
 
 function M:IsPaused()
   return R.resumeAfterCombat and true or false
+end
+
+function M:CanBegin()
+  return not M:IsProcessing() and not M:IsPaused() and not InCombatLockdown() and IsInRaid() and A.util:IsLeaderOrAssist()
 end
 
 function M:Stop()
