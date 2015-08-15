@@ -12,8 +12,8 @@ local R = M.private
 local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
-local strfind = string.find
-local InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, UnitName = InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, UnitName
+local strfind, unpack = string.find, unpack
+local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName
 
 local function handleClick(_, button)
   if button == "RightButton" then
@@ -36,7 +36,7 @@ end
 local function setTooltip(tooltip, isRaidTab)
   tooltip:ClearLines()
   if not isRaidTab then
-    tooltip:AddLine(FixGroups.name)
+    tooltip:AddLine(A.name)
   end
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["tooltip.left.clickLeft"],        L["tooltip.right.fixGroups"], 1, 1, 1, 1, 1, 0)

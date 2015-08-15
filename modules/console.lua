@@ -2,7 +2,7 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("console", "AceConsole-3.0")
 A.console = M
 
-local format, print, tconcat = format, print, table.concat
+local date, format, print, select, tconcat, tinsert, tostring = date, format, print, select, table.concat, table.insert, tostring
 local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 
 function M:OnEnable()

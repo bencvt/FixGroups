@@ -45,6 +45,8 @@ local MARKS = {
   L["options.value.noMark"],
 }
 
+local ipairs = ipairs
+
 local function getOptionMark(arr, index)
   if arr[index] and arr[index] <= 8 then
     return arr[index]

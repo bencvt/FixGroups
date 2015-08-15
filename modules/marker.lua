@@ -8,7 +8,8 @@ M.private = {
 }
 local R = M.private
 
-local min, sort, tinsert, wipe = math.min, sort, table.insert, wipe
+local format, min, sort, tinsert, wipe = format, math.min, sort, table.insert, wipe
+local GetNumGroupMembers, GetRaidRosterInfo, GetRaidTargetIndex, IsInInstance, IsInRaid, PromoteToAssistant, SetLootMethod, SetRaidTarget, UnitExists, UnitGroupRolesAssigned, UnitName = GetNumGroupMembers, GetRaidRosterInfo, GetRaidTargetIndex, IsInInstance, IsInRaid, PromoteToAssistant, SetLootMethod, SetRaidTarget, UnitExists, UnitGroupRolesAssigned, UnitName
 
 function M:FixParty()
   if IsInRaid() then

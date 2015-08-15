@@ -20,7 +20,8 @@ local SR_TANK, SR_MELEE, SR_UNKNOWN, SR_RANGED, SR_HEALER = 1, 2, 3, 4, 5
 local SORT_ROLES_TMURH = {"a", "b", "c", "d", "e"}
 local SORT_ROLES_THMUR = {"a", "c", "d", "e", "b"}
 
-local floor, format, ipairs, pairs, sort, strsub, tconcat, tinsert, wipe = math.floor, string.format, ipairs, pairs, sort, string.sub, table.concat, table.insert, wipe
+local floor, format, ipairs, pairs, sort, strsub, tconcat, tinsert, tostring, wipe = math.floor, string.format, ipairs, pairs, sort, string.sub, table.concat, table.insert, tostring, wipe
+local GetNumGroupMembers, GetRaidRosterInfo, SetRaidSubgroup, SwapRaidSubgroup, UnitGroupRolesAssigned = GetNumGroupMembers, GetRaidRosterInfo, SetRaidSubgroup, SwapRaidSubgroup, UnitGroupRolesAssigned
 
 function M:GetGroup(g)
   return R.groups[g]

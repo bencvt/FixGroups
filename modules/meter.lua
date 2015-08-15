@@ -8,6 +8,7 @@ M.private = {
 local R = M.private
 
 local format, ipairs, pairs, select, tinsert, wipe = string.format, ipairs, pairs, select, table.insert, wipe
+local GetUnitName = GetUnitName
 
 local function loadSkada()
   if not Skada.total or not Skada.total.players then

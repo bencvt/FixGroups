@@ -2,7 +2,7 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("util")
 A.util = M
 
-local floor, max, pairs, select, strmatch, strsplit, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, string.match, strsplit, table.concat, table.insert, table.remove, wipe
+local floor, max, pairs, select, sort, strmatch, strsplit, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, sort, string.match, strsplit, table.concat, table.insert, table.remove, wipe
 local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
 

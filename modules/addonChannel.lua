@@ -7,8 +7,8 @@ M.private = {
 }
 local R = M.private
 
-local strsplit = string.split
-local IsInGroup, SendAddonMessage, UnitName = IsInGroup, SendAddonMessage, UnitName
+local format, strsplit = format, string.split
+local IsInGroup, IsInRaid, SendAddonMessage, UnitExists, UnitIsRaidOfficer, UnitName = IsInGroup, IsInRaid, SendAddonMessage, UnitExists, UnitIsRaidOfficer, UnitName
 
 local PREFIX = "FIXGROUPS"
 local DELAY_BROADCAST_VERSION = 15.5
@@ -30,6 +30,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   if sender == UnitName("player") then
     return
   end
+  local cmd
   cmd, message = strsplit(":", message, 2)
   if cmd == "v" and not R.newerVersion then
     if message and (message > A.version) then
