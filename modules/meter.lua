@@ -1,11 +1,13 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("meter")
 A.meter = M
+M.private = {
+  snapshot = {},
+  tmp1 = {},
+}
+local R = M.private
 
 local format, ipairs, pairs, select, strsplit, tinsert, wipe = string.format, ipairs, pairs, select, strsplit, table.insert, wipe
-
-local snapshot = {}
-local tmp1 = {}
 
 local function loadSkada()
   if not Skada.total or not Skada.total.players then
@@ -14,10 +16,10 @@ local function loadSkada()
   -- Skada strips the realm name.
   -- For simplicity's sake, we do not attempt to handle cases where two
   -- players with the same name from different realms are in the same raid.
-  local playerKeys = wipe(tmp1)
+  local playerKeys = wipe(R.tmp1)
   local name
   for g = 1, 8 do
-    for key, _ in pairs(A.sorterCore.groups[g]) do
+    for key, _ in pairs(A.sorterCore:GetGroup(g)) do
       name = A.sorterCore:KeyGetName(key)
       name = select(1, strsplit("-", name, 2)) or name
       playerKeys[name] = key
@@ -25,7 +27,7 @@ local function loadSkada()
   end
   for _, p in pairs(Skada.total.players) do
     if playerKeys[p.name] then
-      snapshot[playerKeys[p.name]] = (p.damage or 0) + (p.healing or 0)
+      R.snapshot[playerKeys[p.name]] = (p.damage or 0) + (p.healing or 0)
     end
   end
   return "Skada", true
@@ -35,25 +37,25 @@ local function loadRecount()
   if not Recount.db2 or not Recount.db2.combatants or not Recount.db2.combatants[GetUnitName("player")] then
     return "Recount", false
   end
-  local playerKeys = wipe(tmp1)
+  local playerKeys = wipe(R.tmp1)
   local name, c
   for g = 1, 8 do
-    for key, _ in pairs(A.sorterCore.groups[g]) do
+    for key, _ in pairs(A.sorterCore:GetGroup(g)) do
       name = A.sorterCore:KeyGetName(key)
       playerKeys[name] = key
       c = Recount.db2.combatants[name]
       if c and c.Fights and c.Fights.OverallData then
         -- Recount stores healing and absorbs separately internally.
-        snapshot[key] = (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
+        R.snapshot[key] = (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
       else
-        snapshot[key] = 0
+        R.snapshot[key] = 0
       end
     end
   end
   -- Merge pet data.
   for _, c in pairs(Recount.db2.combatants) do
     if c.type == "Pet" and c.Fights and c.Fights.OverallData and c.Owner and playerKeys[c.Owner] then
-      snapshot[playerKeys[c.Owner]] = snapshot[playerKeys[c.Owner]] + (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
+      R.snapshot[playerKeys[c.Owner]] = R.snapshot[playerKeys[c.Owner]] + (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
     end
   end
   return "Recount", true
@@ -65,7 +67,7 @@ local function loadDetails()
   -- default. So it's entirely possible that there is a current segment but no
   -- overall segment. We check for both: some data is better than no data.
   local found
-  local segments = wipe(tmp1)
+  local segments = wipe(R.tmp1)
   tinsert(segments, "overall")
   tinsert(segments, "current")
   for _, segment in ipairs(segments) do
@@ -73,11 +75,11 @@ local function loadDetails()
       found = true
       local name, damage, healing
       for g = 1, 8 do
-        for key, _ in pairs(A.sorterCore.groups[g]) do
+        for key, _ in pairs(A.sorterCore:GetGroup(g)) do
           name = A.sorterCore:KeyGetName(key)
           damage = Details:GetActor(segment, 1, name)
           healing = Details:GetActor(segment, 2, name)
-          snapshot[key] = (damage and damage.total or 0) + (healing and healing.total or 0)
+          R.snapshot[key] = (damage and damage.total or 0) + (healing and healing.total or 0)
         end
       end
     end
@@ -91,7 +93,7 @@ end
 local function calculateAverages()
   local countDamage, totalDamage = 0, 0
   local countHealing, totalHealing = 0, 0
-  for key, amount in pairs(snapshot) do
+  for key, amount in pairs(R.snapshot) do
     -- Ignore tanks.
     if A.sorterCore:KeyIsDps(key) then
       countDamage = countDamage + 1
@@ -101,12 +103,12 @@ local function calculateAverages()
       totalHealing = totalHealing + amount
     end
   end
-  snapshot["_averageDamage"] = (countDamage > 0) and (totalDamage / countDamage) or 0
-  snapshot["_averageHealing"] = (countHealing > 0) and (totalHealing / countHealing) or 0
+  R.snapshot["_averageDamage"] = (countDamage > 0) and (totalDamage / countDamage) or 0
+  R.snapshot["_averageHealing"] = (countHealing > 0) and (totalHealing / countHealing) or 0
 end
 
 function M:BuildSnapshot()
-  wipe(snapshot)
+  wipe(R.snapshot)
   local addon, success
   if Skada then
     addon, success = loadSkada()
@@ -127,17 +129,17 @@ function M:BuildSnapshot()
   --M:DebugPrintMeterSnapshot()
 end
 
-function M:GetPlayer(key)
-  if snapshot[key] then
-    return snapshot[key]
+function M:GetPlayerMeter(key)
+  if R.snapshot[key] then
+    return R.snapshot[key]
   end
-  return snapshot[A.sorterCore:KeyIsHealer(key) and "_averageHealing" or "_averageDamage"] or 0
+  return R.snapshot[A.sorterCore:KeyIsHealer(key) and "_averageHealing" or "_averageDamage"] or 0
 end
 
 function M:DebugPrintMeterSnapshot()
   A.console:Debug("meter.snapshot:")
-  local sorted = A.util:SortedKeys(snapshot, tmp)
+  local sorted = A.util:SortedKeys(R.snapshot, R.tmp1)
   for _, k in ipairs(sorted) do
-    A.console:Debug("  "..k.."="..snapshot[k])
+    A.console:Debug("  "..k.."="..R.snapshot[k])
   end
 end

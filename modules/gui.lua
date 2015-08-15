@@ -1,9 +1,16 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("gui", "AceEvent-3.0", "AceTimer-3.0")
 A.gui = M
+M.private = {
+  icon = false,
+  iconLDB = false,
+  raidTabButton = false,
+  flashTimer = false,
+}
+local R = M.private
 
 local strfind = string.find
-local InCombatLockdown, IsInRaid, UnitName = InCombatLockdown, IsInRaid, UnitName
+local InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, UnitName = InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, UnitName
 
 local function handleClick(_, button)
   if button == "RightButton" then
@@ -72,20 +79,20 @@ function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_SAY",                   watchChat)
   M:RegisterEvent("CHAT_MSG_WHISPER",               watchChat)
 
-  if not M.icon then
+  if not R.icon then
     -- Create minimap icon
-    M.iconLDB = LibStub("LibDataBroker-1.1"):NewDataObject(A.name, {
+    R.iconLDB = LibStub("LibDataBroker-1.1"):NewDataObject(A.name, {
       type = "launcher",
       text = A.name,
       icon = "Interface\\ICONS\\INV_Misc_GroupLooking",
       OnClick = handleClick,
       OnTooltipShow = setTooltip,
     })
-    M.icon = LibStub("LibDBIcon-1.0")
-    M.icon:Register(A.name, M.iconLDB, A.options.minimapIcon)
+    R.icon = LibStub("LibDBIcon-1.0")
+    R.icon:Register(A.name, R.iconLDB, A.options.minimapIcon)
   end
 
-  if not M.raidTabButton then
+  if not R.raidTabButton then
     -- Create button on raid tab
     local b = CreateFrame("BUTTON", nil, RaidFrame, "UIPanelButtonTemplate")
     b:SetPoint("TOPRIGHT", RaidFrameRaidInfoButton, "TOPLEFT", 0, 0)
@@ -98,10 +105,9 @@ function M:OnEnable()
     b:SetScript("OnLeave", function () GameTooltip:Hide() end)
     if IsAddOnLoaded("ElvUI") then
       local E = unpack(ElvUI)
-      if E.private.skins.blizzard.enable == true and E.private.skins.blizzard.nonraid == true then
-        local S = E:GetModule("Skins")
+      if E.private.skins.blizzard.enable and E.private.skins.blizzard.nonraid then
         b:StripTextures()
-        S:HandleButton(b)
+        E:GetModule("Skins"):HandleButton(b)
       end
     end
     if A.options.addButtonToRaidTab then
@@ -109,7 +115,7 @@ function M:OnEnable()
     else
       b:Hide()
     end
-    M.raidTabButton = b
+    R.raidTabButton = b
   end
 end
 
@@ -139,40 +145,40 @@ function M:OpenConfig()
 end
 
 function M:FlashRaidTabButton()
-  if M.flashTimer or not A.options.addButtonToRaidTab then
+  if R.flashTimer or not A.options.addButtonToRaidTab then
     return
   end
   local count = 6
   local function flash()
     count = count - 1
     if count % 2 == 0 then
-      M.raidTabButton:UnlockHighlight()
+      R.raidTabButton:UnlockHighlight()
     else
-      M.raidTabButton:LockHighlight()
+      R.raidTabButton:LockHighlight()
     end
     if count > 0 then
-      M.flashTimer = M:ScheduleTimer(flash, 0.5)
+      R.flashTimer = M:ScheduleTimer(flash, 0.5)
     else
-      M.flashTimer = nil
+      R.flashTimer = false
     end
   end
   flash()
 end
 
 local function setUI(buttonText, iconTexture)
-  M.iconLDB.icon = iconTexture
-  M.raidTabButton:SetText(L[buttonText])
+  R.iconLDB.icon = iconTexture
+  R.raidTabButton:SetText(L[buttonText])
   if buttonText == "button.fixGroups.text" then
-    M.raidTabButton:Enable()
+    R.raidTabButton:Enable()
   else
-    M.raidTabButton:Disable()
+    R.raidTabButton:Disable()
   end
 end
 
 function M:Refresh()
   if not M:IsEnabled() then
-    M.icon:Hide(A.name)
-    M.raidTabButton:Hide()
+    R.icon:Hide(A.name)
+    R.raidTabButton:Hide()
     return
   end
   if A.sorter:IsProcessing() then
@@ -187,13 +193,13 @@ function M:Refresh()
     setUI("button.fixGroups.text", "Interface\\ICONS\\INV_Misc_GroupLooking")
   end
   if A.options.showMinimapIconAlways or (A.options.showMinimapIconPRN and A.util:IsLeaderOrAssist()) then
-    M.icon:Show(A.name)
+    R.icon:Show(A.name)
   else
-    M.icon:Hide(A.name)
+    R.icon:Hide(A.name)
   end
   if A.options.addButtonToRaidTab then
-    M.raidTabButton:Show()
+    R.raidTabButton:Show()
   else
-    M.raidTabButton:Hide()
+    R.raidTabButton:Hide()
   end
 end

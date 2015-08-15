@@ -1,32 +1,36 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("options", "AceTimer-3.0")
 A.options = M
-
-local defaults = {
-  profile = {
-    options = {
-      tankAssist = true,
-      fixOfflineML = true,
-      sortMode = "TMURH", -- other valid values: "THMUR", "meter", "nosort"
-      splitOddEven = true,
-      resumeAfterCombat = true,
-      tankMainTankAlways = false,
-      tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
-      openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
-      tankMark = true,
-      tankMarkIcons = {4, 6, 1, 2, 3, 7, 9, 9},
-      partyMark = true,
-      partyMarkIcons = {4, 6, 9, 9, 9},
-      minimapIcon = {}, -- handled by LibDBIcon
-      showMinimapIconAlways = true,
-      showMinimapIconPRN = false, -- ignored (implied false) if showMinimapIconAlways == true
-      addButtonToRaidTab = true,
-      watchChat = true,
-      announceChatAlways = false,
-      announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
+M.private = {
+  optionsGUI = false,
+  optionsTable = false,
+  defaults = {
+    profile = {
+      options = {
+        tankAssist = true,
+        fixOfflineML = true,
+        sortMode = "TMURH", -- other valid values: "THMUR", "meter", "nosort"
+        splitOddEven = true,
+        resumeAfterCombat = true,
+        tankMainTankAlways = false,
+        tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
+        openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
+        tankMark = true,
+        tankMarkIcons = {4, 6, 1, 2, 3, 7, 9, 9},
+        partyMark = true,
+        partyMarkIcons = {4, 6, 9, 9, 9},
+        minimapIcon = {}, -- handled by LibDBIcon
+        showMinimapIconAlways = true,
+        showMinimapIconPRN = false, -- ignored (implied false) if showMinimapIconAlways == true
+        addButtonToRaidTab = true,
+        watchChat = true,
+        announceChatAlways = false,
+        announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
+      },
     },
   },
 }
+local R = M.private
 
 local MARKS = {
   "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t",
@@ -40,9 +44,6 @@ local MARKS = {
   L["options.value.noMark"],
 }
 
-local O
-local optionsGUI
-
 local function getOptionMark(arr, index)
   if arr[index] and arr[index] <= 8 then
     return arr[index]
@@ -51,7 +52,7 @@ local function getOptionMark(arr, index)
 end
 
 local function setOptionMark(arr, index, value)
-  if arr ~= O.partyMarkIcons then
+  if arr ~= A.options.partyMarkIcons then
     A.sorter:Stop()
   end
   if value <= 0 or value > 8 then
@@ -64,7 +65,7 @@ end
 
 local BUTTONS, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, RESET = 100, 200, 300, 400, 500, 600, 700, 900
 
-local optionsTable = {
+R.optionsTable = {
   type = "group",
   name = format("|cff33ff99%s|r v%s by |cff33ff99%s|r", A.name, A.version, A.author),
   args = {
@@ -85,7 +86,7 @@ local optionsTable = {
         -- We use a short timer to delay the tree walk: at the time the hidden
         -- function is called, the tree hasn't been built yet.
         M:ScheduleTimer(function()
-          for _, g in ipairs(optionsGUI.obj.children[1].frame.obj.children) do
+          for _, g in ipairs(R.optionsGUI.obj.children[1].frame.obj.children) do
             if g.type == "Button" then
               -- Enable right-click on all buttons in the options pane.
               g.frame:RegisterForClicks("AnyUp")
@@ -134,8 +135,8 @@ local optionsTable = {
         [2] = L["options.value.onlyWhenLeadOrAssist"],
         [3] = L["options.value.never"],
       },
-      get = function(i) if O.showMinimapIconAlways then return 1 elseif O.showMinimapIconPRN then return 2 end return 3 end,
-      set = function(i,v) O.showMinimapIconAlways, O.showMinimapIconPRN = (v==1), (v==2) A.gui:Refresh() end,
+      get = function(i) if A.options.showMinimapIconAlways then return 1 elseif A.options.showMinimapIconPRN then return 2 end return 3 end,
+      set = function(i,v) A.options.showMinimapIconAlways, A.options.showMinimapIconPRN = (v==1), (v==2) A.gui:Refresh() end,
     },
     addButtonToRaidTab = {
       order = UI+20,
@@ -143,8 +144,8 @@ local optionsTable = {
       desc = format(L["options.widget.addButtonToRaidTab.desc"], "|cff1784d1"..L["button.fixGroups.text"].."|r"),
       type = "toggle",
       width = "full",
-      get = function(i) return O.addButtonToRaidTab end,
-      set = function(i,v) O.addButtonToRaidTab = v A.gui:Refresh() end,
+      get = function(i) return A.options.addButtonToRaidTab end,
+      set = function(i,v) A.options.addButtonToRaidTab = v A.gui:Refresh() end,
     },
     -- -------------------------------------------------------------------------
     --headerCHAT = {
@@ -158,8 +159,8 @@ local optionsTable = {
       desc = L["options.widget.watchChat.desc"],
       type = "toggle",
       width = "full",
-      get = function(i) return O.watchChat end,
-      set = function(i,v) O.watchChat = v end,
+      get = function(i) return A.options.watchChat end,
+      set = function(i,v) A.options.watchChat = v end,
     },
     announceChat = {
       order = CHAT+20,
@@ -172,8 +173,8 @@ local optionsTable = {
         [2] = L["options.value.announceChatLimited"],
         [3] = L["options.value.never"],
       },
-      get = function(i) if O.announceChatAlways then return 1 elseif O.announceChatPRN then return 2 end return 3 end,
-      set = function(i,v) O.announceChatAlways, O.announceChatPRN = (v==1), (v==2) end,
+      get = function(i) if A.options.announceChatAlways then return 1 elseif A.options.announceChatPRN then return 2 end return 3 end,
+      set = function(i,v) A.options.announceChatAlways, A.options.announceChatPRN = (v==1), (v==2) end,
     },
     -- -------------------------------------------------------------------------
     headerRAIDLEAD = {
@@ -186,8 +187,8 @@ local optionsTable = {
       name = L["options.widget.tankAssist.text"],
       type = "toggle",
       width = "full",
-      get = function(i) return O.tankAssist end,
-      set = function(i,v) O.tankAssist = v end,
+      get = function(i) return A.options.tankAssist end,
+      set = function(i,v) A.options.tankAssist = v end,
     },
     fixOfflineML = {
       order = RAIDLEAD+20,
@@ -195,8 +196,8 @@ local optionsTable = {
       desc = L["options.widget.fixOfflineML.desc"],
       type = "toggle",
       width = "full",
-      get = function(i) return O.fixOfflineML end,
-      set = function(i,v) O.fixOfflineML = v end,
+      get = function(i) return A.options.fixOfflineML end,
+      set = function(i,v) A.options.fixOfflineML = v end,
     },
     -- -------------------------------------------------------------------------
     headerRAIDASSIST = {
@@ -218,18 +219,18 @@ local optionsTable = {
         [4] = L["options.value.sortMode.nosort"],
       },
       get = function(i)
-        if O.sortMode == "nosort" then return 4
-        elseif O.sortMode == "meter" then return 3
-        elseif O.sortMode == "THMUR" then return 2
+        if A.options.sortMode == "nosort" then return 4
+        elseif A.options.sortMode == "meter" then return 3
+        elseif A.options.sortMode == "THMUR" then return 2
         else return 1
         end
       end,
       set = function(i,v)
         A.sorter:Stop()
-        if v == 4 then O.sortMode = "nosort"
-        elseif v == 3 then O.sortMode = "meter"
-        elseif v == 2 then O.sortMode = "THMUR"
-        else O.sortMode = "TMURH"
+        if v == 4 then A.options.sortMode = "nosort"
+        elseif v == 3 then A.options.sortMode = "meter"
+        elseif v == 2 then A.options.sortMode = "THMUR"
+        else A.options.sortMode = "TMURH"
         end
       end,
     },
@@ -238,8 +239,8 @@ local optionsTable = {
       name = L["options.widget.resumeAfterCombat.text"],
       type = "toggle",
       width = "full",
-      get = function(i) return O.resumeAfterCombat end,
-      set = function(i,v) A.sorter:Stop() O.resumeAfterCombat = v end,
+      get = function(i) return A.options.resumeAfterCombat end,
+      set = function(i,v) A.sorter:Stop() A.options.resumeAfterCombat = v end,
     },
     tankMainTank = {
       order = RAIDASSIST+40,
@@ -253,25 +254,25 @@ local optionsTable = {
         [2] = L["options.value.onlyInRaidInstances"],
         [3] = L["options.value.never"],
       },
-      get = function(i) if O.tankMainTankAlways then return 1 elseif O.tankMainTankPRN then return 2 end return 3 end,
-      set = function(i,v) O.tankMainTankAlways, O.tankMainTankPRN = (v==1), (v==2) end,
+      get = function(i) if A.options.tankMainTankAlways then return 1 elseif A.options.tankMainTankPRN then return 2 end return 3 end,
+      set = function(i,v) A.options.tankMainTankAlways, A.options.tankMainTankPRN = (v==1), (v==2) end,
     },
     openRaidTab = {
       order = RAIDASSIST+50,
       name = L["options.widget.openRaidTab.text"],
       type = "toggle",
       width = "full",
-      get = function(i) return O.openRaidTabPRN end,
-      set = function(i,v) O.openRaidTabPRN = v end,
-      disabled = function(i) return not O.tankMainTankAlways and not O.tankMainTankPRN end,
+      get = function(i) return A.options.openRaidTabPRN end,
+      set = function(i,v) A.options.openRaidTabPRN = v end,
+      disabled = function(i) return not A.options.tankMainTankAlways and not A.options.tankMainTankPRN end,
     },
     tankMark = {
       order = RAIDASSIST+60,
       name = L["options.widget.tankMark.text"],
       type = "toggle",
       width = "full",
-      get = function(i) return O.tankMark end,
-      set = function(i,v) O.tankMark = v end,
+      get = function(i) return A.options.tankMark end,
+      set = function(i,v) A.options.tankMark = v end,
     },
     tankMarkIcon1 = {
       order = RAIDASSIST+60+1,
@@ -281,9 +282,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.tankMarkIcons, 1) end,
-      set = function(i,v) setOptionMark(O.tankMarkIcons, 1, v) end,
-      disabled = function(i) return not O.tankMark end,
+      get = function(i) return getOptionMark(A.options.tankMarkIcons, 1) end,
+      set = function(i,v) setOptionMark(A.options.tankMarkIcons, 1, v) end,
+      disabled = function(i) return not A.options.tankMark end,
     },
     tankMarkIcon2 = {
       order = RAIDASSIST+60+2,
@@ -293,9 +294,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.tankMarkIcons, 2) end,
-      set = function(i,v) setOptionMark(O.tankMarkIcons, 2, v) end,
-      disabled = function(i) return not O.tankMark end,
+      get = function(i) return getOptionMark(A.options.tankMarkIcons, 2) end,
+      set = function(i,v) setOptionMark(A.options.tankMarkIcons, 2, v) end,
+      disabled = function(i) return not A.options.tankMark end,
     },
     tankMarkIcon3 = {
       order = RAIDASSIST+60+3,
@@ -305,9 +306,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.tankMarkIcons, 3) end,
-      set = function(i,v) setOptionMark(O.tankMarkIcons, 3, v) end,
-      disabled = function(i) return not O.tankMark end,
+      get = function(i) return getOptionMark(A.options.tankMarkIcons, 3) end,
+      set = function(i,v) setOptionMark(A.options.tankMarkIcons, 3, v) end,
+      disabled = function(i) return not A.options.tankMark end,
     },
     tankMarkIcon4 = {
       order = RAIDASSIST+60+4,
@@ -317,9 +318,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.tankMarkIcons, 4) end,
-      set = function(i,v) setOptionMark(O.tankMarkIcons, 4, v) end,
-      disabled = function(i) return not O.tankMark end,
+      get = function(i) return getOptionMark(A.options.tankMarkIcons, 4) end,
+      set = function(i,v) setOptionMark(A.options.tankMarkIcons, 4, v) end,
+      disabled = function(i) return not A.options.tankMark end,
     },
     tankMarkIcon5 = {
       order = RAIDASSIST+60+5,
@@ -329,9 +330,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.tankMarkIcons, 5) end,
-      set = function(i,v) setOptionMark(O.tankMarkIcons, 5, v) end,
-      disabled = function(i) return not O.tankMark end,
+      get = function(i) return getOptionMark(A.options.tankMarkIcons, 5) end,
+      set = function(i,v) setOptionMark(A.options.tankMarkIcons, 5, v) end,
+      disabled = function(i) return not A.options.tankMark end,
     },
     tankMarkIcon6 = {
       order = RAIDASSIST+60+6,
@@ -341,9 +342,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.tankMarkIcons, 6) end,
-      set = function(i,v) setOptionMark(O.tankMarkIcons, 6, v) end,
-      disabled = function(i) return not O.tankMark end,
+      get = function(i) return getOptionMark(A.options.tankMarkIcons, 6) end,
+      set = function(i,v) setOptionMark(A.options.tankMarkIcons, 6, v) end,
+      disabled = function(i) return not A.options.tankMark end,
     },
     tankMarkIcon7 = {
       order = RAIDASSIST+60+7,
@@ -353,9 +354,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.tankMarkIcons, 7) end,
-      set = function(i,v) setOptionMark(O.tankMarkIcons, 7, v) end,
-      disabled = function(i) return not O.tankMark end,
+      get = function(i) return getOptionMark(A.options.tankMarkIcons, 7) end,
+      set = function(i,v) setOptionMark(A.options.tankMarkIcons, 7, v) end,
+      disabled = function(i) return not A.options.tankMark end,
     },
     tankMarkIcon8 = {
       order = RAIDASSIST+60+8,
@@ -365,9 +366,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.tankMarkIcons, 8) end,
-      set = function(i,v) setOptionMark(O.tankMarkIcons, 8, v) end,
-      disabled = function(i) return not O.tankMark end,
+      get = function(i) return getOptionMark(A.options.tankMarkIcons, 8) end,
+      set = function(i,v) setOptionMark(A.options.tankMarkIcons, 8, v) end,
+      disabled = function(i) return not A.options.tankMark end,
     },
     splitOddEven = {
       order = RAIDASSIST+70,
@@ -375,8 +376,8 @@ local optionsTable = {
       desc = format(L["options.widget.splitOddEven.desc"], "|cff1784d1/fg split|r", "|cff1784d1"..L["button.splitGroups.text"].."|r"),
       type = "toggle",
       width = "full",
-      get = function(i) return O.splitOddEven end,
-      set = function(i,v) A.sorter:Stop() O.splitOddEven = v end,
+      get = function(i) return A.options.splitOddEven end,
+      set = function(i,v) A.sorter:Stop() A.options.splitOddEven = v end,
     },
     -- -------------------------------------------------------------------------
     headerPARTY = {
@@ -390,8 +391,8 @@ local optionsTable = {
       desc = format(L["options.widget.partyMark.desc"], "|cff1784d1"..L["button.fixGroups.text"].."|r"),
       type = "toggle",
       width = "full",
-      get = function(i) return O.partyMark end,
-      set = function(i,v) O.partyMark = v end,
+      get = function(i) return A.options.partyMark end,
+      set = function(i,v) A.options.partyMark = v end,
     },
     partyMarkIcon1 = {
       order = PARTY+10+1,
@@ -401,9 +402,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.partyMarkIcons, 1) end,
-      set = function(i,v) setOptionMark(O.partyMarkIcons, 1, v) end,
-      disabled = function(i) return not O.partyMark end,
+      get = function(i) return getOptionMark(A.options.partyMarkIcons, 1) end,
+      set = function(i,v) setOptionMark(A.options.partyMarkIcons, 1, v) end,
+      disabled = function(i) return not A.options.partyMark end,
     },
     partyMarkIcon2 = {
       order = PARTY+10+2,
@@ -413,9 +414,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.partyMarkIcons, 2) end,
-      set = function(i,v) setOptionMark(O.partyMarkIcons, 2, v) end,
-      disabled = function(i) return not O.partyMark end,
+      get = function(i) return getOptionMark(A.options.partyMarkIcons, 2) end,
+      set = function(i,v) setOptionMark(A.options.partyMarkIcons, 2, v) end,
+      disabled = function(i) return not A.options.partyMark end,
     },
     partyMarkIcon3 = {
       order = PARTY+10+3,
@@ -425,9 +426,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.partyMarkIcons, 3) end,
-      set = function(i,v) setOptionMark(O.partyMarkIcons, 3, v) end,
-      disabled = function(i) return not O.partyMark end,
+      get = function(i) return getOptionMark(A.options.partyMarkIcons, 3) end,
+      set = function(i,v) setOptionMark(A.options.partyMarkIcons, 3, v) end,
+      disabled = function(i) return not A.options.partyMark end,
     },
     partyMarkIcon4 = {
       order = PARTY+10+4,
@@ -437,9 +438,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.partyMarkIcons, 4) end,
-      set = function(i,v) setOptionMark(O.partyMarkIcons, 4, v) end,
-      disabled = function(i) return not O.partyMark end,
+      get = function(i) return getOptionMark(A.options.partyMarkIcons, 4) end,
+      set = function(i,v) setOptionMark(A.options.partyMarkIcons, 4, v) end,
+      disabled = function(i) return not A.options.partyMark end,
     },
     partyMarkIcon5 = {
       order = PARTY+10+5,
@@ -449,9 +450,9 @@ local optionsTable = {
       width = "half",
       style = "dropdown",
       values = MARKS,
-      get = function(i) return getOptionMark(O.partyMarkIcons, 5) end,
-      set = function(i,v) setOptionMark(O.partyMarkIcons, 5, v) end,
-      disabled = function(i) return not O.partyMark end,
+      get = function(i) return getOptionMark(A.options.partyMarkIcons, 5) end,
+      set = function(i,v) setOptionMark(A.options.partyMarkIcons, 5, v) end,
+      disabled = function(i) return not A.options.partyMark end,
     },
     -- -------------------------------------------------------------------------
     headerRESET = {
@@ -465,11 +466,12 @@ local optionsTable = {
       width = "full",
       name = L["button.resetAllOptions.text"],
       func = function()
-        local minimapIcon = O.minimapIcon
-        M.db:ResetProfile()
-        A.options = M.db.profile.options
-        O = A.options
-        O.minimapIcon = minimapIcon
+        -- Preserve the minimapIcon table. It's owned by LibDBIcon.
+        local minimapIcon = A.options.minimapIcon
+        A.db:ResetProfile()
+        -- Update table reference.
+        A.options = A.db.profile.options
+        A.options.minimapIcon = minimapIcon
         A.console:Print(L["button.resetAllOptions.print"])
         A.gui:Refresh()
       end,
@@ -478,11 +480,11 @@ local optionsTable = {
 }
 
 function M:OnInitialize()
-  M.db = LibStub("AceDB-3.0"):New("FixGroupsDB", defaults, true)
-  -- Intentionally overwriting the module reference
-  A.options = M.db.profile.options
-  O = A.options
+  A.db = LibStub("AceDB-3.0"):New("FixGroupsDB", R.defaults, true)
+  -- Intentionally overwriting the module reference.
+  -- Can always do A:GetModule("options") if needed.
+  A.options = A.db.profile.options
 
-  LibStub("AceConfig-3.0"):RegisterOptionsTable(A.name, optionsTable)
-  optionsGUI = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.name, A.name)
+  LibStub("AceConfig-3.0"):RegisterOptionsTable(A.name, R.optionsTable)
+  R.optionsGUI = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.name, A.name)
 end

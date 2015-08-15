@@ -13,12 +13,12 @@ locales\es.lua
 
 addon.lua
 
-modules\options.lua
 modules\addonChannel.lua
 modules\console.lua
 modules\gui.lua
 modules\marker.lua
+modules\meter.lua
+modules\options.lua
 modules\sorter.lua
 modules\sorterCore.lua
-modules\meter.lua
 modules\util.lua

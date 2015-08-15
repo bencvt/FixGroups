@@ -3,7 +3,7 @@ local M = A:NewModule("util")
 A.util = M
 
 local floor, max, pairs, select, strmatch, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, string.match, table.concat, table.insert, table.remove, wipe
-local GetAddOnMetadata, GetLocale, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetLocale, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
 
 local SERIAL_COMMA = ((GetLocale() == "enUS") and "," or "")

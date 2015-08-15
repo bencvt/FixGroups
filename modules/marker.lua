@@ -1,15 +1,20 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("marker")
 A.marker = M
+M.private = {
+  tmp1 = {},
+  tmp2 = {},
+  tmp3 = {},
+}
+local R = M.private
 
-local tmp1, tmp2, tmp3 = {}, {}, {}
 local min, sort, tinsert, wipe = math.min, sort, table.insert, wipe
 
 function M:FixParty()
   if IsInRaid() then
     return
   end
-  local party = wipe(tmp1)
+  local party = wipe(R.tmp1)
   local unitID, p
   for i = 1, 5 do
     unitID = (i == 5) and "player" or ("party"..i)
@@ -49,9 +54,9 @@ function M:FixRaid(isRequestFromAssist)
     return
   end
 
-  local marks = wipe(tmp1)
-  local unsetTanks = wipe(tmp2)
-  local setNonTanks = wipe(tmp3)
+  local marks = wipe(R.tmp1)
+  local unsetTanks = wipe(R.tmp2)
+  local setNonTanks = wipe(R.tmp3)
   local name, rank, subgroup, rank, online, raidRole, isML, _, unitID, unitRole
   for i = 1, GetNumGroupMembers() do
     name, rank, subgroup, _, _, _, _, online, _, raidRole, isML = GetRaidRosterInfo(i)

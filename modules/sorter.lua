@@ -1,6 +1,16 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("sorter", "AceEvent-3.0", "AceTimer-3.0")
 A.sorter = M
+M.private = {
+  sortMode = false,
+  lastSortMode = false,
+  resumeAfterCombat = false,
+  startTime = false,
+  stepCount = false,
+  timeoutTimer = false,
+  timeoutCount = false,
+}
+local R = M.private
 
 local MAX_STEPS = 30
 local MAX_TIMEOUTS = 20
@@ -15,7 +25,7 @@ function M:OnEnable()
 end
 
 function M:PLAYER_ENTERING_WORLD(event)
-  M.lastSortMode = nil
+  R.lastSortMode = false
 end
 
 function M:PLAYER_REGEN_ENABLED(event)
@@ -31,36 +41,34 @@ function M:GROUP_ROSTER_UPDATE(event)
   end
 end
 
+function M:IsSortingTHMUR()
+  return R.sortMode == "THMUR"
+end
+
 function M:IsSortingByMeter()
-  return M.sortMode == "meter"
+  return R.sortMode == "meter"
 end
 
 function M:IsSplittingRaid()
-  return M.sortMode == "split"
+  return R.sortMode == "split"
 end
 
 function M:IsProcessing()
-  return M.stepCount and true or false
+  return R.stepCount and true or false
 end
 
 function M:IsPaused()
-  return M.resumeAfterCombat and true or false
-end
-
-local function stop(allowResume)
-  A.sorterCore:CancelAction()
-  M:ClearTimeout(true)
-  M.stepCount = nil
-  M.startTime = nil
-  M.sortMode = nil
-  if not allowResume then
-    M.resumeAfterCombat = nil
-  end
-  A.gui:Refresh()
+  return R.resumeAfterCombat and true or false
 end
 
 function M:Stop()
-  stop(false)
+  A.sorterCore:CancelAction()
+  M:ClearTimeout(true)
+  R.stepCount = false
+  R.startTime = false
+  R.sortMode = false
+  R.resumeAfterCombat = false
+  A.gui:Refresh()
 end
 
 function M:StopTimedOut()
@@ -75,25 +83,26 @@ function M:StopIfNeeded()
     return true
   end
   if InCombatLockdown() then
+    local resumeSortMode = R.sortMode
+    M:Stop()
     if A.options.resumeAfterCombat then
       A.console:Print(L["sorter.print.combatPaused"])
-      M.resumeAfterCombat = M.sortMode
+      R.resumeAfterCombat = resumeSortMode
+      A.gui:Refresh()
     else
       A.console:Print(L["sorter.print.combatCancelled"])
-      M.resumeAfterCombat = nil
     end
-    stop(true)
     return true
   end
 end
 
 local function start(mode)
   M:Stop()
-  M.sortMode = mode
+  R.sortMode = mode
   if M:StopIfNeeded() then
     return
   end
-  -- Groups are built every step.
+  -- Groups are built prior to every step.
   A.sorterCore:BuildGroups()
   if M:IsSortingByMeter() or M:IsSplittingRaid() then
     -- Damage/healing meter snapshot is built once at the start,
@@ -126,8 +135,8 @@ end
 function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
     A.console:Print(L["sorter.print.combatResumed"])
-    local mode = M.resumeAfterCombat 
-    M.resumeAfterCombat = nil
+    local mode = R.resumeAfterCombat 
+    R.resumeAfterCombat = false
     start(mode)
   end
 end
@@ -138,25 +147,24 @@ function M:ProcessStep()
   end
   M:ClearTimeout(false)
   if not M:IsProcessing() then
-    M.stepCount = 0
-    M.startTime = time()
+    R.stepCount = 0
+    R.startTime = time()
   end
-  --A.console:DebugPrintGroups()
+  --A.sorterCore:DebugPrintGroups()
   A.sorterCore:BuildDelta()
-  --A.console:DebugPrintDelta()
+  --A.sorterCore:DebugPrintDelta()
   if A.sorterCore:IsDeltaEmpty() then
     M:AnnounceComplete()
     M:Stop()
     return
-  elseif M.stepCount > MAX_STEPS then
+  elseif R.stepCount > MAX_STEPS then
     M:StopTimedOut()
     return
   end
   A.sorterCore:ProcessDelta()
-  --A.console:DebugPrintAction()
-  A.sorterCore:SaveGroups()
+  --A.sorterCore:DebugPrintAction()
   if A.sorterCore:IsActionScheduled() then
-    M.stepCount = M.stepCount + 1
+    R.stepCount = R.stepCount + 1
     M:ScheduleTimeout()
     A.gui:Refresh()
   else
@@ -165,33 +173,34 @@ function M:ProcessStep()
 end
 
 function M:AnnounceComplete()
-  local seconds = floor(time() - M.startTime)
+  local seconds = floor(time() - R.startTime)
   local msg
   if M:IsSplittingRaid() then
     msg = format(L["sorter.mode.split"], A.sorterCore:GetSplitGroups())
   else
-    msg = L["sorter.mode."..M.sortMode]
+    msg = L["sorter.mode."..R.sortMode]
   end
   local msg2 = ""
-  if A.sorterCore.sitting > 0 then
-    msg2 = " "..format(L["sorter.print.excludedSitting"], A.sorterCore.sitting, A.sorterCore.sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
+  local sitting = A.sorterCore:NumSitting()
+  if sitting > 0 then
+    msg2 = " "..format(L["sorter.print.excludedSitting"], sitting, sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
   end
-  msg = format("%s (%d %s, %d %s.%s)", msg, M.stepCount, M.stepCount == 1 and L["word.step"] or L["word.steps"], seconds, seconds == 1 and L["word.second"] or L["word.seconds"], msg2)
-  if M.stepCount > 0 and (A.options.announceChatAlways or (A.options.announceChatPRN and M.lastSortMode ~= M.sortMode)) then
+  msg = format("%s (%d %s, %d %s.%s)", msg, R.stepCount, R.stepCount == 1 and L["word.step"] or L["word.steps"], seconds, seconds == 1 and L["word.second"] or L["word.seconds"], msg2)
+  if R.stepCount > 0 and (A.options.announceChatAlways or (A.options.announceChatPRN and R.lastSortMode ~= R.sortMode)) then
     SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetGroupChannel())
   else
     A.console:Print(msg)
   end
-  M.lastSortMode = M.sortMode
+  R.lastSortMode = R.sortMode
 end
 
 function M:ClearTimeout(resetCount)
-  if M.timeoutTimer then
-    M:CancelTimer(M.timeoutTimer)
+  if R.timeoutTimer then
+    M:CancelTimer(R.timeoutTimer)
   end
-  M.timeoutTimer = nil
+  R.timeoutTimer = false
   if resetCount then
-    M.timeoutCount = nil
+    R.timeoutCount = false
   end
 end
 
@@ -202,11 +211,11 @@ end
 -- Another example: Good old-fashioned lag.
 function M:ScheduleTimeout()
   M:ClearTimeout(false)
-  M.timeoutTimer = M:ScheduleTimer(function ()
+  R.timeoutTimer = M:ScheduleTimer(function ()
     M:ClearTimeout(false)
-    M.timeoutCount = (M.timeoutCount or 0) + 1
-    --A.console:Debug(format("Timeout %d of %d.", M.timeoutCount, MAX_TIMEOUTS)
-    if M.timeoutCount >= MAX_TIMEOUTS then
+    R.timeoutCount = (R.timeoutCount or 0) + 1
+    --A.console:Debug(format("Timeout %d of %d.", R.timeoutCount, MAX_TIMEOUTS)
+    if R.timeoutCount >= MAX_TIMEOUTS then
       M:StopTimedOut()
       return
     end

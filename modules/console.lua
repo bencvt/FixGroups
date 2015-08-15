@@ -3,6 +3,7 @@ local M = A:NewModule("console", "AceConsole-3.0")
 A.console = M
 
 local format, print, tconcat = format, print, table.concat
+local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 
 function M:OnEnable()
   local function slashCmd(args)
@@ -35,7 +36,7 @@ function M:Command(args)
     M:PrintHelp()
     return
   elseif args == "config" or args == "options" then
-    A.gui.OpenConfig()
+    A.gui:OpenConfig()
     return
   elseif args == "cancel" then
     A.sorter:Stop()
@@ -80,25 +81,4 @@ function M:DebugDump(...)
     tinsert(t, tostring(select(i, ...) or "<nil>"))
   end
   M:Debug(tconcat(t, ", "))
-end
-
-function M:DebugPrintGroups()
-  for g = 1, 8 do
-    local line = g.."("..A.sorter.core.groupSizes[g].."):"
-    for key, i in pairs(A.sorter.core.groups[g]) do
-      line = line.." "..i..key
-    end
-    M:Debug(line)
-  end
-end
-
-function M:DebugPrintDelta()
-  M:Debug(format("delta=%d players in incorrect groups:", #A.sorter.core.delta))
-  for _, p in ipairs(A.sorter.core.delta) do
-    M:Debug(p.oldGroup.."/"..p.newGroup.." raid"..p.index.." "..p.key)
-  end
-end
-
-function M:DebugPrintAction()
-  M:Debug(format("action: name=%s group=%s debug=%s", (A.sorter.core.action.name or "<nil>"), (A.sorter.core.action.group or "<nil>"), (A.sorter.core.action.debug or "<nil>")))
 end
