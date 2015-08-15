@@ -5,10 +5,6 @@ L["word.and"] = "and"
 L["word.or"] = "or"
 L["word.player"] = "player"
 L["word.players"] = "players"
-L["word.step"] = "step"
-L["word.steps"] = "steps"
-L["word.second"] = "second"
-L["word.seconds"] = "seconds"
 
 -- Button labels
 L["button.fixGroups.text"] = "Fix Groups"
@@ -133,10 +129,12 @@ L["sorter.print.combatCancelled"] = "Rearranging players cancelled due to combat
 L["sorter.print.combatResumed"] = "Resumed rearranging players."
 L["sorter.print.timedOut"] = "Stopped rearranging players because it's taking too long. Perhaps someone else is simultaneously rearranging players?"
 L["sorter.print.needRank"] = "You must be a raid leader or assistant to fix groups."
-L["sorter.mode.split"] = "Split players: groups %s."
-L["sorter.mode.meter"] = "Rearranged players by damage/healing done."
-L["sorter.mode.TMURH"] = "Rearranged tanks>melee>ranged>healers."
-L["sorter.mode.THMUR"] = "Rearranged tanks>healers>melee>ranged."
+L["sorter.print.alreadySplit"] = "No change - the raid is already split."
+L["sorter.print.alreadySorted"] = "No change - the raid is already sorted."
+L["sorter.print.split"] = "Split players: groups %s."
+L["sorter.print.meter"] = "Rearranged players by damage/healing done."
+L["sorter.print.TMURH"] = "Rearranged tanks>melee>ranged>healers."
+L["sorter.print.THMUR"] = "Rearranged tanks>healers>melee>ranged."
 L["sorter.print.excludedSitting"] = "Excluded %d %s sitting in groups %d-8."
 
 -- Meter module

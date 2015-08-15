@@ -17,7 +17,7 @@ local MAX_TIMEOUTS = 20
 local TIMEOUT_SECONDS = 1.0
 
 local floor, format, time = math.floor, string.format, time
-local InCombatLockdown, IsInRaid = InCombatLockdown, IsInRaid
+local InCombatLockdown, IsInRaid, SendChatMessage = InCombatLockdown, IsInRaid, SendChatMessage
 
 function M:OnEnable()
   M:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -178,23 +178,29 @@ function M:ProcessStep()
 end
 
 function M:AnnounceComplete()
-  local seconds = floor(time() - R.startTime)
-  local msg
-  if M:IsSplittingRaid() then
-    msg = format(L["sorter.mode.split"], A.sorterCore:GetSplitGroups())
+  if R.stepCount == 0 then
+    if M:IsSplittingRaid() then
+      A.console:Print(L["sorter.print.alreadySplit"])
+    else
+      A.console:Print(L["sorter.print.alreadySorted"])
+    end
   else
-    msg = L["sorter.mode."..R.sortMode]
-  end
-  local msg2 = ""
-  local sitting = A.sorterCore:NumSitting()
-  if sitting > 0 then
-    msg2 = " "..format(L["sorter.print.excludedSitting"], sitting, sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
-  end
-  msg = format("%s (%d %s, %d %s.%s)", msg, R.stepCount, R.stepCount == 1 and L["word.step"] or L["word.steps"], seconds, seconds == 1 and L["word.second"] or L["word.seconds"], msg2)
-  if R.stepCount > 0 and (A.options.announceChatAlways or (A.options.announceChatPRN and R.lastSortMode ~= R.sortMode)) then
-    SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetGroupChannel())
-  else
-    A.console:Print(msg)
+    local msg
+    if M:IsSplittingRaid() then
+      msg = format(L["sorter.print.split"], A.sorterCore:GetSplitGroups())
+    else
+      msg = L["sorter.print."..R.sortMode]
+    end
+    local sitting = A.sorterCore:NumSitting()
+    if sitting > 0 then
+      msg = msg.." "..format(L["sorter.print.excludedSitting"], sitting, sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
+    end
+    if A.options.announceChatAlways or (A.options.announceChatPRN and R.lastSortMode ~= R.sortMode) then
+      SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetGroupChannel())
+    else
+      A.console:Print(msg)
+    end
+    --A.console:Debug(format("steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount))
   end
   R.lastSortMode = R.sortMode
 end
@@ -219,7 +225,7 @@ function M:ScheduleTimeout()
   R.timeoutTimer = M:ScheduleTimer(function ()
     M:ClearTimeout(false)
     R.timeoutCount = (R.timeoutCount or 0) + 1
-    --A.console:Debug(format("Timeout %d of %d.", R.timeoutCount, MAX_TIMEOUTS)
+    --A.console:Debug(format("Timeout %d of %d.", R.timeoutCount, MAX_TIMEOUTS))
     if R.timeoutCount >= MAX_TIMEOUTS then
       M:StopTimedOut()
       return
