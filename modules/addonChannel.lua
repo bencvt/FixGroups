@@ -11,7 +11,7 @@ local strsplit = string.split
 local IsInGroup, SendAddonMessage, UnitName = IsInGroup, SendAddonMessage, UnitName
 
 local PREFIX = "FIXGROUPS"
-local DELAY_BROADCAST_VERSION = 15
+local DELAY_BROADCAST_VERSION = 15.5
 
 function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_ADDON")

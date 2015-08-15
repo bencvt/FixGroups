@@ -15,7 +15,7 @@ M.private = {
 }
 local R = M.private
 
-local ACTION_DELAY_SECONDS = 0.1
+local DELAY_ACTION = 0.1
 local SR_TANK, SR_MELEE, SR_UNKNOWN, SR_RANGED, SR_HEALER = 1, 2, 3, 4, 5
 local SORT_ROLES_TMURH = {"a", "b", "c", "d", "e"}
 local SORT_ROLES_THMUR = {"a", "c", "d", "e", "b"}
@@ -214,7 +214,7 @@ function M:StartAction(key, group, func, desc)
   M:CancelAction()
   R.action.name = M:KeyGetName(key)
   R.action.group = group
-  R.action.timer = M:ScheduleTimer(func, ACTION_DELAY_SECONDS)
+  R.action.timer = M:ScheduleTimer(func, DELAY_ACTION)
   R.action.debug = desc or "<nil>"
 end
 

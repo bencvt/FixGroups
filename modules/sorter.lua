@@ -14,7 +14,7 @@ local R = M.private
 
 local MAX_STEPS = 30
 local MAX_TIMEOUTS = 20
-local TIMEOUT_SECONDS = 1.0
+local DELAY_TIMEOUT = 1.0
 
 local floor, format, time = math.floor, string.format, time
 local InCombatLockdown, IsInRaid, SendChatMessage = InCombatLockdown, IsInRaid, SendChatMessage
@@ -232,5 +232,5 @@ function M:ScheduleTimeout()
     end
     A.sorterCore:BuildGroups()
     M:ProcessStep()
-  end, TIMEOUT_SECONDS)
+  end, DELAY_TIMEOUT)
 end

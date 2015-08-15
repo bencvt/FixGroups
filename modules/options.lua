@@ -32,15 +32,16 @@ M.private = {
 }
 local R = M.private
 
+local DELAY_FIX_BUTTONS = 0.1
 local MARKS = {
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t",
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t", -- star
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t", -- circle
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t", -- diamond
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t", -- triangle
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t", -- moon
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t", -- square
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t", -- cross
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t", -- skull
   L["options.value.noMark"],
 }
 
@@ -92,7 +93,7 @@ R.optionsTable = {
               g.frame:RegisterForClicks("AnyUp")
             end
           end
-        end, 0.1)
+        end, DELAY_FIX_BUTTONS)
       end,
     },
     buttonCommandDefault = {

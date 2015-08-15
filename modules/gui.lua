@@ -9,6 +9,9 @@ M.private = {
 }
 local R = M.private
 
+local NUM_FLASHES = 3
+local DELAY_FLASH = 0.5
+
 local strfind = string.find
 local InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, UnitName = InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, UnitName
 
@@ -146,7 +149,7 @@ function M:FlashRaidTabButton()
   if R.flashTimer or not A.options.addButtonToRaidTab then
     return
   end
-  local count = 6
+  local count = NUM_FLASHES * 2
   local function flash()
     count = count - 1
     if count % 2 == 0 then
@@ -155,7 +158,7 @@ function M:FlashRaidTabButton()
       R.raidTabButton:LockHighlight()
     end
     if count > 0 then
-      R.flashTimer = M:ScheduleTimer(flash, 0.5)
+      R.flashTimer = M:ScheduleTimer(flash, DELAY_FLASH)
     else
       R.flashTimer = false
     end
