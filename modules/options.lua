@@ -77,7 +77,7 @@ local BUTTONS, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, RESET = 100, 200, 300, 400
 
 R.optionsTable = {
   type = "group",
-  name = format("|cff33ff99%s|r v%s by |cff33ff99%s|r", A.name, A.version, A.author),
+  name = "|cff33ff99"..A.name.."|r "..format(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r"),
   args = {
     desc = {
       order = 0,

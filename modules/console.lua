@@ -19,7 +19,7 @@ function M:Print(...)
 end
 
 function M:PrintHelp()
-  M:Print(format(L["console.help.versionAuthor"], A.version, "|cff33ff99"..A.author.."|r"))
+  M:Print(format(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r"))
   print(format(L["console.help.header"], "|cff1784d1/fixgroups|r", "|cff1784d1/fg|r"))
   print("  |cff1784d1/fg help|r "..L["word.or"].." |cff1784d1/fg about|r - "..L["console.help.help"])
   print("  |cff1784d1/fg config|r "..L["word.or"].." |cff1784d1/fg options|r - "..format(L["console.help.config"], A.name))

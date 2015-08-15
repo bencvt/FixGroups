@@ -1,6 +1,7 @@
 local L = LibStub("AceLocale-3.0"):NewLocale(..., "enUS", true)
 
 -- Basic words
+L["versionAuthor"] = "v%s by %s"
 L["word.and"] = "and"
 L["word.or"] = "or"
 L["word.player"] = "player"
@@ -100,7 +101,6 @@ L["chatKeyword.fixGroup"] = "fix group"
 L["chatKeyword.markTank"] = "mark tank"
 
 -- Console module
-L["console.help.versionAuthor"] = "v%s by %s"
 L["console.help.header"] = "Arguments for the %s command (or %s):"
 L["console.help.help"] = "you're reading it"
 L["console.help.config"] = "same as Esc>Interface>AddOns>%s"
