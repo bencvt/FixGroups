@@ -32,18 +32,25 @@ M.private = {
 }
 local R = M.private
 
-local DELAY_FIX_BUTTONS = 0.1
+-- In parentheses is how many times DBM uses that mark for all Draenor content.
+--
+-- Skull, cross, and moon are used the least frequently. However those marks
+-- usually mean "kill first", "kill second", and "keep cc'd", respectively.
+--
+-- Of the remaining marks, triangle and square are next. That's why they're the
+-- default tank marks.
 local MARKS = {
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t", -- star
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t", -- circle
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t", -- diamond
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t", -- triangle
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t", -- moon
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t", -- square
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t", -- cross
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t", -- skull
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t", -- 1=star (16)
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t", -- 2=circle (16)
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t", -- 3=diamond (14)
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t", -- 4=triangle (11)
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t", -- 5=moon (9)
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t", -- 6=square (10)
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t", -- 7=cross (7)
+  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t", -- 8=skull (9)
   L["options.value.noMark"],
 }
+local DELAY_FIX_BUTTONS = 0.1
 
 local ipairs = ipairs
 
