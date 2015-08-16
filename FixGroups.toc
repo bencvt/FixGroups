@@ -29,6 +29,7 @@ modules\gui.lua
 modules\marker.lua
 modules\meter.lua
 modules\options.lua
+modules\raid.lua
 modules\sorter.lua
 modules\sorterCore.lua
 modules\util.lua
