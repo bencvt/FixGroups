@@ -60,7 +60,7 @@ local function setTooltip(tooltip, isRaidTab)
 end
 
 local function watchChat(event, message, sender)
-  --A.console:Debug(format("watchChat event=%s message=%s sender=%s", event, message, sender))
+  if A.debug >= 3 then A.console:Debug(format("watchChat event=%s message=%s sender=%s", event, message, sender)) end
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
     -- Search for both the default and the localized keywords.
     message = strlower(message)

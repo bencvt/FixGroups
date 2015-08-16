@@ -72,7 +72,11 @@ function M:Command(args)
 end
 
 function M:Debug(...)
-  print("|cff33ff99"..A.name.."|r DEBUG ["..date("%H:%M:%S").."] ", ...)
+  print("|cffffcc99"..A.name.." DEBUG ["..date("%H:%M:%S").."]", ..., "|r")
+end
+
+function M:DebugMore(...)
+  print("|cffffcc99", ..., "|r")
 end
 
 function M:DebugDump(...)

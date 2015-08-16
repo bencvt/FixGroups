@@ -22,7 +22,7 @@ local InCombatLockdown, IsInRaid, SendChatMessage = InCombatLockdown, IsInRaid, 
 function M:OnEnable()
   M:RegisterEvent("PLAYER_ENTERING_WORLD")
   M:RegisterEvent("PLAYER_REGEN_ENABLED")
-  M:RegisterEvent("GROUP_ROSTER_UPDATE")
+  M:RegisterMessage("FIXGROUPS_RAID_GROUP_CHANGED")
 end
 
 function M:PLAYER_ENTERING_WORLD(event)
@@ -33,9 +33,8 @@ function M:PLAYER_REGEN_ENABLED(event)
   M:ResumeIfPaused()
 end
 
-function M:GROUP_ROSTER_UPDATE(event)
+function M:FIXGROUPS_RAID_GROUP_CHANGED(event, name, group, prevGroup)
   if M:IsProcessing() then
-    A.sorterCore:BuildGroups()
     if A.sorterCore:DidActionFinish() then
       M:ProcessStep()
     end
@@ -107,8 +106,6 @@ local function start(mode)
   if M:StopIfNeeded() then
     return
   end
-  -- Groups are built prior to every step.
-  A.sorterCore:BuildGroups()
   if M:IsSortingByMeter() or M:IsSplittingRaid() then
     -- Damage/healing meter snapshot is built once at the start,
     -- not once every step.
@@ -155,9 +152,7 @@ function M:ProcessStep()
     R.stepCount = 0
     R.startTime = time()
   end
-  --A.sorterCore:DebugPrintGroups()
   A.sorterCore:BuildDelta()
-  --A.sorterCore:DebugPrintDelta()
   if A.sorterCore:IsDeltaEmpty() then
     M:AnnounceComplete()
     M:Stop()
@@ -167,7 +162,7 @@ function M:ProcessStep()
     return
   end
   A.sorterCore:ProcessDelta()
-  --A.sorterCore:DebugPrintAction()
+  if A.debug >= 2 then A.sorterCore:DebugPrintAction() end
   if A.sorterCore:IsActionScheduled() then
     R.stepCount = R.stepCount + 1
     M:ScheduleTimeout()
@@ -191,7 +186,7 @@ function M:AnnounceComplete()
     else
       msg = L["sorter.print."..R.sortMode]
     end
-    local sitting = A.sorterCore:NumSitting()
+    local sitting = A.raid:NumSitting()
     if sitting > 0 then
       msg = msg.." "..format(L["sorter.print.excludedSitting"], sitting, sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
     end
@@ -200,7 +195,7 @@ function M:AnnounceComplete()
     else
       A.console:Print(msg)
     end
-    --A.console:Debug(format("steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount))
+    if A.debug >= 1 then A.console:Debug(format("steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount)) end
   end
   R.lastSortMode = R.sortMode
 end
@@ -225,12 +220,12 @@ function M:ScheduleTimeout()
   R.timeoutTimer = M:ScheduleTimer(function ()
     M:ClearTimeout(false)
     R.timeoutCount = (R.timeoutCount or 0) + 1
-    --A.console:Debug(format("Timeout %d of %d.", R.timeoutCount, MAX_TIMEOUTS))
+    if A.debug >= 1 then A.console:Debug(format("Timeout %d of %d.", R.timeoutCount, MAX_TIMEOUTS)) end
     if R.timeoutCount >= MAX_TIMEOUTS then
       M:StopTimedOut()
       return
     end
-    A.sorterCore:BuildGroups()
+    A.raid:ForceBuildRoster()
     M:ProcessStep()
   end, DELAY_TIMEOUT)
 end
