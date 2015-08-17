@@ -26,7 +26,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   if not UnitExists(sender) then
     sender = A.util:StripRealm(sender)
   end
-  if A.debug >= 2 then A.console:Debug(format("%sCHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", ((sender ~= UnitName("player")) and "|r" or ""), prefix, message, channel, sender)) end
+  if A.debug >= 3 then A.console:Debug(format("%sCHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", ((sender ~= UnitName("player")) and "|r" or ""), prefix, message, channel, sender)) end
   if sender == UnitName("player") then
     return
   end
