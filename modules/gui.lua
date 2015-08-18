@@ -67,7 +67,7 @@ local function watchChat(event, message, sender)
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
     -- Search for both the default and the localized keywords.
     message = strlower(message)
-    if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["chatKeyword.fixGroup"]) or strfind(message, L["chatKeyword.markTank"]) then
+    if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["chatKeyword.fixGroups"]) or strfind(message, L["chatKeyword.markTanks"]) then
       M:OpenRaidTab()
       M:FlashRaidTabButton()
     end

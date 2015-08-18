@@ -55,7 +55,7 @@ L["options.widget.top.desc"] = "Organizing groups is an important, if sometimes 
 L["options.header.raidLead"] = "When raid leader"
 L["options.widget.tankAssist.text"] = "Give tanks assist"
 L["options.widget.fixOfflineML.text"] = "Fix offline master looter"
-L["options.widget.fixOfflineML.desc"] = "If the master looter is offline, pass it to the raid leader (i.e., you)."
+L["options.widget.fixOfflineML.desc"] = "If the master looter is offline, make yourself the master looter instead."
 
 L["options.header.raidAssist"] = "When raid leader or assist"
 L["options.widget.sortMode.text"] = "Rearrange players"
@@ -98,8 +98,8 @@ L["options.widget.watchChat.desc"] = "When the keywords \"fix groups\" or \"mark
 L["options.widget.announceChat.text"] = "Announce when players have been rearranged to instance chat"
 
 -- Chat keywords
-L["chatKeyword.fixGroup"] = "fix group"
-L["chatKeyword.markTank"] = "mark tank"
+L["chatKeyword.fixGroups"] = "fix groups"
+L["chatKeyword.markTanks"] = "mark tanks"
 
 -- Console module
 L["console.help.header"] = "Arguments for the %s command (or %s):"
