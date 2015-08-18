@@ -35,8 +35,11 @@ end
 
 local function setTooltip(tooltip, isRaidTab)
   tooltip:ClearLines()
-  if not isRaidTab then
+  local comp = A.raid:GetCompTHD()
+  if comp == "0/0/0" then
     tooltip:AddLine(A.name)
+  else
+    tooltip:AddDoubleLine(A.name, format(L["tooltip.header.raidComp"], comp))
   end
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["tooltip.left.clickLeft"],        L["tooltip.right.fixGroups"], 1, 1, 1, 1, 1, 0)
@@ -60,7 +63,7 @@ local function setTooltip(tooltip, isRaidTab)
 end
 
 local function watchChat(event, message, sender)
-  if A.debug >= 3 then A.console:Debug(format("watchChat event=%s message=%s sender=%s", event, message, sender)) end
+  if A.debug >= 1 then A.console:Debugf(M, "watchChat event=%s message=%s sender=%s", event, message, sender) end
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
     -- Search for both the default and the localized keywords.
     message = strlower(message)

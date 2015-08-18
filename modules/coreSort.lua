@@ -1,8 +1,7 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("sorterCore", "AceTimer-3.0")
-A.sorterCore = M
+local M = A:NewModule("coreSort", "AceTimer-3.0")
+A.coreSort = M
 M.private = {
-  sortRoles = false,
   deltaPlayers = {},
   deltaNewGroups = {},
   action = {},
@@ -13,8 +12,9 @@ M.private = {
 local R = M.private
 
 local DELAY_ACTION = 0.1
-local SORT_ROLES_TMURH = {"a", "b", "c", "d", "e"}
-local SORT_ROLES_THMUR = {"a", "e", "b", "c", "d"}
+-- SORT_ROLES_x indexes correspond to A.raid.ROLES constants.
+local SORT_ROLES_TMURH = {"a", "b", "c", "c", "d"}
+local SORT_ROLES_THMUR = {"a", "d", "b", "c", "c"}
 -- Pure DPS classes are at the far ends to avoid having, e.g.,
 -- shadow priests in the healer group.
 local SORT_CLASS = {
@@ -39,31 +39,33 @@ local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 -- The delta table is an array of players who are in the wrong group.
 function M:BuildDelta()
   -- Build temporary tables tracking players.
-  local sortRoles = A.sorter:IsSortingTHMUR() and SORT_ROLES_THMUR or SORT_ROLES_TMURH
+  local healersFirst = A.sorter:IsSortingHealersBeforeDps()
   local keys = wipe(R.tmp1)
-  local playerKeys = wipe(R.tmp2)
+  local playersByKey = wipe(R.tmp2)
   local k
   for name, p in pairs(A.raid:GetRoster()) do
-    k = sortRoles[p.role]..(p.class and SORT_CLASS[p.class] or SORT_CLASS["_unknown"])..name
-    tinsert(keys, k)
-    playerKeys[k] = p
+    if not p.isSitting then
+      k = (healersFirst and SORT_ROLES_THMUR or SORT_ROLES_TMURH)[p.role]..(p.class and SORT_CLASS[p.class] or SORT_CLASS["_unknown"])..(p.isUnknown and name or ("_"..name))
+      tinsert(keys, k)
+      playersByKey[k] = p
+    end
   end
 
   -- Sort keys.
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
     local pa, pb
     sort(keys, function(a, b)
-      pa, pb = playerKeys[a], playerKeys[b]
+      pa, pb = playersByKey[a], playersByKey[b]
       if pa.role == pb.role and pa.role == A.raid.ROLES.TANK then
         -- Tanks get a pass. Fall back to default sort.
         return a < b
       elseif pa.role == pb.role and (pa.role == A.raid.ROLES.HEALER or pb.role == A.raid.ROLES.HEALER) then
         -- Healers get compared to each other, not to DPS.
-        return pb.role == A.raid.ROLES.HEALER
+        return (healersFirst and pa.role or pb.role) == A.raid.ROLES.HEALER
       end
       pa, pb = A.meter:GetPlayerMeter(pa.name), A.meter:GetPlayerMeter(pb.name)
-      if pa == 0 and pb == 0 then
-        -- No data. Fall back to default sort.
+      if pa == pb then
+        -- Tie, or no data. Fall back to default sort.
         return a < b
       end
       -- Apples to apples.
@@ -105,13 +107,13 @@ function M:BuildDelta()
       -- Just sorting the raid, not splitting it.
       newGroup = floor((i - 1) / 5) + 1
     end
-    if newGroup ~= playerKeys[k].group then
-      tinsert(R.deltaPlayers, playerKeys[k])
+    if newGroup ~= playersByKey[k].group then
+      tinsert(R.deltaPlayers, playersByKey[k])
       tinsert(R.deltaNewGroups, newGroup)
     end
   end
 
-  if A.debug >= 3 then M:DebugPrintDelta() end
+  if A.debug >= 2 then M:DebugPrintDelta() end
 end
 
 function M:GetSplitGroups()
@@ -193,7 +195,7 @@ function M:ProcessDelta()
     end
   end
   -- Should never get here.
-  A.console:Print(format("Internal error - unable to find slot for %s!", R.action.name))
+  A.console:Errorf("unable to find slot for %s!", R.action.name)
 end
 
 function M:IsActionScheduled()
@@ -208,16 +210,16 @@ function M:DidActionFinish()
 end
 
 function M:DebugPrintDelta()
-  A.console:Debug(format("delta=%d players in incorrect groups:", #R.deltaPlayers))
+  A.console:Debugf(M, "delta=%d players in incorrect groups:", #R.deltaPlayers)
   if #R.deltaPlayers > 1 then
     local p
     for i = 1, #R.deltaPlayers do
       p = R.deltaPlayers[i]
-      A.console:DebugMore(format("  %d: group=%d newGroup=%d index=%d name=%s", i, p.group, R.deltaNewGroups[i], p.index, p.name))
+      A.console:DebugMore(M, format("  %d: group=%d newGroup=%d index=%d name=%s", i, p.group, R.deltaNewGroups[i], p.index, p.name))
     end
   end
 end
 
 function M:DebugPrintAction()
-  A.console:Debug(format("action: %s to %s: %s", (R.action.name or "<nil>"), (R.action.newGroup or "<nil>"), (R.action.desc or "<nil>")))
+  A.console:Debugf(M, "action: %s to %s: %s", (R.action.name or "<nil>"), (R.action.newGroup or "<nil>"), (R.action.desc or "<nil>"))
 end

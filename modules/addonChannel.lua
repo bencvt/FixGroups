@@ -15,7 +15,7 @@ local DELAY_BROADCAST_VERSION = 15.5
 
 function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_ADDON")
-  M:RegisterEvent("GROUP_ROSTER_UPDATE")
+  M:RegisterMessage("FIXGROUPS_RAID_JOINED")
   RegisterAddonMessagePrefix(PREFIX)
 end
 
@@ -26,7 +26,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   if not UnitExists(sender) then
     sender = A.util:StripRealm(sender)
   end
-  if A.debug >= 3 then A.console:Debug(format("%sCHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", ((sender ~= UnitName("player")) and "|r" or ""), prefix, message, channel, sender)) end
+  if A.debug >= 1 then A.console:Debugf(M, "%sCHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", ((sender ~= UnitName("player")) and "|r" or ""), prefix, message, channel, sender) end
   if sender == UnitName("player") then
     return
   end
@@ -42,7 +42,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   end
 end
 
-function M:GROUP_ROSTER_UPDATE(event)
+function M:FIXGROUPS_RAID_JOINED(event, player)
   if not R.broadcastVersionTimer then
     R.broadcastVersionTimer = M:ScheduleTimer(function ()
       if R.broadcastVersionTimer then

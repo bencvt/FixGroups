@@ -33,15 +33,15 @@ function M:PLAYER_REGEN_ENABLED(event)
   M:ResumeIfPaused()
 end
 
-function M:FIXGROUPS_RAID_GROUP_CHANGED(event, name, group, prevGroup)
-  if M:IsProcessing() then
-    if A.sorterCore:DidActionFinish() then
-      M:ProcessStep()
-    end
+function M:FIXGROUPS_RAID_GROUP_CHANGED(event, name, prevGroup, group)
+  if M:IsProcessing() and A.coreSort:DidActionFinish() then
+    M:ProcessStep()
+  else
+    if A.debug >= 2 then A.console:Debugf(M, "someone else moved %s %d->%d", name, prevGroup, group) end
   end
 end
 
-function M:IsSortingTHMUR()
+function M:IsSortingHealersBeforeDps()
   return R.sortMode == "THMUR"
 end
 
@@ -66,7 +66,7 @@ function M:CanBegin()
 end
 
 function M:Stop()
-  A.sorterCore:CancelAction()
+  A.coreSort:CancelAction()
   M:ClearTimeout(true)
   R.stepCount = false
   R.startTime = false
@@ -129,7 +129,7 @@ function M:StartDefault()
   else
     M:Stop()
     if m ~= "nosort" then
-      A.console:Print(format("Internal error: invalid sort mode %s.", tostring(m or "<nil>")))
+      A.console:Errorf("invalid sort mode %s!", tostring(m or "<nil>"))
     end
   end
 end
@@ -152,8 +152,8 @@ function M:ProcessStep()
     R.stepCount = 0
     R.startTime = time()
   end
-  A.sorterCore:BuildDelta()
-  if A.sorterCore:IsDeltaEmpty() then
+  A.coreSort:BuildDelta()
+  if A.coreSort:IsDeltaEmpty() then
     M:AnnounceComplete()
     M:Stop()
     return
@@ -161,9 +161,9 @@ function M:ProcessStep()
     M:StopTimedOut()
     return
   end
-  A.sorterCore:ProcessDelta()
-  if A.debug >= 2 then A.sorterCore:DebugPrintAction() end
-  if A.sorterCore:IsActionScheduled() then
+  A.coreSort:ProcessDelta()
+  if A.debug >= 2 then A.coreSort:DebugPrintAction() end
+  if A.coreSort:IsActionScheduled() then
     R.stepCount = R.stepCount + 1
     M:ScheduleTimeout()
     A.gui:Refresh()
@@ -182,7 +182,7 @@ function M:AnnounceComplete()
   else
     local msg
     if M:IsSplittingRaid() then
-      msg = format(L["sorter.print.split"], A.sorterCore:GetSplitGroups())
+      msg = format(L["sorter.print.split"], A.coreSort:GetSplitGroups())
     else
       msg = L["sorter.print."..R.sortMode]
     end
@@ -195,7 +195,7 @@ function M:AnnounceComplete()
     else
       A.console:Print(msg)
     end
-    if A.debug >= 1 then A.console:Debug(format("steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount)) end
+    if A.debug >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
   end
   R.lastSortMode = R.sortMode
 end
@@ -220,7 +220,7 @@ function M:ScheduleTimeout()
   R.timeoutTimer = M:ScheduleTimer(function ()
     M:ClearTimeout(false)
     R.timeoutCount = (R.timeoutCount or 0) + 1
-    if A.debug >= 1 then A.console:Debug(format("Timeout %d of %d.", R.timeoutCount, MAX_TIMEOUTS)) end
+    if A.debug >= 1 then A.console:Debugf(M, "timeout %d of %d", R.timeoutCount, MAX_TIMEOUTS) end
     if R.timeoutCount >= MAX_TIMEOUTS then
       M:StopTimedOut()
       return

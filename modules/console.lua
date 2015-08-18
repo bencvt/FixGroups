@@ -2,7 +2,7 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("console", "AceConsole-3.0")
 A.console = M
 
-local date, format, print, select, tconcat, tinsert, tostring = date, format, print, select, table.concat, table.insert, tostring
+local date, format, print, select, strfind, tconcat, tinsert, tostring = date, format, print, select, string.find, table.concat, table.insert, tostring
 local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 
 function M:OnEnable()
@@ -18,8 +18,12 @@ function M:Print(...)
   print("|cff33ff99"..A.name.."|r:", ...)
 end
 
+function M:Printf(...)
+  print("|cff33ff99"..A.name.."|r:", format(...))
+end
+
 function M:PrintHelp()
-  M:Print(format(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r"))
+  M:Printf(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r")
   print(format(L["console.help.header"], "|cff1784d1/fixgroups|r", "|cff1784d1/fg|r"))
   print("  |cff1784d1/fg help|r "..L["word.or"].." |cff1784d1/fg about|r - "..L["console.help.help"])
   print("  |cff1784d1/fg config|r "..L["word.or"].." |cff1784d1/fg options|r - "..format(L["console.help.config"], A.name))
@@ -66,23 +70,41 @@ function M:Command(args)
   elseif args == "" or args == "default" then
     A.sorter:StartDefault()
   else
-    M:Print(format(L["console.print.badArgument"], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r"))
+    M:Printf(L["console.print.badArgument"], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r")
     return
   end
 end
 
-function M:Debug(...)
-  print("|cffffcc99"..A.name.." DEBUG ["..date("%H:%M:%S").."]", ..., "|r")
+function M:Errorf(module, ...)
+  print("|cff33ff99"..A.name.."|r internal error in "..module:GetName().." module:", format(...))
 end
 
-function M:DebugMore(...)
-  print("|cffffcc99", ..., "|r")
+local function isDebuggingModule(module)
+  return A.debugModules == "*" or strfind(A.debugModules, module:GetName())
 end
 
-function M:DebugDump(...)
+function M:Debug(module, ...)
+  if isDebuggingModule(module) then
+    print("|cffffcc99["..date("%H:%M:%S").."] "..module:GetName()..":", ..., "|r")
+  end
+end
+
+function M:Debugf(module, ...)
+  if isDebuggingModule(module) then
+    print("|cffffcc99["..date("%H:%M:%S").."] "..module:GetName()..":", format(...), "|r")
+  end
+end
+
+function M:DebugMore(module, ...)
+  if isDebuggingModule(module) then
+    print("|cffffcc99", ..., "|r")
+  end
+end
+
+function M:DebugDump(module, ...)
   local t = {}
   for i = 1, select("#", ...) do
     tinsert(t, tostring(select(i, ...) or "<nil>"))
   end
-  M:Debug(tconcat(t, ", "))
+  M:Debug(module, tconcat(t, ", "))
 end

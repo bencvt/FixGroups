@@ -20,6 +20,7 @@ L["button.resetAllOptions.text"] = "Reset all options to default"
 L["button.resetAllOptions.print"] = "All options reset to default."
 
 -- Minimap icon and raid tab button tooltip
+L["tooltip.header.raidComp"] = "raid: %s"
 L["tooltip.left.clickLeft"] = "Left Click"
 L["tooltip.left.clickRight"] = "Right Click"
 L["tooltip.left.shiftClickLeft"] = "Hold Shift + Left Click"

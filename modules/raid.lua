@@ -6,29 +6,15 @@ M.private = {
   rosterArray = {},
   prevRoster = {},
   prevRosterArray = {},
-  prevComp = "0/0/0",
+  prevCompTHD = "0/0/0",
+  prevCompTMURH = "0,0,0,0,0",
   size = 0,
   groupSizes = {0, 0, 0, 0, 0, 0, 0, 0},
   roleCounts = {0, 0, 0, 0, 0},
-  tmp1 = {},
 }
 local R = M.private
 
 M.ROLES = {TANK=1, MELEE=2, UNKNOWN=3, RANGED=4, HEALER=5}
-local CLASS_DPS_ROLES = {
-  ROGUE       = M.ROLES.MELEE,
-  HUNTER      = M.ROLES.RANGED, -- will change in Legion
-  DRUID       = M.ROLES.UNKNOWN,
-  SHAMAN      = M.ROLES.UNKNOWN,
-  MONK        = M.ROLES.MELEE,
-  PALADIN     = M.ROLES.MELEE,
-  PRIEST      = M.ROLES.RANGED,
-  WARRIOR     = M.ROLES.MELEE,
-  DEATHKNIGHT = M.ROLES.MELEE,
-  DEMONHUNTER = M.ROLES.MELEE,
-  MAGE        = M.ROLES.RANGED,
-  WARLOCK     = M.ROLES.RANGED,
-}
 
 for i = 1, 40 do
   R.rosterArray[i] = {}
@@ -36,10 +22,14 @@ for i = 1, 40 do
 end
 
 local format, ipairs, pairs, tconcat, tinsert, tostring, wipe = format, ipairs, pairs, table.concat, table.insert, tostring, wipe
-local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned = GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned
+local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName = GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName
 
 function M:OnEnable()
-  M:RegisterEvent("GROUP_ROSTER_UPDATE")
+  local f = function () M:ForceBuildRoster() end
+  M:RegisterEvent("GROUP_ROSTER_UPDATE", f)
+  M:RegisterEvent("ZONE_CHANGED", f)
+  M:RegisterEvent("ZONE_CHANGED_INDOORS", f)
+  M:RegisterEvent("ZONE_CHANGED_NEW_AREA", f)
 end
 
 local function wipeRoster()
@@ -56,35 +46,39 @@ local function wipeRoster()
   R.roster = tmp
 
   -- Maintain rosterArray to avoid creating up to 40 new tables every time
-  -- we build the roster.
+  -- we build the roster. The individual tables are wiped on demand.
+  -- There will be leftover data whenever a player drops, but it's harmless.
+  -- The leftover table is not indexed in R.roster and will be re-used if the
+  -- raid refills.
   tmp = R.prevRosterArray
   R.prevRosterArray = R.rosterArray
   R.rosterArray = tmp
-  -- The individual tables are wiped on demand. There will be leftover data
-  -- whenever a player drops, but it's harmless, not indexed in R.roster.
 end
 
 local function buildRoster()
   wipeRoster()
   R.size = GetNumGroupMembers()
+  local lastGroup = A.util:GetMaxGroupsForInstance()
   local p, _, unitRole
   for i = 1, R.size do
     p = wipe(R.rosterArray[i])
     p.index, p.unitID = i, "raid"..i
-    p.name, p.rank, p.group, _, _, p.class = GetRaidRosterInfo(i)
+    p.name, p.rank, p.group, _, _, p.class, p.zone = GetRaidRosterInfo(i)
     if not p.name then
       p.isUnknown = true
       p.name = p.unitID
     end
+    if p.group > lastGroup then
+      p.isSitting = true
+    end
     R.groupSizes[p.group] = R.groupSizes[p.group] + 1
     unitRole = UnitGroupRolesAssigned(p.unitID)
-    local role
     if unitRole == "TANK" then
       p.role = M.ROLES.TANK
     elseif unitRole == "HEALER" then
       p.role = M.ROLES.HEALER
     else
-      p.role = p.class and CLASS_DPS_ROLES[p.class] or M.ROLES.UNKNOWN
+      p.role = A.dpsRole:GetDpsRole(p)
       p.isDPS = true
     end
     R.roleCounts[p.role] = R.roleCounts[p.role] + 1
@@ -92,50 +86,52 @@ local function buildRoster()
   end
 end
 
-function M:GROUP_ROSTER_UPDATE(event)
-  M:ForceBuildRoster()
-end
-
 function M:ForceBuildRoster()
   if not IsInRaid() then
-    R.prevComp = "0/0/0"
+    R.prevCompTHD = "0/0/0"
+    R.prevCompTMURH = "0,0,0,0,0"
     wipeRoster()
     return
   end
   buildRoster()
-  local comp = M:GetCompTHD()
-  if A.debug >= 4 then M:DebugPrintRoster() end
+  local compTHD = M:GetCompTHD()
+  local compTMURH = M:GetCompTMURH()
+  if A.debug >= 2 then M:DebugPrintRoster() end
   
-  local prevGroup
-  for name, p in pairs(R.roster) do
+  local prevGroup, group
+  for name, player in pairs(R.roster) do
     if R.prevRoster[name] then
       prevGroup = R.prevRoster[name].group
-      if p.group ~= prevGroup then
-        if A.debug >= 3 then A.console:Debug(format("RAID_GROUP_CHANGED %s %d -> %d", name, prevGroup, p.group)) end
-        M:SendMessage("FIXGROUPS_RAID_GROUP_CHANGED", name, prevGroup, p.group)
+      group = player.group
+      if prevGroup ~= group then
+        if A.debug >= 1 then A.console:Debugf(M, "RAID_GROUP_CHANGED %s %d->%d", name, prevGroup, group) end
+        M:SendMessage("FIXGROUPS_RAID_GROUP_CHANGED", name, prevGroup, group)
       end
     end
   end
   
-  for name, p in pairs(R.prevRoster) do
-    if not p.isUnknown and not R.roster[name] then
-      if A.debug >= 3 then A.console:Debug(format("RAID_LEFT %s", name)) end
-      M:SendMessage("FIXGROUPS_RAID_LEFT", p)
+  for name, player in pairs(R.prevRoster) do
+    if not player.isUnknown and not R.roster[name] then
+      if A.debug >= 1 then A.console:Debugf(M, "RAID_LEFT %s", name) end
+      -- Message consumers should not modify the player table.
+      M:SendMessage("FIXGROUPS_RAID_LEFT", player)
     end
   end
   
-  for name, p in pairs(R.roster) do
-    if not p.isUnknown and not R.prevRoster[name] then
-      if A.debug >= 3 then A.console:Debug(format("RAID_JOINED %s", name)) end
-      M:SendMessage("FIXGROUPS_RAID_JOINED", p)
+  for name, player in pairs(R.roster) do
+    if not player.isUnknown and not R.prevRoster[name] then
+      if A.debug >= 1 then A.console:Debugf(M, "RAID_JOINED %s", name) end
+      -- Message consumers should not modify the player table.
+      M:SendMessage("FIXGROUPS_RAID_JOINED", player)
     end
   end
   
-  if R.prevComp ~= comp then
-    if A.debug >= 2 then A.console:Debug(format("RAID_COMP_CHANGED %s -> %s", tostring(R.prevComp), comp)) end
-    M:SendMessage("FIXGROUPS_RAID_COMP_CHANGED", tostring(R.prevComp), comp)
+  if R.prevCompTMURH ~= compTMURH or R.prevCompTHD ~= compTHD then
+    if A.debug >= 1 then A.console:Debugf(M, "RAID_COMP_CHANGED %s->%s (%s->%s)", R.prevCompTHD, compTHD, R.prevCompTMURH, compTMURH) end
+    M:SendMessage("FIXGROUPS_RAID_COMP_CHANGED", R.prevCompTHD, compTHD, R.prevCompTMURH, compTMURH)
   end
-  R.prevComp = comp
+  R.prevCompTMURH = compTMURH
+  R.prevCompTHD = compTHD
 end
 
 function M:NumSitting()
@@ -190,19 +186,21 @@ function M:IsDPS(name)
   return name and R.roster[name] and R.roster[name].isDPS and true or false
 end
 
+function M:IsInSameZone(name)
+  if IsInRaid() and R.roster[name] then
+    return R.roster[name].zone == R.roster[UnitName("player")].zone
+  end
+end
+
 function M:DebugPrintRoster()
-  A.console:Debug(format("roster size=%d groupSizes=%s compTHD=%s compTMURH=%s:", R.size, tconcat(R.groupSizes, ","), M:GetCompTHD(), M:GetCompTMURH()))
-  local p, sorted, line
-  for i = 1, 40 do
-    p = R.roster[i]
-    if not p.name then
-      return
-    end
-    sorted = A.util:SortedKeys(p, R.tmp1)
+  A.console:Debugf(M, "roster size=%d groupSizes=%s compTHD=%s compTMURH=%s:", R.size, tconcat(R.groupSizes, ","), M:GetCompTHD(), M:GetCompTMURH())
+  local p, line
+  for i = 1, R.size do
+    p = R.rosterArray[i]
     line = " "
-    for _, k in ipairs(sorted) do
+    for _, k in ipairs(A.util:SortedKeys(p)) do
       line = line.." "..k.."="..tostring(p[k])
     end
-    A.console:DebugMore(line)
+    A.console:DebugMore(M, line)
   end
 end

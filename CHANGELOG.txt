@@ -1,6 +1,10 @@
 v1.2:
-  - added mostly-complete German translation, Dankeschön @pas06
+  - add mostly-complete German translation, Dankeschön @pas06
+  - resolve ticket #9: DPS Shamans and Druids are now sorted correctly
+  - display raid comp (e.g. "2/3/10") in button/icon tooltips
+  - keyword matching is now case-insensitive
   - fix issue with minimap icon not appearing after resetting options
+  - more code refactoring
 
 v1.1:
   - resolve ticket #2: locale support

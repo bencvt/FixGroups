@@ -25,11 +25,13 @@ addon.lua
 
 modules\addonChannel.lua
 modules\console.lua
+modules\coreSort.lua
+modules\dpsRole.lua
 modules\gui.lua
+modules\inspect.lua
 modules\marker.lua
 modules\meter.lua
 modules\options.lua
 modules\raid.lua
 modules\sorter.lua
-modules\sorterCore.lua
 modules\util.lua

@@ -115,7 +115,7 @@ function M:BuildSnapshot()
     A.console:Print(format(L["meter.print.noDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
   end
   calculateAverages()
-  if A.debug >= 3 then M:DebugPrintMeterSnapshot() end
+  if A.debug >= 1 then M:DebugPrintMeterSnapshot() end
 end
 
 function M:GetPlayerMeter(name)
@@ -126,9 +126,9 @@ function M:GetPlayerMeter(name)
 end
 
 function M:DebugPrintMeterSnapshot()
-  A.console:Debug("meter.snapshot:")
+  A.console:Debug(M, "snapshot:")
   local sorted = A.util:SortedKeys(R.snapshot, R.tmp1)
   for _, k in ipairs(sorted) do
-    A.console:DebugMore("  "..k.."="..R.snapshot[k])
+    A.console:DebugMore(M, "  "..k.."="..R.snapshot[k])
   end
 end
