@@ -3,6 +3,7 @@ v1.2:
   - resolve ticket #9: DPS Shamans and Druids are now sorted correctly
   - display raid comp (e.g. "2/3/10") in button/icon tooltips
   - keyword matching is now case-insensitive
+  - fix Lua error when config menu gets closed immediately
   - fix issue with minimap icon not appearing after resetting options
   - more code refactoring
 

@@ -89,7 +89,7 @@ function M:INSPECT_READY(event, guid)
     if not SPECID_ROLES[specId] then
       return
     end
-    fullName = A.util:GetFullName(name)
+    fullName = A.util:UnitNameWithRealm(name)
     if not fullName then
       return
     end

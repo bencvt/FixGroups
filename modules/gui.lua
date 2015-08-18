@@ -12,7 +12,7 @@ local R = M.private
 local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
-local strfind, strlower, unpack = string.find, string.lower, unpack
+local format, strfind, strlower, unpack = string.format, string.find, string.lower, unpack
 local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName
 
 local function handleClick(_, button)
