@@ -74,9 +74,13 @@ local function watchChat(event, message, sender)
   end
 end
 
+local function refresh()
+  M:Refresh()
+end
+
 function M:OnEnable()
-  M:RegisterEvent("PLAYER_ENTERING_WORLD")
-  M:RegisterEvent("GROUP_ROSTER_UPDATE")
+  M:RegisterEvent("PLAYER_ENTERING_WORLD",          refresh)
+  M:RegisterEvent("GROUP_ROSTER_UPDATE",            refresh)
   M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT",         watchChat)
   M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT_LEADER",  watchChat)
   M:RegisterEvent("CHAT_MSG_RAID",                  watchChat)
@@ -125,14 +129,6 @@ function M:OnEnable()
 end
 
 function M:OnDisable()
-  M:Refresh()
-end
-
-function M:PLAYER_ENTERING_WORLD(event)
-  M:Refresh()
-end
-
-function M:GROUP_ROSTER_UPDATE(event)
   M:Refresh()
 end
 

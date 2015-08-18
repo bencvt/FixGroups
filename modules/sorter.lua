@@ -77,6 +77,7 @@ end
 
 function M:StopTimedOut()
   A.console:Print(L["sorter.print.timedOut"])
+  if A.debug >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
   M:Stop()
 end
 
@@ -123,13 +124,13 @@ function M:StartSplit()
 end
 
 function M:StartDefault()
-  local m = A.options.sortMode
-  if m == "TMURH" or m == "THMUR" or m == "meter" then
-    start(m)
+  local mode = A.options.sortMode
+  if mode == "TMURH" or mode == "THMUR" or mode == "meter" then
+    start(mode)
   else
     M:Stop()
-    if m ~= "nosort" then
-      A.console:Errorf(M, "invalid sort mode %s!", tostring(m or "<nil>"))
+    if mode ~= "nosort" then
+      A.console:Errorf(M, "invalid sort mode %s!", tostring(mode or "<nil>"))
     end
   end
 end
