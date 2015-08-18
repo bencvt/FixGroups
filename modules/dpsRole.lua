@@ -162,7 +162,7 @@ function M:GetDpsRole(player)
   -- If that's no help, look up the player's specId using the inspect module.
   -- If the db cache has data, use it for the time being, until the inspect
   -- request is complete.
-  local fullName = A.util:UnitNameWithRealm(player.name)
+  local fullName = A.util:NameAndRealm(player.name)
   if R.sessionCache.melee[fullName] then
     return A.raid.ROLES.MELEE
   elseif R.sessionCache.ranged[fullName] then

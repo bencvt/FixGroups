@@ -84,9 +84,12 @@ function M:UnitNameWithColor(unitID)
   return "|c"..M:UnitClassColor(unitID)..(UnitName(unitID) or "Unknown").."|r"
 end
 
-function M:UnitNameWithRealm(unitID)
-  local name, realm = UnitFullName(unitID)
-  return name.."-"..realm
+function M:NameAndRealm(name)
+  if strfind(name, "-") then
+    return name
+  end
+  local realm = select(2, UnitFullName(unitID))
+  return realm and (name.."-"..realm) or name
 end
 
 function M:StripRealm(name)
