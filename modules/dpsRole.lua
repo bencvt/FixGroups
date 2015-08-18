@@ -8,27 +8,26 @@ M.private = {
 }
 local R = M.private
 
-local ROLE_MELEE, ROLE_RANGED = 1, 2
 local CLASS_DPS_ROLES = {
-  ROGUE       = ROLE_MELEE,
-  HUNTER      = ROLE_RANGED, -- remove for Legion
-  MONK        = ROLE_MELEE,
-  PALADIN     = ROLE_MELEE,
-  PRIEST      = ROLE_RANGED,
-  WARRIOR     = ROLE_MELEE,
-  DEATHKNIGHT = ROLE_MELEE,
-  DEMONHUNTER = ROLE_MELEE,
-  MAGE        = ROLE_RANGED,
-  WARLOCK     = ROLE_RANGED,
+  ROGUE       = "melee",
+  HUNTER      = "ranged", -- remove for Legion
+  MONK        = "melee",
+  PALADIN     = "melee",
+  PRIEST      = "ranged",
+  WARRIOR     = "melee",
+  DEATHKNIGHT = "melee",
+  DEMONHUNTER = "melee",
+  MAGE        = "ranged",
+  WARLOCK     = "ranged",
 }
 local SPECID_ROLES = {
-  [102] = ROLE_RANGED,  -- Balance Druid
-  [103] = ROLE_MELEE,   -- Feral Druid
-  [253] = ROLE_RANGED,  -- Beast Mastery Hunter
-  [254] = ROLE_RANGED,  -- Marksmanship Hunter
-  [255] = ROLE_RANGED,  -- Survival Hunter - change to MELEE for Legion
-  [262] = ROLE_RANGED,  -- Elemental Shaman
-  [263] = ROLE_MELEE,   -- Enhancement Shaman
+  [102] = "ranged",  -- Balance Druid
+  [103] = "melee",   -- Feral Druid
+  [253] = "ranged",  -- Beast Mastery Hunter
+  [254] = "ranged",  -- Marksmanship Hunter
+  [255] = "ranged",  -- Survival Hunter - change to MELEE for Legion
+  [262] = "ranged",  -- Elemental Shaman
+  [263] = "melee",   -- Enhancement Shaman
 }
 local DELAY_DB_CLEANUP = 20.0
 local DB_CLEANUP_MAX_AGE_DAYS = 21
@@ -100,9 +99,9 @@ function M:INSPECT_READY(event, guid)
   -- Remove from needToInspect and add to sessionCache.
   R.needToInspect[name] = nil
   local roleYes, roleNo
-  if SPECID_ROLES[specId] == ROLE_MELEE then
+  if SPECID_ROLES[specId] == "melee" then
     roleYes, roleNo = "melee", "ranged"
-  elseif SPECID_ROLES[specId] == ROLE_RANGED then
+  elseif SPECID_ROLES[specId] == "ranged" then
     roleYes, roleNo = "ranged", "melee"
   else
     -- Shouldn't ever happen.
@@ -138,7 +137,7 @@ end
 function M:GetDpsRole(player)
   -- Check for unambiguous classes.
   if player.class and CLASS_DPS_ROLES[player.class] then
-    return (CLASS_DPS_ROLES[player.class] == ROLE_MELEE) and A.raid.ROLES.MELEE or A.raid.ROLES.RANGED
+    return (CLASS_DPS_ROLES[player.class] == "melee") and A.raid.ROLES.MELEE or A.raid.ROLES.RANGED
   end
 
   -- Sanity check unit name.
@@ -150,9 +149,9 @@ function M:GetDpsRole(player)
   if UnitIsUnit(player.name, "player") then
     local specId = GetSpecializationInfo(GetSpecialization())
     if specId then
-      if SPECID_ROLES[specId] == ROLE_MELEE then
+      if SPECID_ROLES[specId] == "melee" then
         return A.raid.ROLES.MELEE
-      elseif SPECID_ROLES[specId] == ROLE_RANGED then
+      elseif SPECID_ROLES[specId] == "ranged" then
         return A.raid.ROLES.RANGED
       end
     end
