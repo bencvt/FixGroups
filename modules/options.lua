@@ -96,6 +96,11 @@ R.optionsTable = {
         -- We use a short timer to delay the tree walk: at the time the hidden
         -- function is called, the tree hasn't been built yet.
         M:ScheduleTimer(function()
+          if not R.optionsGUI.obj.children[1] then
+            -- The GUI tree does not exist any more.
+            -- The player must have closed the options window immediately.
+            return
+          end
           for _, g in ipairs(R.optionsGUI.obj.children[1].frame.obj.children) do
             if g.type == "Button" then
               -- Enable right-click on all buttons in the options pane.
