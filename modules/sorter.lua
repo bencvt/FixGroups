@@ -42,7 +42,7 @@ function M:FIXGROUPS_RAID_GROUP_CHANGED(event, name, prevGroup, group)
 end
 
 function M:IsSortingHealersBeforeDps()
-  return R.sortMode == "THMUR"
+  return A.options.sortMode == "THMUR" and R.sortMode ~= "TMURH"
 end
 
 function M:IsSortingByMeter()
