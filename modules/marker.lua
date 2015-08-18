@@ -8,7 +8,7 @@ M.private = {
 }
 local R = M.private
 
-local format, min, sort, tinsert, wipe = format, math.min, sort, table.insert, wipe
+local min, sort, tinsert, wipe = math.min, sort, table.insert, wipe
 local GetNumGroupMembers, GetRaidRosterInfo, GetRaidTargetIndex, IsInInstance, IsInRaid, PromoteToAssistant, SetLootMethod, SetRaidTarget, UnitExists, UnitGroupRolesAssigned, UnitName = GetNumGroupMembers, GetRaidRosterInfo, GetRaidTargetIndex, IsInInstance, IsInRaid, PromoteToAssistant, SetLootMethod, SetRaidTarget, UnitExists, UnitGroupRolesAssigned, UnitName
 
 function M:FixParty()
@@ -109,17 +109,17 @@ function M:FixRaid(isRequestFromAssist)
     if #unsetTanks > 0 then
       bad = true
       if #unsetTanks == 1 then
-        A.console:Print(format(L["marker.print.needSetMainTank"], A.util:tconcat2(unsetTanks)))
+        A.console:Printf(L["marker.print.needSetMainTank"], A.util:tconcat2(unsetTanks))
       else
-        A.console:Print(format(L["marker.print.needSetMainTanks"], A.util:tconcat2(unsetTanks)))
+        A.console:Printf(L["marker.print.needSetMainTanks"], A.util:tconcat2(unsetTanks))
       end
     end
     if #setNonTanks > 0 then
       bad = true
       if #setNonTanks == 1 then
-        A.console:Print(format(L["marker.print.needClearMainTank"], A.util:tconcat2(setNonTanks)))
+        A.console:Printf(L["marker.print.needClearMainTank"], A.util:tconcat2(setNonTanks))
       else
-        A.console:Print(format(L["marker.print.needClearMainTanks"], A.util:tconcat2(setNonTanks)))
+        A.console:Printf(L["marker.print.needClearMainTanks"], A.util:tconcat2(setNonTanks))
       end
     end
     if bad then

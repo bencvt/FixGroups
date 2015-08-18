@@ -9,7 +9,7 @@ local R = M.private
 
 local DETAILS_SEGMENTS = {"overall", "current"}
 
-local format, ipairs, pairs, select, tinsert, wipe = string.format, ipairs, pairs, select, table.insert, wipe
+local ipairs, pairs, select, tinsert, wipe = ipairs, pairs, select, table.insert, wipe
 local GetUnitName = GetUnitName
 
 local function loadSkada()
@@ -110,9 +110,9 @@ function M:BuildSnapshot()
     return
   end
   if success then
-    A.console:Print(format(L["meter.print.usingDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
+    A.console:Printf(L["meter.print.usingDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r")
   else
-    A.console:Print(format(L["meter.print.noDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r"))
+    A.console:Printf(L["meter.print.noDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r")
   end
   calculateAverages()
   if A.debug >= 1 then M:DebugPrintMeterSnapshot() end

@@ -195,7 +195,7 @@ function M:ProcessDelta()
     end
   end
   -- Should never get here.
-  A.console:Errorf("unable to find slot for %s!", R.action.name)
+  A.console:Errorf(M, "unable to find slot for %s!", R.action.name)
 end
 
 function M:IsActionScheduled()
