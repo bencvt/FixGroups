@@ -39,13 +39,13 @@ local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 -- The delta table is an array of players who are in the wrong group.
 function M:BuildDelta()
   -- Build temporary tables tracking players.
-  local healersFirst = A.sorter:IsSortingHealersBeforeDps()
+  local sortRoles = A.sorter:IsSortingHealersBeforeDps() and SORT_ROLES_THMUR or SORT_ROLES_TMURH
   local keys = wipe(R.tmp1)
   local playersByKey = wipe(R.tmp2)
   local k
   for name, p in pairs(A.raid:GetRoster()) do
     if not p.isSitting then
-      k = (healersFirst and SORT_ROLES_THMUR or SORT_ROLES_TMURH)[p.role]..(p.class and SORT_CLASS[p.class] or SORT_CLASS["_unknown"])..(p.isUnknown and ("_"..name) or name)
+      k = sortRoles[p.role]..(p.class and SORT_CLASS[p.class] or SORT_CLASS["_unknown"])..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       playersByKey[k] = p
     end
@@ -54,26 +54,24 @@ function M:BuildDelta()
   -- Sort keys.
   -- TODO: potential hook for plugins that want to implement a custom sort mode.
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
-    local pa, pb
+    local TANK, HEALER = A.raid.ROLES.TANK, A.raid.ROLES.HEALER
     sort(keys, function(a, b)
       if not a or not b then
         -- Sanity check
-        return 0 < 0
+        return 0 < 1
       end
-      pa, pb = playersByKey[a], playersByKey[b]
-      if pa.role == pb.role and pa.role == A.raid.ROLES.TANK then
-        -- Tanks get a pass. Fall back to default sort.
-        return a < b
-      elseif pa.role == pb.role and (pa.role == A.raid.ROLES.HEALER or pb.role == A.raid.ROLES.HEALER) then
-        -- Healers get compared to each other, not to DPS.
-        return (healersFirst and pa.role or pb.role) == A.raid.ROLES.HEALER
+      local pa, pb = playersByKey[a], playersByKey[b]
+      if pa.role ~= pb.role then
+        if pa.role == HEALER or pb.role == HEALER or pa.role == TANK or pb.role == TANK then
+          -- Tanks and healers are in their own brackets.
+          return a < b
+        end
       end
       pa, pb = A.meter:GetPlayerMeter(pa.name), A.meter:GetPlayerMeter(pb.name)
       if pa == pb then
         -- Tie, or no data. Fall back to default sort.
         return a < b
       end
-      -- Apples to apples.
       return pa > pb
     end)
   else
