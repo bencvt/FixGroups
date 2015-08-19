@@ -54,9 +54,8 @@ function M:BuildDelta()
   -- Sort keys.
   -- TODO: potential hook for plugins that want to implement a custom sort mode.
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
-    local pa, pb
     sort(keys, function(a, b)
-      pa, pb = playersByKey[a], playersByKey[b]
+      local pa, pb = playersByKey[a], playersByKey[b]
       if pa.role == pb.role and pa.role == A.raid.ROLES.TANK then
         -- Tanks get a pass. Fall back to default sort.
         return a < b
