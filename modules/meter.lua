@@ -62,7 +62,7 @@ local function loadDetails()
   -- default. So it's entirely possible that there is a current segment but no
   -- overall segment. We check for both: some data is better than no data.
   local found
-  for _, segment in ipairs(R.DETAILS_SEGMENTS) do
+  for _, segment in ipairs(DETAILS_SEGMENTS) do
     if not found and Details.GetActor and (Details:GetActor(segment, 1) or Details:GetActor(segment, 2)) then
       found = true
       local damage, healing
