@@ -52,6 +52,7 @@ function M:BuildDelta()
   end
 
   -- Sort keys.
+  -- TODO: potential hook for plugins that want to implement a custom sort mode.
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
     local pa, pb
     sort(keys, function(a, b)
