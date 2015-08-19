@@ -14,7 +14,7 @@ local R = M.private
 local DELAY_ACTION = 0.1
 -- SORT_ROLES_x indexes correspond to A.raid.ROLES constants.
 local SORT_ROLES_TMURH = {"a", "b", "c", "c", "d"}
-local SORT_ROLES_THMUR = {"a", "d", "b", "c", "c"}
+local SORT_ROLES_THMUR = {"a", "c", "d", "d", "b"}
 -- Pure DPS classes are at the far ends to avoid having, e.g.,
 -- shadow priests in the healer group.
 local SORT_CLASS = {
