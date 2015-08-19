@@ -45,7 +45,7 @@ function M:BuildDelta()
   local k
   for name, p in pairs(A.raid:GetRoster()) do
     if not p.isSitting then
-      k = (healersFirst and SORT_ROLES_THMUR or SORT_ROLES_TMURH)[p.role]..(p.class and SORT_CLASS[p.class] or SORT_CLASS["_unknown"])..(p.isUnknown and name or ("_"..name))
+      k = (healersFirst and SORT_ROLES_THMUR or SORT_ROLES_TMURH)[p.role]..(p.class and SORT_CLASS[p.class] or SORT_CLASS["_unknown"])..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       playersByKey[k] = p
     end
@@ -54,8 +54,13 @@ function M:BuildDelta()
   -- Sort keys.
   -- TODO: potential hook for plugins that want to implement a custom sort mode.
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
+    local pa, pb
     sort(keys, function(a, b)
-      local pa, pb = playersByKey[a], playersByKey[b]
+      if not a or not b then
+        -- Sanity check
+        return 0 < 0
+      end
+      pa, pb = playersByKey[a], playersByKey[b]
       if pa.role == pb.role and pa.role == A.raid.ROLES.TANK then
         -- Tanks get a pass. Fall back to default sort.
         return a < b
