@@ -80,18 +80,18 @@ function M:Errorf(module, ...)
 end
 
 local function isDebuggingModule(module)
-  return A.debugModules == "*" or strfind(A.debugModules, module:GetName())
+  return not module or A.debugModules == "*" or strfind(A.debugModules, module:GetName())
 end
 
 function M:Debug(module, ...)
   if isDebuggingModule(module) then
-    print("|cffffcc99["..date("%H:%M:%S").."] "..module:GetName()..":", ..., "|r")
+    print("|cffffcc99["..date("%H:%M:%S").."] "..(module and module:GetName() or "")..":", ..., "|r")
   end
 end
 
 function M:Debugf(module, ...)
   if isDebuggingModule(module) then
-    print("|cffffcc99["..date("%H:%M:%S").."] "..module:GetName()..":", format(...), "|r")
+    print("|cffffcc99["..date("%H:%M:%S").."] "..(module and module:GetName() or "")..":", format(...), "|r")
   end
 end
 
