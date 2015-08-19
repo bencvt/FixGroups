@@ -31,9 +31,10 @@ local SPECID_ROLES = {
 }
 local DELAY_DB_CLEANUP = 20.0
 local DB_CLEANUP_MAX_AGE_DAYS = 21
+local DB_CLEANUP_PUG_PENALTY = 60*60*24*(DB_CLEANUP_MAX_AGE_DAYS - 1)
 
 local format, pairs, select, tconcat, time, tostring = format, pairs, select, table.concat, time, tostring
-local GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, InCombatLockdown, UnitExists, UnitIsUnit = GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, InCombatLockdown, UnitExists, UnitIsUnit
+local GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, InCombatLockdown, UnitExists, UnitIsInMyGuild, UnitIsUnit = GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, InCombatLockdown, UnitExists, UnitIsInMyGuild, UnitIsUnit
 
 local function cleanDbCache(role)
   local earliest = time() - (60*60*24*DB_CLEANUP_MAX_AGE_DAYS)
@@ -113,8 +114,12 @@ function M:INSPECT_READY(event, guid)
   if A.debug >= 2 then A.console:Debugf(M, "sessionCache.%s add %s", roleYes, fullName) end
 
   -- Add to dbCache.
-  -- TODO: exclude (or expire sooner) random PUGs, preferring friends and guildies.
-  A.db.faction.dpsRoleCache[roleYes][fullName] = time()
+  local ts = time()
+  if not UnitIsInMyGuild(name) then
+    -- Non-guildies (i.e., PUGs) are cached for a much shorter time.
+    ts = ts - DB_CLEANUP_PUG_PENALTY
+  end
+  A.db.faction.dpsRoleCache[roleYes][fullName] = ts
   A.db.faction.dpsRoleCache[roleNo][fullName] = nil
   if A.debug >= 1 then A.console:Debugf(M, "dbCache.%s add %s", roleYes, fullName) end
 
