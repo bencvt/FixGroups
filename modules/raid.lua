@@ -27,6 +27,7 @@ local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, U
 function M:OnEnable()
   local f = function () M:ForceBuildRoster() end
   M:RegisterEvent("GROUP_ROSTER_UPDATE", f)
+  M:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", f)
   M:RegisterEvent("ZONE_CHANGED", f)
   M:RegisterEvent("ZONE_CHANGED_INDOORS", f)
   M:RegisterEvent("ZONE_CHANGED_NEW_AREA", f)
