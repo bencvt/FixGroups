@@ -55,12 +55,9 @@ function M:BuildDelta()
   -- TODO: potential hook for plugins that want to implement a custom sort mode.
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
     local TANK, HEALER = A.raid.ROLES.TANK, A.raid.ROLES.HEALER
+    local pa, pb
     sort(keys, function(a, b)
-      if not a or not b then
-        -- Sanity check
-        return 0 < 1
-      end
-      local pa, pb = playersByKey[a], playersByKey[b]
+      pa, pb = playersByKey[a], playersByKey[b]
       if pa.role ~= pb.role then
         if pa.role == HEALER or pb.role == HEALER or pa.role == TANK or pb.role == TANK then
           -- Tanks and healers are in their own brackets.
