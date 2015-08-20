@@ -97,7 +97,7 @@ local function isWaitingOnPreviousRoll()
   if R.rollTimestamp then
     local wait = R.rollTimestamp + ROLL_TIMEOUT - time()
     if wait > 0 then
-      A.console:Printf(L["choose.print.busy"], wait)
+      A.console:Print(L["choose.print.busy"])
       return true
     end
   end

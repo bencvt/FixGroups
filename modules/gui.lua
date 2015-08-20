@@ -15,8 +15,8 @@ local DELAY_FLASH = 0.5
 local format, strfind, strlower, unpack = string.format, string.find, string.lower, unpack
 local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName
 
-L["chatKeyword.fixGroups"] = strlower(L["chatKeyword.fixGroups"])
-L["chatKeyword.markTanks"] = strlower(L["chatKeyword.markTanks"])
+local LOCALE_KW_1 = strlower(string.trim(L["chatKeyword.fixGroups"]))
+local LOCALE_KW_2 = strlower(string.trim(L["chatKeyword.markTanks"]))
 
 local function handleClick(_, button)
   if button == "RightButton" then
@@ -70,7 +70,7 @@ local function watchChat(event, message, sender)
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
     -- Search for both the default and the localized keywords.
     message = strlower(message)
-    if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, L["chatKeyword.fixGroups"]) or strfind(message, L["chatKeyword.markTanks"]) then
+    if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, LOCALE_KW_1) or strfind(message, LOCALE_KW_2) then
       M:OpenRaidTab()
       M:FlashRaidTabButton()
     end
