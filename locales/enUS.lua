@@ -116,18 +116,22 @@ L["console.print.badArgument"] = "Unknown argument %s. Type %s for valid argumen
 
 -- Choose module
 L["choose.help.header"] = "Arguments for the %s command (or %s):"
-L["choose.help.help"] = "you're reading it"
 L["choose.help.option.arg"] = "<option1>, <option2>[, <option3> etc.]"
 L["choose.help.option"] = "choose a random option"
 L["choose.help.role.arg"] = "<role>"
 L["choose.help.role"] = "choose a random player, role can be %s"
 L["choose.help.class.arg"] = "<class>"
 L["choose.help.class"] = "choose a random player of a particular class"
+L["choose.help.class.arg"] = "<class>"
+L["choose.help.token.arg"] = "<token>"
+L["choose.help.token"] = "choose a random player on a particular tier token: %s"
 L["choose.help.blank"] = "choose any random player"
-L["choose.help.examples"] = "Examples: %s"
+L["choose.help.examples"] = "Type %s for examples."
+L["choose.examples.header"] = "Here are some ways to use the %s command:"
 L["choose.print.choosing.option"] = "Choosing a random option."
 L["choose.print.choosing.player"] = "Choosing a random player."
 L["choose.print.choosing.class"] = "Choosing a random %s."
+L["choose.print.choosing.token"] = "Choosing a random %s."
 L["choose.print.choosing.tank"] = "Choosing a random tank."
 L["choose.print.choosing.healer"] = "Choosing a random healer."
 L["choose.print.choosing.dps"] = "Choosing a random DPS."
@@ -139,7 +143,20 @@ L["choose.print.chose.option"] = "Chose option #%d: %s."
 L["choose.print.chose.player"] = "Chose option #%d: %s in group %d."
 L["choose.print.badArgument"] = "Unknown argument %s. Type %s for valid arguments."
 
--- AddonChanel module
+L["choose.role.any"] = "any"
+L["choose.role.tank"] = "tank"
+L["choose.role.healer"] = "healer"
+L["choose.role.damager"] = "dps"
+L["choose.role.melee"] = "melee"
+L["choose.role.ranged"] = "ranged"
+L["choose.tierToken.conqueror"] = "Conqueror"
+L["choose.tierToken.conqueror.short"] = "conq"
+L["choose.tierToken.protector"] = "Protector"
+L["choose.tierToken.protector.short"] = "prot"
+L["choose.tierToken.vanquisher"] = "Vanquisher"
+L["choose.tierToken.vanquisher.short"] = "vanq"
+
+-- AddonChannel module
 L["addonChannel.print.newerVersion"] = "%s version %s is available. You're currently running version %s."
 
 -- Marker module

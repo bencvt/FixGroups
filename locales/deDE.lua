@@ -23,7 +23,6 @@ L["chatKeyword.markTanks"] = "tanks markieren"
 -- L["choose.help.class.arg"] = ""
 -- L["choose.help.examples"] = ""
 L["choose.help.header"] = "Argumente für den %s Befehl (oder %s):"
-L["choose.help.help"] = "Du liest es gerade" -- Needs review
 -- L["choose.help.option"] = ""
 -- L["choose.help.option.arg"] = ""
 -- L["choose.help.role"] = ""

@@ -15,6 +15,9 @@ local DELAY_FLASH = 0.5
 local format, strfind, strlower, unpack = string.format, string.find, string.lower, unpack
 local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName
 
+L["chatKeyword.fixGroups"] = strlower(L["chatKeyword.fixGroups"])
+L["chatKeyword.markTanks"] = strlower(L["chatKeyword.markTanks"])
+
 local function handleClick(_, button)
   if button == "RightButton" then
     if IsShiftKeyDown() then

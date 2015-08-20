@@ -21,7 +21,7 @@ function M:LocaleLowerNoun(noun)
   return strlower(noun)
 end
 
-function M:tconcat2(t)
+function M:LocaleTableConcat(t)
   local sz = #t
   if sz == 0 then
     return ""
