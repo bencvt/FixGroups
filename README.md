@@ -8,7 +8,14 @@ Instead of manually dragging players around in the raid tab, just click a **sing
 
  * **Mark** tanks and ensure they have **assist**.
 
- * **Split** your raid into two roughly equal sides for raid encounters that need it. Manually combing through damage meters to ensure that your heavy hitters are spread appropriately is for the birds. FixGroups takes care of that for you, integrating with your damage meter addon directly. Recount, Skada, and Details! are all supported.
+ * **Split** your raid into two roughly equal sides for raid encounters that need it. Manually combing through damage meters to ensure that your heavy hitters are spread appropriately is for the birds. FixGroups takes care of that for you, integrating with your damage meter addon directly. **Recount**, **Skada**, **TinyDPS**, and **Details!** are all supported.
+
+ * **Choose** a "volunteer" when you need someone to handle a certain mechanic in a fight using the **/choose** console command. You can narrow down the candidate pool by using **/choose ranged**, **/choose hunter**, etc. This command has many other uses as well. Type **/choose help** in-game for details.
+
+ * **Track** your raid comp automatically. An example comp is **`2/3/10 (4+6)`**, which is shorthand for *"a raid composed of 2 tanks, 3 healers, and 10 dps, 4 of which are melee and 6 of which are ranged."*
+   * Whenever a player joins or leaves your raid, the **server message** now includes the new comp. Example: *"Deadlydk has joined the raid group. 2/3/11 (5+6)."*
+   * The FixGroups button/icon **tooltip** includes the comp.
+   * If you're using **ElvUI**, the raid comp is available as a DataText.
 
 ## Links
 

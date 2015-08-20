@@ -1,5 +1,7 @@
 v1.2.1:
   - add /choose command
+  - add support for TinyDPS damage meter addon
+  - add ElvUI DataText raid comp
   - console commands are now case-insensitive
 
 v1.2:
