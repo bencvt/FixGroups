@@ -6,11 +6,20 @@ M.private = {
 }
 local R = M.private
 
-local floor, max, pairs, select, sort, strfind, strmatch, strsplit, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, sort, string.find, string.match, strsplit, table.concat, table.insert, table.remove, wipe
+local floor, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, sort, string.find, string.lower, string.match, strsplit, table.concat, table.insert, table.remove, wipe
 local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
 
-local SERIAL_COMMA = ((GetLocale() == "enUS") and "," or "")
+function M:LocaleSerialComma()
+  return (GetLocale() == "enUS") and "," or ""
+end
+
+function M:LocaleLowerNoun(noun)
+  if GetLocale() == "deDE" then
+    return noun
+  end
+  return strlower(noun)
+end
 
 function M:tconcat2(t)
   local sz = #t
@@ -23,7 +32,7 @@ function M:tconcat2(t)
   end
   -- Temporarily modify the table get the ", and " in, then restore.
   local saveY, saveZ = t[sz-1], t[sz]
-  t[sz-1] = t[sz-1]..SERIAL_COMMA.." "..L["word.and"].." "..t[sz]
+  t[sz-1] = t[sz-1]..M:LocaleSerialComma().." "..L["word.and"].." "..t[sz]
   tremove(t)
   local result = tconcat(t, ", ")
   t[sz-1], t[sz] = saveY, saveZ

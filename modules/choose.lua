@@ -74,7 +74,8 @@ function M:PrintHelp()
   print(format("  |cff1784d1/choose help|r %s |cff1784d1/choose about|r - %s", L["word.or"], L["choose.help.help"]))
   print(format("  |cff1784d1/choose %s|r - %s", L["choose.help.option.arg"], L["choose.help.option"]))
   print(format("  |cff1784d1/choose %s|r - %s", L["choose.help.class.arg"], L["choose.help.class"]))
-  print(format("  |cff1784d1/choose %s|r - %s", L["choose.help.role.arg"], format(L["choose.help.role"], "|cff1784d1tank|r, |cff1784d1healer|r, |cff1784d1dps|r, |cff1784d1ranged|r "..L["word.or"].." |cff1784d1melee|r")))
+  local validRoles = format("|cff1784d1tank|r, |cff1784d1healer|r, |cff1784d1dps|r, |cff1784d1ranged|r%s %s |cff1784d1melee|r", A.util:LocaleSerialComma(), L["word.or"])
+  print(format("  |cff1784d1/choose %s|r - %s", L["choose.help.role.arg"], format(L["choose.help.role"], validRoles)))
   print(format("  |cff1784d1/choose|r - %s", L["choose.help.blank"]))
   print(format(L["choose.help.examples"], "\"|cff1784d1/choose melee|r\", \"|cff1784d1/choose hunter|r\", \"|cff1784d1/choose A B C|r\", \"|cff1784d1/choose give up,keep trying|r\", \"|cff1784d1/choose Highmaul, Blackrock Foundry, Hellfire Citadel|r\""))
 end
@@ -171,10 +172,13 @@ local function choosePlayer(mode, class)
   sort(R.options)
   
   if mode == "class" then
-    class = LOCALIZED_CLASS_NAMES_MALE[class]
+    class = A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE[class])
     local classFemale = LOCALIZED_CLASS_NAMES_FEMALE[class]
-    if classFemale and class ~= classFemale then
-      class = class.." "..L["word.or"].." "..classFemale
+    if classFemale then
+      classFemale = A.util:LocaleLowerNoun(classFemale)
+      if class ~= classFemale then
+        class = class.." "..L["word.or"].." "..classFemale
+      end
     end
   end
   

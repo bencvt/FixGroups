@@ -12,26 +12,14 @@ M.private = {
 local R = M.private
 
 local DELAY_ACTION = 0.1
--- SORT_ROLES_x indexes correspond to A.raid.ROLES constants.
-local SORT_ROLES_TMURH = {"a", "b", "c", "c", "d"}
-local SORT_ROLES_THMUR = {"a", "c", "d", "d", "b"}
--- Pure DPS classes are at the far ends to avoid having, e.g.,
--- shadow priests in the healer group.
-local SORT_CLASS = {
-  ROGUE       = "A",
-  HUNTER      = "B",
-  DRUID       = "C",
-  SHAMAN      = "D",
-  MONK        = "E",
-  PALADIN     = "F",
-  PRIEST      = "G",
-  WARRIOR     = "H",
-  DEATHKNIGHT = "I",
-  DEMONHUNTER = "J",
-  MAGE        = "K",
-  WARLOCK     = "L",
-  _unknown    = "Z",
-}
+-- ROLE_SORT_x indexes correspond to A.raid.ROLES constants.
+local ROLE_SORT_CHAR_TMURH = {"a", "b", "c", "c", "d"}
+local ROLE_SORT_CHAR_THMUR = {"a", "c", "d", "d", "b"}
+local CLASS_SORT_CHAR = {}
+for i, class in ipairs(CLASS_SORT_ORDER) do
+  CLASS_SORT_CHAR[class] = string.char(64 + i)
+end
+CLASS_SORT_CHAR["_unknown"] = "Z"
 
 local format, floor, ipairs, pairs, sort, tconcat, tinsert, tostring, wipe = string.format, math.floor, ipairs, pairs, sort, table.concat, table.insert, tostring, wipe
 local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
@@ -39,13 +27,13 @@ local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 -- The delta table is an array of players who are in the wrong group.
 function M:BuildDelta()
   -- Build temporary tables tracking players.
-  local sortRoles = A.sorter:IsSortingHealersBeforeDps() and SORT_ROLES_THMUR or SORT_ROLES_TMURH
+  local sortRoles = A.sorter:IsSortingHealersBeforeDps() and ROLE_SORT_CHAR_THMUR or ROLE_SORT_CHAR_TMURH
   local keys = wipe(R.tmp1)
   local playersByKey = wipe(R.tmp2)
   local k
   for name, p in pairs(A.raid:GetRoster()) do
     if not p.isSitting then
-      k = sortRoles[p.role]..(p.class and SORT_CLASS[p.class] or SORT_CLASS["_unknown"])..(p.isUnknown and ("_"..name) or name)
+      k = sortRoles[p.role]..(p.class and CLASS_SORT_CHAR[p.class] or CLASS_SORT_CHAR["_unknown"])..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       playersByKey[k] = p
     end
