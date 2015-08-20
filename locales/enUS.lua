@@ -4,8 +4,6 @@ local L = LibStub("AceLocale-3.0"):NewLocale(..., "enUS", true)
 L["versionAuthor"] = "v%s by %s"
 L["word.and"] = "and"
 L["word.or"] = "or"
-L["word.player"] = "player"
-L["word.players"] = "players"
 
 -- Button labels
 L["button.fixGroups.text"] = "Fix Groups"
@@ -179,7 +177,8 @@ L["sorter.print.split"] = "Split players: groups %s."
 L["sorter.print.meter"] = "Rearranged players by damage/healing done."
 L["sorter.print.TMURH"] = "Rearranged tanks>melee>ranged>healers."
 L["sorter.print.THMUR"] = "Rearranged tanks>healers>melee>ranged."
-L["sorter.print.excludedSitting"] = "Excluded %d %s sitting in groups %d-8."
+L["sorter.print.excludedSitting.singular"] = "Excluded 1 player sitting in groups %d-8."
+L["sorter.print.excludedSitting.plural"] = "Excluded %d players sitting in groups %d-8."
 
 -- Meter module
 L["meter.print.noAddon"] = "No supported damage/healing meter addon found."

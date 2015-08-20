@@ -188,8 +188,10 @@ function M:AnnounceComplete()
       msg = L["sorter.print."..R.sortMode]
     end
     local sitting = A.raid:NumSitting()
-    if sitting > 0 then
-      msg = msg.." "..format(L["sorter.print.excludedSitting"], sitting, sitting == 1 and L["word.player"] or L["word.players"], A.util:GetMaxGroupsForInstance()+1)
+    if sitting == 1 then
+      msg = msg.." "..format(L["sorter.print.excludedSitting.singular"], A.util:GetMaxGroupsForInstance()+1)
+    elseif sitting > 1 then
+      msg = msg.." "..format(L["sorter.print.excludedSitting.plural"], sitting, A.util:GetMaxGroupsForInstance()+1)
     end
     if A.options.announceChatAlways or (A.options.announceChatPRN and R.lastSortMode ~= R.sortMode) then
       SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetGroupChannel())

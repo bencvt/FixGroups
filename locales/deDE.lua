@@ -133,7 +133,8 @@ L["sorter.print.alreadySplit"] = "Keine Änderung - der Schlachtzug ist bereits 
 L["sorter.print.combatCancelled"] = "Die Umordnung der Spieler wurde, aufgrund des Kampfes, abgebrochen."
 L["sorter.print.combatPaused"] = "Die Umordnung der Spieler wurde, aufgrund des Kampfes, pausiert."
 L["sorter.print.combatResumed"] = "Umordnung der Spieler fortgesetzt."
--- L["sorter.print.excludedSitting"] = ""
+-- L["sorter.print.excludedSitting.plural"] = ""
+-- L["sorter.print.excludedSitting.singular"] = ""
 L["sorter.print.meter"] = "Die Spieler wurden, basierend auf dem/der gemachten Schaden/Heilung, umgeordnet." -- Needs review
 L["sorter.print.needRank"] = "Du musst Schlachtzugsleiter oder Assistent sein, um Gruppen festzulegen."
 L["sorter.print.split"] = "Spieler aufteilen: Gruppen %s."
@@ -159,6 +160,3 @@ L["tooltip.right.split.2"] = "basierend auf gemachte/r Gesamt-Schaden/-Heilung"
 L["versionAuthor"] = "v%s von %s"
 L["word.and"] = "und"
 L["word.or"] = "oder"
-L["word.player"] = "Spieler"
-L["word.players"] = "Spieler"
-
