@@ -35,14 +35,16 @@ function M:PrintHelp()
 end
 
 function M:Command(args)
+  local argsLower = strlower(strtrim(args))
+
   -- Simple arguments.
-  if args == "about" or args == "help" then
+  if argsLower == "about" or argsLower == "help" then
     M:PrintHelp()
     return
-  elseif args == "config" or args == "options" then
+  elseif argsLower == "config" or argsLower == "options" then
     A.gui:OpenConfig()
     return
-  elseif args == "cancel" then
+  elseif argsLower == "cancel" then
     A.sorter:Stop()
     return
   end
@@ -53,7 +55,7 @@ function M:Command(args)
   -- Set tank marks and such.
   if IsInGroup() and not IsInRaid() then
     A.marker:FixParty()
-    if args ~= "" and args ~= "nosort" and args ~= "default" then
+    if argsLower ~= "" and argsLower ~= "nosort" and argsLower ~= "default" then
       M:Print(L["console.print.notInRaid"])
     end
     return
@@ -61,13 +63,13 @@ function M:Command(args)
   A.marker:FixRaid(false)
 
   -- Start sort.
-  if args == "nosort" then
+  if argsLower == "nosort" then
     return
-  elseif args == "meter" or args == "dps" then
+  elseif argsLower == "meter" or argsLower == "dps" then
     A.sorter:StartMeter()
-  elseif args == "split" then
+  elseif argsLower == "split" then
     A.sorter:StartSplit()
-  elseif args == "" or args == "default" then
+  elseif argsLower == "" or argsLower == "default" then
     A.sorter:StartDefault()
   else
     M:Printf(L["console.print.badArgument"], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r")

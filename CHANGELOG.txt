@@ -1,3 +1,6 @@
+v1.2.1:
+  - console commands are now case-insensitive
+
 v1.2:
   - add mostly-complete German translation, Dankeschön @pas06
   - resolve ticket #9: DPS Shamans and Druids are now sorted correctly
