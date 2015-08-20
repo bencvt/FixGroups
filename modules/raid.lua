@@ -11,6 +11,8 @@ M.private = {
   size = 0,
   groupSizes = {0, 0, 0, 0, 0, 0, 0, 0},
   roleCounts = {0, 0, 0, 0, 0},
+  builtUniqueNames = false,
+  tmp1 = {},
 }
 local R = M.private
 
@@ -25,12 +27,12 @@ local format, ipairs, pairs, tconcat, tinsert, tostring, wipe = format, ipairs, 
 local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName = GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName
 
 function M:OnEnable()
-  local f = function () M:ForceBuildRoster() end
-  M:RegisterEvent("GROUP_ROSTER_UPDATE", f)
-  M:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", f)
-  M:RegisterEvent("ZONE_CHANGED", f)
-  M:RegisterEvent("ZONE_CHANGED_INDOORS", f)
-  M:RegisterEvent("ZONE_CHANGED_NEW_AREA", f)
+  local rebuild = function () M:ForceBuildRoster() end
+  M:RegisterEvent("GROUP_ROSTER_UPDATE",            rebuild)
+  M:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED",  rebuild)
+  M:RegisterEvent("ZONE_CHANGED",                   rebuild)
+  M:RegisterEvent("ZONE_CHANGED_INDOORS",           rebuild)
+  M:RegisterEvent("ZONE_CHANGED_NEW_AREA",          rebuild)
 end
 
 local function wipeRoster()
@@ -41,6 +43,7 @@ local function wipeRoster()
   for i = 1, 5 do
     R.roleCounts[i] = 0
   end
+  R.builtUniqueNames = false
 
   local tmp = wipe(R.prevRoster)
   R.prevRoster = R.roster
@@ -85,6 +88,31 @@ local function buildRoster()
     R.roleCounts[p.role] = R.roleCounts[p.role] + 1
     R.roster[p.name] = p
   end
+end
+
+function M:BuildUniqueNames()
+  if R.builtUniqueNames then
+    return
+  end
+  local nameCounts = wipe(R.tmp1)
+  local p, onlyName
+  -- First pass: build nameCounts.
+  for i = 1, R.size do
+    p = R.rosterArray[i]
+    if not p.isUnknown then
+      onlyName = A.util:StripRealm(p.name)
+      nameCounts[onlyName] = (nameCounts[onlyName] or 0) + 1
+    end
+  end
+  -- Second pass: set uniqueName for each player.
+  for i = 1, R.size do
+    p = R.rosterArray[i]
+    if not p.isUnknown then
+      onlyName = A.util:StripRealm(p.name)
+      p.uniqueName = nameCounts[onlyName] > 1 and A.util:NameAndRealm(p.name) or onlyName
+    end
+  end
+  R.builtUniqueNames = true
 end
 
 function M:ForceBuildRoster()
@@ -161,6 +189,36 @@ end
 
 function M:GetPlayer(name)
   return name and R.roster[name]
+end
+
+function M:FindPlayer(name)
+  local p = M:GetPlayer(name)
+  if p then
+    return p
+  end
+  local onlyName = A.util:StripRealm(name)
+  p = M:GetPlayer(onlyName)
+  if p then
+    return p
+  end
+  p = M:GetPlayer(A.util:NameAndRealm(name))
+  if p then
+    return p
+  end
+  local found
+  for i = 1, R.size do
+    p = R.rosterArray[i]
+    if not p.isUnknown then
+      if onlyName == A.util:StripRealm(p.name) then
+        if found then
+          -- Multiple players match, ambiguous!
+          return nil
+        end
+        found = p
+      end
+    end
+  end
+  return found
 end
 
 function M:GetRoster()

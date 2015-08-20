@@ -24,6 +24,7 @@ locales\zhTW.lua
 addon.lua
 
 modules\addonChannel.lua
+modules\choose.lua
 modules\console.lua
 modules\coreSort.lua
 modules\dpsRole.lua

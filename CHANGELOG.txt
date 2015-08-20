@@ -1,4 +1,5 @@
 v1.2.1:
+  - add /choose command
   - console commands are now case-insensitive
 
 v1.2:

@@ -1,9 +1,13 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("util")
 A.util = M
+M.private = {
+  tmp1 = {},
+}
+local R = M.private
 
 local floor, max, pairs, select, sort, strfind, strmatch, strsplit, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, sort, string.find, string.match, strsplit, table.concat, table.insert, table.remove, wipe
-local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
 
 local SERIAL_COMMA = ((GetLocale() == "enUS") and "," or "")
@@ -94,4 +98,18 @@ end
 
 function M:StripRealm(name)
   return strsplit("-", name, 2)
+end
+
+function M:GetUniqueNameParty(unitID)
+  local nameCounts = wipe(R.tmp1)
+  local partyUnitID, onlyName
+  for i = 1, 5 do
+    partyUnitID = (i == 5) and "player" or ("party"..i)
+    if UnitExists(partyUnitID) then
+      onlyName = M:StripRealm(UnitName(partyUnitID))
+      nameCounts[onlyName] = (nameCounts[onlyName] or 0) + 1
+    end
+  end
+  onlyName = M:StripRealm(UnitName(unitID))
+  return nameCounts[onlyName] > 1 and M:NameAndRealm(UnitName(unitID)) or onlyName
 end

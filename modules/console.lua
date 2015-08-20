@@ -2,7 +2,7 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("console", "AceConsole-3.0")
 A.console = M
 
-local date, format, print, select, strfind, tconcat, tinsert, tostring = date, format, print, select, string.find, table.concat, table.insert, tostring
+local date, format, print, select, strfind, strlen, strlower, strmatch, strsub, strtrim, tconcat, tinsert, tostring = date, format, print, select, string.find, string.len, string.lower, string.match, string.sub, string.trim, table.concat, table.insert, tostring
 local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 
 function M:OnEnable()
@@ -25,13 +25,14 @@ end
 function M:PrintHelp()
   M:Printf(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r")
   print(format(L["console.help.header"], "|cff1784d1/fixgroups|r", "|cff1784d1/fg|r"))
-  print("  |cff1784d1/fg help|r "..L["word.or"].." |cff1784d1/fg about|r - "..L["console.help.help"])
-  print("  |cff1784d1/fg config|r "..L["word.or"].." |cff1784d1/fg options|r - "..format(L["console.help.config"], A.name))
-  print("  |cff1784d1/fg cancel|r - "..L["console.help.cancel"])
-  print("  |cff1784d1/fg nosort|r - "..L["console.help.nosort"])
-  print("  |cff1784d1/fg meter|r "..L["word.or"].." |cff1784d1/fg dps|r - "..L["console.help.meter"])
-  print("  |cff1784d1/fg split|r - "..L["console.help.split"])
-  print("  |cff1784d1/fg|r - "..L["console.help.blank"])
+  print(format("  |cff1784d1/fg help|r %s |cff1784d1/fg about|r - %s", L["word.or"], L["console.help.help"]))
+  print(format("  |cff1784d1/fg config|r %s |cff1784d1/fg options|r - %s", L["word.or"], format(L["console.help.config"], A.name)))
+  print(format("  |cff1784d1/fg choose|r - %s", format(L["console.help.seeChoose"], "|cff1784d1/choose help|r")))
+  print(format("  |cff1784d1/fg cancel|r - %s", L["console.help.cancel"]))
+  print(format("  |cff1784d1/fg nosort|r - %s", L["console.help.nosort"]))
+  print(format("  |cff1784d1/fg meter|r %s |cff1784d1/fg dps|r - %s", L["word.or"], L["console.help.meter"]))
+  print(format("  |cff1784d1/fg split|r - %s", L["console.help.split"]))
+  print(format("  |cff1784d1/fg|r - %s", L["console.help.blank"]))
 end
 
 function M:Command(args)
@@ -46,6 +47,9 @@ function M:Command(args)
     return
   elseif argsLower == "cancel" then
     A.sorter:Stop()
+    return
+  elseif argsLower == "choose" or strmatch(argsLower, "^choose ") then
+    A.choose:Command(strsub(args, strlen("choose") + 1))
     return
   end
 
