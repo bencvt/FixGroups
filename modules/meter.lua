@@ -8,9 +8,33 @@ M.private = {
 local R = M.private
 
 local DETAILS_SEGMENTS = {"overall", "current"}
+local EMPTY = {}
 
 local ipairs, pairs, select, tinsert, wipe = ipairs, pairs, select, table.insert, wipe
 local GetUnitName = GetUnitName
+
+local function loadTinyDPS()
+  if not tdpsPlayer or not tdpsPet then
+    return "TinyDPS", false
+  end
+  local found
+  for _, player in pairs(tdpsPlayer) do
+    if player.fight and player.fight[1] then
+      found = true
+      R.snapshot[player.name] = (player.fight[1].d or 0) + (player.fight[1].h or 0)
+      for _, pet in ipairs(player.pet or EMPTY) do
+        pet = tdpsPet[pet]
+        if pet and pet.fight and pet.fight[1] then
+          R.snapshot[player.name] = R.snapshot[player.name] + (pet.fight[1].d or 0) + (pet.fight[1].h or 0)
+        end
+      end
+    end
+  end
+  if not found then
+    return "TinyDPS", false
+  end
+  return "TinyDPS", true
+end
 
 local function loadSkada()
   if not Skada.total or not Skada.total.players then
@@ -99,7 +123,9 @@ end
 function M:BuildSnapshot()
   wipe(R.snapshot)
   local addon, success
-  if Skada then
+  if tdps then
+    addon, success = loadTinyDPS()
+  elseif Skada then
     addon, success = loadSkada()
   elseif Recount then
     addon, success = loadRecount()
