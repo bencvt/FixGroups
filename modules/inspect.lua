@@ -10,7 +10,7 @@ local R = M.private
 
 local DELAY_TIMER = 16.0
 local DELAY_NOTIFY = 1.0
-local DELAY_INSPECT_NEXT = 0.1
+local DELAY_INSPECT_NEXT = 0.01
 
 local format, ipairs, pairs, select, time = format, ipairs, pairs, select, time
 local CanInspect, GetPlayerInfoByGUID, InCombatLockdown, NotifyInspect, UnitExists, UnitIsConnected = CanInspect, GetPlayerInfoByGUID, InCombatLockdown, NotifyInspect, UnitExists, UnitIsConnected

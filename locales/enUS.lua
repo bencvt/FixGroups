@@ -17,6 +17,10 @@ L["button.commandInfo.desc"] = "Print the various arguments for the %s console/m
 L["button.resetAllOptions.text"] = "Reset all options to default"
 L["button.resetAllOptions.print"] = "All options reset to default."
 
+-- DataText module
+L["dataText.raidComp.name"] = "Raid Comp"
+L["dataText.raidComp.notInRaid"] = "not in raid"
+
 -- Minimap icon and raid tab button tooltip
 L["tooltip.header.raidComp"] = "raid: %s"
 L["tooltip.left.clickLeft"] = "Left Click"

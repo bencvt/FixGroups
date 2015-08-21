@@ -17,6 +17,7 @@ M.private = {
 local R = M.private
 
 M.ROLES = {TANK=1, MELEE=2, UNKNOWN=3, RANGED=4, HEALER=5}
+M.REBUILD_EVENTS = {"GROUP_ROSTER_UPDATE", "PLAYER_SPECIALIZATION_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
 
 for i = 1, 40 do
   R.rosterArray[i] = {}
@@ -28,11 +29,9 @@ local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, U
 
 function M:OnEnable()
   local rebuild = function () M:ForceBuildRoster() end
-  M:RegisterEvent("GROUP_ROSTER_UPDATE",            rebuild)
-  M:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED",  rebuild)
-  M:RegisterEvent("ZONE_CHANGED",                   rebuild)
-  M:RegisterEvent("ZONE_CHANGED_INDOORS",           rebuild)
-  M:RegisterEvent("ZONE_CHANGED_NEW_AREA",          rebuild)
+  for _, event in ipairs(M.REBUILD_EVENTS) do
+    M:RegisterEvent(event, rebuild)
+  end
 end
 
 local function wipeRoster()
@@ -87,11 +86,13 @@ local function buildRoster()
       p.role = A.dpsRole:GetDpsRole(p)
       p.isDPS = true
     end
-    R.roleCounts[p.role] = R.roleCounts[p.role] + 1
+    if not p.isSitting then
+      R.roleCounts[p.role] = R.roleCounts[p.role] + 1
+    end
     R.roster[p.name] = p
   end
   local t, m, u, r, h = unpack(R.roleCounts)
-  R.comp = format("%d/%d/%d (%d+%d)%s", t, h, m+u+r, m, u+r, ((u > 0) and "?" or ""))
+  R.comp = format("%d/%d/%d(%d+%d)%s", t, h, m+u+r, m, u+r, ((u > 0) and "?" or ""))
 end
 
 function M:BuildUniqueNames()
@@ -167,6 +168,22 @@ function M:NumSitting()
     t = t + R.groupSizes[i]
   end
   return t
+end
+
+function M:GetRoleCounts()
+  return unpack(R.roleCounts)
+end
+
+function M:GetUnknownNames()
+  local names = wipe(R.tmp1)
+  local p
+  for _, name in pairs(A.util:SortedKeys(R.roster)) do
+    p = R.roster[name]
+    if p.role == M.ROLES.UNKNOWN then
+      tinsert(names, A.util:UnitNameWithColor(name))
+    end
+  end
+  return A.util:LocaleTableConcat(names)
 end
 
 function M:GetSize()

@@ -27,6 +27,7 @@ modules\addonChannel.lua
 modules\choose.lua
 modules\console.lua
 modules\coreSort.lua
+modules\dataText.lua
 modules\dpsRole.lua
 modules\gui.lua
 modules\inspect.lua

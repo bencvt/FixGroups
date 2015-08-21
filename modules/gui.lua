@@ -36,35 +36,6 @@ local function handleClick(_, button)
   end
 end
 
-local function setTooltip(tooltip, isRaidTab)
-  tooltip:ClearLines()
-  local comp = A.raid:GetComp()
-  if not comp then
-    tooltip:AddLine(A.name)
-  else
-    tooltip:AddDoubleLine(A.name, format(L["tooltip.header.raidComp"], comp))
-  end
-  tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["tooltip.left.clickLeft"],        L["tooltip.right.fixGroups"], 1, 1, 1, 1, 1, 0)
-  tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["tooltip.left.clickRight"],       L["tooltip.right.split.1"], 1, 1, 1, 1, 1, 0)
-  tooltip:AddDoubleLine(" ",                                L["tooltip.right.split.2"], 1, 1, 1, 1, 1, 0)
-  tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["tooltip.left.shiftClickLeft"],   L["tooltip.right.config"], 1, 1, 1, 1, 1, 0)
-  tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["tooltip.left.shiftClickRight"],  L["tooltip.right.meter.1"], 1, 1, 1, 1, 1, 0)
-  tooltip:AddDoubleLine(" ",                                L["tooltip.right.meter.2"], 1, 1, 1, 1, 1, 0)
-  -- Ctrl + Left Click is an undocumented shortcut, subject to change or removal
-  -- in a future version of this addon.
-  --tooltip:AddLine(" ")
-  --tooltip:AddDoubleLine(L["tooltip.left.ctrlClickLeft"],    L["tooltip.right.nosort"], 1, 1, 1, 1, 1, 0)
-  if not isRaidTab then
-    tooltip:AddLine(" ")
-    tooltip:AddDoubleLine(L["tooltip.left.drag"],           L["tooltip.right.moveMinimapIcon"], 1, 1, 1, 1, 1, 0)
-  end
-  tooltip:Show()
-end
-
 local function watchChat(event, message, sender)
   if A.debug >= 1 then A.console:Debugf(M, "watchChat event=%s message=%s sender=%s", event, message, sender) end
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
@@ -90,7 +61,7 @@ local function setupMinimapIcon()
     text = A.name,
     icon = "Interface\\ICONS\\INV_Misc_GroupLooking",
     OnClick = handleClick,
-    OnTooltipShow = setTooltip,
+    OnTooltipShow = function (tooltip) M:SetupTooltip(tooltip, true) end,
   })
   R.icon = LibStub("LibDBIcon-1.0")
   R.icon:Register(A.name, R.iconLDB, A.options.minimapIcon)
@@ -107,7 +78,7 @@ local function setupRaidTabButton()
   b:SetText(L["button.fixGroups.text"])
   b:RegisterForClicks("AnyUp")
   b:SetScript("OnClick", handleClick)
-  b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") setTooltip(GameTooltip, true) end)
+  b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") M:SetupTooltip(GameTooltip, false) end)
   b:SetScript("OnLeave", function () GameTooltip:Hide() end)
   if IsAddOnLoaded("ElvUI") and ElvUI then
     local E = ElvUI[1]
@@ -135,6 +106,35 @@ function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_WHISPER",               watchChat)
   setupMinimapIcon()
   setupRaidTabButton()
+end
+
+function M:SetupTooltip(tooltip, isMinimapIcon)
+  tooltip:ClearLines()
+  local comp = A.raid:GetComp()
+  if not comp then
+    tooltip:AddLine(A.name)
+  else
+    tooltip:AddDoubleLine(A.name, format(L["tooltip.header.raidComp"], comp))
+  end
+  tooltip:AddLine(" ")
+  tooltip:AddDoubleLine(L["tooltip.left.clickLeft"],        L["tooltip.right.fixGroups"], 1,1,1, 1,1,0)
+  tooltip:AddLine(" ")
+  tooltip:AddDoubleLine(L["tooltip.left.clickRight"],       L["tooltip.right.split.1"],   1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(" ",                                L["tooltip.right.split.2"],   1,1,1, 1,1,0)
+  tooltip:AddLine(" ")
+  tooltip:AddDoubleLine(L["tooltip.left.shiftClickLeft"],   L["tooltip.right.config"],    1,1,1, 1,1,0)
+  tooltip:AddLine(" ")
+  tooltip:AddDoubleLine(L["tooltip.left.shiftClickRight"],  L["tooltip.right.meter.1"],   1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(" ",                                L["tooltip.right.meter.2"],   1,1,1, 1,1,0)
+  -- Ctrl + Left Click is an undocumented shortcut, subject to change or removal
+  -- in a future version of this addon.
+  --tooltip:AddLine(" ")
+  --tooltip:AddDoubleLine(L["tooltip.left.ctrlClickLeft"],    L["tooltip.right.nosort"],    1,1,1, 1,1,0)
+  if isMinimapIcon then
+    tooltip:AddLine(" ")
+    tooltip:AddDoubleLine(L["tooltip.left.drag"],           L["tooltip.right.moveMinimapIcon"], 1,1,1, 1,1,0)
+  end
+  tooltip:Show()
 end
 
 function M:OnDisable()

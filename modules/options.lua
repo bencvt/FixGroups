@@ -50,7 +50,7 @@ local MARKS = {
   "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t", -- 8=skull (9)
   L["options.value.noMark"],
 }
-local DELAY_FIX_BUTTONS = 0.1
+local DELAY_FIX_BUTTONS = 0.01
 
 local ipairs = ipairs
 
