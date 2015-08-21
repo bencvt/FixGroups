@@ -293,27 +293,49 @@ function M:Command(args)
     M:PrintHelp()
   elseif argsLower == "examples" or argsLower == "example" then
     M:PrintExamples()
-  elseif argsLower == "player" or argsLower == "any" or argsLower == strlower(L["choose.role.any"]) then
+  elseif argsLower == "player" or argsLower == "any" then
     choosePlayer("player")
-  elseif argsLower == "tank" or argsLower == strlower(L["choose.role.tank"]) then
+  elseif argsLower == "tank" then
     choosePlayer("tank")
-  elseif argsLower == "healer" or argsLower == "heal" or argsLower == strlower(L["choose.role.healer"]) then
+  elseif argsLower == "healer" or argsLower == "heal" then
     choosePlayer("healer")
-  elseif argsLower == "dps" or argsLower == "damager" or argsLower == strlower(L["choose.role.damager"]) then
+  elseif argsLower == "dps" or argsLower == "damager" then
     choosePlayer("dps")
-  elseif argsLower == "melee" or argsLower == strlower(L["choose.role.melee"]) then
+  elseif argsLower == "melee" then
     choosePlayer("melee")
-  elseif argsLower == "ranged" or argsLower == strlower(L["choose.role.ranged"]) then
+  elseif argsLower == "ranged" then
     choosePlayer("ranged")
-  elseif argsLower == "conq" or argsLower == "conqueror" or argsLower == strlower(L["choose.tierToken.conqueror"]) or argsLower == strlower(L["choose.tierToken.conqueror.short"]) then
+  elseif argsLower == "conq" or argsLower == "conqueror" then
     choosePlayer("token", "conqueror")
-  elseif argsLower == "prot" or argsLower == "protector" or argsLower == strlower(L["choose.tierToken.protector"]) or argsLower == strlower(L["choose.tierToken.protector.short"]) then
+  elseif argsLower == "prot" or argsLower == "protector" then
     choosePlayer("token", "protector")
-  elseif argsLower == "vanq" or argsLower == "vanquisher" or argsLower == strlower(L["choose.tierToken.vanquisher"]) or argsLower == strlower(L["choose.tierToken.vanquisher.short"]) then
+  elseif argsLower == "vanq" or argsLower == "vanquisher" then
     choosePlayer("token", "vanquisher")
-  elseif argsLower == "dead" or argsLower == strlower(L["choose.dead"]) then
+  elseif argsLower == "dead" then
     choosePlayer("dead")
-  elseif argsLower == "alive" or argsLower == "live" or argsLower == "living" or argsLower == strlower(L["choose.alive"]) then
+  elseif argsLower == "alive" or argsLower == "live" or argsLower == "living" then
+    choosePlayer("alive")
+  elseif argsLower == strlower(L["choose.role.any"]) then
+    choosePlayer("player")
+  elseif argsLower == strlower(L["choose.role.tank"]) then
+    choosePlayer("tank")
+  elseif argsLower == strlower(L["choose.role.healer"]) then
+    choosePlayer("healer")
+  elseif argsLower == strlower(L["choose.role.damager"]) then
+    choosePlayer("dps")
+  elseif argsLower == strlower(L["choose.role.melee"]) then
+    choosePlayer("melee")
+  elseif argsLower == strlower(L["choose.role.ranged"]) then
+    choosePlayer("ranged")
+  elseif argsLower == strlower(L["choose.tierToken.conqueror"]) or argsLower == strlower(L["choose.tierToken.conqueror.short"]) then
+    choosePlayer("token", "conqueror")
+  elseif argsLower == strlower(L["choose.tierToken.protector"]) or argsLower == strlower(L["choose.tierToken.protector.short"]) then
+    choosePlayer("token", "protector")
+  elseif argsLower == strlower(L["choose.tierToken.vanquisher"]) or argsLower == strlower(L["choose.tierToken.vanquisher.short"]) then
+    choosePlayer("token", "vanquisher")
+  elseif argsLower == strlower(L["choose.dead"]) then
+    choosePlayer("dead")
+  elseif argsLower == strlower(L["choose.alive"]) then
     choosePlayer("alive")
   elseif strfind(args, ",") then
     chooseOption(",", args)
