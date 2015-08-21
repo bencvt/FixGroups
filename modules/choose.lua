@@ -20,7 +20,7 @@ local ROLL_TIMEOUT = 10.0
 local CLASS_ALIASES = false
 
 local format, ipairs, pairs, print, select, sort, strfind, strgmatch, strgsub, strlen, strlower, strsplit, strsub, strtrim, tconcat, time, tinsert, tonumber, tostring, wipe = string.format, ipairs, pairs, print, select, sort, string.find, string.gmatch, string.gsub, string.len, string.lower, string.split, string.sub, string.trim, table.concat, time, table.insert, tonumber, tostring, wipe
-local GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitName, UnitGroupRolesAssigned = GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitName, UnitGroupRolesAssigned
+local GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitIsDeadOrGhost, UnitExists, UnitName, UnitGroupRolesAssigned = GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitIsDeadOrGhost, UnitExists, UnitName, UnitGroupRolesAssigned
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT
 
 local H
@@ -170,7 +170,7 @@ local function choosePlayer(mode, arg)
     A.raid:BuildUniqueNames()
     for _, player in pairs(A.raid:GetRoster()) do
       if not player.isUnknown and not player.isSitting then
-        if (mode == "player") or (mode == ROLE_NAMES[player.role]) or (mode == "dps" and player.isDPS) or ((mode == "class" or mode == "token") and validClasses[player.class]) then
+        if (mode == "player") or (mode == "dead" and UnitIsDeadOrGhost(player.unitID)) or (mode == "alive" and not UnitIsDeadOrGhost(player.unitID)) or (mode == ROLE_NAMES[player.role]) or (mode == "dps" and player.isDPS) or ((mode == "class" or mode == "token") and validClasses[player.class]) then
           tinsert(R.options, player.uniqueName)
         end
       end
@@ -186,6 +186,10 @@ local function choosePlayer(mode, arg)
       if UnitExists(unitID) then
         if mode == "player" then
           include = true
+        elseif mode == "dead" then
+          include = UnitIsDeadOrGhost(unitID)
+        elseif mode == "alive" then
+          include = not UnitIsDeadOrGhost(unitID)
         elseif mode == "class" or mode == "token" then
           include = validClasses[select(2, UnitClass(unitID))]
         else
@@ -307,6 +311,10 @@ function M:Command(args)
     choosePlayer("token", "protector")
   elseif argsLower == "vanq" or argsLower == "vanquisher" or argsLower == strlower(L["choose.tierToken.vanquisher"]) or argsLower == strlower(L["choose.tierToken.vanquisher.short"]) then
     choosePlayer("token", "vanquisher")
+  elseif argsLower == "dead" or argsLower == strlower(L["choose.dead"]) then
+    choosePlayer("dead")
+  elseif argsLower == "alive" or argsLower == "live" or argsLower == "living" or argsLower == strlower(L["choose.alive"]) then
+    choosePlayer("alive")
   elseif strfind(args, ",") then
     chooseOption(",", args)
   elseif strfind(args, " ") then
