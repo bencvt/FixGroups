@@ -97,7 +97,7 @@ local function buildRoster()
   local t, m, u, r, h = unpack(R.roleCounts)
   R.comp1 = format("%d/%d/%d", t, h, m+u+r)
   R.comp2 = format("(%d+%d)%s", m, u+r, ((u > 0) and "?" or ""))
-  R.comp = R.comp1, R.comp2
+  R.comp = R.comp1.." "..R.comp2
 end
 
 function M:BuildUniqueNames()

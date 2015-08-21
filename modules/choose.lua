@@ -40,9 +40,11 @@ function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_SYSTEM")
 end
 
-local function sendMessage(message, localOnly)
+local function sendMessage(message, localOnly, prefixAddonName)
   if localOnly or not IsInGroup() then
     A.console:Print(message)
+  elseif prefixAddonName then
+    SendChatMessage(format("[%s] %s", A.name, message), A.util:GetGroupChannel())
   else
     SendChatMessage(message, A.util:GetGroupChannel())
   end
@@ -66,11 +68,11 @@ function M:CHAT_MSG_SYSTEM(event, message)
   if R.optionsArePlayers then
     local player = A.raid:FindPlayer(choseValue)
     if player and player.group then
-      sendMessage(format(L["choose.print.chose.player"], choseIndex, choseValue, player.group), false)
+      sendMessage(format(L["choose.print.chose.player"], choseIndex, choseValue, player.group), false, true)
       return
     end
   end
-  sendMessage(format(L["choose.print.chose.option"], choseIndex, choseValue), false)
+  sendMessage(format(L["choose.print.chose.option"], choseIndex, choseValue), false, true)
 end
 
 function M:PrintHelp()
@@ -123,7 +125,7 @@ local function announce(mode, arg, localOnly)
   for i, option in ipairs(R.options) do
     option = tostring(i).."="..tostring(option)..((i < numOptions and numOptions > 1) and "," or ".")
     if line and strlen(line) + 1 + strlen(option) >= MAX_CHAT_LINE_LEN then
-      sendMessage(line, localOnly)
+      sendMessage(line, localOnly, false)
       line = false
     end
     if line then
@@ -133,7 +135,7 @@ local function announce(mode, arg, localOnly)
     end
   end
   if line then
-    sendMessage(line, localOnly)
+    sendMessage(line, localOnly, false)
   end
 end
 

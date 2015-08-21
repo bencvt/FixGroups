@@ -493,12 +493,12 @@ R.optionsTable = {
       width = "double",
       style = "dropdown",
       values = {
-        [1] = "Raid: |cff1784d12/4/14|cff105c92(6+8)|r",
-        [2] = "2/4/14(6+8)",
+        [1] = "Raid: |cff1784d12/4/14 |cff105c92(6+8)|r",
+        [2] = "2/4/14 (6+8)",
       },
       get = function(i) return max(1, min(2, A.options.dataTextRaidCompStyle)) end,
       set = function(i,v) A.options.dataTextRaidCompStyle = max(1, min(2, v)) end,
-      --disabled = function(i) return not IsAddonLoaded("ElvUI") end,
+      --disabled = function(i) return not IsAddOnLoaded("ElvUI") end,
     },
     -- -------------------------------------------------------------------------
     headerRESET = {

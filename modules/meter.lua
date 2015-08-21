@@ -7,13 +7,22 @@ M.private = {
 }
 local R = M.private
 
+local SUPPORTED_ADDONS = {
+  TinyDPS = {obj="tdps"},
+  Skada   = {obj="Skada"},
+  Recount = {obj="Recount"},
+  Details = {obj="Details"},
+}
+-- In case the player is running multiple DPS addons,
+-- pick whichever one we find first in this list.
+local SUPPORTED_ADDONS_ORDER = {"TinyDPS", "Skada", "Recount", "Details"}
 local DETAILS_SEGMENTS = {"overall", "current"}
 local EMPTY = {}
 
 local format, ipairs, pairs, select, tinsert, wipe = string.format, ipairs, pairs, select, table.insert, wipe
 local GetUnitName = GetUnitName
 
-local function loadTinyDPS()
+SUPPORTED_ADDONS.TinyDPS.getSnapshot = function()
   if not tdpsPlayer or not tdpsPet then
     return false
   end
@@ -33,7 +42,7 @@ local function loadTinyDPS()
   return found
 end
 
-local function loadSkada()
+SUPPORTED_ADDONS.Skada.getSnapshot = function()
   if not Skada.total or not Skada.total.players then
     return false
   end
@@ -55,7 +64,7 @@ local function loadSkada()
   return found
 end
 
-local function loadRecount()
+SUPPORTED_ADDONS.Recount.getSnapshot = function()
   if not Recount.db2 or not Recount.db2.combatants or not Recount.db2.combatants[GetUnitName("player")] then
     return false
   end
@@ -83,7 +92,7 @@ local function loadRecount()
   return found
 end
 
-local function loadDetails()
+SUPPORTED_ADDONS.Details.getSnapshot = function()
   -- Details! has a different concept of what "overall" means. Trash and even
   -- boss fights, except previous attempts on the current boss, are excluded by
   -- default. So it's entirely possible that there is a current segment but no
@@ -123,43 +132,28 @@ local function calculateAverages()
 end
 
 function M:TestInterop()
-  local addon
-  if IsAddonLoaded("TinyDPS") and tdps then
-    addon = "TinyDPS"
-  elseif IsAddonLoaded("Skada") and Skada then
-    addon = "Skada"
-  elseif IsAddonLoaded("Recount") and Recount then
-    addon = "Recount"
-  elseif IsAddonLoaded("Details") and Details then
-    addon = "Details"
-  else
-    return L["meter.print.noAddon"]
+  for _, name in ipairs(SUPPORTED_ADDONS_ORDER) do
+    if IsAddOnLoaded(name) and _G[SUPPORTED_ADDONS[name].obj] then
+      return format(L["meter.print.usingDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(name)))
+    end
   end
-  return format(L["meter.print.usingDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(addon)))
+  return L["meter.print.noAddon"]
 end
 
 function M:BuildSnapshot()
   wipe(R.snapshot)
-  local addon, success
-  if IsAddonLoaded("TinyDPS") and tdps then
-    addon, success = "TinyDPS", loadTinyDPS()
-  elseif IsAddonLoaded("Skada") and Skada then
-    addon, success = "Skada", loadSkada()
-  elseif IsAddonLoaded("Recount") and Recount then
-    addon, success = "Recount"m loadRecount()
-  elseif IsAddonLoaded("Details") and Details then
-    addon, success = "Details", loadDetails()
-  else
-    A.console:Print(L["meter.print.noAddon"])
-    return
+  for _, name in ipairs(SUPPORTED_ADDONS_ORDER) do
+    if IsAddOnLoaded(name) and _G[SUPPORTED_ADDONS[name].obj] then
+      if SUPPORTED_ADDONS[name].getSnapshot() then
+        A.console:Printf(L["meter.print.usingDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(name)))
+      else
+        A.console:Printf(L["meter.print.noDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(name)))
+      end
+      calculateAverages()
+      if A.debug >= 1 then M:DebugPrintMeterSnapshot() end
+      return
+    end
   end
-  if success then
-    A.console:Printf(L["meter.print.usingDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(addon)))
-  else
-    A.console:Printf(L["meter.print.noDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(addon)))
-  end
-  calculateAverages()
-  if A.debug >= 1 then M:DebugPrintMeterSnapshot() end
 end
 
 function M:GetPlayerMeter(name)

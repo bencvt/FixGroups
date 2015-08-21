@@ -27,7 +27,7 @@ local function raidComp_OnEvent(self, event, ...)
       frame.text:SetFormattedText(A.raid:GetComp() or NOT_IN_RAID)
     else
       local c1, c2 = A.raid:GetCompParts()
-      frame.text:SetFormattedText(c1 and format("Raid: |cff1784d1%s|cff105c92%s|r", c1, c2) or NOT_IN_RAID)
+      frame.text:SetFormattedText(c1 and format("Raid: |cff1784d1%s |cff105c92%s|r", c1, c2) or NOT_IN_RAID)
     end
   end, DELAY_REFRESH)
 end
@@ -42,7 +42,7 @@ local function raidComp_OnEnter(self)
   DT:SetupTooltip(self)
   local t, m, u, r, h = A.raid:GetRoleCounts()
   local s = A.raid:NumSitting()
-  DT.tooltip:AddDoubleLine(L["dataText.raidComp.name"]..":", (A.raid:GetSize() > 0) and A.raid:GetComp() or "0/0/0(0+0)", 1,1,0, 1,1,0)
+  DT.tooltip:AddDoubleLine(L["dataText.raidComp.name"]..":", (A.raid:GetSize() > 0) and A.raid:GetComp() or NOT_IN_RAID, 1,1,0, 1,1,0)
   DT.tooltip:AddLine(" ")
   DT.tooltip:AddDoubleLine(A.util:TextRoleIcon("TANK").."Tanks",     tostring(t), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine(A.util:TextRoleIcon("HEALER").."Healers", tostring(h), 1,1,1, 1,1,0)
