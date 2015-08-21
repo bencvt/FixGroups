@@ -15,7 +15,7 @@ local R = M.private
 local ROLE_NAMES = {"tank", "melee", "unknown", "ranged", "healer"}
 -- Actually it's 255, but we'll be conservative.
 local MAX_CHAT_LINE_LEN = 250
-local ROLL_TIMEOUT = 10.0
+local ROLL_TIMEOUT = 5.0
 -- Lazily populated.
 local CLASS_ALIASES = false
 
@@ -114,7 +114,7 @@ local function announceAndRoll(mode, arg)
   for i, option in ipairs(R.options) do
     option = tostring(i).."="..tostring(option)..((i < numOptions and numOptions > 1) and "," or ".")
     if line and strlen(line) + 1 + strlen(option) >= MAX_CHAT_LINE_LEN then
-      sendMessage(line, A.util:GetGroupChannel())
+      sendMessage(line)
       line = false
     end
     if line then
@@ -124,7 +124,7 @@ local function announceAndRoll(mode, arg)
     end
   end
   if line then
-    sendMessage(line, A.util:GetGroupChannel())
+    sendMessage(line)
   end
 
   -- Roll.
