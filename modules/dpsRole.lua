@@ -9,25 +9,28 @@ M.private = {
 local R = M.private
 
 local CLASS_DPS_ROLES = {
-  ROGUE       = "melee",
-  HUNTER      = "ranged", -- remove for Legion
-  MONK        = "melee",
-  PALADIN     = "melee",
-  PRIEST      = "ranged",
   WARRIOR     = "melee",
   DEATHKNIGHT = "melee",
-  DEMONHUNTER = "melee",
+  PALADIN     = "melee",
+  MONK        = "melee",
+  PRIEST      = "ranged",
+  -- SHAMAN
+  -- DRUID
+  ROGUE       = "melee",
   MAGE        = "ranged",
   WARLOCK     = "ranged",
+  HUNTER      = "ranged", -- comment out for Legion
+  DEMONHUNTER = "melee",
 }
 local SPECID_ROLES = {
-  [102] = "ranged",  -- Balance Druid
-  [103] = "melee",   -- Feral Druid
-  [253] = "ranged",  -- Beast Mastery Hunter
-  [254] = "ranged",  -- Marksmanship Hunter
-  [255] = "ranged",  -- Survival Hunter - change to MELEE for Legion
   [262] = "ranged",  -- Elemental Shaman
   [263] = "melee",   -- Enhancement Shaman
+  [102] = "ranged",  -- Balance Druid
+  [103] = "melee",   -- Feral Druid
+  -- Uncomment Hunter specs for Legion:
+  --[253] = "ranged",  -- Beast Mastery Hunter
+  --[254] = "ranged",  -- Marksmanship Hunter
+  --[255] = "melee",   -- Survival Hunter
 }
 local DELAY_DB_CLEANUP = 20.0
 local DB_CLEANUP_MAX_AGE_DAYS = 21

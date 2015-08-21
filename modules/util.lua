@@ -43,6 +43,11 @@ function M:Escape(text)
   return strgsub(text, "|", "||")
 end
 
+function M:TextRoleIcon(role)
+  -- TODO
+  return "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t"
+end
+
 function M:SortedKeys(tbl, keys)
   keys = wipe(keys or {})
   for k, _ in pairs(tbl) do

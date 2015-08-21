@@ -10,14 +10,14 @@ local R = M.private
 local DETAILS_SEGMENTS = {"overall", "current"}
 local EMPTY = {}
 
-local ipairs, pairs, select, tinsert, wipe = ipairs, pairs, select, table.insert, wipe
+local format, ipairs, pairs, select, tinsert, wipe = string.format, ipairs, pairs, select, table.insert, wipe
 local GetUnitName = GetUnitName
 
 local function loadTinyDPS()
   if not tdpsPlayer or not tdpsPet then
-    return "TinyDPS", false
+    return false
   end
-  local found
+  local found = false
   for _, player in pairs(tdpsPlayer) do
     if player.fight and player.fight[1] then
       found = true
@@ -30,16 +30,14 @@ local function loadTinyDPS()
       end
     end
   end
-  if not found then
-    return "TinyDPS", false
-  end
-  return "TinyDPS", true
+  return found
 end
 
 local function loadSkada()
   if not Skada.total or not Skada.total.players then
-    return "Skada", false
+    return false
   end
+  -- TODO: revisit this. We want to grab all combatants, not just those in roster
   -- Skada strips the realm name.
   -- For simplicity's sake, we do not attempt to handle cases where two
   -- players with the same name from different realms are in the same raid.
@@ -47,22 +45,27 @@ local function loadSkada()
   for name, _ in pairs(A.raid:GetRoster()) do
     fullPlayerNames[A.util:StripRealm(name)] = name
   end
+  local found = false
   for _, p in pairs(Skada.total.players) do
     if fullPlayerNames[p.name] then
+      found = true
       R.snapshot[fullPlayerNames[p.name]] = (p.damage or 0) + (p.healing or 0)
     end
   end
-  return "Skada", true
+  return found
 end
 
 local function loadRecount()
   if not Recount.db2 or not Recount.db2.combatants or not Recount.db2.combatants[GetUnitName("player")] then
-    return "Recount", false
+    return false
   end
+  local found = false
   local c
+  -- TODO: redo to grab all combatants, not just those in roster
   for name, _ in pairs(A.raid:GetRoster()) do
     c = Recount.db2.combatants[name]
     if c and c.Fights and c.Fights.OverallData then
+      found = true
       -- Recount stores healing and absorbs separately internally.
       R.snapshot[name] = (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
     else
@@ -77,7 +80,7 @@ local function loadRecount()
       end
     end
   end
-  return "Recount", true
+  return found
 end
 
 local function loadDetails()
@@ -85,11 +88,13 @@ local function loadDetails()
   -- boss fights, except previous attempts on the current boss, are excluded by
   -- default. So it's entirely possible that there is a current segment but no
   -- overall segment. We check for both: some data is better than no data.
+  -- TODO: revisit this, maybe just total all segments
   local found
   for _, segment in ipairs(DETAILS_SEGMENTS) do
     if not found and Details.GetActor and (Details:GetActor(segment, 1) or Details:GetActor(segment, 2)) then
       found = true
       local damage, healing
+      -- TODO: redo to grab all combatants, not just those in roster
       for name, _ in pairs(A.raid:GetRoster()) do
         damage = Details:GetActor(segment, 1, name)
         healing = Details:GetActor(segment, 2, name)
@@ -97,10 +102,7 @@ local function loadDetails()
       end
     end
   end
-  if not found then
-    return "Details", false
-  end
-  return "Details", true
+  return true
 end
 
 local function calculateAverages()
@@ -120,17 +122,33 @@ local function calculateAverages()
   R.snapshot["_averageHealing"] = (countHealing > 0) and (totalHealing / countHealing) or 0
 end
 
+function M:TestInterop()
+  local addon
+  if IsAddonLoaded("TinyDPS") and tdps then
+    addon = "TinyDPS"
+  elseif IsAddonLoaded("Skada") and Skada then
+    addon = "Skada"
+  elseif IsAddonLoaded("Recount") and Recount then
+    addon = "Recount"
+  elseif IsAddonLoaded("Details") and Details then
+    addon = "Details"
+  else
+    return L["meter.print.noAddon"]
+  end
+  return format(L["meter.print.usingDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(addon)))
+end
+
 function M:BuildSnapshot()
   wipe(R.snapshot)
   local addon, success
-  if tdps then
-    addon, success = loadTinyDPS()
-  elseif Skada then
-    addon, success = loadSkada()
-  elseif Recount then
-    addon, success = loadRecount()
-  elseif Details then
-    addon, success = loadDetails()
+  if IsAddonLoaded("TinyDPS") and tdps then
+    addon, success = "TinyDPS", loadTinyDPS()
+  elseif IsAddonLoaded("Skada") and Skada then
+    addon, success = "Skada", loadSkada()
+  elseif IsAddonLoaded("Recount") and Recount then
+    addon, success = "Recount"m loadRecount()
+  elseif IsAddonLoaded("Details") and Details then
+    addon, success = "Details", loadDetails()
   else
     A.console:Print(L["meter.print.noAddon"])
     return

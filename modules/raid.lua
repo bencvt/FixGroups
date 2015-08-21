@@ -5,6 +5,8 @@ M.private = {
   roster = {},
   rosterArray = {},
   comp = false,
+  comp1 = false,
+  comp2 = false,
   prevRoster = {},
   prevRosterArray = {},
   prevComp = false,
@@ -17,7 +19,6 @@ M.private = {
 local R = M.private
 
 M.ROLES = {TANK=1, MELEE=2, UNKNOWN=3, RANGED=4, HEALER=5}
-M.REBUILD_EVENTS = {"GROUP_ROSTER_UPDATE", "PLAYER_SPECIALIZATION_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
 
 for i = 1, 40 do
   R.rosterArray[i] = {}
@@ -29,7 +30,7 @@ local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, U
 
 function M:OnEnable()
   local rebuild = function () M:ForceBuildRoster() end
-  for _, event in ipairs(M.REBUILD_EVENTS) do
+  for _, event in ipairs({"GROUP_ROSTER_UPDATE", "PLAYER_SPECIALIZATION_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}) do
     M:RegisterEvent(event, rebuild)
   end
 end
@@ -45,6 +46,8 @@ local function wipeRoster()
   R.builtUniqueNames = false
   R.prevComp = R.comp
   R.comp = false
+  R.comp1 = false
+  R.comp2 = false
 
   local tmp = wipe(R.prevRoster)
   R.prevRoster = R.roster
@@ -92,7 +95,9 @@ local function buildRoster()
     R.roster[p.name] = p
   end
   local t, m, u, r, h = unpack(R.roleCounts)
-  R.comp = format("%d/%d/%d(%d+%d)%s", t, h, m+u+r, m, u+r, ((u > 0) and "?" or ""))
+  R.comp1 = format("%d/%d/%d", t, h, m+u+r)
+  R.comp2 = format("(%d+%d)%s", m, u+r, ((u > 0) and "?" or ""))
+  R.comp = R.comp1, R.comp2
 end
 
 function M:BuildUniqueNames()
@@ -196,6 +201,10 @@ end
 
 function M:GetComp()
   return R.comp
+end
+
+function M:GetCompParts()
+  return R.comp1, R.comp2
 end
 
 function M:GetPlayer(name)

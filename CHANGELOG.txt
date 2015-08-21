@@ -1,8 +1,11 @@
 v1.2.1:
   - add /choose command
-  - add support for TinyDPS damage meter addon
-  - add ElvUI DataText raid comp
+  - various improvements to damage meter addon integration, including support for TinyDPS
+  - use Blizzard's standard class order for sorting
   - console commands are now case-insensitive
+  - raid comp now available as an ElvUI DataText, full breakdown in tooltip
+  - raid comp now includes melee and ranged counts
+  - raid comp now correctly excludes sitting players
 
 v1.2:
   - add mostly-complete German translation, Dankeschön @pas06

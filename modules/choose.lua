@@ -167,11 +167,27 @@ local function choosePlayer(mode, arg)
   
   R.optionsArePlayers = true
   wipe(R.options)
+  local include
   if IsInRaid() then
     A.raid:BuildUniqueNames()
     for _, player in pairs(A.raid:GetRoster()) do
-      if not player.isUnknown and not player.isSitting then
-        if (mode == "player") or (mode == "dead" and UnitIsDeadOrGhost(player.unitID)) or (mode == "alive" and not UnitIsDeadOrGhost(player.unitID)) or (mode == ROLE_NAMES[player.role]) or (mode == "dps" and player.isDPS) or ((mode == "class" or mode == "token") and validClasses[player.class]) then
+      if not player.isUnknown then
+        if player.isSitting or mode == "sitting" then
+          include = (mode == "sitting")
+        elseif mode == "player" then
+          include = true
+        elseif mode == "dead" then
+          include = UnitIsDeadOrGhost(player.unitID))
+        elseif mode == "alive" then
+          include = not UnitIsDeadOrGhost(player.unitID))
+        elseif mode == "class" or mode == "token" then
+          include = validClasses[player.class]
+        elseif mode == "dps" then
+          include = player.isDPS
+        elseif mode == ROLE_NAMES[player.role] then
+          include = true
+        end
+        if include then
           tinsert(R.options, player.uniqueName)
         end
       end
@@ -181,7 +197,7 @@ local function choosePlayer(mode, arg)
     if mode == "melee" or mode == "ranged" then
       mode = "dps"
     end
-    local unitID, include, role
+    local unitID, role
     for i = 1, 5 do
       unitID = (i == 5) and "player" or ("party"..i)
       if UnitExists(unitID) then
@@ -202,7 +218,7 @@ local function choosePlayer(mode, arg)
             include = (role == "TANK")
           elseif mode == "healer" then
             include = (role == "HEALER")
-          else
+          elseif mode == "dps" then
             include = (role ~= "TANK" and role ~= "HEALER")
           end
         end
@@ -238,6 +254,8 @@ local function choosePlayer(mode, arg)
       end
     end
     arg = format("%s (%s)", L["choose.tierToken."..arg], tconcat(localClasses, "/"))
+  elseif mode == "sitting" then
+    arg = tostring(A.util:GetMaxGroupsForInstance() + 1)
   end
   
   announceAndRoll(mode, arg)
@@ -294,6 +312,12 @@ function M:Command(args)
     M:PrintHelp()
   elseif argsLower == "examples" or argsLower == "example" then
     M:PrintExamples()
+  elseif argsLower == "sitting" then
+    choosePlayer("sitting")
+  elseif argsLower == "dead" then
+    choosePlayer("dead")
+  elseif argsLower == "alive" or argsLower == "live" or argsLower == "living" then
+    choosePlayer("alive")
   elseif argsLower == "player" or argsLower == "any" then
     choosePlayer("player")
   elseif argsLower == "tank" then
@@ -312,9 +336,11 @@ function M:Command(args)
     choosePlayer("token", "protector")
   elseif argsLower == "vanq" or argsLower == "vanquisher" then
     choosePlayer("token", "vanquisher")
-  elseif argsLower == "dead" then
+  elseif argsLower == strlower(L["choose.sitting"]) then
+    choosePlayer("sitting")
+  elseif argsLower == strlower(L["choose.dead"]) then
     choosePlayer("dead")
-  elseif argsLower == "alive" or argsLower == "live" or argsLower == "living" then
+  elseif argsLower == strlower(L["choose.alive"]) then
     choosePlayer("alive")
   elseif argsLower == strlower(L["choose.role.any"]) then
     choosePlayer("player")
@@ -334,10 +360,6 @@ function M:Command(args)
     choosePlayer("token", "protector")
   elseif argsLower == strlower(L["choose.tierToken.vanquisher"]) or argsLower == strlower(L["choose.tierToken.vanquisher.short"]) then
     choosePlayer("token", "vanquisher")
-  elseif argsLower == strlower(L["choose.dead"]) then
-    choosePlayer("dead")
-  elseif argsLower == strlower(L["choose.alive"]) then
-    choosePlayer("alive")
   elseif strfind(args, SPACE_OR_SPACE) then
     chooseOption(",", strgsub(args, SPACE_OR_SPACE, ","))
   elseif strfind(args, ",") then

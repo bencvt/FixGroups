@@ -26,6 +26,7 @@ M.private = {
         watchChat = true,
         announceChatAlways = false,
         announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
+        dataTextRaidCompStyle = 1,
       },
     },
   },
@@ -50,9 +51,9 @@ local MARKS = {
   "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t", -- 8=skull (9)
   L["options.value.noMark"],
 }
-local DELAY_FIX_BUTTONS = 0.01
+local DELAY_OPTIONS_PANE_LOADED = 0.01
 
-local ipairs = ipairs
+local ipairs, min, max = ipairs, math.min, math.max
 
 local function getOptionMark(arr, index)
   if arr[index] and arr[index] <= 8 then
@@ -82,7 +83,7 @@ local function HA(text)
   return "|cff33ff99"..text.."|r"
 end
 
-local BUTTONS, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, RESET = 100, 200, 300, 400, 500, 600, 700, 900
+local BUTTONS, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, INTEROP, RESET = 100, 200, 300, 400, 500, 600, 700, 800, 900
 
 R.optionsTable = {
   type = "group",
@@ -105,18 +106,12 @@ R.optionsTable = {
         -- We use a short timer to delay the tree walk: at the time the hidden
         -- function is called, the tree hasn't been built yet.
         M:ScheduleTimer(function()
-          if not R.optionsGUI.obj.children[1] then
-            -- The GUI tree does not exist any more.
-            -- The player must have closed the options window immediately.
-            return
+          -- Ensure the GUI tree exists. It won't if the player closes the
+          -- options pane immediately.
+          if R.optionsGUI.obj.children[1] then
+            M:OptionsPaneLoaded()
           end
-          for _, g in ipairs(R.optionsGUI.obj.children[1].frame.obj.children) do
-            if g.type == "Button" then
-              -- Enable right-click on all buttons in the options pane.
-              g.frame:RegisterForClicks("AnyUp")
-            end
-          end
-        end, DELAY_FIX_BUTTONS)
+        end, DELAY_OPTIONS_PANE_LOADED)
       end,
     },
     buttonCommandDefault = {
@@ -479,6 +474,33 @@ R.optionsTable = {
       disabled = function(i) return not A.options.partyMark end,
     },
     -- -------------------------------------------------------------------------
+    headerINTEROP = {
+      order = INTEROP,
+      type = "header",
+      name = L["options.header.interop"],
+    },
+    damageMeterAddonDesc = {
+      order = INTEROP+10,
+      type = "description",
+      name = L["meter.print.noAddon"].."|n",  -- updated in M:OnEnable
+      fontSize = "medium",
+    },
+    dataTextRaidCompStyle = {
+      order = INTEROP+20,
+      name = format(L["options.widget.dataTextRaidCompStyle.text"], L["dataText.raidComp.name"]),
+      desc = format(L["options.widget.dataTextRaidCompStyle.desc.1"], A.name, H(L["dataText.raidComp.name"])).."|n|n"..L["options.widget.dataTextRaidCompStyle.desc.1"],
+      type = "select",
+      width = "double",
+      style = "dropdown",
+      values = {
+        [1] = "Raid: |cff1784d12/4/14|cff105c92(6+8)|r",
+        [2] = "2/4/14(6+8)",
+      },
+      get = function(i) return max(1, min(2, A.options.dataTextRaidCompStyle)) end,
+      set = function(i,v) A.options.dataTextRaidCompStyle = max(1, min(2, v)) end,
+      --disabled = function(i) return not IsAddonLoaded("ElvUI") end,
+    },
+    -- -------------------------------------------------------------------------
     headerRESET = {
       order = RESET,
       type = "header",
@@ -511,4 +533,17 @@ function M:OnInitialize()
 
   LibStub("AceConfig-3.0"):RegisterOptionsTable(A.name, R.optionsTable)
   R.optionsGUI = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.name, A.name)
+end
+
+function M:OnEnable()
+  R.optionsTable.args.damageMeterAddonDesc.name = A.meter:TestInterop().."|n"
+end
+
+function M:OptionsPaneLoaded()
+  for _, g in ipairs(R.optionsGUI.obj.children[1].frame.obj.children) do
+    if g.type == "Button" then
+      -- Enable right-click on all buttons in the options pane.
+      g.frame:RegisterForClicks("AnyUp")
+    end
+  end
 end

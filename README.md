@@ -14,9 +14,9 @@ Other features:
 
  * **Choose** a "volunteer" when you need someone to handle a certain mechanic in a fight using the **`/choose`** console command. You can narrow down the candidate pool by using **`/choose ranged`**, **`/choose hunter`**, etc. This command has many other uses as well. Type **`/choose help`** in-game for details.
 
- * **Track** your raid comp automatically. An example comp is **`2/3/10 (4+6)`**, which is shorthand for *"a raid composed of 2 tanks, 3 healers, and 10 dps, 4 of which are melee and 6 of which are ranged."*
+ * **Track** your raid comp automatically. An example comp is **`2/4/13(5+8)`**, which is shorthand for *"a raid composed of 2 tanks, 4 healers, and 13 dps, 5 of which are melee and 8 of which are ranged."*
 
-   * Whenever a player joins or leaves your raid, the **server message** now includes the new comp. Example: *"Deadlydk has joined the raid group. 2/3/11 (5+6)."*
+   * Whenever a player joins or leaves your raid, the **server message** now includes the new comp. Example: *"Deadlydk has joined the raid group. 2/4/14(6+8)."*
 
    * The FixGroups button/icon **tooltip** includes the comp.
 
