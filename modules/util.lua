@@ -6,7 +6,7 @@ M.private = {
 }
 local R = M.private
 
-local floor, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, sort, string.find, string.lower, string.match, strsplit, table.concat, table.insert, table.remove, wipe
+local floor, max, pairs, select, sort, strfind, strgsub, strlower, strmatch, strsplit, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, sort, string.find, string.gsub, string.lower, string.match, strsplit, table.concat, table.insert, table.remove, wipe
 local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
 
@@ -37,6 +37,10 @@ function M:LocaleTableConcat(t)
   local result = tconcat(t, ", ")
   t[sz-1], t[sz] = saveY, saveZ
   return result
+end
+
+function M:Escape(text)
+  return strgsub(text, "|", "||")
 end
 
 function M:SortedKeys(tbl, keys)
