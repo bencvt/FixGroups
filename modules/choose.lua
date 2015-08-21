@@ -180,6 +180,8 @@ local function choosePlayer(mode, arg)
           include = (mode == "sitting")
         elseif mode == "player" then
           include = true
+        elseif mode == "notme" then
+          include = not UnitIsUnit(player.unitID, "player")
         elseif mode == "dead" then
           include = UnitIsDeadOrGhost(player.unitID)
         elseif mode == "alive" then
@@ -207,6 +209,8 @@ local function choosePlayer(mode, arg)
       if UnitExists(unitID) then
         if mode == "player" then
           include = true
+        elseif mode == "notme" then
+          include = not UnitIsUnit(unitID, "player")
         elseif mode == "dead" then
           include = UnitIsDeadOrGhost(unitID)
         elseif mode == "alive" then
@@ -320,6 +324,8 @@ function M:Command(args)
     M:PrintExamples()
   elseif argsLower == "sitting" then
     choosePlayer("sitting")
+  elseif argsLower == "notme" or argsLower == "somebodyelse" then
+    choosePlayer("notme")
   elseif argsLower == "dead" then
     choosePlayer("dead")
   elseif argsLower == "alive" or argsLower == "live" or argsLower == "living" then
@@ -344,6 +350,8 @@ function M:Command(args)
     choosePlayer("token", "vanquisher")
   elseif argsLower == strlower(L["choose.sitting"]) then
     choosePlayer("sitting")
+  elseif argsLower == strlower(L["choose.notme"]) then
+    choosePlayer("notme")
   elseif argsLower == strlower(L["choose.dead"]) then
     choosePlayer("dead")
   elseif argsLower == strlower(L["choose.alive"]) then
