@@ -12,7 +12,7 @@ local R = M.private
 local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
-local format, strfind, strlower, unpack = string.format, string.find, string.lower, unpack
+local format, strfind, strlower = string.format, string.find, string.lower
 local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName
 
 local LOCALE_KW_1 = strlower(string.trim(L["chatKeyword.fixGroups"]))
@@ -39,7 +39,7 @@ end
 local function setTooltip(tooltip, isRaidTab)
   tooltip:ClearLines()
   local comp = A.raid:GetComp()
-  if not comp or comp == "0/0/0 (0+0)" then
+  if not comp then
     tooltip:AddLine(A.name)
   else
     tooltip:AddDoubleLine(A.name, format(L["tooltip.header.raidComp"], comp))
@@ -81,6 +81,49 @@ local function refresh()
   M:Refresh()
 end
 
+local function setupMinimapIcon()
+  if R.icon then
+    return
+  end
+  R.iconLDB = LibStub("LibDataBroker-1.1"):NewDataObject(A.name, {
+    type = "launcher",
+    text = A.name,
+    icon = "Interface\\ICONS\\INV_Misc_GroupLooking",
+    OnClick = handleClick,
+    OnTooltipShow = setTooltip,
+  })
+  R.icon = LibStub("LibDBIcon-1.0")
+  R.icon:Register(A.name, R.iconLDB, A.options.minimapIcon)
+end
+
+local function setupRaidTabButton()
+  if R.raidTabButton then
+    return
+  end
+  local b = CreateFrame("BUTTON", nil, RaidFrame, "UIPanelButtonTemplate")
+  b:SetPoint("TOPRIGHT", RaidFrameRaidInfoButton, "TOPLEFT", 0, 0)
+  b:SetSize(RaidFrameRaidInfoButton:GetWidth(), RaidFrameRaidInfoButton:GetHeight())
+  b:GetFontString():SetFont(RaidFrameRaidInfoButton:GetFontString():GetFont())
+  b:SetText(L["button.fixGroups.text"])
+  b:RegisterForClicks("AnyUp")
+  b:SetScript("OnClick", handleClick)
+  b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") setTooltip(GameTooltip, true) end)
+  b:SetScript("OnLeave", function () GameTooltip:Hide() end)
+  if IsAddOnLoaded("ElvUI") and ElvUI then
+    local E = ElvUI[1]
+    if E.private.skins.blizzard.enable and E.private.skins.blizzard.nonraid then
+      b:StripTextures()
+      E:GetModule("Skins"):HandleButton(b)
+    end
+  end
+  if A.options.addButtonToRaidTab then
+    b:Show()
+  else
+    b:Hide()
+  end
+  R.raidTabButton = b
+end
+
 function M:OnEnable()
   M:RegisterEvent("PLAYER_ENTERING_WORLD",          refresh)
   M:RegisterEvent("GROUP_ROSTER_UPDATE",            refresh)
@@ -90,45 +133,8 @@ function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_RAID_LEADER",           watchChat)
   M:RegisterEvent("CHAT_MSG_SAY",                   watchChat)
   M:RegisterEvent("CHAT_MSG_WHISPER",               watchChat)
-
-  if not R.icon then
-    -- Create minimap icon
-    R.iconLDB = LibStub("LibDataBroker-1.1"):NewDataObject(A.name, {
-      type = "launcher",
-      text = A.name,
-      icon = "Interface\\ICONS\\INV_Misc_GroupLooking",
-      OnClick = handleClick,
-      OnTooltipShow = setTooltip,
-    })
-    R.icon = LibStub("LibDBIcon-1.0")
-    R.icon:Register(A.name, R.iconLDB, A.options.minimapIcon)
-  end
-
-  if not R.raidTabButton then
-    -- Create button on raid tab
-    local b = CreateFrame("BUTTON", nil, RaidFrame, "UIPanelButtonTemplate")
-    b:SetPoint("TOPRIGHT", RaidFrameRaidInfoButton, "TOPLEFT", 0, 0)
-    b:SetSize(RaidFrameRaidInfoButton:GetWidth(), RaidFrameRaidInfoButton:GetHeight())
-    b:GetFontString():SetFont(RaidFrameRaidInfoButton:GetFontString():GetFont())
-    b:SetText(L["button.fixGroups.text"])
-    b:RegisterForClicks("AnyUp")
-    b:SetScript("OnClick", handleClick)
-    b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") setTooltip(GameTooltip, true) end)
-    b:SetScript("OnLeave", function () GameTooltip:Hide() end)
-    if IsAddOnLoaded("ElvUI") then
-      local E = unpack(ElvUI)
-      if E.private.skins.blizzard.enable and E.private.skins.blizzard.nonraid then
-        b:StripTextures()
-        E:GetModule("Skins"):HandleButton(b)
-      end
-    end
-    if A.options.addButtonToRaidTab then
-      b:Show()
-    else
-      b:Hide()
-    end
-    R.raidTabButton = b
-  end
+  setupMinimapIcon()
+  setupRaidTabButton()
 end
 
 function M:OnDisable()
