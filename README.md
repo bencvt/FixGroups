@@ -16,7 +16,7 @@ Other features:
 
  * **Track** your raid comp automatically. An example comp is **`2/4/13(5+8)`**, which is shorthand for *"a raid composed of 2 tanks, 4 healers, and 13 dps, 5 of which are melee and 8 of which are ranged."*
 
-   * Whenever a player joins or leaves your raid, the **server message** now includes the new comp. Example: *"Deadlydk has joined the raid group. 2/4/14(6+8)."*
+   * Whenever a player joins or leaves your raid, the **server message** now includes the player's role and the new comp. Example: *"Deadlydk has joined the raid group. Melee, 2/4/14(6+8)."*
 
    * The FixGroups button/icon **tooltip** includes the comp.
 
