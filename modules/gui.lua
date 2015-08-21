@@ -38,8 +38,8 @@ end
 
 local function setTooltip(tooltip, isRaidTab)
   tooltip:ClearLines()
-  local comp = A.raid:GetCompTHD()
-  if comp == "0/0/0" then
+  local comp = A.raid:GetComp()
+  if not comp or comp == "0/0/0 (0+0)" then
     tooltip:AddLine(A.name)
   else
     tooltip:AddDoubleLine(A.name, format(L["tooltip.header.raidComp"], comp))

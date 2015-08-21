@@ -4,10 +4,10 @@ A.raid = M
 M.private = {
   roster = {},
   rosterArray = {},
+  comp = false,
   prevRoster = {},
   prevRosterArray = {},
-  prevCompTHD = "0/0/0",
-  prevCompTMURH = "0,0,0,0,0",
+  prevComp = false,
   size = 0,
   groupSizes = {0, 0, 0, 0, 0, 0, 0, 0},
   roleCounts = {0, 0, 0, 0, 0},
@@ -23,7 +23,7 @@ for i = 1, 40 do
   R.prevRosterArray[i] = {}
 end
 
-local format, ipairs, pairs, tconcat, tinsert, tostring, wipe = format, ipairs, pairs, table.concat, table.insert, tostring, wipe
+local format, ipairs, pairs, tconcat, tinsert, tostring, unpack, wipe = format, ipairs, pairs, table.concat, table.insert, tostring, unpack, wipe
 local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName = GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName
 
 function M:OnEnable()
@@ -44,6 +44,8 @@ local function wipeRoster()
     R.roleCounts[i] = 0
   end
   R.builtUniqueNames = false
+  R.prevComp = R.comp
+  R.comp = false
 
   local tmp = wipe(R.prevRoster)
   R.prevRoster = R.roster
@@ -88,6 +90,8 @@ local function buildRoster()
     R.roleCounts[p.role] = R.roleCounts[p.role] + 1
     R.roster[p.name] = p
   end
+  local t, m, u, r, h = unpack(R.roleCounts)
+  R.comp = format("%d/%d/%d (%d+%d)%s", t, h, m+u+r, m, u+r, ((u > 0) and "?" or ""))
 end
 
 function M:BuildUniqueNames()
@@ -117,14 +121,10 @@ end
 
 function M:ForceBuildRoster()
   if not IsInRaid() then
-    R.prevCompTHD = "0/0/0"
-    R.prevCompTMURH = "0,0,0,0,0"
     wipeRoster()
     return
   end
   buildRoster()
-  local compTHD = M:GetCompTHD()
-  local compTMURH = M:GetCompTMURH()
   if A.debug >= 2 then M:DebugPrintRoster() end
   
   local prevGroup, group
@@ -155,12 +155,10 @@ function M:ForceBuildRoster()
     end
   end
   
-  if R.prevCompTMURH ~= compTMURH or R.prevCompTHD ~= compTHD then
-    if A.debug >= 1 then A.console:Debugf(M, "RAID_COMP_CHANGED %s->%s (%s->%s)", R.prevCompTHD, compTHD, R.prevCompTMURH, compTMURH) end
-    M:SendMessage("FIXGROUPS_RAID_COMP_CHANGED", R.prevCompTHD, compTHD, R.prevCompTMURH, compTMURH)
+  if R.prevComp ~= R.comp then
+    if A.debug >= 1 then A.console:Debugf(M, "RAID_COMP_CHANGED %s -> %s", R.prevComp, R.comp) end
+    M:SendMessage("FIXGROUPS_RAID_COMP_CHANGED", R.prevComp, R.comp)
   end
-  R.prevCompTMURH = compTMURH
-  R.prevCompTHD = compTHD
 end
 
 function M:NumSitting()
@@ -179,12 +177,8 @@ function M:GetGroupSize(group)
   return R.groupSizes[group]
 end
 
-function M:GetCompTHD()
-  return tostring(R.roleCounts[M.ROLES.TANK]).."/"..tostring(R.roleCounts[M.ROLES.HEALER]).."/"..tostring(R.roleCounts[M.ROLES.MELEE]+R.roleCounts[M.ROLES.UNKNOWN]+R.roleCounts[M.ROLES.RANGED])
-end
-
-function M:GetCompTMURH()
-  return tconcat(R.roleCounts, ",")
+function M:GetComp()
+  return R.comp
 end
 
 function M:GetPlayer(name)
@@ -252,7 +246,7 @@ function M:IsInSameZone(name)
 end
 
 function M:DebugPrintRoster()
-  A.console:Debugf(M, "roster size=%d groupSizes=%s compTHD=%s compTMURH=%s:", R.size, tconcat(R.groupSizes, ","), M:GetCompTHD(), M:GetCompTMURH())
+  A.console:Debugf(M, "roster size=%d groupSizes={%s} roleCounts={%s} comp=%s:", R.size, tconcat(R.groupSizes, ","), tconcat(R.roleCounts, ","), R.comp)
   local p, line
   for i = 1, R.size do
     p = R.rosterArray[i]
