@@ -18,6 +18,7 @@ local MAX_CHAT_LINE_LEN = 250
 local ROLL_TIMEOUT = 5.0
 -- Lazily populated.
 local CLASS_ALIASES = false
+local SPACE_OR_SPACE = " "..string.lower(L["word.or"]).." "
 
 local format, ipairs, pairs, print, select, sort, strfind, strgmatch, strgsub, strlen, strlower, strsplit, strsub, strtrim, tconcat, time, tinsert, tonumber, tostring, wipe = string.format, ipairs, pairs, print, select, sort, string.find, string.gmatch, string.gsub, string.len, string.lower, string.split, string.sub, string.trim, table.concat, time, table.insert, tonumber, tostring, wipe
 local GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitIsDeadOrGhost, UnitExists, UnitName, UnitGroupRolesAssigned = GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitIsDeadOrGhost, UnitExists, UnitName, UnitGroupRolesAssigned
@@ -337,6 +338,8 @@ function M:Command(args)
     choosePlayer("dead")
   elseif argsLower == strlower(L["choose.alive"]) then
     choosePlayer("alive")
+  elseif strfind(args, SPACE_OR_SPACE) then
+    chooseOption(",", strgsub(args, SPACE_OR_SPACE, ","))
   elseif strfind(args, ",") then
     chooseOption(",", args)
   elseif strfind(args, " ") then

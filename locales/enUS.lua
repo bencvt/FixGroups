@@ -161,7 +161,7 @@ L["choose.tierToken.protector.short"] = "prot"
 L["choose.tierToken.vanquisher"] = "Vanquisher"
 L["choose.tierToken.vanquisher.short"] = "vanq"
 L["choose.examples.playerNames"] = "Thisplayer Thatplayer"
-L["choose.examples.giveUpOrNot"] = "give up,keep going"
+L["choose.examples.giveUpOrNot"] = "give up or keep going"
 L["choose.examples.raids"] = "Highmaul, Blackrock Foundry, Hellfire Citadel"
 
 -- AddonChannel module
