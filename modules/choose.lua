@@ -40,11 +40,11 @@ function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_SYSTEM")
 end
 
-local function sendMessage(message)
-  if IsInGroup() then
-    SendChatMessage(message, A.util:GetGroupChannel())
-  else
+local function sendMessage(message, localOnly)
+  if localOnly or not IsInGroup() then
     A.console:Print(message)
+  else
+    SendChatMessage(message, A.util:GetGroupChannel())
   end
 end
 
@@ -66,11 +66,11 @@ function M:CHAT_MSG_SYSTEM(event, message)
   if R.optionsArePlayers then
     local player = A.raid:FindPlayer(choseValue)
     if player and player.group then
-      sendMessage(format(L["choose.print.chose.player"], choseIndex, choseValue, player.group))
+      sendMessage(format(L["choose.print.chose.player"], choseIndex, choseValue, player.group), false)
       return
     end
   end
-  sendMessage(format(L["choose.print.chose.option"], choseIndex, choseValue))
+  sendMessage(format(L["choose.print.chose.option"], choseIndex, choseValue), false)
 end
 
 function M:PrintHelp()
@@ -105,8 +105,16 @@ local function isWaitingOnPreviousRoll()
   end
 end
 
-local function announceAndRoll(mode, arg)
-  -- Announce options, on multiple lines if needed.
+local function roll()
+  RandomRoll(1, #R.options)
+  R.rollPrefix = format(RANDOM_ROLL_RESULT, UnitName("player"), 867, 530, 9)
+  R.rollPrefix = strsub(R.rollPrefix, 1, strfind(R.rollPrefix, "867") - 1)
+  R.rollTimestamp = time()
+end
+
+local function announce(mode, arg, localOnly)
+  -- Announce exactly what we'll be rolling on.
+  -- Use on multiple lines if needed.
   local line = L["choose.print.choosing."..mode]
   if arg then
     line = format(line, arg)
@@ -115,7 +123,7 @@ local function announceAndRoll(mode, arg)
   for i, option in ipairs(R.options) do
     option = tostring(i).."="..tostring(option)..((i < numOptions and numOptions > 1) and "," or ".")
     if line and strlen(line) + 1 + strlen(option) >= MAX_CHAT_LINE_LEN then
-      sendMessage(line)
+      sendMessage(line, localOnly)
       line = false
     end
     if line then
@@ -125,14 +133,8 @@ local function announceAndRoll(mode, arg)
     end
   end
   if line then
-    sendMessage(line)
+    sendMessage(line, localOnly)
   end
-
-  -- Roll.
-  RandomRoll(1, numOptions)
-  R.rollPrefix = format(RANDOM_ROLL_RESULT, UnitName("player"), 867, 530, 9)
-  R.rollPrefix = strsub(R.rollPrefix, 1, strfind(R.rollPrefix, "867") - 1)
-  R.rollTimestamp = time()
 end
 
 local function choosePlayer(mode, arg)
@@ -177,9 +179,9 @@ local function choosePlayer(mode, arg)
         elseif mode == "player" then
           include = true
         elseif mode == "dead" then
-          include = UnitIsDeadOrGhost(player.unitID))
+          include = UnitIsDeadOrGhost(player.unitID)
         elseif mode == "alive" then
-          include = not UnitIsDeadOrGhost(player.unitID))
+          include = not UnitIsDeadOrGhost(player.unitID)
         elseif mode == "class" or mode == "token" then
           include = validClasses[player.class]
         elseif mode == "dps" then
@@ -228,11 +230,6 @@ local function choosePlayer(mode, arg)
       end
     end
   end
-  
-  if #R.options == 0 then
-    A.console:Print(L["choose.print.noPlayers"])
-    return
-  end
   sort(R.options)
   
   if mode == "class" then
@@ -257,8 +254,14 @@ local function choosePlayer(mode, arg)
   elseif mode == "sitting" then
     arg = tostring(A.util:GetMaxGroupsForInstance() + 1)
   end
-  
-  announceAndRoll(mode, arg)
+
+  if #R.options > 0 then
+    announce(mode, arg, false)
+    roll()
+  else
+    announce(mode, arg, true)
+    A.console:Print(L["choose.print.noPlayers"])
+  end
 end
 
 local function chooseOption(sep, args)
@@ -275,7 +278,8 @@ local function chooseOption(sep, args)
     end
   end
   
-  announceAndRoll("option", false)
+  announce("option", false, false)
+  roll()
 end
 
 local function getClass(className)
