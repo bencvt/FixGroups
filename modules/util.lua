@@ -85,6 +85,14 @@ function M:GetGroupChannel()
   return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "PARTY"
 end
 
+function M:Highlight(text)
+  return "|cff1784d1"..(text or self).."|r"
+end
+
+function M:HighlightAddon(text)
+  return "|cff33ff99"..(text or self).."|r"
+end
+
 function M:UnitClassColor(unitID)
   local c = select(2, UnitClass(unitID))
   if c and RAID_CLASS_COLORS[c] then

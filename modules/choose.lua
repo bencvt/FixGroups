@@ -23,7 +23,10 @@ local format, ipairs, pairs, print, select, sort, strfind, strgmatch, strgsub, s
 local GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitName, UnitGroupRolesAssigned = GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitName, UnitGroupRolesAssigned
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT
 
+local H
+
 function M:OnEnable()
+  H = A.util.Highlight
   local function slashCmd(args)
     M:Command(args)
   end
@@ -70,27 +73,25 @@ function M:CHAT_MSG_SYSTEM(event, message)
 end
 
 function M:PrintHelp()
-  local validOptions
-  A.console:Printf(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r")
-  print(format(L["choose.help.header"], "|cff1784d1/choose|r", "|cff1784d1/fg choose|r"))
-  --print(format("  |cff1784d1/choose help|r %s |cff1784d1/choose about|r - %s", L["word.or"], L["choose.help.help"]))
-  print(format("  |cff1784d1/choose %s|r - %s", L["choose.help.option.arg"], L["choose.help.option"]))
-  print(format("  |cff1784d1/choose %s|r - %s", L["choose.help.class.arg"], L["choose.help.class"]))
-  validOptions = format("|cff1784d1%s|r, |cff1784d1%s|r%s %s |cff1784d1%s|r", L["choose.tierToken.conqueror.short"], L["choose.tierToken.protector.short"], A.util:LocaleSerialComma(), L["word.or"], L["choose.tierToken.vanquisher.short"])
-  print(format("  |cff1784d1/choose %s|r - %s", L["choose.help.token.arg"], format(L["choose.help.token"], validOptions)))
-  validOptions = format("|cff1784d1%s|r, |cff1784d1%s|r, |cff1784d1%s|r, |cff1784d1%s|r, |cff1784d1%s|r%s %s |cff1784d1%s|r", L["choose.role.any"], L["choose.role.tank"], L["choose.role.healer"], L["choose.role.damager"], L["choose.role.melee"], A.util:LocaleSerialComma(), L["word.or"], L["choose.role.ranged"])
-  print(format("  |cff1784d1/choose %s|r - %s", L["choose.help.role.arg"], format(L["choose.help.role"], validOptions)))
-  print(format(L["choose.help.examples"], "|cff1784d1/choose examples|r"))
+  local validTokens = format("%s, %s%s %s %s", H(L["choose.tierToken.conqueror.short"]), H(L["choose.tierToken.protector.short"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.tierToken.vanquisher.short"]))
+  local validRoles = format("%s, %s, %s, %s, %s%s %s %s", H(L["choose.role.any"]), H(L["choose.role.tank"]), H(L["choose.role.healer"]), H(L["choose.role.damager"]), H(L["choose.role.melee"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.role.ranged"]))
+  A.console:Printf(L["versionAuthor"], A.version, A.util:HighlightAddon(A.author))
+  print(format(L["choose.help.header"], H("/choose"), H("/fg choose")))
+  print(format("  %s - %s", H("/choose "..L["choose.help.option.arg"]), L["choose.help.option"]))
+  print(format("  %s - %s", H("/choose "..L["choose.help.class.arg"]), L["choose.help.class"]))
+  print(format("  %s - %s", H("/choose "..L["choose.help.token.arg"]), format(L["choose.help.token"], validTokens)))
+  print(format("  %s - %s", H("/choose "..L["choose.help.role.arg"]), format(L["choose.help.role"], validRoles)))
+  print(format(L["choose.help.examples"], H("/choose examples")))
 end
 
 function M:PrintExamples()
-  A.console:Printf(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r")
-  print(format(L["choose.examples.header"], "|cff1784d1/choose|r"))
-  print(format("  |cff1784d1/choose %s|r", L["choose.role.melee"]))
-  print(format("  |cff1784d1/choose %s|r", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["HUNTER"])))
-  print("  |cff1784d1/choose Thisplayer Thatplayer|r")
-  print("  |cff1784d1/choose give up,keep trying|r")
-  print("  |cff1784d1/choose Highmaul, Blackrock Foundry, Hellfire Citadel")
+  A.console:Printf(L["versionAuthor"], A.version, A.util:HighlightAddon(A.author))
+  print(format(L["choose.examples.header"], H("/choose")))
+  print("  "..H(format("/choose %s", L["choose.role.melee"])))
+  print("  "..H(format("/choose %s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["HUNTER"]))))
+  print("  "..H("/choose Thisplayer Thatplayer"))
+  print("  "..H("/choose give up,keep trying"))
+  print("  "..H("/choose Highmaul, Blackrock Foundry, Hellfire Citadel"))
 end
 
 local function isWaitingOnPreviousRoll()
@@ -315,7 +316,7 @@ function M:Command(args)
     if class then
       choosePlayer("class", class)
     else
-      A.console:Printf(L["choose.print.badArgument"], "|cff1784d1"..args.."|r", "|cff1784d1/choose help|r")
+      A.console:Printf(L["choose.print.badArgument"], H(args), H("/choose"))
     end
   end
 end

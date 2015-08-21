@@ -5,7 +5,10 @@ A.console = M
 local date, format, print, select, strfind, strlen, strlower, strmatch, strsub, strtrim, tconcat, tinsert, tostring = date, format, print, select, string.find, string.len, string.lower, string.match, string.sub, string.trim, table.concat, table.insert, tostring
 local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 
+local H, HA
+
 function M:OnEnable()
+  H, HA = A.util.Highlight, A.util.HighlightAddon
   local function slashCmd(args)
     M:Command(args)
   end
@@ -15,24 +18,24 @@ function M:OnEnable()
 end
 
 function M:Print(...)
-  print("|cff33ff99"..A.name.."|r:", ...)
+  print(HA(A.name)..":", ...)
 end
 
 function M:Printf(...)
-  print("|cff33ff99"..A.name.."|r:", format(...))
+  print(HA(A.name)..":", format(...))
 end
 
 function M:PrintHelp()
-  M:Printf(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r")
-  print(format(L["console.help.header"], "|cff1784d1/fixgroups|r", "|cff1784d1/fg|r"))
-  print(format("  |cff1784d1/fg help|r %s |cff1784d1/fg about|r - %s", L["word.or"], L["console.help.help"]))
-  print(format("  |cff1784d1/fg config|r %s |cff1784d1/fg options|r - %s", L["word.or"], format(L["console.help.config"], A.name)))
-  print(format("  |cff1784d1/fg choose|r - %s", format(L["console.help.seeChoose"], "|cff1784d1/choose help|r")))
-  print(format("  |cff1784d1/fg cancel|r - %s", L["console.help.cancel"]))
-  print(format("  |cff1784d1/fg nosort|r - %s", L["console.help.nosort"]))
-  print(format("  |cff1784d1/fg meter|r %s |cff1784d1/fg dps|r - %s", L["word.or"], L["console.help.meter"]))
-  print(format("  |cff1784d1/fg split|r - %s", L["console.help.split"]))
-  print(format("  |cff1784d1/fg|r - %s", L["console.help.blank"]))
+  M:Printf(L["versionAuthor"], A.version, HA(A.author))
+  print(format(L["console.help.header"], H("/fixgroups"), H("/fg")))
+  print(format("  %s %s %s - %s", H("/fg help"),    L["word.or"], H("/fg about"),   L["console.help.help"]))
+  print(format("  %s %s %s - %s", H("/fg config"),  L["word.or"], H("/fg options"), format(L["console.help.config"], A.name)))
+  print(format("  %s - %s",       H("/fg choose"),                                  format(L["console.help.seeChoose"], H("/choose help"))))
+  print(format("  %s - %s",       H("/fg cancel"),                                  L["console.help.cancel"]))
+  print(format("  %s - %s",       H("/fg nosort"),                                  L["console.help.nosort"]))
+  print(format("  %s %s %s - %s", H("/fg meter"),   L["word.or"], H("/fg dps"),     L["console.help.meter"]))
+  print(format("  %s - %s",       H("/fg split"),                                   L["console.help.split"]))
+  print(format("  %s - %s",       H("/fg"),                                         L["console.help.blank"]))
 end
 
 function M:Command(args)
@@ -76,13 +79,13 @@ function M:Command(args)
   elseif argsLower == "" or argsLower == "default" then
     A.sorter:StartDefault()
   else
-    M:Printf(L["console.print.badArgument"], "|cff1784d1"..args.."|r", "|cff1784d1/fg help|r")
+    M:Printf(L["console.print.badArgument"], H(args), H("/fg help"))
     return
   end
 end
 
 function M:Errorf(module, ...)
-  print("|cff33ff99"..A.name.."|r internal error in "..module:GetName().." module:", format(...))
+  print(HA(A.name).." internal error in "..module:GetName().." module:", format(...))
 end
 
 local function isDebuggingModule(module)

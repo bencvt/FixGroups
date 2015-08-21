@@ -110,9 +110,9 @@ function M:BuildSnapshot()
     return
   end
   if success then
-    A.console:Printf(L["meter.print.usingDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r")
+    A.console:Printf(L["meter.print.usingDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(addon)))
   else
-    A.console:Printf(L["meter.print.noDataFrom"], "|cff33ff99"..A.util:GetAddonNameAndVersion(addon).."|r")
+    A.console:Printf(L["meter.print.noDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(addon)))
   end
   calculateAverages()
   if A.debug >= 1 then M:DebugPrintMeterSnapshot() end

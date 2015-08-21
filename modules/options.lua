@@ -73,11 +73,20 @@ local function setOptionMark(arr, index, value)
   -- Don't bother fixing duplicates.
 end
 
+-- The utils module is not available when we're define R.optionsTable,
+-- so just duplicate Highlight and HighlightAddon.
+local function H(text)
+  return "|cff1784d1"..text.."|r"
+end
+local function HA(text)
+  return "|cff33ff99"..text.."|r"
+end
+
 local BUTTONS, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, RESET = 100, 200, 300, 400, 500, 600, 700, 900
 
 R.optionsTable = {
   type = "group",
-  name = "|cff33ff99"..A.name.."|r "..format(L["versionAuthor"], A.version, "|cff33ff99"..A.author.."|r"),
+  name = HA(A.name).." "..format(L["versionAuthor"], A.version, HA(A.author)),
   args = {
     desc = {
       order = 0,
@@ -130,7 +139,7 @@ R.optionsTable = {
       order = BUTTONS+30,
       type = "execute",
       name = L["button.commandInfo.text"],
-      desc = format(L["button.commandInfo.desc"], "|cff1784d1/fg|r"),
+      desc = format(L["button.commandInfo.desc"], H("/fg")),
       func = function() A.console:Command("help") end,
     },
     -- -------------------------------------------------------------------------
@@ -156,7 +165,7 @@ R.optionsTable = {
     addButtonToRaidTab = {
       order = UI+20,
       name = L["options.widget.addButtonToRaidTab.text"],
-      desc = format(L["options.widget.addButtonToRaidTab.desc"], "|cff1784d1"..L["button.fixGroups.text"].."|r"),
+      desc = format(L["options.widget.addButtonToRaidTab.desc"], H(L["button.fixGroups.text"])),
       type = "toggle",
       width = "full",
       get = function(i) return A.options.addButtonToRaidTab end,
@@ -171,7 +180,7 @@ R.optionsTable = {
     watchChat = {
       order = CHAT+10,
       name = L["options.widget.watchChat.text"],
-      desc = format(L["options.widget.watchChat.desc"], "|cff1784d1"..L["chatKeyword.fixGroups"].."|r", "|cff1784d1"..L["chatKeyword.markTanks"].."|r"),
+      desc = format(L["options.widget.watchChat.desc"], H(L["chatKeyword.fixGroups"]), H(L["chatKeyword.markTanks"])),
       type = "toggle",
       width = "full",
       get = function(i) return A.options.watchChat end,
@@ -223,7 +232,7 @@ R.optionsTable = {
     sortMode = {
       order = RAIDASSIST+10,
       name = L["options.widget.sortMode.text"],
-      desc = format(L["options.widget.sortMode.desc"], "|cff1784d1/fg meter|r", "|cff1784d1"..L["button.fixGroups.text"].."|r"),
+      desc = format(L["options.widget.sortMode.desc"], H("/fg meter"), H(L["button.fixGroups.text"])),
       type = "select",
       width = "double",
       style = "dropdown",
@@ -388,7 +397,7 @@ R.optionsTable = {
     splitOddEven = {
       order = RAIDASSIST+70,
       name = L["options.widget.splitOddEven.text"],
-      desc = format(L["options.widget.splitOddEven.desc"], "|cff1784d1/fg split|r", "|cff1784d1"..L["button.splitGroups.text"].."|r"),
+      desc = format(L["options.widget.splitOddEven.desc"], H("/fg split"), H(L["button.splitGroups.text"])),
       type = "toggle",
       width = "full",
       get = function(i) return A.options.splitOddEven end,
@@ -403,7 +412,7 @@ R.optionsTable = {
     partyMark = {
       order = PARTY+10,
       name = L["options.widget.partyMark.text"],
-      desc = format(L["options.widget.partyMark.desc"], "|cff1784d1"..L["button.fixGroups.text"].."|r"),
+      desc = format(L["options.widget.partyMark.desc"], H(L["button.fixGroups.text"])),
       type = "toggle",
       width = "full",
       get = function(i) return A.options.partyMark end,
