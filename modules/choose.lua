@@ -89,9 +89,9 @@ function M:PrintExamples()
   print(format(L["choose.examples.header"], H("/choose")))
   print("  "..H(format("/choose %s", L["choose.role.melee"])))
   print("  "..H(format("/choose %s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["HUNTER"]))))
-  print("  "..H("/choose Thisplayer Thatplayer"))
-  print("  "..H("/choose give up,keep trying"))
-  print("  "..H("/choose Highmaul, Blackrock Foundry, Hellfire Citadel"))
+  print("  "..H(format("/choose %s", L["choose.examples.playerNames"])))
+  print("  "..H(format("/choose %s", L["choose.examples.giveUpOrNot"])))
+  print("  "..H(format("/choose %s", L["choose.examples.raids"])))
 end
 
 local function isWaitingOnPreviousRoll()
