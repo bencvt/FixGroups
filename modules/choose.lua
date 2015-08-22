@@ -203,7 +203,7 @@ local function getValidClasses(mode, arg)
       c["DEATHKNIGHT"] = true
       c["PALADIN"] = true
     else
-      A.console:Errorf(M, "invalid armor type %s!", tostring(arg or "<nil>"))
+      A.console:Errorf(M, "invalid primary stat %s!", tostring(arg or "<nil>"))
     end
     return c
   end
@@ -504,10 +504,10 @@ local function buildDispatchTable()
   add[strlower(L["choose.group"])] = DISPATCH_TABLE.group
   for cmd, d in pairs(DISPATCH_TABLE) do
     if d[1] == choosePlayer then
-      if d[2] == cmd then
-        add[strlower(L["choose.player."..d[2]])] = d
-      elseif d[2] == "tierToken" or d[2] == "primaryStat" or d[2] == "armor" then
+      if d[3] then
         add[strlower(L["choose.player."..d[2].."."..d[3]])] = d
+      else
+        add[strlower(L["choose.player."..d[2]])] = d
       end
     end
   end
