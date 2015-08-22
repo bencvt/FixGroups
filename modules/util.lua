@@ -6,8 +6,8 @@ M.private = {
 }
 local R = M.private
 
-local floor, max, pairs, select, sort, strfind, strgsub, strlower, strmatch, strsplit, tconcat, tinsert, tremove, wipe = math.floor, math.max, pairs, select, sort, string.find, string.gsub, string.lower, string.match, strsplit, table.concat, table.insert, table.remove, wipe
-local GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local floor, ipairs, max, pairs, select, sort, strfind, strgsub, strlower, strmatch, strsplit, tconcat, tinsert, tostring, tremove, wipe = math.floor, ipairs, math.max, pairs, select, sort, string.find, string.gsub, string.lower, string.match, strsplit, table.concat, table.insert, tostring, table.remove, wipe
+local GetAddOnMetadata, GetInstanceInfo, GetLocale, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, GetLocale, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
 
 function M:LocaleSerialComma()
@@ -21,22 +21,31 @@ function M:LocaleLowerNoun(noun)
   return strlower(noun)
 end
 
-function M:LocaleTableConcat(t)
+function M:LocaleTableConcat(t, sep)
+  sep = sep or L["word.and"]
   local sz = #t
   if sz == 0 then
     return ""
   elseif sz == 1 then
     return t[1]
   elseif sz == 2 then
-    return t[1].." "..L["word.and"].." "..t[2]
+    return t[1].." "..sep.." "..t[2]
   end
   -- Temporarily modify the table get the ", and " in, then restore.
   local saveY, saveZ = t[sz-1], t[sz]
-  t[sz-1] = t[sz-1]..M:LocaleSerialComma().." "..L["word.and"].." "..t[sz]
+  t[sz-1] = t[sz-1]..M:LocaleSerialComma().." "..sep.." "..t[sz]
   tremove(t)
   local result = tconcat(t, ", ")
   t[sz-1], t[sz] = saveY, saveZ
   return result
+end
+
+function M:AutoConvertTableConcat(t, sep)
+  local t2 = wipe(R.tmp1)
+  for _, v in ipairs(t) do
+    tinsert(t2, tostring(v or "<nil>"))
+  end
+  return tconcat(t2, sep)
 end
 
 function M:Escape(text)

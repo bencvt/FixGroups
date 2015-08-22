@@ -165,8 +165,7 @@ end
 
 function M:DebugPrintMeterSnapshot()
   A.console:Debug(M, "snapshot:")
-  local sorted = A.util:SortedKeys(R.snapshot, R.tmp1)
-  for _, k in ipairs(sorted) do
-    A.console:DebugMore(M, "  "..k.."="..R.snapshot[k])
+  for _, name in ipairs(A.util:SortedKeys(R.snapshot, R.tmp1)) do
+    A.console:DebugMore(M, "  "..name.."="..R.snapshot[name])
   end
 end

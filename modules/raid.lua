@@ -182,7 +182,7 @@ end
 function M:GetUnknownNames()
   local names = wipe(R.tmp1)
   local p
-  for _, name in pairs(A.util:SortedKeys(R.roster)) do
+  for _, name in ipairs(A.util:SortedKeys(R.roster, R.tmp1)) do
     p = R.roster[name]
     if p.role == M.ROLES.UNKNOWN then
       tinsert(names, A.util:UnitNameWithColor(name))
@@ -277,7 +277,7 @@ function M:DebugPrintRoster()
   for i = 1, R.size do
     p = R.rosterArray[i]
     line = " "
-    for _, k in ipairs(A.util:SortedKeys(p)) do
+    for _, k in ipairs(A.util:SortedKeys(p, R.tmp1)) do
       line = line.." "..k.."="..tostring(p[k])
     end
     A.console:DebugMore(M, line)
