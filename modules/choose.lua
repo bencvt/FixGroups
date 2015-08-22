@@ -501,7 +501,7 @@ local function buildDispatchTable()
   -- Add localized aliases for chooseGroup and choosePlayer commands.
   add[strlower(L["choose.group"])] = DISPATCH_TABLE.group
   for cmd, d in pairs(DISPATCH_TABLE) do
-    if d[1] == choosePlayer then
+    if d[1] == choosePlayer and d[2] ~= "class" then
       if d[3] then
         add[strlower(L["choose.player."..d[2].."."..d[3]])] = d
       else
