@@ -6,6 +6,12 @@ M.private = {
 }
 local R = M.private
 
+M.TEXT_ROLE_ICON = {
+  TANK    = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t",
+  HEALER  = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t",
+  DAMAGER = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t",
+}
+
 local floor, ipairs, max, pairs, select, sort, strfind, strgsub, strlower, strmatch, strsplit, tconcat, tinsert, tostring, tremove, wipe = math.floor, ipairs, math.max, pairs, select, sort, string.find, string.gsub, string.lower, string.match, strsplit, table.concat, table.insert, tostring, table.remove, wipe
 local GetAddOnMetadata, GetInstanceInfo, GetLocale, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, GetLocale, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
@@ -50,11 +56,6 @@ end
 
 function M:Escape(text)
   return strgsub(text, "|", "||")
-end
-
-function M:TextRoleIcon(role)
-  -- TODO
-  return "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t"
 end
 
 function M:SortedKeys(tbl, keys)

@@ -10,7 +10,6 @@ local H
 local format, tostring = string.format, tostring
 
 -- TODO: localization
--- TODO: include role icons in the tooltip
 -- TODO: add another dataTextRaidCompStyle or two, including role icons in the datatext
 -- TODO: add an option to include BattlenetWorking0 icon if queued in LFG tool, in datatext. Use leader/assist/member icon if not queued? Also show in tooltip. Will need to listen to more events.
 -- TODO: add options.dataTextShort, hidden if ElvUI not running. Actually make it options.dataTextStyle, several options.
@@ -44,9 +43,9 @@ local function raidComp_OnEnter(self)
   local s = A.raid:NumSitting()
   DT.tooltip:AddDoubleLine(L["dataText.raidComp.name"]..":", (A.raid:GetSize() > 0) and A.raid:GetComp() or NOT_IN_RAID, 1,1,0, 1,1,0)
   DT.tooltip:AddLine(" ")
-  DT.tooltip:AddDoubleLine(A.util:TextRoleIcon("TANK").."Tanks",     tostring(t), 1,1,1, 1,1,0)
-  DT.tooltip:AddDoubleLine(A.util:TextRoleIcon("HEALER").."Healers", tostring(h), 1,1,1, 1,1,0)
-  DT.tooltip:AddDoubleLine(A.util:TextRoleIcon("DAMAGER").."DPS",    tostring(m+u+r), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine(A.util.TEXT_ROLE_ICON["TANK"].." Tanks",     tostring(t), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine(A.util.TEXT_ROLE_ICON["HEALER"].." Healers", tostring(h), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine(A.util.TEXT_ROLE_ICON["DAMAGER"].." DPS",    tostring(m+u+r), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine("        Melee",   tostring(m), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine("        Ranged",  tostring(r), 1,1,1, 1,1,0)
   if u > 0 then
