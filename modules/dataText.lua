@@ -63,16 +63,16 @@ local function raidComp_OnEnter(self)
   if u > 0 then
     DT.tooltip:AddDoubleLine("        Unknown", HD(tostring(u)), 1,1,1, 1,1,0)
     DT.tooltip:AddLine(" ")
-    DT.tooltip:AddLine(format("Waiting on data from server for %s.", ((u > 1) and "|n" or "")..A.raid:GetUnknownNames()))
+    DT.tooltip:AddLine(format("Waiting on data from the server for %s.", ((u > 1) and "|n" or "")..A.raid:GetUnknownNames()))
   end
   local sitting = A.raid:NumSitting()
   if sitting > 0 then
     DT.tooltip:AddLine(" ")
     DT.tooltip:AddDoubleLine(format("Sitting in groups %d-8", A.util:GetMaxGroupsForInstance() + 1), HD(tostring(sitting)), 1,1,1, 1,1,0)
   end
-  if A.util:IsQueuedInLFG() then
+  if C_LFGList.GetActiveEntryInfo() then
     DT.tooltip:AddLine(" ")
-    DT.tooltip:AddLine("You are queued in LFG.", 0,1,0)
+    DT.tooltip:AddLine("Your raid group is queued in LFG.", 0,1,0)
   end
   DT.tooltip:AddLine(" ")
   DT.tooltip:AddDoubleLine("Left Click:", "Open Raid Tab", 1,1,1, 1,1,0)
