@@ -14,6 +14,7 @@ local DELAY_FLASH = 0.5
 
 local format, strfind, strlower = string.format, string.find, string.lower
 local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName
+-- GLOBALS: LibStub, ElvUI, GameTooltip, RaidFrame, RaidFrameRaidInfoButton,InterfaceOptionsFrame_OpenToCategory
 
 local LOCALE_KW_1 = strlower(string.trim(L["chatKeyword.fixGroups"]))
 local LOCALE_KW_2 = strlower(string.trim(L["chatKeyword.markTanks"]))

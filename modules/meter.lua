@@ -23,7 +23,8 @@ local DETAILS_SEGMENTS = {"overall", "current"}
 local EMPTY = {}
 
 local format, ipairs, pairs, select, tinsert, wipe = string.format, ipairs, pairs, select, table.insert, wipe
-local GetUnitName = GetUnitName
+local GetUnitName, IsAddOnLoaded = GetUnitName, IsAddOnLoaded
+-- GLOBALS: _G, tdps, tdpsPlayer, tdpsPet, Skada, Recount, Details
 
 SUPPORTED_ADDONS.TinyDPS.getSnapshot = function()
   if not tdpsPlayer or not tdpsPet then

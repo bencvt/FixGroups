@@ -22,7 +22,7 @@ local DISPATCH_TABLE, CLASS_ALIASES = false, false
 local SPACE_OR_SPACE = " "..string.lower(L["word.or"]).." "
 
 local format, ipairs, pairs, print, select, sort, strfind, strgmatch, strgsub, strlen, strlower, strmatch, strsplit, strsub, strtrim, tconcat, time, tinsert, tonumber, tostring, unpack, wipe = string.format, ipairs, pairs, print, select, sort, string.find, string.gmatch, string.gsub, string.len, string.lower, string.match, string.split, string.sub, string.trim, table.concat, time, table.insert, tonumber, tostring, unpack, wipe
-local GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitIsDeadOrGhost, UnitExists, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitIsDeadOrGhost, UnitExists, UnitIsUnit, UnitName, UnitGroupRolesAssigned
+local GetGuildInfo, GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetGuildInfo, GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT
 
 function M:OnEnable()

@@ -9,6 +9,8 @@ local ICON_TANK, ICON_HEALER, ICON_DAMAGER = A.util.TEXT_ICON.ROLE.TANK, A.util.
 local DT
 
 local format, tostring = string.format, tostring
+local IsAddOnLoaded = IsAddOnLoaded
+-- GLOBALS: ElvUI
 
 -- TODO: localization
 -- TODO: research DataBroker stuff, see if any of this can be made ElvUI-independent

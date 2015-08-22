@@ -56,6 +56,7 @@ local MARKS = {
 local DELAY_OPTIONS_PANE_LOADED = 0.01
 
 local format, ipairs, min, max, tinsert = string.format, ipairs, math.min, math.max, table.insert
+-- GLOBALS: LibStub
 
 local function getOptionMark(arr, index)
   if arr[index] and arr[index] <= 8 then
