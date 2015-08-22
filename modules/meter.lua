@@ -7,15 +7,17 @@ M.private = {
 }
 local R = M.private
 
+-- This list is ordered by popularity.
+M.SUPPORTED_ADDONS_DISPLAY_ORDER = {"Recount", "Skada", "TinyDPS", "Details!"}
+-- This next list is ordered by minimalism. In case the player is running
+-- multiple DPS meter addons, pick whichever one we find first in this list.
+local SUPPORTED_ADDONS_ORDER = {"TinyDPS", "Skada", "Recount", "Details"}
 local SUPPORTED_ADDONS = {
   TinyDPS = {obj="tdps"},
   Skada   = {obj="Skada"},
   Recount = {obj="Recount"},
   Details = {obj="Details"},
 }
--- In case the player is running multiple DPS addons,
--- pick whichever one we find first in this list.
-local SUPPORTED_ADDONS_ORDER = {"TinyDPS", "Skada", "Recount", "Details"}
 local DETAILS_SEGMENTS = {"overall", "current"}
 local EMPTY = {}
 

@@ -12,8 +12,9 @@ L["button.fixGroups.working.text"] = "Rearranging..."
 L["button.fixGroups.paused.text"] = "In Combat..."
 L["button.splitGroups.text"] = "Split Groups"
 L["button.splitGroups.desc"] = "Split raid into two sides based on overall damage/healing done."
-L["button.commandInfo.text"] = "/fg argument list"
-L["button.commandInfo.desc"] = "Print the various arguments for the %s console/macro command."
+L["button.fixGroupsHelp.desc.1"] = "The %s (or %s) command allows you to control the addon without using the GUI. You can use this in a macro, or just type it in chat."
+L["button.fixGroupsHelp.desc.2"] = "Click this button to run %s, which will show you the various arguments."
+L["button.choose.desc"] = "Run the %s command, which helps you randomly pick things in a way that's transparent and fair to everyone in your raid."
 L["button.resetAllOptions.text"] = "Reset all options to default"
 L["button.resetAllOptions.print"] = "All options reset to default."
 
@@ -54,6 +55,8 @@ L["options.value.sortMode.nosort"] = "Do not rearrange players"
 -- Options module: headers and widgets
 L["options.widget.top.desc"] = "Organizing groups is an important, if sometimes tedious, part of running a raid. This addon helps automate the process."
 
+L["options.header.console"] = "Console commands"
+
 L["options.header.raidLead"] = "When raid leader"
 L["options.widget.tankAssist.text"] = "Give tanks assist"
 L["options.widget.fixOfflineML.text"] = "Fix offline master looter"
@@ -61,7 +64,7 @@ L["options.widget.fixOfflineML.desc"] = "If the master looter is offline, make y
 
 L["options.header.raidAssist"] = "When raid leader or assist"
 L["options.widget.sortMode.text"] = "Rearrange players"
-L["options.widget.sortMode.desc.1"] = "The overall damage/healing done sort method will only work if Recount, Skada, TinyDPS, or Details! is running."
+L["options.widget.sortMode.desc.1"] = "The overall damage/healing done sort method will only work if %s is running."
 L["options.widget.sortMode.desc.2"] = "This sort method can be useful for making quick decisions on who's worth an emergency heal or brez in PUGs."
 L["options.widget.sortMode.desc.3"] = "You can also type %s or shift right click the minimap icon (or %s button) to do a one-off sort without changing the setting."
 L["options.widget.resumeAfterCombat.text"] = "Resume rearranging players when interrupted by combat"
@@ -103,7 +106,7 @@ L["options.widget.watchChat.desc"] = "When the keywords %s or %s are seen in cha
 L["options.widget.announceChat.text"] = "Announce when players have been rearranged to instance chat"
 
 L["options.header.interop"] = "Addon integration"
-L["options.widget.dataTextRaidCompStyle.text"] = "ElvUI \"%s\" DataText style"
+L["options.widget.dataTextRaidCompStyle.text"] = "ElvUI %s DataText style"
 L["options.widget.dataTextRaidCompStyle.desc.1"] = "If you're using ElvUI then %s adds a new DataText called %s."
 L["options.widget.dataTextRaidCompStyle.desc.2"] = "To add this to your UI, go to the DataTexts section of the ElvUI config window."
 

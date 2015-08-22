@@ -53,7 +53,7 @@ local MARKS = {
 }
 local DELAY_OPTIONS_PANE_LOADED = 0.01
 
-local ipairs, min, max = ipairs, math.min, math.max
+local format, ipairs, min, max, tinsert = string.format, ipairs, math.min, math.max, table.insert
 
 local function getOptionMark(arr, index)
   if arr[index] and arr[index] <= 8 then
@@ -83,7 +83,7 @@ local function HA(text)
   return "|cff33ff99"..text.."|r"
 end
 
-local BUTTONS, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, INTEROP, RESET = 100, 200, 300, 400, 500, 600, 700, 800, 900
+local BUTTONS, CONSOLE, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, INTEROP, RESET = 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
 
 R.optionsTable = {
   type = "group",
@@ -92,7 +92,7 @@ R.optionsTable = {
     desc = {
       order = 0,
       type = "description",
-      name = L["options.widget.top.desc"].."|n",
+      name = L["options.widget.top.desc"].."|n|n",
       fontSize = "medium",
       hidden = function(i)
         -- For consistency's sake, we want the Fix Groups button in the options
@@ -130,12 +130,25 @@ R.optionsTable = {
       func = function() A.console:Command("split") end,
       --disabled = function(i) return not IsInRaid() end,
     },
-    buttonCommandHelp = {
-      order = BUTTONS+30,
+    -- -------------------------------------------------------------------------
+    headerCONSOLE = {
+      order = CONSOLE,
+      type = "header",
+      name = L["options.header.console"],
+    },
+    buttonCommandFixGroupsHelp = {
+      order = CONSOLE+10,
       type = "execute",
-      name = L["button.commandInfo.text"],
-      desc = format(L["button.commandInfo.desc"], H("/fg")),
+      name = "/fg help",
+      desc = format(L["button.fixGroupsHelp.desc.1"], H("/fixgroups"), H("/fg")).."|n|n"..format(L["button.fixGroupsHelp.desc.2"], H("/fg help")),
       func = function() A.console:Command("help") end,
+    },
+    buttonCommandChoose = {
+      order = CONSOLE+20,
+      type = "execute",
+      name = "/choose",
+      desc = format(L["button.choose.desc"], H("/choose")),
+      func = function() A.choose:Command("") end,
     },
     -- -------------------------------------------------------------------------
     headerUI = {
@@ -227,7 +240,7 @@ R.optionsTable = {
     sortMode = {
       order = RAIDASSIST+10,
       name = L["options.widget.sortMode.text"],
-      desc = L["options.widget.sortMode.desc.1"].."|n|n"..L["options.widget.sortMode.desc.2"].."|n|n"..format(L["options.widget.sortMode.desc.3"], H("/fg meter"), H(L["button.fixGroups.text"])),
+      desc = "", -- updated in M:OnEnable
       type = "select",
       width = "double",
       style = "dropdown",
@@ -482,7 +495,7 @@ R.optionsTable = {
     damageMeterAddonDesc = {
       order = INTEROP+10,
       type = "description",
-      name = L["meter.print.noAddon"].."|n",  -- updated in M:OnEnable
+      name = L["meter.print.noAddon"].."|n|n",  -- updated in M:OnEnable
       fontSize = "medium",
     },
     dataTextRaidCompStyle = {
@@ -536,7 +549,17 @@ function M:OnInitialize()
 end
 
 function M:OnEnable()
-  R.optionsTable.args.damageMeterAddonDesc.name = A.meter:TestInterop().."|n"
+  -- Set various texts that couldn't be done earlier because all modules had
+  -- not yet been initialized.
+
+  local t = {}
+  for _, a in ipairs(A.meter.SUPPORTED_ADDONS_DISPLAY_ORDER) do
+    tinsert(t, HA(a))
+  end
+  t = A.util:LocaleTableConcat(t, L["word.or"])
+  R.optionsTable.args.sortMode.desc = format(L["options.widget.sortMode.desc.1"], t).."|n|n"..L["options.widget.sortMode.desc.2"].."|n|n"..format(L["options.widget.sortMode.desc.3"], H("/fg meter"), H(L["button.fixGroups.text"]))
+
+  R.optionsTable.args.damageMeterAddonDesc.name = A.meter:TestInterop().."|n|n"
 end
 
 function M:OptionsPaneLoaded()

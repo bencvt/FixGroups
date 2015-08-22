@@ -21,19 +21,19 @@ function M:LocaleLowerNoun(noun)
   return strlower(noun)
 end
 
-function M:LocaleTableConcat(t, sep)
-  sep = sep or L["word.and"]
+function M:LocaleTableConcat(t, conjunction)
+  conjunction = conjunction or L["word.and"]
   local sz = #t
   if sz == 0 then
     return ""
   elseif sz == 1 then
     return t[1]
   elseif sz == 2 then
-    return t[1].." "..sep.." "..t[2]
+    return t[1].." "..conjunction.." "..t[2]
   end
   -- Temporarily modify the table get the ", and " in, then restore.
   local saveY, saveZ = t[sz-1], t[sz]
-  t[sz-1] = t[sz-1]..M:LocaleSerialComma().." "..sep.." "..t[sz]
+  t[sz-1] = t[sz-1]..M:LocaleSerialComma().." "..conjunction.." "..t[sz]
   tremove(t)
   local result = tconcat(t, ", ")
   t[sz-1], t[sz] = saveY, saveZ
