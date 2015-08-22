@@ -311,7 +311,7 @@ local function choosePlayer(mode, arg)
       arg, arg2 = L["choose.player."..mode.."."..arg], tconcat(localClasses, "/")
     end
   elseif mode == "sitting" then
-    arg = tostring(A.util:GetMaxGroupsForInstance() + 1)
+    arg = A.util:GetMaxGroupsForInstance() + 1
   elseif mode == "notMe" then
     if IsInRaid() then
       arg = A.raid:GetPlayer(UnitName("player")).uniqueName
@@ -323,7 +323,7 @@ local function choosePlayer(mode, arg)
   end
 
   local line = format(L["choose.print.choosing."..mode], arg, arg2)
-  if mode == "sitting" and arg == "9" then
+  if mode == "sitting" and arg >= 8 then
     line = L["choose.print.choosing.sitting.noGroups"]
   end
 
