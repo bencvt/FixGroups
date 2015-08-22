@@ -1,16 +1,16 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("dataText", "AceTimer-3.0")
 A.dataText = M
-local H, HA = A.util.Highlight, A.util.HighlightAddon
+local H, HA, HD = A.util.Highlight, A.util.HighlightAddon, A.util.HighlightDim
 
 local DELAY_REFRESH = 0.01
-local NOT_IN_RAID = "|cff999999"..L["dataText.raidComp.notInRaid"].."|r"
+local NOT_IN_RAID = HD(L["dataText.raidComp.notInRaid"])
+local ICON_TANK, ICON_HEALER, ICON_DAMAGER = A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER
 local DT
 
 local format, tostring = string.format, tostring
 
 -- TODO: localization
--- TODO: add another dataTextRaidCompStyle or two, including role icons in the datatext
 -- TODO: add an option to include BattlenetWorking0 icon if queued in LFG tool, in datatext. Use leader/assist/member icon if not queued? Also show in tooltip. Will need to listen to more events.
 -- TODO: add options.dataTextShort, hidden if ElvUI not running. Actually make it options.dataTextStyle, several options.
 -- TODO: research DataBroker stuff, see if any of this can be made ElvUI-independent
@@ -20,14 +20,28 @@ local function raidComp_OnEvent(self, event, ...)
   if A.debug >= 1 then A.console:Debugf(M, "DT_OnEvent event=%s comp=%s unknown=%s", event, A.raid:GetComp(), A.raid:GetUnknownNames()) end
   -- We need a short delay to ensure that the raid module has a chance to
   -- process the event as well, otherwise A.raid:GetComp() may be wrong.
-  local frame = self
+  local frame, style = self, A.options.dataTextRaidCompStyle
   M:ScheduleTimer(function ()
-    if A.options.dataTextRaidCompStyle == 2 then
-      frame.text:SetFormattedText(A.raid:GetComp() or NOT_IN_RAID)
+    local c1, c2 = A.raid:GetCompParts()
+    local txt
+    if not c1 then
+      txt = NOT_IN_RAID
+    elseif style == 2 then
+      local t, m, u, r, h = A.raid:GetRoleCounts()
+      txt = format("%d%s %d%s %d%s", t, ICON_TANK, h, ICON_HEALER, m+u+r, ICON_DAMAGER)
+    elseif style == 3 then
+      txt = format("Raid: %s", H(A.raid:GetComp()))
+    elseif style == 4 then
+      txt = format("Raid: %s", H(c1))
+    elseif style == 5 then
+      txt = A.raid:GetComp()
+    elseif style == 6 then
+      txt = format("2%s 4%s 14%s%s", A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER, HD("(6+8)"))
     else
-      local c1, c2 = A.raid:GetCompParts()
-      frame.text:SetFormattedText(c1 and format("Raid: |cff1784d1%s |cff105c92%s|r", c1, c2) or NOT_IN_RAID)
+      local t, m, u, r, h = A.raid:GetRoleCounts()
+      txt = format("%d%s %d%s %d%s%s", t, ICON_TANK, h, ICON_HEALER, m+u+r, ICON_DAMAGER, HD(c2))
     end
+    frame.text:SetFormattedText(txt)
   end, DELAY_REFRESH)
 end
 
@@ -46,12 +60,12 @@ local function raidComp_OnEnter(self)
   DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." Tanks",        tostring(t), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.HEALER.." Healers",    tostring(h), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.DAMAGER.." Damagers",  tostring(m+u+r), 1,1,1, 1,1,0)
-  DT.tooltip:AddDoubleLine("        Melee",   tostring(m), 1,1,1, 1,1,0)
-  DT.tooltip:AddDoubleLine("        Ranged",  tostring(r), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine("        Melee",   HD(tostring(m)), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine("        Ranged",  HD(tostring(r)), 1,1,1, 1,1,0)
   if u > 0 then
-    DT.tooltip:AddDoubleLine("        Unknown", tostring(r), 1,1,1, 1,1,0)
+    DT.tooltip:AddDoubleLine("        Unknown", HD(tostring(u)), 1,1,1, 1,1,0)
     DT.tooltip:AddLine(" ")
-    DT.tooltip:AddLine(format("Still need to inspect %s.", A.raid:GetUnknownNames()))
+    DT.tooltip:AddLine(format("Waiting on data from server for %s.", ((u > 1) and "|n" or "")..A.raid:GetUnknownNames()))
   end
   if s > 0 then
     DT.tooltip:AddLine(" ")

@@ -15,6 +15,7 @@ M.private = {
   roleCounts = {0, 0, 0, 0, 0},
   builtUniqueNames = false,
   tmp1 = {},
+  tmp2 = {},
 }
 local R = M.private
 
@@ -96,8 +97,12 @@ local function buildRoster()
   end
   local t, m, u, r, h = unpack(R.roleCounts)
   R.comp1 = format("%d/%d/%d", t, h, m+u+r)
-  R.comp2 = format("(%d+%d)%s", m, u+r, ((u > 0) and "?" or ""))
-  R.comp = R.comp1.." "..R.comp2
+  if u > 0 then
+    R.comp2 = format("%d+%d+%d", m, r, u)
+  else
+    R.comp2 = format("%d+%d", m, r)
+  end
+  R.comp = format("%s (%s)", R.comp1, R.comp2)
 end
 
 function M:BuildUniqueNames()
@@ -182,7 +187,7 @@ end
 function M:GetUnknownNames()
   local names = wipe(R.tmp1)
   local p
-  for _, name in ipairs(A.util:SortedKeys(R.roster, R.tmp1)) do
+  for _, name in ipairs(A.util:SortedKeys(R.roster, R.tmp2)) do
     p = R.roster[name]
     if p.role == M.ROLES.UNKNOWN then
       tinsert(names, A.util:UnitNameWithColor(name))

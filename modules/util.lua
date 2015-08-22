@@ -124,12 +124,16 @@ function M:HighlightAddon(text)
   return "|cff33ff99"..(text or self).."|r"
 end
 
+function M:HighlightDim(text)
+  return "|cff999999"..(text or self).."|r"
+end
+
 function M:UnitClassColor(unitID)
   local c = select(2, UnitClass(unitID))
   if c and RAID_CLASS_COLORS[c] then
     c = RAID_CLASS_COLORS[c].colorStr
   end
-  return (c or "ff00991a")
+  return (c or "ff999999")
 end
 
 function M:UnitNameWithColor(unitID)

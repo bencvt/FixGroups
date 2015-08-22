@@ -32,7 +32,7 @@ M.private = {
   },
 }
 local R = M.private
-local H, HA = A.util.Highlight, A.util.HighlightAddon
+local H, HA, HD = A.util.Highlight, A.util.HighlightAddon, A.util.HighlightDim
 
 -- The number next to each mark is how many times DBM uses that mark for
 -- all Draenor content.
@@ -499,8 +499,12 @@ R.optionsTable = {
       width = "double",
       style = "dropdown",
       values = {
-        [1] = "Raid: |cff1784d12/4/14 |cff105c92(6+8)|r",
-        [2] = "2/4/14 (6+8)",
+        [1] = format("2%s 4%s 14%s%s", A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER, HD("(6+8)")),
+        [2] = format("2%s 4%s 14%s", A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER),
+        [3] = format("Raid: %s", H("2/4/14 (6+8)")),
+        [4] = format("Raid: %s", H("2/4/14")),
+        [5] = "2/4/14 (6+8)",
+        [6] = "2/4/14",
       },
       get = function(i) return max(1, min(2, A.options.dataTextRaidCompStyle)) end,
       set = function(i,v) A.options.dataTextRaidCompStyle = max(1, min(2, v)) end,
