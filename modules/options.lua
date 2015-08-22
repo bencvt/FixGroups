@@ -507,8 +507,9 @@ R.optionsTable = {
         [5] = "2/4/14 (6+8)",
         [6] = "2/4/14",
       },
-      get = function(i) return max(1, min(2, A.options.dataTextRaidCompStyle)) end,
-      set = function(i,v) A.options.dataTextRaidCompStyle = max(1, min(2, v)) end,
+      get = function(i) return max(1, min(6, A.options.dataTextRaidCompStyle)) end,
+      -- TODO need to force an update somehow
+      set = function(i,v) A.options.dataTextRaidCompStyle = max(1, min(6, v)) end,
       --disabled = function(i) return not IsAddOnLoaded("ElvUI") end,
     },
     -- -------------------------------------------------------------------------
