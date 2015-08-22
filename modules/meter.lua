@@ -11,7 +11,7 @@ local H, HA = A.util.Highlight, A.util.HighlightAddon
 -- This list is ordered by popularity.
 M.SUPPORTED_ADDONS_DISPLAY_ORDER = {"Recount", "Skada", "TinyDPS", "Details!"}
 -- This next list is ordered by minimalism. In case the player is running
--- multiple DPS meter addons, pick whichever one we find first in this list.
+-- multiple damage meter addons, pick whichever one we find first in this list.
 local SUPPORTED_ADDONS_ORDER = {"TinyDPS", "Skada", "Recount", "Details"}
 local SUPPORTED_ADDONS = {
   TinyDPS = {obj="tdps"},
@@ -122,7 +122,7 @@ local function calculateAverages()
   local countHealing, totalHealing = 0, 0
   for name, amount in pairs(R.snapshot) do
     -- Ignore tanks.
-    if A.raid:IsDPS(name) then
+    if A.raid:IsDamager(name) then
       countDamage = countDamage + 1
       totalDamage = totalDamage + amount
     elseif A.raid:IsHealer(name) then

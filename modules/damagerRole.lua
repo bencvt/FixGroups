@@ -1,6 +1,6 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("dpsRole", "AceEvent-3.0", "AceTimer-3.0")
-A.dpsRole = M
+local M = A:NewModule("damagerRole", "AceEvent-3.0", "AceTimer-3.0")
+A.damagerRole = M
 M.private = {
   needToInspect = {},
   sessionCache = {melee={}, ranged={}},
@@ -8,7 +8,7 @@ M.private = {
 }
 local R = M.private
 
-local CLASS_DPS_ROLES = {
+local CLASS_DAMAGER_ROLES = {
   WARRIOR     = "melee",
   DEATHKNIGHT = "melee",
   PALADIN     = "melee",
@@ -142,10 +142,10 @@ local function requestInspect(name, fullName)
   A.inspect:Request(name)
 end
 
-function M:GetDpsRole(player)
+function M:GetDamagerRole(player)
   -- Check for unambiguous classes.
-  if player.class and CLASS_DPS_ROLES[player.class] then
-    return (CLASS_DPS_ROLES[player.class] == "melee") and A.raid.ROLES.MELEE or A.raid.ROLES.RANGED
+  if player.class and CLASS_DAMAGER_ROLES[player.class] then
+    return (CLASS_DAMAGER_ROLES[player.class] == "melee") and A.raid.ROLES.MELEE or A.raid.ROLES.RANGED
   end
 
   -- Sanity check unit name.

@@ -235,7 +235,7 @@ local function choosePlayer(mode, arg)
         elseif mode == "alive" then
           include = not UnitIsDeadOrGhost(player.unitID)
         elseif mode == "damager" then
-          include = player.isDPS
+          include = player.isDamager
         elseif mode == ROLE_NAMES[player.role] then
           include = true
         else

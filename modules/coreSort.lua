@@ -27,7 +27,7 @@ local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 -- The delta table is an array of players who are in the wrong group.
 function M:BuildDelta()
   -- Build temporary tables tracking players.
-  local sortRoles = A.sorter:IsSortingHealersBeforeDps() and ROLE_SORT_CHAR_THMUR or ROLE_SORT_CHAR_TMURH
+  local sortRoles = A.sorter:IsSortingHealersBeforeDamagers() and ROLE_SORT_CHAR_THMUR or ROLE_SORT_CHAR_TMURH
   local keys = wipe(R.tmp1)
   local playersByKey = wipe(R.tmp2)
   local k

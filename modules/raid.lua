@@ -86,8 +86,8 @@ local function buildRoster()
     elseif unitRole == "HEALER" then
       p.role = M.ROLES.HEALER
     else
-      p.role = A.dpsRole:GetDpsRole(p)
-      p.isDPS = true
+      p.role = A.damagerRole:GetDamagerRole(p)
+      p.isDamager = true
     end
     if not p.isSitting then
       R.roleCounts[p.role] = R.roleCounts[p.role] + 1
@@ -261,8 +261,8 @@ function M:IsRanged(name)
   return name and R.roster[name] and (R.roster[name].role == M.ROLES.RANGED)
 end
 
-function M:IsDPS(name)
-  return name and R.roster[name] and R.roster[name].isDPS and true or false
+function M:IsDamager(name)
+  return name and R.roster[name] and R.roster[name].isDamager and true or false
 end
 
 function M:IsInSameZone(name)
