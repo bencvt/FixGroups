@@ -111,11 +111,12 @@ end
 
 function M:SetupTooltip(tooltip, isMinimapIcon)
   tooltip:ClearLines()
-  local comp = A.raid:GetComp()
-  if not comp then
-    tooltip:AddLine(A.name)
+  if A.raid:GetComp() then
+    -- TODO register this tooltip somehow so it gets dynamically updated on FIXGROUPS_RAID_COMP_CHANGED messages
+    local t, m, u, r, h = A.raid:GetRoleCounts()
+    tooltip:AddDoubleLine(A.name, format("%d%s %d%s %d%s", t, A.util.TEXT_ICON.ROLE.TANK, h, A.util.TEXT_ICON.ROLE.HEALER, m+u+r, A.util.TEXT_ICON.ROLE.DAMAGER))
   else
-    tooltip:AddDoubleLine(A.name, format(L["tooltip.header.raidComp"], comp))
+    tooltip:AddLine(A.name)
   end
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["tooltip.left.clickLeft"],        L["tooltip.right.fixGroups"], 1,1,1, 1,1,0)
