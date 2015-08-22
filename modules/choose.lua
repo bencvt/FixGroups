@@ -224,6 +224,8 @@ local function choosePlayer(mode, arg)
       if not player.isUnknown then
         if mode == "fromGroup" then
           include = (player.group == arg)
+        elseif mode == "guildmate" then
+          include = UnitIsInMyGuild(player.unitID)
         elseif player.isSitting or mode == "sitting" then
           include = (mode == "sitting")
         elseif mode == "any" then
@@ -257,6 +259,8 @@ local function choosePlayer(mode, arg)
       if UnitExists(unitID) then
         if mode == "fromGroup" then
           include = (arg == 1)
+        elseif mode == "guildmate" then
+          include = UnitIsInMyGuild(unitID)
         elseif mode == "sitting" then
           include = false
         elseif mode == "any" then
@@ -316,6 +320,8 @@ local function choosePlayer(mode, arg)
     else
       arg = A.util:GetUniqueNameParty("player")
     end
+  elseif mode == "guildmate" then
+    arg = GetGuildInfo("player")
   end
 
   local line = format(L["choose.print.choosing."..mode], arg, arg2)
@@ -401,6 +407,10 @@ local function buildDispatchTable()
     examples      ={M.PrintExamples},
     group         ={chooseGroup},
     party         ={chooseGroup},
+    guildmate     ={choosePlayer, "guildmate"},
+    guildie       ={choosePlayer, "guildmate"},
+    guildy        ={choosePlayer, "guildmate"},
+    guild         ={choosePlayer, "guildmate"},
     any           ={choosePlayer, "any"},
     player        ={choosePlayer, "any"},
     sitting       ={choosePlayer, "sitting"},
