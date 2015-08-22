@@ -26,7 +26,7 @@ M.TEXT_ICON = {
 
 local floor, ipairs, max, pairs, select, sort, strfind, strgsub, strlower, strmatch, strsplit, tconcat, tinsert, tostring, tremove, wipe = math.floor, ipairs, math.max, pairs, select, sort, string.find, string.gsub, string.lower, string.match, strsplit, table.concat, table.insert, tostring, table.remove, wipe
 local GetAddOnMetadata, GetInstanceInfo, GetLocale, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, GetLocale, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
-local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS 
+local LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS 
 
 function M:LocaleSerialComma()
   return (GetLocale() == "enUS") and "," or ""
@@ -88,6 +88,14 @@ function M:IsLeaderOrAssist()
     return UnitIsRaidOfficer("player") or UnitIsGroupLeader("player")
   end
   return IsInGroup()  
+end
+
+function M:IsQueuedInLFG()
+	for i = 1, NUM_LE_LFG_CATEGORYS do
+    if GetLFGMode(i) == "queued" then
+      return true
+    end
+  end
 end
 
 function M:GetMaxGroupsForInstance()

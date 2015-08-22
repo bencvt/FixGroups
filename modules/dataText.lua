@@ -11,10 +11,7 @@ local DT
 local format, tostring = string.format, tostring
 
 -- TODO: localization
--- TODO: add an option to include BattlenetWorking0 icon if queued in LFG tool, in datatext. Use leader/assist/member icon if not queued? Also show in tooltip. Will need to listen to more events.
--- TODO: add options.dataTextShort, hidden if ElvUI not running. Actually make it options.dataTextStyle, several options.
 -- TODO: research DataBroker stuff, see if any of this can be made ElvUI-independent
--- TODO: figure out why so many ?s are showing up in testing. Is there is a "player data ready" event?
 
 local function raidComp_OnEvent(self, event, ...)
   if A.debug >= 1 then A.console:Debugf(M, "DT_OnEvent event=%s comp=%s unknown=%s", event, A.raid:GetComp(), A.raid:GetUnknownNames()) end
@@ -54,7 +51,6 @@ local function raidComp_OnEnter(self)
   if A.debug >= 1 then A.console:Debug(M, "DT_OnEnter") end
   DT:SetupTooltip(self)
   local t, m, u, r, h = A.raid:GetRoleCounts()
-  local s = A.raid:NumSitting()
   DT.tooltip:AddDoubleLine(L["dataText.raidComp.name"]..":", (A.raid:GetSize() > 0) and A.raid:GetComp() or NOT_IN_RAID, 1,1,0, 1,1,0)
   DT.tooltip:AddLine(" ")
   DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." Tanks",        tostring(t), 1,1,1, 1,1,0)
@@ -67,9 +63,14 @@ local function raidComp_OnEnter(self)
     DT.tooltip:AddLine(" ")
     DT.tooltip:AddLine(format("Waiting on data from server for %s.", ((u > 1) and "|n" or "")..A.raid:GetUnknownNames()))
   end
-  if s > 0 then
+  local sitting = A.raid:NumSitting()
+  if sitting > 0 then
     DT.tooltip:AddLine(" ")
-    DT.tooltip:AddDoubleLine("Sitting", tostring(s), 1,1,1, 1,1,0)
+    DT.tooltip:AddDoubleLine(format("Sitting in groups %d-8", A.util:GetMaxGroupsForInstance() + 1), HD(tostring(sitting)), 1,1,1, 1,1,0)
+  end
+  if A.util:IsQueuedInLFG() then
+    DT.tooltip:AddLine(" ")
+    DT.tooltip:AddLine("You are queued in LFG.", 0,1,0)
   end
   DT.tooltip:AddLine(" ")
   DT.tooltip:AddDoubleLine("Left Click:", "Open Raid Tab", 1,1,1, 1,1,0)
