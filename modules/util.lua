@@ -91,7 +91,7 @@ function M:IsLeaderOrAssist()
 end
 
 function M:IsQueuedInLFG()
-	for i = 1, NUM_LE_LFG_CATEGORYS do
+  for i = 1, NUM_LE_LFG_CATEGORYS do
     if GetLFGMode(i) == "queued" then
       return true
     end
