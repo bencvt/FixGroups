@@ -1,14 +1,12 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("console", "AceConsole-3.0")
 A.console = M
+local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local date, format, print, select, strfind, strlen, strlower, strmatch, strsub, strtrim, tconcat, tinsert, tostring = date, format, print, select, string.find, string.len, string.lower, string.match, string.sub, string.trim, table.concat, table.insert, tostring
 local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 
-local H, HA
-
 function M:OnEnable()
-  H, HA = A.util.Highlight, A.util.HighlightAddon
   local function slashCmd(args)
     M:Command(args)
   end

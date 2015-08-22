@@ -1,11 +1,11 @@
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("dataText", "AceTimer-3.0")
 A.dataText = M
+local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local DELAY_REFRESH = 0.01
 local NOT_IN_RAID = "|cff999999"..L["dataText.raidComp.notInRaid"].."|r"
 local DT
-local H
 
 local format, tostring = string.format, tostring
 
@@ -43,9 +43,9 @@ local function raidComp_OnEnter(self)
   local s = A.raid:NumSitting()
   DT.tooltip:AddDoubleLine(L["dataText.raidComp.name"]..":", (A.raid:GetSize() > 0) and A.raid:GetComp() or NOT_IN_RAID, 1,1,0, 1,1,0)
   DT.tooltip:AddLine(" ")
-  DT.tooltip:AddDoubleLine(A.util.TEXT_ROLE_ICON["TANK"].." Tanks",     tostring(t), 1,1,1, 1,1,0)
-  DT.tooltip:AddDoubleLine(A.util.TEXT_ROLE_ICON["HEALER"].." Healers", tostring(h), 1,1,1, 1,1,0)
-  DT.tooltip:AddDoubleLine(A.util.TEXT_ROLE_ICON["DAMAGER"].." DPS",    tostring(m+u+r), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." Tanks",     tostring(t), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.HEALER.." Healers", tostring(h), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.DAMAGER.." DPS",    tostring(m+u+r), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine("        Melee",   tostring(m), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine("        Ranged",  tostring(r), 1,1,1, 1,1,0)
   if u > 0 then
@@ -63,7 +63,6 @@ local function raidComp_OnEnter(self)
 end
 
 function M:OnEnable()
-  H = A.util.Highlight
   if not IsAddOnLoaded("ElvUI") or not ElvUI then
     return
   end

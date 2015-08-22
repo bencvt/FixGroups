@@ -6,6 +6,7 @@ M.private = {
   newerVersion = false,
 }
 local R = M.private
+local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local strsplit = string.split
 local IsInGroup, IsInRaid, SendAddonMessage, UnitExists, UnitIsRaidOfficer, UnitName = IsInGroup, IsInRaid, SendAddonMessage, UnitExists, UnitIsRaidOfficer, UnitName
@@ -34,7 +35,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   cmd, message = strsplit(":", message, 2)
   if cmd == "v" and not R.newerVersion then
     if message and (message > A.version) then
-      A.console:Printf(L["addonChannel.print.newerVersion"], A.name, A.util:Highlight(A.util:Escape(message)), A.version)
+      A.console:Printf(L["addonChannel.print.newerVersion"], A.name, H(A.util:Escape(message)), A.version)
       R.newerVersion = message
     end
   elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and UnitIsRaidOfficer(sender) then

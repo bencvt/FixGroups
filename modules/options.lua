@@ -32,8 +32,10 @@ M.private = {
   },
 }
 local R = M.private
+local H, HA = A.util.Highlight, A.util.HighlightAddon
 
--- In parentheses is how many times DBM uses that mark for all Draenor content.
+-- The number next to each mark is how many times DBM uses that mark for
+-- all Draenor content.
 --
 -- Skull, cross, and moon are used the least frequently. However those marks
 -- usually mean "kill first", "kill second", and "keep cc'd", respectively.
@@ -41,14 +43,14 @@ local R = M.private
 -- Of the remaining marks, triangle and square are next. That's why they're the
 -- default tank marks.
 local MARKS = {
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t", -- 1=star (16)
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t", -- 2=circle (16)
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t", -- 3=diamond (14)
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t", -- 4=triangle (11)
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t", -- 5=moon (9)
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t", -- 6=square (10)
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t", -- 7=cross (7)
-  "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t", -- 8=skull (9)
+  A.util.TEXT_ICON.MARK.STAR,      -- 16
+  A.util.TEXT_ICON.MARK.CIRCLE,    -- 16
+  A.util.TEXT_ICON.MARK.DIAMOND,   -- 14
+  A.util.TEXT_ICON.MARK.TRIANGLE,  -- 11
+  A.util.TEXT_ICON.MARK.MOON,      -- 9
+  A.util.TEXT_ICON.MARK.SQUARE,    -- 10
+  A.util.TEXT_ICON.MARK.CROSS,     -- 7
+  A.util.TEXT_ICON.MARK.SKULL,     -- 9
   L["options.value.noMark"],
 }
 local DELAY_OPTIONS_PANE_LOADED = 0.01
@@ -72,15 +74,6 @@ local function setOptionMark(arr, index, value)
   arr[index] = value
   -- Assume the user knows what they're doing.
   -- Don't bother fixing duplicates.
-end
-
--- The utils module is not available when we're define R.optionsTable,
--- so just duplicate Highlight and HighlightAddon.
-local function H(text)
-  return "|cff1784d1"..text.."|r"
-end
-local function HA(text)
-  return "|cff33ff99"..text.."|r"
 end
 
 local BUTTONS, CONSOLE, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, INTEROP, RESET = 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
@@ -240,7 +233,7 @@ R.optionsTable = {
     sortMode = {
       order = RAIDASSIST+10,
       name = L["options.widget.sortMode.text"],
-      desc = "", -- updated in M:OnEnable
+      desc = "", -- set in M:OnEnable
       type = "select",
       width = "double",
       style = "dropdown",
@@ -495,7 +488,7 @@ R.optionsTable = {
     damageMeterAddonDesc = {
       order = INTEROP+10,
       type = "description",
-      name = L["meter.print.noAddon"].."|n|n",  -- updated in M:OnEnable
+      name = "", -- set in M:OnEnable
       fontSize = "medium",
     },
     dataTextRaidCompStyle = {
@@ -549,8 +542,8 @@ function M:OnInitialize()
 end
 
 function M:OnEnable()
-  -- Set various texts that couldn't be done earlier because all modules had
-  -- not yet been initialized.
+  -- Set a couple texts that couldn't be done earlier because the meter module
+  -- had not yet been initialized.
 
   local t = {}
   for _, a in ipairs(A.meter.SUPPORTED_ADDONS_DISPLAY_ORDER) do

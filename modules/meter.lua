@@ -6,6 +6,7 @@ M.private = {
   tmp1 = {},
 }
 local R = M.private
+local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 -- This list is ordered by popularity.
 M.SUPPORTED_ADDONS_DISPLAY_ORDER = {"Recount", "Skada", "TinyDPS", "Details!"}
@@ -136,7 +137,7 @@ end
 function M:TestInterop()
   for _, name in ipairs(SUPPORTED_ADDONS_ORDER) do
     if IsAddOnLoaded(name) and _G[SUPPORTED_ADDONS[name].obj] then
-      return format(L["meter.print.usingDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(name)))
+      return format(L["meter.print.usingDataFrom"], HA(A.util:GetAddonNameAndVersion(name)))
     end
   end
   return L["meter.print.noAddon"]
@@ -147,9 +148,9 @@ function M:BuildSnapshot()
   for _, name in ipairs(SUPPORTED_ADDONS_ORDER) do
     if IsAddOnLoaded(name) and _G[SUPPORTED_ADDONS[name].obj] then
       if SUPPORTED_ADDONS[name].getSnapshot() then
-        A.console:Printf(L["meter.print.usingDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(name)))
+        A.console:Printf(L["meter.print.usingDataFrom"], HA(A.util:GetAddonNameAndVersion(name)))
       else
-        A.console:Printf(L["meter.print.noDataFrom"], A.util:HighlightAddon(A.util:GetAddonNameAndVersion(name)))
+        A.console:Printf(L["meter.print.noDataFrom"], HA(A.util:GetAddonNameAndVersion(name)))
       end
       calculateAverages()
       if A.debug >= 1 then M:DebugPrintMeterSnapshot() end

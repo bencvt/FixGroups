@@ -10,6 +10,7 @@ M.private = {
   tmp2 = {},
 }
 local R = M.private
+local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 -- Indexes correspond to A.raid.ROLES constants.
 local ROLE_NAMES = {"tank", "melee", "unknown", "ranged", "healer"}
@@ -24,10 +25,7 @@ local format, ipairs, pairs, print, select, sort, strfind, strgmatch, strgsub, s
 local GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitIsDeadOrGhost, UnitExists, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitIsDeadOrGhost, UnitExists, UnitIsUnit, UnitName, UnitGroupRolesAssigned
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT
 
-local H
-
 function M:OnEnable()
-  H = A.util.Highlight
   local function slashCmd(args)
     M:Command(args)
   end
@@ -78,7 +76,7 @@ end
 function M:PrintHelp()
   local validTokens = format("%s, %s%s %s %s", H(L["choose.player.tierToken.conqueror.short"]), H(L["choose.player.tierToken.protector.short"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.player.tierToken.vanquisher.short"]))
   local validRoles = format("%s, %s, %s, %s, %s%s %s %s", H(L["choose.player.any"]), H(L["choose.player.tank"]), H(L["choose.player.healer"]), H(L["choose.player.damager"]), H(L["choose.player.melee"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.player.ranged"]))
-  A.console:Printf(L["versionAuthor"], A.version, A.util:HighlightAddon(A.author))
+  A.console:Printf(L["versionAuthor"], A.version, HA(A.author))
   print(format(L["choose.help.header"], H("/choose"), H("/fg choose")))
   print(format("  %s - %s", H("/choose "..L["choose.help.option.arg"]), L["choose.help.option"]))
   print(format("  %s - %s", H("/choose "..L["choose.help.class.arg"]), L["choose.help.class"]))
@@ -88,7 +86,7 @@ function M:PrintHelp()
 end
 
 function M:PrintExamples()
-  A.console:Printf(L["versionAuthor"], A.version, A.util:HighlightAddon(A.author))
+  A.console:Printf(L["versionAuthor"], A.version, HA(A.author))
   print(format(L["choose.examples.header"], H("/choose")))
   print("  "..H(format("/choose %s", L["choose.role.melee"])))
   print("  "..H(format("/choose %s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["HUNTER"]))))

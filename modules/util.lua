@@ -6,10 +6,22 @@ M.private = {
 }
 local R = M.private
 
-M.TEXT_ROLE_ICON = {
-  TANK    = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t",
-  HEALER  = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t",
-  DAMAGER = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t",
+M.TEXT_ICON = {
+  ROLE = {
+    TANK      = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t",
+    HEALER    = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t",
+    DAMAGER   = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t",
+  },
+  MARK = {
+    STAR      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t",
+    CIRCLE    = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t",
+    DIAMOND   = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t",
+    TRIANGLE  = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t",
+    MOON      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t",
+    SQUARE    = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t",
+    CROSS     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t",
+    SKULL     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
+  },
 }
 
 local floor, ipairs, max, pairs, select, sort, strfind, strgsub, strlower, strmatch, strsplit, tconcat, tinsert, tostring, tremove, wipe = math.floor, ipairs, math.max, pairs, select, sort, string.find, string.gsub, string.lower, string.match, strsplit, table.concat, table.insert, tostring, table.remove, wipe

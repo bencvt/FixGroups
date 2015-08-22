@@ -22,6 +22,7 @@ locales\zhCN.lua
 locales\zhTW.lua
 
 addon.lua
+modules\util.lua
 
 modules\addonChannel.lua
 modules\choose.lua
@@ -36,4 +37,3 @@ modules\meter.lua
 modules\options.lua
 modules\raid.lua
 modules\sorter.lua
-modules\util.lua
