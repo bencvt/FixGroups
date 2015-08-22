@@ -301,7 +301,7 @@ R.optionsTable = {
     },
     tankMarkIcon1 = {
       order = RAIDASSIST+60+1,
-      name = L["options.widget.raidTank1.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank1.text"],
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -313,7 +313,7 @@ R.optionsTable = {
     },
     tankMarkIcon2 = {
       order = RAIDASSIST+60+2,
-      name = L["options.widget.raidTank2.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank2.text"],
       desc = L["options.widget.raidTank.desc"],
        type = "select",
       width = "half",
@@ -325,7 +325,7 @@ R.optionsTable = {
     },
     tankMarkIcon3 = {
       order = RAIDASSIST+60+3,
-      name = L["options.widget.raidTank3.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank3.text"],
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -337,7 +337,7 @@ R.optionsTable = {
     },
     tankMarkIcon4 = {
       order = RAIDASSIST+60+4,
-      name = L["options.widget.raidTank4.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank4.text"],
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -349,7 +349,7 @@ R.optionsTable = {
     },
     tankMarkIcon5 = {
       order = RAIDASSIST+60+5,
-      name = L["options.widget.raidTank5.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank5.text"],
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -361,7 +361,7 @@ R.optionsTable = {
     },
     tankMarkIcon6 = {
       order = RAIDASSIST+60+6,
-      name = L["options.widget.raidTank6.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank6.text"],
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -373,7 +373,7 @@ R.optionsTable = {
     },
     tankMarkIcon7 = {
       order = RAIDASSIST+60+7,
-      name = L["options.widget.raidTank7.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank7.text"],
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -385,7 +385,7 @@ R.optionsTable = {
     },
     tankMarkIcon8 = {
       order = RAIDASSIST+60+8,
-      name = L["options.widget.raidTank8.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank8.text"],
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -421,7 +421,7 @@ R.optionsTable = {
     },
     partyMarkIcon1 = {
       order = PARTY+10+1,
-      name = L["options.widget.partyMarkIcon1.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.partyMarkIcon1.text"],
       desc = L["options.widget.partyMarkIcon1.desc"].."|n|n"..L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -433,7 +433,7 @@ R.optionsTable = {
     },
     partyMarkIcon2 = {
       order = PARTY+10+2,
-      name = L["options.widget.partyMarkIcon2.text"],
+      name = A.util.TEXT_ICON.ROLE.HEALER.." "..L["options.widget.partyMarkIcon2.text"],
       desc = L["options.widget.partyMarkIcon2.desc"].."|n|n"..L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -445,7 +445,7 @@ R.optionsTable = {
     },
     partyMarkIcon3 = {
       order = PARTY+10+3,
-      name = L["options.widget.partyMarkIcon3.text"],
+      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["options.widget.partyMarkIcon3.text"],
       desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -457,7 +457,7 @@ R.optionsTable = {
     },
     partyMarkIcon4 = {
       order = PARTY+10+4,
-      name = L["options.widget.partyMarkIcon4.text"],
+      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["options.widget.partyMarkIcon4.text"],
       desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -469,7 +469,7 @@ R.optionsTable = {
     },
     partyMarkIcon5 = {
       order = PARTY+10+5,
-      name = L["options.widget.partyMarkIcon5.text"],
+      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["options.widget.partyMarkIcon5.text"],
       desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
