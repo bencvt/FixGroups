@@ -101,7 +101,7 @@ function M:BuildDelta()
     end
   end
 
-  if A.debug >= 2 then M:DebugPrintDelta() end
+  if A.DEBUG >= 2 then M:DebugPrintDelta() end
 end
 
 function M:GetSplitGroups()

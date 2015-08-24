@@ -27,15 +27,15 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   if not UnitExists(sender) then
     sender = A.util:StripRealm(sender)
   end
-  if A.debug >= 1 then A.console:Debugf(M, "%sCHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", ((sender ~= UnitName("player")) and "|r" or ""), prefix, message, channel, sender) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "%sCHAT_MSG_ADDON prefix=%s message=%s channel=%s sender=%s", ((sender ~= UnitName("player")) and "|r" or ""), prefix, message, channel, sender) end
   if sender == UnitName("player") then
     return
   end
   local cmd
   cmd, message = strsplit(":", message, 2)
   if cmd == "v" and not R.newerVersion then
-    if message and (message > A.version) then
-      A.console:Printf(L["addonChannel.print.newerVersion"], A.name, H(A.util:Escape(message)), A.version)
+    if message and (message > A.VERSION) then
+      A.console:Printf(L["addonChannel.print.newerVersion"], A.NAME, H(A.util:Escape(message)), A.VERSION)
       R.newerVersion = message
     end
   elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and UnitIsRaidOfficer(sender) then
@@ -50,7 +50,7 @@ function M:FIXGROUPS_RAID_JOINED(event, player)
         M:CancelTimer(R.broadcastVersionTimer)
       end
       R.broadcastVersionTimer = false
-      M:Broadcast("v:"..A.version)
+      M:Broadcast("v:"..A.VERSION)
     end, DELAY_BROADCAST_VERSION)
   end
 end

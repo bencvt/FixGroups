@@ -81,7 +81,7 @@ local BUTTONS, CONSOLE, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, INTEROP, RESET = 
 
 R.optionsTable = {
   type = "group",
-  name = HA(A.name).." "..format(L["versionAuthor"], A.version, HA(A.author)),
+  name = HA(A.NAME).." "..format(L["versionAuthor"], A.VERSION, HA(A.AUTHOR)),
   args = {
     desc = {
       order = 0,
@@ -495,7 +495,7 @@ R.optionsTable = {
     dataTextRaidCompStyle = {
       order = INTEROP+20,
       name = format(L["options.widget.dataTextRaidCompStyle.text"], L["dataText.raidComp.name"]),
-      desc = format(L["options.widget.dataTextRaidCompStyle.desc.1"], A.name, H(L["dataText.raidComp.name"])).."|n|n"..L["options.widget.dataTextRaidCompStyle.desc.1"],
+      desc = format(L["options.widget.dataTextRaidCompStyle.desc.1"], A.NAME, H(L["dataText.raidComp.name"])).."|n|n"..L["options.widget.dataTextRaidCompStyle.desc.1"],
       type = "select",
       width = "double",
       style = "dropdown",
@@ -543,8 +543,8 @@ function M:OnInitialize()
   -- Can always do A:GetModule("options") if needed.
   A.options = A.db.profile.options
 
-  LibStub("AceConfig-3.0"):RegisterOptionsTable(A.name, R.optionsTable)
-  R.optionsGUI = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.name, A.name)
+  LibStub("AceConfig-3.0"):RegisterOptionsTable(A.NAME, R.optionsTable)
+  R.optionsGUI = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.NAME, A.NAME)
 end
 
 function M:OnEnable()

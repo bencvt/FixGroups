@@ -16,18 +16,18 @@ function M:OnEnable()
 end
 
 function M:Print(...)
-  print(HA(A.name)..":", ...)
+  print(HA(A.NAME)..":", ...)
 end
 
 function M:Printf(...)
-  print(HA(A.name)..":", format(...))
+  print(HA(A.NAME)..":", format(...))
 end
 
 function M:PrintHelp()
-  M:Printf(L["versionAuthor"], A.version, HA(A.author))
+  M:Printf(L["versionAuthor"], A.VERSION, HA(A.AUTHOR))
   print(format(L["console.help.header"], H("/fixgroups"), H("/fg")))
   print(format("  %s %s %s - %s", H("/fg help"),    L["word.or"], H("/fg about"),   L["console.help.help"]))
-  print(format("  %s %s %s - %s", H("/fg config"),  L["word.or"], H("/fg options"), format(L["console.help.config"], A.name)))
+  print(format("  %s %s %s - %s", H("/fg config"),  L["word.or"], H("/fg options"), format(L["console.help.config"], A.NAME)))
   print(format("  %s - %s",       H("/fg choose"),                                  format(L["console.help.seeChoose"], H("/choose help"))))
   print(format("  %s - %s",       H("/fg cancel"),                                  L["console.help.cancel"]))
   print(format("  %s - %s",       H("/fg nosort"),                                  L["console.help.nosort"]))
@@ -83,11 +83,11 @@ function M:Command(args)
 end
 
 function M:Errorf(module, ...)
-  print(HA(A.name).." internal error in "..module:GetName().." module:", format(...))
+  print(HA(A.NAME).." internal error in "..module:GetName().." module:", format(...))
 end
 
 local function isDebuggingModule(module)
-  return not module or A.debugModules == "*" or strfind(A.debugModules, module:GetName())
+  return not module or A.DEBUG_MODULES == "*" or strfind(A.DEBUG_MODULES, module:GetName())
 end
 
 function M:Debug(module, ...)

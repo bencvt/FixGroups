@@ -154,7 +154,7 @@ function M:BuildSnapshot()
         A.console:Printf(L["meter.print.noDataFrom"], HA(A.util:GetAddonNameAndVersion(name)))
       end
       calculateAverages()
-      if A.debug >= 1 then M:DebugPrintMeterSnapshot() end
+      if A.DEBUG >= 1 then M:DebugPrintMeterSnapshot() end
       return
     end
   end

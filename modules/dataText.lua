@@ -16,7 +16,7 @@ local IsAddOnLoaded = IsAddOnLoaded
 -- TODO: research DataBroker stuff, see if any of this can be made ElvUI-independent
 
 local function raidComp_OnEvent(self, event, ...)
-  if A.debug >= 1 then A.console:Debugf(M, "DT_OnEvent event=%s comp=%s unknown=%s", event, A.raid:GetComp(), A.raid:GetUnknownNames()) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "DT_OnEvent event=%s comp=%s unknown=%s", event, A.raid:GetComp(), A.raid:GetUnknownNames()) end
   -- We need a short delay to ensure that the raid module has a chance to
   -- process the event as well, otherwise A.raid:GetComp() may be wrong.
   local frame, style = self, A.options.dataTextRaidCompStyle
@@ -45,12 +45,12 @@ local function raidComp_OnEvent(self, event, ...)
 end
 
 local function raidComp_Click(self, button)
-  if A.debug >= 1 then A.console:Debugf(M, "DT_Click button=%s", button) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "DT_Click button=%s", button) end
   A.gui:OpenRaidTab()
 end
 
 local function raidComp_OnEnter(self)
-  if A.debug >= 1 then A.console:Debug(M, "DT_OnEnter") end
+  if A.DEBUG >= 1 then A.console:Debug(M, "DT_OnEnter") end
   DT:SetupTooltip(self)
   local t, m, u, r, h = A.raid:GetRoleCounts()
   DT.tooltip:AddDoubleLine(L["dataText.raidComp.name"]..":", (A.raid:GetSize() > 0) and A.raid:GetComp() or NOT_IN_RAID, 1,1,0, 1,1,0)
@@ -90,7 +90,7 @@ function M:OnEnable()
   local name = L["dataText.raidComp.name"]
   if DT.RegisteredDataTexts[name] then
     -- Some other addon or plugin has already registered the name. Disambiguate.
-    name = format("%s (%s)", name, A.name)
+    name = format("%s (%s)", name, A.NAME)
   end
   -- Ideally we'd be triggering on the FIXGROUPS_RAID_COMP_CHANGED message,
   -- but DataTexts only trigger on Blizzard events. So we listen for all events

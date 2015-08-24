@@ -37,7 +37,7 @@ function M:FIXGROUPS_RAID_GROUP_CHANGED(event, name, prevGroup, group)
   if M:IsProcessing() and A.coreSort:DidActionFinish() then
     M:ProcessStep()
   else
-    if A.debug >= 2 then A.console:Debugf(M, "someone else moved %s %d->%d", name, prevGroup, group) end
+    if A.DEBUG >= 2 then A.console:Debugf(M, "someone else moved %s %d->%d", name, prevGroup, group) end
   end
 end
 
@@ -77,7 +77,7 @@ end
 
 function M:StopTimedOut()
   A.console:Print(L["sorter.print.timedOut"])
-  if A.debug >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
   M:Stop()
 end
 
@@ -163,7 +163,7 @@ function M:ProcessStep()
     return
   end
   A.coreSort:ProcessDelta()
-  if A.debug >= 2 then A.coreSort:DebugPrintAction() end
+  if A.DEBUG >= 2 then A.coreSort:DebugPrintAction() end
   if A.coreSort:IsActionScheduled() then
     R.stepCount = R.stepCount + 1
     M:ScheduleTimeout()
@@ -194,11 +194,11 @@ function M:AnnounceComplete()
       msg = msg.." "..format(L["sorter.print.excludedSitting.plural"], sitting, A.util:GetMaxGroupsForInstance()+1)
     end
     if A.options.announceChatAlways or (A.options.announceChatPRN and R.lastSortMode ~= R.sortMode) then
-      SendChatMessage(format("[%s] %s", A.name, msg), A.util:GetGroupChannel())
+      SendChatMessage(format("[%s] %s", A.NAME, msg), A.util:GetGroupChannel())
     else
       A.console:Print(msg)
     end
-    if A.debug >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
+    if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
   end
   R.lastSortMode = R.sortMode
 end
@@ -223,7 +223,7 @@ function M:ScheduleTimeout()
   R.timeoutTimer = M:ScheduleTimer(function ()
     M:ClearTimeout(false)
     R.timeoutCount = (R.timeoutCount or 0) + 1
-    if A.debug >= 1 then A.console:Debugf(M, "timeout %d of %d", R.timeoutCount, MAX_TIMEOUTS) end
+    if A.DEBUG >= 1 then A.console:Debugf(M, "timeout %d of %d", R.timeoutCount, MAX_TIMEOUTS) end
     if R.timeoutCount >= MAX_TIMEOUTS then
       M:StopTimedOut()
       return

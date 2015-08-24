@@ -136,7 +136,7 @@ function M:ForceBuildRoster()
     return
   end
   buildRoster()
-  if A.debug >= 2 then M:DebugPrintRoster() end
+  if A.DEBUG >= 2 then M:DebugPrintRoster() end
   
   local prevGroup, group
   for name, player in pairs(R.roster) do
@@ -144,7 +144,7 @@ function M:ForceBuildRoster()
       prevGroup = R.prevRoster[name].group
       group = player.group
       if prevGroup ~= group then
-        if A.debug >= 1 then A.console:Debugf(M, "RAID_GROUP_CHANGED %s %d->%d", name, prevGroup, group) end
+        if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_GROUP_CHANGED %s %d->%d", name, prevGroup, group) end
         M:SendMessage("FIXGROUPS_RAID_GROUP_CHANGED", name, prevGroup, group)
       end
     end
@@ -152,7 +152,7 @@ function M:ForceBuildRoster()
   
   for name, player in pairs(R.prevRoster) do
     if not player.isUnknown and not R.roster[name] then
-      if A.debug >= 1 then A.console:Debugf(M, "RAID_LEFT %s", name) end
+      if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_LEFT %s", name) end
       -- Message consumers should not modify the player table.
       M:SendMessage("FIXGROUPS_RAID_LEFT", player)
     end
@@ -160,14 +160,14 @@ function M:ForceBuildRoster()
   
   for name, player in pairs(R.roster) do
     if not player.isUnknown and not R.prevRoster[name] then
-      if A.debug >= 1 then A.console:Debugf(M, "RAID_JOINED %s", name) end
+      if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_JOINED %s", name) end
       -- Message consumers should not modify the player table.
       M:SendMessage("FIXGROUPS_RAID_JOINED", player)
     end
   end
   
   if R.prevComp ~= R.comp then
-    if A.debug >= 1 then A.console:Debugf(M, "RAID_COMP_CHANGED %s -> %s", R.prevComp, R.comp) end
+    if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_COMP_CHANGED %s -> %s", R.prevComp, R.comp) end
     M:SendMessage("FIXGROUPS_RAID_COMP_CHANGED", R.prevComp, R.comp)
   end
 end

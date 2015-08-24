@@ -50,7 +50,7 @@ local function cleanDbCache(role)
       removed = removed + 1
     end
   end
-  if A.debug >= 1 then A.console:Debugf(M, "cleanDbCache removed %d/%d %s older than %d days", removed, total, role, DB_CLEANUP_MAX_AGE_DAYS) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "cleanDbCache removed %d/%d %s older than %d days", removed, total, role, DB_CLEANUP_MAX_AGE_DAYS) end
 end
 
 function M:OnEnable()
@@ -97,7 +97,7 @@ function M:INSPECT_READY(event, guid)
     if not fullName then
       return
     end
-    if A.debug >= 2 then A.console:Debugf(M, "unsolicited inspect ready for %s", name) end
+    if A.DEBUG >= 2 then A.console:Debugf(M, "unsolicited inspect ready for %s", name) end
   end
 
   -- Remove from needToInspect and add to sessionCache.
@@ -114,7 +114,7 @@ function M:INSPECT_READY(event, guid)
   end
   R.sessionCache[roleYes][fullName] = true
   R.sessionCache[roleNo][fullName] = nil
-  if A.debug >= 2 then A.console:Debugf(M, "sessionCache.%s add %s", roleYes, fullName) end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "sessionCache.%s add %s", roleYes, fullName) end
 
   -- Add to dbCache.
   local ts = time()
@@ -124,7 +124,7 @@ function M:INSPECT_READY(event, guid)
   end
   A.db.faction.dpsRoleCache[roleYes][fullName] = ts
   A.db.faction.dpsRoleCache[roleNo][fullName] = nil
-  if A.debug >= 1 then A.console:Debugf(M, "dbCache.%s add %s", roleYes, fullName) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.%s add %s", roleYes, fullName) end
 
   -- Rebuild roster.
   A.raid:ForceBuildRoster()
@@ -132,7 +132,7 @@ end
 
 function M:FIXGROUPS_RAID_LEFT(player)
   if not player.isUnknown and player.name then
-    if A.debug >= 2 then A.console:Debugf(M, "cancelled needToInspect %s", player.name) end
+    if A.DEBUG >= 2 then A.console:Debugf(M, "cancelled needToInspect %s", player.name) end
     R.needToInspect[player.name] = false
   end
 end
@@ -176,11 +176,11 @@ function M:GetDamagerRole(player)
   elseif R.sessionCache.ranged[fullName] then
     return A.raid.ROLES.RANGED
   elseif A.db.faction.dpsRoleCache.melee[fullName] then
-    if A.debug >= 1 then A.console:Debugf(M, "dbCache.melee found %s", fullName) end
+    if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.melee found %s", fullName) end
     requestInspect(player.name, fullName)
     return A.raid.ROLES.MELEE
   elseif A.db.faction.dpsRoleCache.ranged[fullName] then
-    if A.debug >= 1 then A.console:Debugf(M, "dbCache.ranged found %s", fullName) end
+    if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.ranged found %s", fullName) end
     requestInspect(player.name, fullName)
     return A.raid.ROLES.RANGED
   else

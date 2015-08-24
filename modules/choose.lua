@@ -42,14 +42,14 @@ local function sendMessage(message, localOnly, prefixAddonName)
   if localOnly or not IsInGroup() then
     A.console:Print(message)
   elseif prefixAddonName then
-    SendChatMessage(format("[%s] %s", A.name, message), A.util:GetGroupChannel())
+    SendChatMessage(format("[%s] %s", A.NAME, message), A.util:GetGroupChannel())
   else
     SendChatMessage(message, A.util:GetGroupChannel())
   end
 end
 
 function M:CHAT_MSG_SYSTEM(event, message)
-  if A.debug >= 2 then A.console:Debugf(M, "event=%s message=[%s] rollPrefix=[%s]", event, message, tostring(R.rollPrefix)) end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "event=%s message=[%s] rollPrefix=[%s]", event, message, tostring(R.rollPrefix)) end
   if not R.rollTimestamp or (R.rollTimestamp + ROLL_TIMEOUT - time() <= 0) then
     R.rollTimestamp = false
     return
@@ -76,7 +76,7 @@ end
 function M:PrintHelp()
   local validTokens = format("%s, %s%s %s %s", H(L["choose.player.tierToken.conqueror.short"]), H(L["choose.player.tierToken.protector.short"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.player.tierToken.vanquisher.short"]))
   local validRoles = format("%s, %s, %s, %s, %s%s %s %s", H(L["choose.player.any"]), H(L["choose.player.tank"]), H(L["choose.player.healer"]), H(L["choose.player.damager"]), H(L["choose.player.melee"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.player.ranged"]))
-  A.console:Printf(L["versionAuthor"], A.version, HA(A.author))
+  A.console:Printf(L["versionAuthor"], A.VERSION, HA(A.AUTHOR))
   print(format(L["choose.help.header"], H("/choose"), H("/fg choose")))
   print(format("  %s - %s", H("/choose "..L["choose.help.option.arg"]), L["choose.help.option"]))
   print(format("  %s - %s", H("/choose "..L["choose.help.class.arg"]), L["choose.help.class"]))
@@ -86,7 +86,7 @@ function M:PrintHelp()
 end
 
 function M:PrintExamples()
-  A.console:Printf(L["versionAuthor"], A.version, HA(A.author))
+  A.console:Printf(L["versionAuthor"], A.VERSION, HA(A.AUTHOR))
   print(format(L["choose.examples.header"], H("/choose")))
   print("  "..H(format("/choose %s", L["choose.role.melee"])))
   print("  "..H(format("/choose %s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["HUNTER"]))))

@@ -38,7 +38,7 @@ local function handleClick(_, button)
 end
 
 local function watchChat(event, message, sender)
-  if A.debug >= 1 then A.console:Debugf(M, "watchChat event=%s message=%s sender=%s", event, message, sender) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "watchChat event=%s message=%s sender=%s", event, message, sender) end
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
     -- Search for both the default and the localized keywords.
     message = strlower(message)
@@ -57,15 +57,15 @@ local function setupMinimapIcon()
   if R.icon then
     return
   end
-  R.iconLDB = LibStub("LibDataBroker-1.1"):NewDataObject(A.name, {
+  R.iconLDB = LibStub("LibDataBroker-1.1"):NewDataObject(A.NAME, {
     type = "launcher",
-    text = A.name,
+    text = A.NAME,
     icon = "Interface\\ICONS\\INV_Misc_GroupLooking",
     OnClick = handleClick,
     OnTooltipShow = function (tooltip) M:SetupTooltip(tooltip, true) end,
   })
   R.icon = LibStub("LibDBIcon-1.0")
-  R.icon:Register(A.name, R.iconLDB, A.options.minimapIcon)
+  R.icon:Register(A.NAME, R.iconLDB, A.options.minimapIcon)
 end
 
 local function setupRaidTabButton()
@@ -114,9 +114,9 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
   if A.raid:GetComp() then
     -- TODO register this tooltip somehow so it gets dynamically updated on FIXGROUPS_RAID_COMP_CHANGED messages
     local t, m, u, r, h = A.raid:GetRoleCounts()
-    tooltip:AddDoubleLine(A.name, format("%d%s %d%s %d%s", t, A.util.TEXT_ICON.ROLE.TANK, h, A.util.TEXT_ICON.ROLE.HEALER, m+u+r, A.util.TEXT_ICON.ROLE.DAMAGER))
+    tooltip:AddDoubleLine(A.NAME, format("%d%s %d%s %d%s", t, A.util.TEXT_ICON.ROLE.TANK, h, A.util.TEXT_ICON.ROLE.HEALER, m+u+r, A.util.TEXT_ICON.ROLE.DAMAGER))
   else
-    tooltip:AddLine(A.name)
+    tooltip:AddLine(A.NAME)
   end
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["tooltip.left.clickLeft"],        L["tooltip.right.fixGroups"], 1,1,1, 1,1,0)
@@ -152,8 +152,8 @@ function M:OpenRaidTab()
 end
 
 function M:OpenConfig()
-  InterfaceOptionsFrame_OpenToCategory(A.name)
-  InterfaceOptionsFrame_OpenToCategory(A.name)
+  InterfaceOptionsFrame_OpenToCategory(A.NAME)
+  InterfaceOptionsFrame_OpenToCategory(A.NAME)
 end
 
 function M:FlashRaidTabButton()
@@ -189,7 +189,7 @@ end
 
 function M:Refresh()
   if not M:IsEnabled() then
-    R.icon:Hide(A.name)
+    R.icon:Hide(A.NAME)
     R.raidTabButton:Hide()
     return
   end
@@ -205,9 +205,9 @@ function M:Refresh()
     setUI("button.fixGroups.text", "Interface\\ICONS\\INV_Misc_GroupLooking")
   end
   if A.options.showMinimapIconAlways or (A.options.showMinimapIconPRN and A.util:IsLeaderOrAssist()) then
-    R.icon:Show(A.name)
+    R.icon:Show(A.NAME)
   else
-    R.icon:Hide(A.name)
+    R.icon:Hide(A.NAME)
   end
   if A.options.addButtonToRaidTab then
     R.raidTabButton:Show()
