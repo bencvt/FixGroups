@@ -222,8 +222,6 @@ local function choosePlayer(mode, arg)
       if not player.isUnknown then
         if mode == "fromGroup" then
           include = (player.group == arg)
-        elseif mode == "guildmate" then
-          include = UnitIsInMyGuild(player.unitID)
         elseif player.isSitting or mode == "sitting" then
           include = (mode == "sitting")
         elseif mode == "any" then
@@ -234,6 +232,8 @@ local function choosePlayer(mode, arg)
           include = UnitIsDeadOrGhost(player.unitID)
         elseif mode == "alive" then
           include = not UnitIsDeadOrGhost(player.unitID)
+        elseif mode == "guildmate" then
+          include = UnitIsInMyGuild(player.unitID)
         elseif mode == "damager" then
           include = player.isDamager
         elseif mode == ROLE_NAMES[player.role] then
@@ -257,8 +257,6 @@ local function choosePlayer(mode, arg)
       if UnitExists(unitID) then
         if mode == "fromGroup" then
           include = (arg == 1)
-        elseif mode == "guildmate" then
-          include = UnitIsInMyGuild(unitID)
         elseif mode == "sitting" then
           include = false
         elseif mode == "any" then
@@ -269,6 +267,8 @@ local function choosePlayer(mode, arg)
           include = UnitIsDeadOrGhost(unitID)
         elseif mode == "alive" then
           include = not UnitIsDeadOrGhost(unitID)
+        elseif mode == "guildmate" then
+          include = UnitIsInMyGuild(unitID)
         elseif mode == "tank" or mode == "healer" or mode == "damager" then
           role = UnitGroupRolesAssigned(unitID)
           if (not role or role == "NONE") and unitID == "player" then
