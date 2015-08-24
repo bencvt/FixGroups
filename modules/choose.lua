@@ -222,6 +222,8 @@ local function choosePlayer(mode, arg)
       if not player.isUnknown then
         if mode == "fromGroup" then
           include = (player.group == arg)
+        elseif mode == "anyIncludingSitting" then
+          include = true
         elseif player.isSitting or mode == "sitting" then
           include = (mode == "sitting")
         elseif mode == "any" then
@@ -257,6 +259,8 @@ local function choosePlayer(mode, arg)
       if UnitExists(unitID) then
         if mode == "fromGroup" then
           include = (arg == 1)
+        elseif mode == "anyIncludingSitting" then
+          include = true
         elseif mode == "sitting" then
           include = false
         elseif mode == "any" then
@@ -420,6 +424,9 @@ local function buildDispatchTable()
     standby       ={choosePlayer, "sitting"},
     inactive      ={choosePlayer, "sitting"},
     idle          ={choosePlayer, "sitting"},
+    anyincludingsitting ={choosePlayer, "anyIncludingSitting"},
+    anysitting          ={choosePlayer, "anyIncludingSitting"},
+    ["any/sitting"]     ={choosePlayer, "anyIncludingSitting"},
     notme         ={choosePlayer, "notMe"},
     somebodyelse  ={choosePlayer, "notMe"},
     dead          ={choosePlayer, "dead"},
