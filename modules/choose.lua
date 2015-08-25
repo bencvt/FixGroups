@@ -4,8 +4,9 @@ A.choose = M
 M.private = {
   options = {},
   optionsArePlayers = false,
-  rollTimestamp = false,
-  rollPrefix = false,
+  requestTimestamp = false,
+  expectNumChatMsgs = false,
+  expectSystemMsgPrefix = false,
   tmp1 = {},
   tmp2 = {},
 }
@@ -15,8 +16,8 @@ local H, HA = A.util.Highlight, A.util.HighlightAddon
 -- Indexes correspond to A.raid.ROLES constants.
 local ROLE_NAMES = {"tank", "melee", "unknown", "ranged", "healer"}
 -- Actually it's 255, but we'll be conservative.
-local MAX_CHAT_LINE_LEN = 250
-local ROLL_TIMEOUT = 5.0
+local MAX_CHAT_LINE_LEN = 200
+local SERVER_TIMEOUT = 5.0
 -- Lazily populated.
 local DISPATCH_TABLE, CLASS_ALIASES = false, false
 local SPACE_OR_SPACE = " "..string.lower(L["word.or"]).." "
@@ -24,6 +25,60 @@ local SPACE_OR_SPACE = " "..string.lower(L["word.or"]).." "
 local format, ipairs, pairs, print, select, sort, strfind, strgmatch, strgsub, strlen, strlower, strmatch, strsplit, strsub, strtrim, tconcat, time, tinsert, tonumber, tostring, unpack, wipe = string.format, ipairs, pairs, print, select, sort, string.find, string.gmatch, string.gsub, string.len, string.lower, string.match, string.split, string.sub, string.trim, table.concat, time, table.insert, tonumber, tostring, unpack, wipe
 local GetGuildInfo, GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetGuildInfo, GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT
+
+local function startExpecting(numChatMsgs, systemMsgPrefix)
+  R.requestTimestamp = time()
+  R.expectNumChatMsgs = numChatMsgs
+  R.expectSystemMsgPrefix = systemMsgPrefix
+  if A.DEBUG >= 1 then A.console:Debugf(M, "startExpecting numChatMsgs=%s systemMsgPrefix=[%s]", tostring(numChatMsgs), tostring(systemMsgPrefix)) end
+end
+
+local function stopExpecting()
+  R.requestTimestamp = false
+  R.expectNumChatMsgs = false
+  R.expectSystemMsgPrefix = false
+  if A.DEBUG >= 1 then A.console:Debugf(M, "stopExpecting") end
+end
+
+local function isExpecting(quiet)
+  if R.requestTimestamp then
+    if R.requestTimestamp + SERVER_TIMEOUT - time() < 0 then
+      if A.DEBUG >= 1 then A.console:Debugf(M, "isExpecting timed out") end
+      stopExpecting()
+    else
+      if not quiet then
+        A.console:Print(L["choose.print.busy"])
+      end
+      return true
+    end
+  end
+end
+
+local function startRoll()
+  local rollPrefix = format(RANDOM_ROLL_RESULT, UnitName("player"), 867, 530, 9)
+  rollPrefix = strsub(rollPrefix, 1, strfind(rollPrefix, "867") - 1)
+  startExpecting(false, rollPrefix)
+  RandomRoll(1, #R.options)
+end
+
+local function watchChat(event, message, sender)
+  if not R.expectNumChatMsgs or not isExpecting(true) or not message then
+    return
+  end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "watchChat event=%s message=[%s] sender=%s expectNumChatMsgs=[%s]", event, message, sender, R.expectNumChatMsgs) end
+  if not UnitExists(sender) then
+    sender = A.util:StripRealm(sender)
+  end
+  if sender ~= UnitName("player") then
+    return
+  end
+  R.expectNumChatMsgs = R.expectNumChatMsgs - 1
+  if R.expectNumChatMsgs <= 0 then
+    if A.DEBUG >= 1 then A.console:Debugf(M, "received all expectNumChatMsgs, starting roll") end
+    stopExpecting()
+    startRoll()
+  end
+end
 
 function M:OnEnable()
   local function slashCmd(args)
@@ -36,6 +91,12 @@ function M:OnEnable()
   M:RegisterChatCommand("choo", slashCmd)
   M:RegisterChatCommand("cho", slashCmd)
   M:RegisterEvent("CHAT_MSG_SYSTEM")
+  M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT",         watchChat)
+  M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT_LEADER",  watchChat)
+  M:RegisterEvent("CHAT_MSG_RAID",                  watchChat)
+  M:RegisterEvent("CHAT_MSG_RAID_LEADER",           watchChat)
+  M:RegisterEvent("CHAT_MSG_PARTY",                 watchChat)
+  M:RegisterEvent("CHAT_MSG_PARTY_LEADER",          watchChat)
 end
 
 local function sendMessage(message, localOnly, prefixAddonName)
@@ -49,20 +110,25 @@ local function sendMessage(message, localOnly, prefixAddonName)
 end
 
 function M:CHAT_MSG_SYSTEM(event, message)
-  if A.DEBUG >= 2 then A.console:Debugf(M, "event=%s message=[%s] rollPrefix=[%s]", event, message, tostring(R.rollPrefix)) end
-  if not R.rollTimestamp or (R.rollTimestamp + ROLL_TIMEOUT - time() <= 0) then
-    R.rollTimestamp = false
+  local prefix = R.expectSystemMsgPrefix
+  if A.DEBUG >= 2 then A.console:Debugf(M, "event=%s message=[%s] prefix=[%s]", event, message, tostring(prefix)) end
+  if not prefix or not isExpecting(true) then
     return
   end
-  local i = strfind(message, R.rollPrefix)
+  local i = strfind(message, prefix)
   if not i then
+    -- Some other system message.
     return
   end
-  R.rollTimestamp = false
-  local v = strsub(message, i + strlen(R.rollPrefix))
+
+  -- We have a match. Reset for the next /choose command and parse it.
+  stopExpecting()
+  local v = strsub(message, i + strlen(prefix))
   v = strsub(v, 1, strfind(v, " "))
   local choseIndex = tonumber(strtrim(v))
   local choseValue = choseIndex > 0 and choseIndex <= #R.options and R.options[choseIndex] or "?"
+
+  -- Announce the winner.
   if R.optionsArePlayers then
     local player = A.raid:FindPlayer(choseValue)
     if player and player.group then
@@ -95,31 +161,16 @@ function M:PrintExamples()
   print("  "..H(format("/choose %s", L["choose.examples.raids"])))
 end
 
-local function isWaitingOnPreviousRoll()
-  if R.rollTimestamp then
-    local wait = R.rollTimestamp + ROLL_TIMEOUT - time()
-    if wait > 0 then
-      A.console:Print(L["choose.print.busy"])
-      return true
-    end
-  end
-end
-
-local function roll()
-  RandomRoll(1, #R.options)
-  R.rollPrefix = format(RANDOM_ROLL_RESULT, UnitName("player"), 867, 530, 9)
-  R.rollPrefix = strsub(R.rollPrefix, 1, strfind(R.rollPrefix, "867") - 1)
-  R.rollTimestamp = time()
-end
-
-local function announceChoices(localOnly, line)
+local function announceChoicesAndRoll(reallyRoll, line)
   -- Announce exactly what we'll be rolling on.
   -- Use on multiple lines if needed.
   local numOptions = #R.options
+  local numLines = 0
   for i, option in ipairs(R.options) do
     option = tostring(i).."="..tostring(option)..((i < numOptions and numOptions > 1) and "," or ".")
     if line and strlen(line) + 1 + strlen(option) >= MAX_CHAT_LINE_LEN then
-      sendMessage(line, localOnly, false)
+      sendMessage(line, not reallyRoll, false)
+      numLines = numLines + 1
       line = false
     end
     if line then
@@ -129,7 +180,23 @@ local function announceChoices(localOnly, line)
     end
   end
   if line then
-    sendMessage(line, localOnly, false)
+    numLines = numLines + 1
+    sendMessage(line, not reallyRoll, false)
+  end
+  if reallyRoll then
+    if IsInGroup() then
+      -- Wait until our announcement of the options to chat gets echoed back to
+      -- us before we /roll. If we don't, thanks to lag it's possible the /roll
+      -- result will reach everyone BEFORE the announcement, which defeats the
+      -- entire purpose of the /choose command.
+      --
+      -- We only trigger off the NUMBER of lines we're sending, not the actual
+      -- content of the lines. The content could be modified by chat-modifying
+      -- addons, the mature language filter, or if the player is drunk.
+      startExpecting(numLines, false)
+    else
+      startRoll()
+    end
   end
 end
 
@@ -208,7 +275,7 @@ local function getValidClasses(mode, arg)
 end
 
 local function choosePlayer(mode, arg)
-  if isWaitingOnPreviousRoll() then
+  if isExpecting() then
     return
   end
 
@@ -332,10 +399,9 @@ local function choosePlayer(mode, arg)
   end
 
   if #R.options > 0 then
-    announceChoices(false, line)
-    roll()
+    announceChoicesAndRoll(true, line)
   else
-    announceChoices(true, line)
+    announceChoicesAndRoll(false, line)
     A.console:Print(L["choose.print.noPlayers"])
   end
 end
@@ -359,7 +425,7 @@ local function chooseMultipleClasses(args)
 end
 
 local function chooseGroup()
-  if isWaitingOnPreviousRoll() then
+  if isExpecting() then
     return
   end
   
@@ -374,12 +440,11 @@ local function chooseGroup()
     tinsert(R.options, format("%s %d", L["choose.group"], 1))
   end
   
-  announceChoices(false, L["choose.print.choosing.group"])
-  roll()
+  announceChoicesAndRoll(true, L["choose.print.choosing.group"])
 end
 
 local function chooseOption(sep, args)
-  if isWaitingOnPreviousRoll() then
+  if isExpecting() then
     return
   end
   
@@ -392,8 +457,7 @@ local function chooseOption(sep, args)
     end
   end
 
-  announceChoices(false, L["choose.print.choosing.option"])
-  roll()
+  announceChoicesAndRoll(true, L["choose.print.choosing.option"])
 end
 
 local function buildDispatchTable()
