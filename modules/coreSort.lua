@@ -21,7 +21,8 @@ for i, class in ipairs(CLASS_SORT_ORDER) do
 end
 CLASS_SORT_CHAR["_unknown"] = "Z"
 
-local format, floor, ipairs, pairs, sort, tconcat, tinsert, tostring, wipe = string.format, math.floor, ipairs, pairs, sort, table.concat, table.insert, tostring, wipe
+local format, floor, ipairs, pairs, sort, tinsert, tostring, wipe = format, floor, ipairs, pairs, sort, tinsert, tostring, wipe
+local tconcat = table.concat
 local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 
 -- The delta table is an array of players who are in the wrong group.

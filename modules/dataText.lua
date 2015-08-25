@@ -8,9 +8,9 @@ local NOT_IN_RAID = HD(L["dataText.raidComp.notInRaid"])
 local ICON_TANK, ICON_HEALER, ICON_DAMAGER = A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER
 local DT
 
-local format, tostring = string.format, tostring
+local format, tostring = format, tostring
 local IsAddOnLoaded = IsAddOnLoaded
--- GLOBALS: ElvUI
+-- GLOBALS: ElvUI, C_LFGList
 
 -- TODO: localization
 -- TODO: research DataBroker stuff, see if any of this can be made ElvUI-independent

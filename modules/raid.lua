@@ -26,7 +26,8 @@ for i = 1, 40 do
   R.prevRosterArray[i] = {}
 end
 
-local format, ipairs, pairs, tconcat, tinsert, tostring, unpack, wipe = format, ipairs, pairs, table.concat, table.insert, tostring, unpack, wipe
+local format, ipairs, pairs, tinsert, tostring, unpack, wipe = format, ipairs, pairs, tinsert, tostring, unpack, wipe
+local tconcat = table.concat
 local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName = GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName
 
 function M:OnEnable()

@@ -16,7 +16,7 @@ local MAX_STEPS = 30
 local MAX_TIMEOUTS = 20
 local DELAY_TIMEOUT = 1.0
 
-local floor, format, tostring, time = math.floor, string.format, tostring, time
+local floor, format, tostring, time = floor, format, tostring, time
 local InCombatLockdown, IsInRaid, SendChatMessage = InCombatLockdown, IsInRaid, SendChatMessage
 
 function M:OnEnable()

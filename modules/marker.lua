@@ -8,7 +8,7 @@ M.private = {
 }
 local R = M.private
 
-local min, sort, tinsert, wipe = math.min, sort, table.insert, wipe
+local min, sort, tinsert, wipe = min, sort, tinsert, wipe
 local GetNumGroupMembers, GetRaidRosterInfo, GetRaidTargetIndex, IsInInstance, IsInRaid, PromoteToAssistant, SetLootMethod, SetRaidTarget, UnitExists, UnitGroupRolesAssigned, UnitName = GetNumGroupMembers, GetRaidRosterInfo, GetRaidTargetIndex, IsInInstance, IsInRaid, PromoteToAssistant, SetLootMethod, SetRaidTarget, UnitExists, UnitGroupRolesAssigned, UnitName
 
 function M:FixParty()

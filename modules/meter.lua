@@ -22,7 +22,7 @@ local SUPPORTED_ADDONS = {
 local DETAILS_SEGMENTS = {"overall", "current"}
 local EMPTY = {}
 
-local format, ipairs, pairs, select, tinsert, wipe = string.format, ipairs, pairs, select, table.insert, wipe
+local format, ipairs, pairs, select, tinsert, wipe = format, ipairs, pairs, select, tinsert, wipe
 local GetUnitName, IsAddOnLoaded = GetUnitName, IsAddOnLoaded
 -- GLOBALS: _G, tdps, tdpsPlayer, tdpsPet, Skada, Recount, Details
 

@@ -3,7 +3,8 @@ local M = A:NewModule("console", "AceConsole-3.0")
 A.console = M
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
-local date, format, print, select, strfind, strlen, strlower, strmatch, strsub, strtrim, tconcat, tinsert, tostring = date, format, print, select, string.find, string.len, string.lower, string.match, string.sub, string.trim, table.concat, table.insert, tostring
+local date, format, print, select, strfind, strlen, strlower, strmatch, strsub, strtrim, tinsert, tostring = date, format, print, select, strfind, strlen, strlower, strmatch, strsub, strtrim, tinsert, tostring
+local tconcat = table.concat
 local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 
 function M:OnEnable()

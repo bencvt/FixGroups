@@ -8,7 +8,7 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
-local strsplit = string.split
+local strsplit = strsplit
 local IsInGroup, IsInRaid, RegisterAddonMessagePrefix, SendAddonMessage, UnitExists, UnitIsRaidOfficer, UnitName = IsInGroup, IsInRaid, RegisterAddonMessagePrefix, SendAddonMessage, UnitExists, UnitIsRaidOfficer, UnitName
 
 local PREFIX = "FIXGROUPS"

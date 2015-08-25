@@ -22,7 +22,8 @@ local SERVER_TIMEOUT = 5.0
 local DISPATCH_TABLE, CLASS_ALIASES = false, false
 local SPACE_OR_SPACE = " "..string.lower(L["word.or"]).." "
 
-local format, ipairs, pairs, print, select, sort, strfind, strgmatch, strgsub, strlen, strlower, strmatch, strsplit, strsub, strtrim, tconcat, time, tinsert, tonumber, tostring, unpack, wipe = string.format, ipairs, pairs, print, select, sort, string.find, string.gmatch, string.gsub, string.len, string.lower, string.match, string.split, string.sub, string.trim, table.concat, time, table.insert, tonumber, tostring, unpack, wipe
+local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
+local tconcat = table.concat
 local GetGuildInfo, GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetGuildInfo, GetSpecialization, GetSpecializationInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT
 
@@ -409,7 +410,7 @@ end
 local function chooseMultipleClasses(args)
   local validClasses = wipe(R.tmp1)
   local found
-  for c in strgmatch(strlower(args), "[^/]+") do
+  for c in gmatch(strlower(args), "[^/]+") do
     c = CLASS_ALIASES[strtrim(c)]
     if not c then
       return false
@@ -450,7 +451,7 @@ local function chooseOption(sep, args)
   
   R.optionsArePlayers = false
   wipe(R.options)
-  for option in strgmatch(args, "[^"..sep.."]+") do
+  for option in gmatch(args, "[^"..sep.."]+") do
     option = strtrim(option)
     if option ~= "" then
       tinsert(R.options, option)
@@ -535,10 +536,10 @@ local function buildDispatchTable()
 
   -- Add localized class names.
   for class, alias in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-    CLASS_ALIASES[strgsub(strlower(alias), " ", "")] = class
+    CLASS_ALIASES[gsub(strlower(alias), " ", "")] = class
   end
   for class, alias in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-    CLASS_ALIASES[strgsub(strlower(alias), " ", "")] = class
+    CLASS_ALIASES[gsub(strlower(alias), " ", "")] = class
   end
   -- Add shorthand aliases.
   CLASS_ALIASES["warr"] = "WARRIOR"
@@ -619,7 +620,7 @@ function M:Command(args)
     -- TODO: GUI
     M:PrintHelp()
   elseif strfind(args, SPACE_OR_SPACE) then
-    chooseOption(",", strgsub(args, SPACE_OR_SPACE, ","))
+    chooseOption(",", gsub(args, SPACE_OR_SPACE, ","))
   elseif strfind(args, ",") then
     chooseOption(",", args)
   elseif strfind(args, " ") then

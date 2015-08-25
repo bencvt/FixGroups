@@ -55,7 +55,7 @@ local MARKS = {
 }
 local DELAY_OPTIONS_PANE_LOADED = 0.01
 
-local format, ipairs, min, max, tinsert = string.format, ipairs, math.min, math.max, table.insert
+local format, ipairs, min, max, tinsert = format, ipairs, min, max, tinsert
 -- GLOBALS: LibStub
 
 local function getOptionMark(arr, index)
