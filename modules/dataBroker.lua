@@ -11,21 +11,21 @@ local NOT_IN_GROUP = HD(L["dataBroker.groupComp.notInGroup"])
 local ICON_TANK, ICON_HEALER, ICON_DAMAGER = A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER
 
 local format, tostring = format, tostring
-local IsAddOnLoaded = IsAddOnLoaded
+local IsAddOnLoaded, IsInGroup, IsInRaid = IsAddOnLoaded, IsInGroup, IsInRaid
 -- GLOBALS: C_LFGList, LibStub
 
 -- TODO: localization
 
 local function groupCompOnClick(frame, button)
-  if A.DEBUG >= 2 then A.console:Debugf(M, "groupComp_Click frame=%s button=%s", tostring(frame or "<nil>"), tostring(button or "<nil>")) end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "groupCompOnClick frame=%s button=%s", tostring(frame or "<nil>"), tostring(button or "<nil>")) end
   A.gui:OpenRaidTab()
 end
 
 local function groupCompOnTooltipShow(tooltip)
-  if A.DEBUG >= 1 then A.console:Debugf(M, "groupComp_OnTooltipShow tooltip=%s", tostring(tooltip or "<nil>")) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "groupCompOnTooltipShow tooltip=%s", tostring(tooltip or "<nil>")) end
   local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
   if IsInGroup() then
-    tooltip:AddDoubleLine(format("%s (%s):"L["dataBroker.groupComp.name"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.group:GetComp(), 1,1,0, 1,1,0)
+    tooltip:AddDoubleLine(format("%s (%s):", L["dataBroker.groupComp.name"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.group:GetComp(), 1,1,0, 1,1,0)
     tooltip:AddLine(" ")
     tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." Tanks",        tostring(t), 1,1,1, 1,1,0)
     tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.HEALER.." Healers",    tostring(h), 1,1,1, 1,1,0)

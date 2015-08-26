@@ -98,6 +98,17 @@ function M:GetMaxGroupsForInstance()
   return max(6, floor(select(5, GetInstanceInfo()) / 5))
 end
 
+function M:GetFixedInstanceSize()
+  local d = select(3, GetInstanceInfo())
+  if d == 16 then
+    -- Mythic
+    return 20
+  elseif d == 17 then
+    -- Raid Finder: technically flex but for our purposes it's fixed.
+    return 25
+  end
+end
+
 function M:GetAddonNameAndVersion(name)
   name = name or A.NAME
   local v = GetAddOnMetadata(name, "Version")

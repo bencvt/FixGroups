@@ -12,9 +12,10 @@ M.private = {
 local R = M.private
 
 local DELAY_ACTION = 0.01
--- ROLE_SORT_CHAR_x indexes correspond to A.group.ROLES constants.
-local ROLE_SORT_CHAR_TMURH = {"a", "d", "b", "c", "c"}
+-- ROLE_SORT_CHAR_x indexes correspond to A.group.ROLES constants (THMRU).
+local ROLE_SORT_CHAR_TMURH = {"a", "z", "b", "c", "c"}
 local ROLE_SORT_CHAR_THMUR = {"a", "b", "c", "d", "d"}
+local ROLE_PAD_CHAR, ROLE_PAD_PLAYER = "e", {name="_unknown", role=5, isDummy=true}
 local CLASS_SORT_CHAR = {}
 for i, class in ipairs(CLASS_SORT_ORDER) do
   CLASS_SORT_CHAR[class] = string.char(64 + i)
@@ -28,7 +29,8 @@ local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 -- The delta table is an array of players who are in the wrong group.
 function M:BuildDelta()
   -- Build temporary tables tracking players.
-  local sortRoles = A.sorter:IsSortingHealersBeforeDamagers() and ROLE_SORT_CHAR_THMUR or ROLE_SORT_CHAR_TMURH
+  local areHealersFirst = A.sorter:IsSortingHealersBeforeDamagers()
+  local sortRoles = areHealersFirst and ROLE_SORT_CHAR_THMUR or ROLE_SORT_CHAR_TMURH
   local keys = wipe(R.tmp1)
   local playersByKey = wipe(R.tmp2)
   local k
@@ -37,6 +39,19 @@ function M:BuildDelta()
       k = sortRoles[p.role]..(p.class and CLASS_SORT_CHAR[p.class] or CLASS_SORT_CHAR["_unknown"])..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       playersByKey[k] = p
+    end
+  end
+
+  -- Insert dummy players for padding if we need to keep the healers in the
+  -- last group.
+  if not areHealersFirst and not A.sorter:IsSplittingRaid() then
+    local fixedSize = A.util:GetFixedInstanceSize()
+    if fixedSize then
+      while #keys < fixedSize do
+        k = ROLE_PAD_CHAR..(#keys + 1)
+        tinsert(keys, k)
+        playersByKey[k] = ROLE_PAD_PLAYER
+      end
     end
   end
 
@@ -96,7 +111,7 @@ function M:BuildDelta()
       -- Just sorting the raid, not splitting it.
       newGroup = floor((i - 1) / 5) + 1
     end
-    if newGroup ~= playersByKey[k].group then
+    if newGroup ~= playersByKey[k].group and not playersByKey[k].isDummy then
       tinsert(R.deltaPlayers, playersByKey[k])
       tinsert(R.deltaNewGroups, newGroup)
     end
