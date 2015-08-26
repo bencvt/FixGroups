@@ -12,7 +12,7 @@ M.private = {
   prevCompMRU = false,
   size = 0,
   groupSizes = {0, 0, 0, 0, 0, 0, 0, 0},
-  roleCounts = {0, 0, 0, 0, 0},
+  roleCountsTHMRU = {0, 0, 0, 0, 0},
   builtUniqueNames = false,
   rebuildTimer = false,
   tmp1 = {},
@@ -31,7 +31,7 @@ end
 
 local format, ipairs, pairs, select, tinsert, tostring, unpack, wipe = format, ipairs, pairs, select, tinsert, tostring, unpack, wipe
 local tconcat = table.concat
-local GetNumGroupMembers, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName
+local GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName
 
 function M:OnEnable()
   local rebuild = function () M:ForceBuildRoster() end
@@ -46,7 +46,7 @@ local function wipeRoster()
     R.groupSizes[g] = 0
   end
   for i = 1, 5 do
-    R.roleCounts[i] = 0
+    R.roleCountsTHMRU[i] = 0
   end
   R.builtUniqueNames = false
   R.prevCompTHD = R.compTHD
@@ -74,14 +74,14 @@ local function rebuildTimerDone()
 end
 
 local function buildSoloRoster(rindex)
-  local p = R.rosterArray[rindex]
+  local p = wipe(R.rosterArray[rindex])
   p.rindex = rindex
   p.unitID = "player"
   p.name = UnitName("player")
   p.rank = 2
   p.group = 1
   p.class = select(2, UnitClass("player"))
-  -- p.zone not set
+  p.zone = GetRealZoneText()
   R.groupSizes[1] = R.groupSizes[1] + 1
   local unitRole = select(6, GetSpecializationInfo(GetSpecialization()))
   if unitRole == "TANK" then
@@ -94,7 +94,7 @@ local function buildSoloRoster(rindex)
       p.isDamager = true
     end
   end
-  R.roleCounts[p.role] = R.roleCounts[p.role] + 1
+  R.roleCountsTHMRU[p.role] = R.roleCountsTHMRU[p.role] + 1
   R.roster[p.name] = p
 end
 
@@ -177,7 +177,7 @@ local function buildRoster()
         end
       end
       if not p.isSitting then
-        R.roleCounts[p.role] = R.roleCounts[p.role] + 1
+        R.roleCountsTHMRU[p.role] = R.roleCountsTHMRU[p.role] + 1
       end
       R.roster[p.name] = p
     end
@@ -187,7 +187,7 @@ local function buildRoster()
   end
 
   -- Build comp strings.
-  local t, h, m, r, u = unpack(R.roleCounts)
+  local t, h, m, r, u = unpack(R.roleCountsTHMRU)
   R.compTHD = format("%d/%d/%d", t, h, m+r+u)
   if u > 0 then
     R.compMRU = format("%d+%d+%d", m, r, u)
@@ -279,7 +279,7 @@ function M:NumSitting()
 end
 
 function M:GetRoleCountsTHMRU()
-  return unpack(R.roleCounts)
+  return unpack(R.roleCountsTHMRU)
 end
 
 function M:GetUnknownNames()
@@ -365,13 +365,13 @@ function M:IsDamager(name)
 end
 
 function M:IsInSameZone(name)
-  if IsInRaid() and R.roster[name] then
+  if R.roster[name] then
     return R.roster[name].zone == R.roster[UnitName("player")].zone
   end
 end
 
 function M:DebugPrintRoster()
-  A.console:Debugf(M, "roster size=%d groupSizes={%s} roleCounts={%s} comp=%s (%s):", R.size, tconcat(R.groupSizes, ","), tconcat(R.roleCounts, ","), R.compTHD, R.compMRU)
+  A.console:Debugf(M, "roster size=%d groupSizes={%s} roleCountsTHMRU={%s} comp=%s (%s):", R.size, tconcat(R.groupSizes, ","), tconcat(R.roleCountsTHMRU, ","), R.compTHD, R.compMRU)
   local p, line
   for i = 1, R.size do
     p = R.rosterArray[i]

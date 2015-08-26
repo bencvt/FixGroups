@@ -55,6 +55,8 @@ local function groupCompOnTooltipShow(tooltip)
 end
 
 function M:OnEnable()
+  -- See also: the gui module, which defines another LDB DataObject for the
+  -- minimap icon (type="launcher").
   local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
   R.groupComp = {
     type = "data source",

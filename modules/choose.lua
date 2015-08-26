@@ -14,13 +14,14 @@ local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 -- Indexes correspond to A.group.ROLES constants.
-local ROLE_NAMES = {"tank",  "healer", "melee", "ranged", "unknown"}
+local ROLE_NAMES = {"tank", "healer", "melee", "ranged", "unknown"}
 -- Actually it's 255, but we'll be conservative.
 local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0
+local DELAY_ROLL = 0.5
 -- Lazily populated.
 local DISPATCH_TABLE, CLASS_ALIASES = false, false
-local SPACE_OR_SPACE = " "..string.lower(L["word.or"]).." "
+local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
 
 local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
 local tconcat = table.concat
@@ -59,7 +60,7 @@ local function startRoll()
   local rollPrefix = format(RANDOM_ROLL_RESULT, UnitName("player"), 867, 530, 9)
   rollPrefix = strsub(rollPrefix, 1, strfind(rollPrefix, "867") - 1)
   startExpecting(false, rollPrefix)
-  RandomRoll(1, #R.options)
+  M:ScheduleTimer(function() RandomRoll(1, #R.options) end, DELAY_ROLL)
 end
 
 local function watchChat(event, message, sender)
@@ -453,7 +454,9 @@ local function buildDispatchTable()
     living        ={choosePlayer, "alive"},
     tank          ={choosePlayer, "tank"},
     healer        ={choosePlayer, "healer"},
+    heal          ={choosePlayer, "healer"},
     damager       ={choosePlayer, "damager"},
+    damage        ={choosePlayer, "damager"},
     dps           ={choosePlayer, "damager"},
     dd            ={choosePlayer, "damager"},
     melee         ={choosePlayer, "melee"},

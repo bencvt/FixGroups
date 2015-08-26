@@ -20,7 +20,7 @@ Other features:
 
    * The FixGroups button/icon **tooltip** includes the comp.
 
-   * Put the comp **wherever you want in your UI** if you're running a Data Broker display addon like Titan Panel or ElvUI. FixGroups makes the comp available as a Data Broker object (a.k.a. LDB plugin).
+   * Put the comp **anywhere in your UI** if you're running a Data Broker display addon like Titan Panel or ElvUI. FixGroups makes the comp available as a Data Broker object (a.k.a. LDB plugin).
 
 ## Links
 

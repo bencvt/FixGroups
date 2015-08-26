@@ -93,13 +93,13 @@ end
 
 function M:Debug(module, ...)
   if isDebuggingModule(module) then
-    print("|cffffcc99["..date("%H:%M:%S").."] "..(module and module:GetName() or "")..":", ..., "|r")
+    print("|cff999999["..date("%H:%M:%S").." "..(module and module:GetName() or A.NAME).."] |r|cffffcc99", ..., "|r")
   end
 end
 
 function M:Debugf(module, ...)
   if isDebuggingModule(module) then
-    print("|cffffcc99["..date("%H:%M:%S").."] "..(module and module:GetName() or "")..":", format(...), "|r")
+    print("|cff999999["..date("%H:%M:%S").." "..(module and module:GetName() or A.NAME).."] |r|cffffcc99", format(...), "|r")
   end
 end
 
