@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("raid", "AceEvent-3.0")
+local M = A:NewModule("raid", "AceEvent-3.0", "AceTimer-3.0")
 A.raid = M
 M.private = {
   roster = {},
@@ -14,10 +14,13 @@ M.private = {
   groupSizes = {0, 0, 0, 0, 0, 0, 0, 0},
   roleCounts = {0, 0, 0, 0, 0},
   builtUniqueNames = false,
+  rebuildTimer = false,
   tmp1 = {},
   tmp2 = {},
 }
 local R = M.private
+
+local DELAY_REBUILD_FOR_UNKNOWN = 2.0
 
 M.ROLES = {TANK=1, MELEE=2, UNKNOWN=3, RANGED=4, HEALER=5}
 
@@ -65,17 +68,23 @@ local function wipeRoster()
   R.rosterArray = tmp
 end
 
+local function rebuildTimerDone()
+  R.rebuildTimer = false
+  M:ForceBuildRoster()
+end
+
 local function buildRoster()
   wipeRoster()
   R.size = GetNumGroupMembers()
   local lastGroup = A.util:GetMaxGroupsForInstance()
-  local p, _, unitRole
+  local p, _, unitRole, hasUnknown
   for i = 1, R.size do
     p = wipe(R.rosterArray[i])
     p.index, p.unitID = i, "raid"..i
     p.name, p.rank, p.group, _, _, p.class, p.zone = GetRaidRosterInfo(i)
     if not p.name then
       p.isUnknown = true
+      hasUnknown = true
       p.name = p.unitID
     end
     if p.group > lastGroup then
@@ -104,6 +113,16 @@ local function buildRoster()
     R.comp2 = format("%d+%d", m, r)
   end
   R.comp = format("%s (%s)", R.comp1, R.comp2)
+  if hasUnknown then
+    if not R.rebuildTimer then
+      if A.DEBUG >= 1 then A.console:Debugf(M, "unknown player(s) in raid, scheduling ForceBuildRoster") end
+      R.rebuildTimer = M:ScheduleTimer(rebuildTimerDone, DELAY_REBUILD_FOR_UNKNOWN)
+    end
+  elseif R.rebuildTimer then
+    if A.DEBUG >= 1 then A.console:Debugf(M, "cancelling scheduled ForceBuildRoster") end
+    M:CancelTimer(R.rebuildTimer)
+    R.rebuildTimer = false
+  end
 end
 
 function M:BuildUniqueNames()
@@ -168,7 +187,7 @@ function M:ForceBuildRoster()
   end
   
   if R.prevComp ~= R.comp then
-    if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_COMP_CHANGED %s -> %s", R.prevComp, R.comp) end
+    if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_COMP_CHANGED %s -> %s", tostring(R.prevComp), R.comp) end
     M:SendMessage("FIXGROUPS_RAID_COMP_CHANGED", R.prevComp, R.comp)
   end
 end
