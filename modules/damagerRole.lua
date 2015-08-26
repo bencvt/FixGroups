@@ -3,7 +3,7 @@ local M = A:NewModule("damagerRole", "AceEvent-3.0", "AceTimer-3.0")
 A.damagerRole = M
 M.private = {
   needToInspect = {},
-  sessionCache = {melee={}, ranged={}},
+  sessionCache = {melee={}, ranged={}, tank={}, healer={}},
   dbCleanedUp = false,
 }
 local R = M.private
@@ -22,11 +22,15 @@ local CLASS_DAMAGER_ROLES = {
   HUNTER      = "ranged", -- comment out for Legion
   DEMONHUNTER = "melee",
 }
+-- We have to include tanks and healers to handle people who clear their role.
 local SPECID_ROLES = {
   [262] = "ranged",  -- Elemental Shaman
   [263] = "melee",   -- Enhancement Shaman
+  [264] = "healer",  -- Restoration Shaman
   [102] = "ranged",  -- Balance Druid
   [103] = "melee",   -- Feral Druid
+  [104] = "tank",    -- Guardian Druid
+  [105] = "healer",  -- Restoration Druid
   -- Uncomment Hunter specs for Legion:
   --[253] = "ranged",  -- Beast Mastery Hunter
   --[254] = "ranged",  -- Marksmanship Hunter
@@ -56,7 +60,6 @@ end
 function M:OnEnable()
   M:RegisterEvent("INSPECT_READY")
   M:RegisterMessage("FIXGROUPS_RAID_LEFT")
-  -- TODO: handle events for when the player or another raid member changes spec?
   if not A.db.faction.dpsRoleCache then
     A.db.faction.dpsRoleCache = {melee={}, ranged={}}
   end
@@ -88,9 +91,10 @@ function M:INSPECT_READY(event, guid)
   end
 
   local fullName = R.needToInspect[name]
+  local role = SPECID_ROLES[specId]
   if not fullName then
     -- We didn't request this inspect, but let's see if we can make use of it.
-    if not SPECID_ROLES[specId] then
+    if not role or role == "tank" or role == "healer" or not UnitExists(name) then
       return
     end
     fullName = A.util:NameAndRealm(name)
@@ -102,29 +106,30 @@ function M:INSPECT_READY(event, guid)
 
   -- Remove from needToInspect and add to sessionCache.
   R.needToInspect[name] = nil
-  local roleYes, roleNo
-  if SPECID_ROLES[specId] == "melee" then
-    roleYes, roleNo = "melee", "ranged"
-  elseif SPECID_ROLES[specId] == "ranged" then
-    roleYes, roleNo = "ranged", "melee"
-  else
-    -- Shouldn't ever happen.
+  -- Sanity checks.
+  if not role then
     A.console:Errorf(M, "unknown specId %s for %s!", specId, fullName)
     return
+  elseif not R.sessionCache[role] then
+    A.console:Errorf(M, "unknown role %s, specId %s for %s!", tostring(role), specId, fullName)
+    return
   end
-  R.sessionCache[roleYes][fullName] = true
-  R.sessionCache[roleNo][fullName] = nil
-  if A.DEBUG >= 2 then A.console:Debugf(M, "sessionCache.%s add %s", roleYes, fullName) end
+  for r, t in pairs(R.sessionCache) do
+    t[fullName] = (r == role) and true or nil
+  end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "sessionCache.%s add %s", role, fullName) end
 
   -- Add to dbCache.
-  local ts = time()
-  if not UnitIsInMyGuild(name) then
-    -- Non-guildies (i.e., PUGs) are cached for a much shorter time.
-    ts = ts - DB_CLEANUP_PUG_PENALTY
+  if role == "melee" or role == "ranged" then
+    local ts = time()
+    if not UnitIsInMyGuild(name) then
+      -- Non-guildies (i.e., PUGs) are cached for a much shorter time.
+      ts = ts - DB_CLEANUP_PUG_PENALTY
+    end
+    A.db.faction.dpsRoleCache[role][fullName] = ts
+    A.db.faction.dpsRoleCache[(role == "melee") and "ranged" or "melee"][fullName] = nil
+    if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.%s add %s", role, fullName) end
   end
-  A.db.faction.dpsRoleCache[roleYes][fullName] = ts
-  A.db.faction.dpsRoleCache[roleNo][fullName] = nil
-  if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.%s add %s", roleYes, fullName) end
 
   -- Rebuild roster.
   A.raid:ForceBuildRoster()
@@ -161,6 +166,10 @@ function M:GetDamagerRole(player)
         return A.raid.ROLES.MELEE
       elseif SPECID_ROLES[specId] == "ranged" then
         return A.raid.ROLES.RANGED
+      elseif SPECID_ROLES[specId] == "tank" then
+        return A.raid.ROLES.TANK
+      elseif SPECID_ROLES[specId] == "healer" then
+        return A.raid.ROLES.HEALER
       end
     end
     return A.raid.ROLES.UNKNOWN
@@ -175,6 +184,10 @@ function M:GetDamagerRole(player)
     return A.raid.ROLES.MELEE
   elseif R.sessionCache.ranged[fullName] then
     return A.raid.ROLES.RANGED
+  elseif R.sessionCache.tank[fullName] then
+    return A.raid.ROLES.TANK
+  elseif R.sessionCache.healer[fullName] then
+    return A.raid.ROLES.HEALER
   elseif A.db.faction.dpsRoleCache.melee[fullName] then
     if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.melee found %s", fullName) end
     requestInspect(player.name, fullName)

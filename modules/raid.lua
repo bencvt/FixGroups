@@ -98,7 +98,9 @@ local function buildRoster()
       p.role = M.ROLES.HEALER
     else
       p.role = A.damagerRole:GetDamagerRole(p)
-      p.isDamager = true
+      if p.role ~= M.ROLES.TANK and p.role ~= M.ROLES.HEALER then
+        p.isDamager = true
+      end
     end
     if not p.isSitting then
       R.roleCounts[p.role] = R.roleCounts[p.role] + 1
