@@ -113,10 +113,6 @@ local function findPartyUnitID(name, nextGuess)
   end
   -- The server hasn't sent us this player's name yet!
   -- Getting the party unit ID will take some extra work.
-  if nextGuess > 4 then
-    A.console:Errorf(M, "invalid party unitIDs")
-    return "Unknown"..nextGuess, nextGuess + 1
-  end
   local existing = wipe(R.tmp1)
   for i = 1, R.size do
     name = GetRaidRosterInfo(i)
@@ -135,6 +131,8 @@ local function findPartyUnitID(name, nextGuess)
       return unitID, nextGuess + 1
     end
   end
+  A.console:Errorf(M, "invalid party unitIDs")
+  return "Unknown"..nextGuess, nextGuess + 1
 end
 
 local function buildRoster()
