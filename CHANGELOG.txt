@@ -1,11 +1,11 @@
-v1.2.1:
+v1.3:
   - add /choose command
   - various improvements to damage meter addon integration, including support for TinyDPS
-  - use Blizzard's standard class order for sorting
-  - console commands are now case-insensitive
-  - raid comp now available as an ElvUI DataText, full breakdown in tooltip
+  - raid comp now available as a Data Broker object (a.k.a. LDB plugin), full breakdown in tooltip
   - raid comp now includes melee and ranged counts
   - raid comp now correctly excludes sitting players
+  - use Blizzard's standard class order for sorting
+  - console commands are now case-insensitive
 
 v1.2:
   - add mostly-complete German translation, Dankeschön @pas06

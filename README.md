@@ -16,11 +16,11 @@ Other features:
 
  * **Track** your raid comp automatically. An example comp is **`2/4/13 (5+8)`**, which is shorthand for *"a raid composed of 2 tanks, 4 healers, and 13 dps, 5 of which are melee and 8 of which are ranged."*
 
-   * Whenever a player joins or leaves your raid, the **server message** now includes the player's role and the new comp. Example: *"Deadlydk has joined the raid group. Melee, 2/4/14 (6+8)."*
-
    * The FixGroups button/icon **tooltip** includes the comp.
 
-   * If you're using **ElvUI**, the raid comp is available as a DataText.
+   * Whenever a player joins or leaves your raid, the **server message** now includes the player's role and the new comp. Example: *"Deadlydk has joined the raid group. Melee, 2/4/14 (6+8)."*
+
+   * Put the raid comp **wherever you want in your UI** if you're running a Data Broker display addon like Titan Panel or ElvUI. FixGroups makes the raid comp available as a Data Broker object (a.k.a. LDB plugin).
 
 ## Links
 

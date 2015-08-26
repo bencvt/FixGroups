@@ -22,7 +22,7 @@ end
 
 local function raidCompOnTooltipShow(tooltip)
   if A.DEBUG >= 1 then A.console:Debugf(M, "raidComp_OnTooltipShow tooltip=%s", tostring(tooltip or "<nil>")) end
-  local t, h, m, r, u = A.raid:GetRoleCounts()
+  local t, h, m, r, u = A.raid:GetRoleCountsTHMRU()
   tooltip:AddDoubleLine(L["dataBroker.raidComp.name"]..":", (A.raid:GetSize() > 0) and A.raid:GetComp() or NOT_IN_RAID, 1,1,0, 1,1,0)
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." Tanks",        tostring(t), 1,1,1, 1,1,0)
@@ -70,7 +70,7 @@ function M:FIXGROUPS_RAID_COMP_CHANGED(message)
 end
 
 function M:RefreshRaidComp()
-  local c1, c2 = A.raid:GetCompParts()
-  local t, h, m, r, u = A.raid:GetRoleCounts()
-  R.raidComp.text = A.util:FormatRaidComp(A.options.dataBrokerRaidCompStyle, c1, c2, t, h, m, r, u)
+  local compTHD, compMRU = A.raid:GetComp()
+  local t, h, m, r, u = A.raid:GetRoleCountsTHMRU()
+  R.raidComp.text = A.util:FormatRaidComp(A.options.dataBrokerRaidCompStyle, compTHD, compMRU, t, h, m, r, u)
 end

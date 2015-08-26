@@ -117,21 +117,21 @@ function M:GetGroupChannel()
   return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "PARTY"
 end
 
-function M:FormatRaidComp(style, c1, c2, t, h, m, r, u)
+function M:FormatRaidComp(style, compTHD, compMRU, t, h, m, r, u)
   if style == 1 then
-    return format("%d%s %d%s %d%s%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER, M:HighlightDim(c2))
+    return format("%d%s %d%s %d%s%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER, M:HighlightDim(compMRU))
   elseif style == 2 then
     return format("%d%s %d%s %d%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER)
   elseif style == 3 then
-    return format("Raid: %s", M:Highlight(format("%s (%s)", c1, c2)))
+    return format("Raid: %s", M:Highlight(format("%s (%s)", compTHD, compMRU)))
   elseif style == 4 then
-    return format("Raid: %s", M:Highlight(c1))
+    return format("Raid: %s", M:Highlight(compTHD))
   elseif style == 5 then
-    return format("%s (%s)", c1, c2)
+    return format("%s (%s)", compTHD, compMRU)
   elseif style == 6 then
-    return c1
+    return compTHD
   else
-    return M:FormatRaidComp(1, c1, c2, t, h, m, r, u)
+    return M:FormatRaidComp(1, compTHD, compMRU, t, h, m, r, u)
   end
 end
 
