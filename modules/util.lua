@@ -146,6 +146,9 @@ function M:NameAndRealm(name)
     return name
   end
   local realm = select(2, UnitFullName(name))
+  if not realm then
+    realm = gsub(GetRealmName(), "[ %-]", "")
+  end
   return realm and (name.."-"..realm) or name
 end
 

@@ -23,7 +23,7 @@ end
 local function inspectTimerStop(reason)
   if R.timer then
     M:CancelTimer(R.timer)
-    if A.DEBUG >= 1 then A.console:Debugf(M, "timer stop %s", reason) end
+    if A.DEBUG >= 2 then A.console:Debugf(M, "timer stop %s", reason) end
   end
   R.timer = false
 end
@@ -60,7 +60,7 @@ end
 local function inspectTimerStart()
   inspectTimerStop("sanity check")
   R.timer = M:ScheduleRepeatingTimer(inspectTimerTick, DELAY_TIMER)
-  if A.DEBUG >= 1 then A.console:Debug(M, "timer start") end
+  if A.DEBUG >= 2 then A.console:Debug(M, "timer start") end
   inspectTimerTick()
 end
 
@@ -77,7 +77,7 @@ function M:INSPECT_READY(event, guid)
   if not InCombatLockdown() then
     -- Use a short delay to allow other modules and addons a chance to
     -- process the INSPECT_READY event.
-    M:ScheduleTimer(function () inspectTimerTick() end, DELAY_INSPECT_NEXT)
+    M:ScheduleTimer(inspectTimerTick, DELAY_INSPECT_NEXT)
   end
 end
 
@@ -86,7 +86,7 @@ function M:PLAYER_REGEN_ENABLED(event)
 end
 
 function M:Request(name)
-  if A.DEBUG >= 1 then A.console:Debugf(M, "queue %s %s", (R.requests[name] and "update" or "add"), name) end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "queue %s %s", (R.requests[name] and "update" or "add"), name) end
   R.requests[name] = true
   if not InCombatLockdown() and not R.timer then
     inspectTimerStart()
