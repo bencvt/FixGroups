@@ -192,8 +192,8 @@ local function announceChoicesAndRoll(reallyRoll, line)
       -- entire purpose of the /choose command.
       --
       -- We only trigger off the NUMBER of lines we're sending, not the actual
-      -- content of the lines. The content could be modified by chat-modifying
-      -- addons, the mature language filter, or if the player is drunk.
+      -- content of the lines. The content could be modified by an addon, the
+      -- mature language filter, or if the player is drunk.
       startExpecting(numLines, false)
     else
       startRoll()
