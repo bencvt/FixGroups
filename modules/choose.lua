@@ -13,7 +13,7 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
--- Indexes correspond to A.raid.ROLES constants.
+-- Indexes correspond to A.group.ROLES constants.
 local ROLE_NAMES = {"tank",  "healer", "melee", "ranged", "unknown"}
 -- Actually it's 255, but we'll be conservative.
 local MAX_CHAT_LINE_LEN = 200
@@ -131,7 +131,7 @@ function M:CHAT_MSG_SYSTEM(event, message)
 
   -- Announce the winner.
   if R.optionsArePlayers then
-    local player = A.raid:FindPlayer(choseValue)
+    local player = A.group:FindPlayer(choseValue)
     if player and player.group then
       sendMessage(format(L["choose.print.chose.player"], choseIndex, choseValue, player.group), false, true)
       return
@@ -284,81 +284,34 @@ local function choosePlayer(mode, arg)
   R.optionsArePlayers = true
   wipe(R.options)
   local include
-  if IsInRaid() then
-    A.raid:BuildUniqueNames()
-    for _, player in pairs(A.raid:GetRoster()) do
-      if not player.isUnknown then
-        if mode == "fromGroup" then
-          include = (player.group == arg)
-        elseif mode == "anyIncludingSitting" then
-          include = true
-        elseif player.isSitting or mode == "sitting" then
-          include = (mode == "sitting")
-        elseif mode == "any" then
-          include = true
-        elseif mode == "notMe" then
-          include = not UnitIsUnit(player.unitID, "player")
-        elseif mode == "dead" then
-          include = UnitIsDeadOrGhost(player.unitID)
-        elseif mode == "alive" then
-          include = not UnitIsDeadOrGhost(player.unitID)
-        elseif mode == "guildmate" then
-          include = UnitIsInMyGuild(player.unitID)
-        elseif mode == "damager" then
-          include = player.isDamager
-        elseif mode == ROLE_NAMES[player.role] then
-          include = true
-        else
-          include = validClasses[player.class]
-        end
-        if include then
-          tinsert(R.options, player.uniqueName)
-        end
+  A.group:BuildUniqueNames()
+  for _, player in pairs(A.group:GetRoster()) do
+    if not player.isUnknown then
+      if mode == "fromGroup" then
+        include = (player.group == arg)
+      elseif mode == "anyIncludingSitting" then
+        include = true
+      elseif player.isSitting or mode == "sitting" then
+        include = (mode == "sitting")
+      elseif mode == "any" then
+        include = true
+      elseif mode == "notMe" then
+        include = not UnitIsUnit(player.unitID, "player")
+      elseif mode == "dead" then
+        include = UnitIsDeadOrGhost(player.unitID)
+      elseif mode == "alive" then
+        include = not UnitIsDeadOrGhost(player.unitID)
+      elseif mode == "guildmate" then
+        include = UnitIsInMyGuild(player.unitID)
+      elseif mode == "damager" then
+        include = player.isDamager
+      elseif mode == ROLE_NAMES[player.role] then
+        include = true
+      else
+        include = validClasses[player.class]
       end
-    end
-  else
-    -- Party.
-    if mode == "melee" or mode == "ranged" then
-      mode = "damager"
-    end
-    local unitID, role
-    for i = 1, 5 do
-      unitID = (i == 5) and "player" or ("party"..i)
-      if UnitExists(unitID) then
-        if mode == "fromGroup" then
-          include = (arg == 1)
-        elseif mode == "anyIncludingSitting" then
-          include = true
-        elseif mode == "sitting" then
-          include = false
-        elseif mode == "any" then
-          include = true
-        elseif mode == "notMe" then
-          include = not UnitIsUnit(unitID, "player")
-        elseif mode == "dead" then
-          include = UnitIsDeadOrGhost(unitID)
-        elseif mode == "alive" then
-          include = not UnitIsDeadOrGhost(unitID)
-        elseif mode == "guildmate" then
-          include = UnitIsInMyGuild(unitID)
-        elseif mode == "tank" or mode == "healer" or mode == "damager" then
-          role = UnitGroupRolesAssigned(unitID)
-          if (not role or role == "NONE") and unitID == "player" then
-            role = select(6, GetSpecializationInfo(GetSpecialization()))
-          end
-          if mode == "tank" then
-            include = (role == "TANK")
-          elseif mode == "healer" then
-            include = (role == "HEALER")
-          elseif mode == "damager" then
-            include = (role ~= "TANK" and role ~= "HEALER")
-          end
-        else
-          include = validClasses[select(2, UnitClass(unitID))]
-        end
-        if include then
-          tinsert(R.options, A.util:GetUniqueNameParty(unitID))
-        end
+      if include then
+        tinsert(R.options, player.uniqueName)
       end
     end
   end
@@ -386,7 +339,7 @@ local function choosePlayer(mode, arg)
     arg = A.util:GetMaxGroupsForInstance() + 1
   elseif mode == "notMe" then
     if IsInRaid() then
-      arg = A.raid:GetPlayer(UnitName("player")).uniqueName
+      arg = A.group:GetPlayer(UnitName("player")).uniqueName
     else
       arg = A.util:GetUniqueNameParty("player")
     end
@@ -433,7 +386,7 @@ local function chooseGroup()
   wipe(R.options)
   if IsInRaid() then
     for g = 1, 8 do
-      if A.raid:GetGroupSize(g) > 0 then
+      if A.group:GetGroupSize(g) > 0 then
         tinsert(R.options, format("%s %d", L["choose.group"], g))
       end
     end

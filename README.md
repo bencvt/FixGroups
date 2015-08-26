@@ -14,13 +14,13 @@ Other features:
 
  * **Choose** a "volunteer" when you need someone to handle a certain mechanic in a fight using the **`/choose`** console command. You can narrow down the candidate pool by using **`/choose ranged`**, **`/choose hunter`**, etc. This command has many other uses as well. Type **`/choose help`** in-game for details.
 
- * **Track** your raid comp automatically. An example comp is **`2/4/13 (5+8)`**, which is shorthand for *"a raid composed of 2 tanks, 4 healers, and 13 dps, 5 of which are melee and 8 of which are ranged."*
+ * **Track** your group comp automatically. An example comp is **`2/4/13 (5+8)`**, which is shorthand for *"a group composed of 2 tanks, 4 healers, and 13 dps, 5 of which are melee and 8 of which are ranged."*
+
+   * Whenever a player joins or leaves your group, the **server message** now includes the player's role and the new comp. Example: *"Deadlydk has joined the raid group. Melee, 2/4/14 (6+8)."*
 
    * The FixGroups button/icon **tooltip** includes the comp.
 
-   * Whenever a player joins or leaves your raid, the **server message** now includes the player's role and the new comp. Example: *"Deadlydk has joined the raid group. Melee, 2/4/14 (6+8)."*
-
-   * Put the raid comp **wherever you want in your UI** if you're running a Data Broker display addon like Titan Panel or ElvUI. FixGroups makes the raid comp available as a Data Broker object (a.k.a. LDB plugin).
+   * Put the comp **wherever you want in your UI** if you're running a Data Broker display addon like Titan Panel or ElvUI. FixGroups makes the comp available as a Data Broker object (a.k.a. LDB plugin).
 
 ## Links
 

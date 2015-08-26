@@ -1,6 +1,6 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("raid", "AceEvent-3.0", "AceTimer-3.0")
-A.raid = M
+local M = A:NewModule("group", "AceEvent-3.0", "AceTimer-3.0")
+A.group = M
 M.private = {
   roster = {},
   rosterArray = {},
@@ -29,9 +29,9 @@ for i = 1, 40 do
   R.prevRosterArray[i] = {}
 end
 
-local format, ipairs, pairs, tinsert, tostring, unpack, wipe = format, ipairs, pairs, tinsert, tostring, unpack, wipe
+local format, ipairs, pairs, select, tinsert, tostring, unpack, wipe = format, ipairs, pairs, select, tinsert, tostring, unpack, wipe
 local tconcat = table.concat
-local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName = GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitGroupRolesAssigned, UnitName
+local GetNumGroupMembers, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName
 
 function M:OnEnable()
   local rebuild = function () M:ForceBuildRoster() end
@@ -62,7 +62,7 @@ local function wipeRoster()
   -- we build the roster. The individual tables are wiped on demand.
   -- There will be leftover data whenever a player drops, but it's harmless.
   -- The leftover table is not indexed in R.roster and will be re-used if the
-  -- raid refills.
+  -- group refills.
   tmp = R.prevRosterArray
   R.prevRosterArray = R.rosterArray
   R.rosterArray = tmp
@@ -73,40 +73,122 @@ local function rebuildTimerDone()
   M:ForceBuildRoster()
 end
 
-local function buildRoster()
-  wipeRoster()
-  R.size = GetNumGroupMembers()
-  local lastGroup = A.util:GetMaxGroupsForInstance()
-  local p, _, unitRole, hasUnknown
-  for i = 1, R.size do
-    p = wipe(R.rosterArray[i])
-    p.index, p.unitID = i, "raid"..i
-    p.name, p.rank, p.group, _, _, p.class, p.zone = GetRaidRosterInfo(i)
-    if not p.name then
-      p.isUnknown = true
-      hasUnknown = true
-      p.name = p.unitID
+local function buildSoloRoster(rindex)
+  local p = R.rosterArray[rindex]
+  p.rindex = rindex
+  p.unitID = "player"
+  p.name = UnitName("player")
+  p.rank = 2
+  p.group = 1
+  p.class = select(2, UnitClass("player"))
+  -- p.zone not set
+  R.groupSizes[1] = R.groupSizes[1] + 1
+  local unitRole = select(6, GetSpecializationInfo(GetSpecialization()))
+  if unitRole == "TANK" then
+    p.role = M.ROLES.TANK
+  elseif unitRole == "HEALER" then
+    p.role = M.ROLES.HEALER
+  else
+    p.role = A.damagerRole:GetDamagerRole(p)
+    if p.role ~= M.ROLES.TANK and p.role ~= M.ROLES.HEALER then
+      p.isDamager = true
     end
-    if p.group > lastGroup then
-      p.isSitting = true
+  end
+  R.roleCounts[p.role] = R.roleCounts[p.role] + 1
+  R.roster[p.name] = p
+end
+
+local function findPartyUnitID(name, nextGuess)
+  local unitID
+  if name then
+    if UnitIsUnit(name, "player") then
+      return "player", nextGuess
     end
-    R.groupSizes[p.group] = R.groupSizes[p.group] + 1
-    unitRole = UnitGroupRolesAssigned(p.unitID)
-    if unitRole == "TANK" then
-      p.role = M.ROLES.TANK
-    elseif unitRole == "HEALER" then
-      p.role = M.ROLES.HEALER
-    else
-      p.role = A.damagerRole:GetDamagerRole(p)
-      if p.role ~= M.ROLES.TANK and p.role ~= M.ROLES.HEALER then
-        p.isDamager = true
+    for i = 1, 4 do
+      unitID = "party"..i
+      if UnitIsUnit(name, unitID) then
+        return unitID, nextGuess
       end
     end
-    if not p.isSitting then
-      R.roleCounts[p.role] = R.roleCounts[p.role] + 1
-    end
-    R.roster[p.name] = p
   end
+  -- The server hasn't sent us this player's name yet!
+  -- Getting the party unit ID will take some extra work.
+  if nextGuess > 4 then
+    A.console:Errorf(M, "invalid party unitIDs")
+    return "Unknown"..nextGuess, nextGuess + 1
+  end
+  local existing = wipe(R.tmp1)
+  for i = 1, R.size do
+    name = GetRaidRosterInfo(i)
+    if name then
+      for j = 1, 4 do
+        unitID = "party"..j
+        if UnitIsUnit(name, unitID) then
+          existing[unitID] = true
+        end
+      end
+    end
+  end
+  for j = nextGuess, 4 do
+    unitID = "party"..j
+    if not existing[unitID] then
+      return unitID, nextGuess + 1
+    end
+  end
+end
+
+local function buildRoster()
+  wipeRoster()
+  local isRaid = IsInRaid()
+  local areAnyUnknown
+  if IsInGroup() then
+    R.size = GetNumGroupMembers()
+    local p, _, unitRole
+    local lastGroup = A.util:GetMaxGroupsForInstance()
+    local nextGuess = 1
+    for i = 1, R.size do
+      p = wipe(R.rosterArray[i])
+      p.rindex = i
+      p.name, p.rank, p.group, _, _, p.class, p.zone = GetRaidRosterInfo(i)
+      if isRaid then
+        p.unitID = "raid"..i
+      else
+        -- The number in party unit IDs (party1, party2, party3, party4)
+        -- does NOT correspond to the GetRaidRosterInfo index.
+        -- We have to check names to get the proper unit ID.
+        p.unitID, nextGuess = findPartyUnitID(p.name, nextGuess)
+      end
+      if not p.name then
+        p.isUnknown = true
+        areAnyUnknown = true
+        p.name = p.unitID
+      end
+      if p.group > lastGroup then
+        p.isSitting = true
+      end
+      R.groupSizes[p.group] = R.groupSizes[p.group] + 1
+      unitRole = UnitGroupRolesAssigned(p.unitID)
+      if unitRole == "TANK" then
+        p.role = M.ROLES.TANK
+      elseif unitRole == "HEALER" then
+        p.role = M.ROLES.HEALER
+      else
+        p.role = A.damagerRole:GetDamagerRole(p)
+        if p.role ~= M.ROLES.TANK and p.role ~= M.ROLES.HEALER then
+          p.isDamager = true
+        end
+      end
+      if not p.isSitting then
+        R.roleCounts[p.role] = R.roleCounts[p.role] + 1
+      end
+      R.roster[p.name] = p
+    end
+  else
+    R.size = 1
+    buildSoloRoster(1)
+  end
+
+  -- Build comp strings.
   local t, h, m, r, u = unpack(R.roleCounts)
   R.compTHD = format("%d/%d/%d", t, h, m+r+u)
   if u > 0 then
@@ -114,9 +196,10 @@ local function buildRoster()
   else
     R.compMRU = format("%d+%d", m, r)
   end
-  if hasUnknown then
+  -- Schedule rebuild if there are any unknown players.
+  if areAnyUnknown then
     if not R.rebuildTimer then
-      if A.DEBUG >= 1 then A.console:Debugf(M, "unknown player(s) in raid, scheduling ForceBuildRoster") end
+      if A.DEBUG >= 1 then A.console:Debugf(M, "unknown player(s) in group, scheduling ForceBuildRoster") end
       R.rebuildTimer = M:ScheduleTimer(rebuildTimerDone, DELAY_REBUILD_FOR_UNKNOWN)
     end
   elseif R.rebuildTimer then
@@ -152,10 +235,6 @@ function M:BuildUniqueNames()
 end
 
 function M:ForceBuildRoster()
-  if not IsInRaid() then
-    wipeRoster()
-    return
-  end
   buildRoster()
   if A.DEBUG >= 2 then M:DebugPrintRoster() end
   
@@ -165,31 +244,31 @@ function M:ForceBuildRoster()
       prevGroup = R.prevRoster[name].group
       group = player.group
       if prevGroup ~= group then
-        if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_GROUP_CHANGED %s %d->%d", name, prevGroup, group) end
-        M:SendMessage("FIXGROUPS_RAID_GROUP_CHANGED", name, prevGroup, group)
+        if A.DEBUG >= 1 then A.console:Debugf(M, "PLAYER_CHANGED_GROUP %s %d->%d", name, prevGroup, group) end
+        M:SendMessage("FIXGROUPS_PLAYER_CHANGED_GROUP", name, prevGroup, group)
       end
     end
   end
   
   for name, player in pairs(R.prevRoster) do
     if not player.isUnknown and not R.roster[name] then
-      if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_LEFT %s", name) end
+      if A.DEBUG >= 1 then A.console:Debugf(M, "PLAYER_LEFT %s", name) end
       -- Message consumers should not modify the player table.
-      M:SendMessage("FIXGROUPS_RAID_LEFT", player)
+      M:SendMessage("FIXGROUPS_PLAYER_LEFT", player)
     end
   end
   
   for name, player in pairs(R.roster) do
     if not player.isUnknown and not R.prevRoster[name] then
-      if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_JOINED %s", name) end
+      if A.DEBUG >= 1 then A.console:Debugf(M, "PLAYER_JOINED %s", name) end
       -- Message consumers should not modify the player table.
-      M:SendMessage("FIXGROUPS_RAID_JOINED", player)
+      M:SendMessage("FIXGROUPS_PLAYER_JOINED", player)
     end
   end
   
   if R.prevCompTHD ~= R.compTHD or R.prevCompMRU ~= R.compMRU then
-    if A.DEBUG >= 1 then A.console:Debugf(M, "RAID_COMP_CHANGED %s (%s) -> %s (%s)", tostring(R.prevCompTHD), tostring(R.prevCompMRU), R.compTHD, R.compMRU) end
-    M:SendMessage("FIXGROUPS_RAID_COMP_CHANGED", R.prevCompTHD, R.prevCompMRU, R.compTHD, R.compMRU)
+    if A.DEBUG >= 1 then A.console:Debugf(M, "COMP_CHANGED %s (%s) -> %s (%s)", tostring(R.prevCompTHD), tostring(R.prevCompMRU), R.compTHD, R.compMRU) end
+    M:SendMessage("FIXGROUPS_COMP_CHANGED", R.prevCompTHD, R.prevCompMRU, R.compTHD, R.compMRU)
   end
 end
 

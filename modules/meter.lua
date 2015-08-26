@@ -55,7 +55,7 @@ SUPPORTED_ADDONS.Skada.getSnapshot = function()
   -- For simplicity's sake, we do not attempt to handle cases where two
   -- players with the same name from different realms are in the same raid.
   local fullPlayerNames = wipe(R.tmp1)
-  for name, _ in pairs(A.raid:GetRoster()) do
+  for name, _ in pairs(A.group:GetRoster()) do
     fullPlayerNames[A.util:StripRealm(name)] = name
   end
   local found = false
@@ -75,7 +75,7 @@ SUPPORTED_ADDONS.Recount.getSnapshot = function()
   local found = false
   local c
   -- TODO: redo to grab all combatants, not just those in roster
-  for name, _ in pairs(A.raid:GetRoster()) do
+  for name, _ in pairs(A.group:GetRoster()) do
     c = Recount.db2.combatants[name]
     if c and c.Fights and c.Fights.OverallData then
       found = true
@@ -88,7 +88,7 @@ SUPPORTED_ADDONS.Recount.getSnapshot = function()
   -- Merge pet data.
   for _, c in pairs(Recount.db2.combatants) do
     if c.type == "Pet" and c.Fights and c.Fights.OverallData then
-      if A.raid:GetPlayer(c.Owner) then
+      if A.group:GetPlayer(c.Owner) then
         R.snapshot[c.Owner] = R.snapshot[c.Owner] + (c.Fights.OverallData.Damage or 0) + (c.Fights.OverallData.Healing or 0) + (c.Fights.OverallData.Absorbs or 0)
       end
     end
@@ -108,7 +108,7 @@ SUPPORTED_ADDONS.Details.getSnapshot = function()
       found = true
       local damage, healing
       -- TODO: redo to grab all combatants, not just those in roster
-      for name, _ in pairs(A.raid:GetRoster()) do
+      for name, _ in pairs(A.group:GetRoster()) do
         damage = Details:GetActor(segment, 1, name)
         healing = Details:GetActor(segment, 2, name)
         R.snapshot[name] = (damage and damage.total or 0) + (healing and healing.total or 0)
@@ -123,10 +123,10 @@ local function calculateAverages()
   local countHealing, totalHealing = 0, 0
   for name, amount in pairs(R.snapshot) do
     -- Ignore tanks.
-    if A.raid:IsDamager(name) then
+    if A.group:IsDamager(name) then
       countDamage = countDamage + 1
       totalDamage = totalDamage + amount
-    elseif A.raid:IsHealer(name) then
+    elseif A.group:IsHealer(name) then
       countHealing = countHealing + 1
       totalHealing = totalHealing + amount
     end
@@ -162,7 +162,7 @@ end
 
 function M:GetPlayerMeter(name)
   if not R.snapshot[name] then
-    R.snapshot[name] = R.snapshot[A.raid:IsHealer(name) and "_averageHealing" or "_averageDamage"] or 0
+    R.snapshot[name] = R.snapshot[A.group:IsHealer(name) and "_averageHealing" or "_averageDamage"] or 0
   end
   return R.snapshot[name]
 end

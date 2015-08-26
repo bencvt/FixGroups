@@ -22,7 +22,7 @@ local InCombatLockdown, IsInRaid, SendChatMessage = InCombatLockdown, IsInRaid, 
 function M:OnEnable()
   M:RegisterEvent("PLAYER_ENTERING_WORLD")
   M:RegisterEvent("PLAYER_REGEN_ENABLED")
-  M:RegisterMessage("FIXGROUPS_RAID_GROUP_CHANGED")
+  M:RegisterMessage("FIXGROUPS_PLAYER_CHANGED_GROUP")
 end
 
 function M:PLAYER_ENTERING_WORLD(event)
@@ -33,7 +33,7 @@ function M:PLAYER_REGEN_ENABLED(event)
   M:ResumeIfPaused()
 end
 
-function M:FIXGROUPS_RAID_GROUP_CHANGED(event, name, prevGroup, group)
+function M:FIXGROUPS_PLAYER_CHANGED_GROUP(event, name, prevGroup, group)
   if M:IsProcessing() and A.coreSort:DidActionFinish() then
     M:ProcessStep()
   else
@@ -187,7 +187,7 @@ function M:AnnounceComplete()
     else
       msg = L["sorter.print."..R.sortMode]
     end
-    local sitting = A.raid:NumSitting()
+    local sitting = A.group:NumSitting()
     if sitting == 1 then
       msg = msg.." "..format(L["sorter.print.excludedSitting.singular"], A.util:GetMaxGroupsForInstance()+1)
     elseif sitting > 1 then
@@ -228,7 +228,7 @@ function M:ScheduleTimeout()
       M:StopTimedOut()
       return
     end
-    A.raid:ForceBuildRoster()
+    A.group:ForceBuildRoster()
     M:ProcessStep()
   end, DELAY_TIMEOUT)
 end

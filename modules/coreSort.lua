@@ -12,7 +12,7 @@ M.private = {
 local R = M.private
 
 local DELAY_ACTION = 0.01
--- ROLE_SORT_CHAR_x indexes correspond to A.raid.ROLES constants.
+-- ROLE_SORT_CHAR_x indexes correspond to A.group.ROLES constants.
 local ROLE_SORT_CHAR_TMURH = {"a", "d", "b", "c", "c"}
 local ROLE_SORT_CHAR_THMUR = {"a", "b", "c", "d", "d"}
 local CLASS_SORT_CHAR = {}
@@ -32,7 +32,7 @@ function M:BuildDelta()
   local keys = wipe(R.tmp1)
   local playersByKey = wipe(R.tmp2)
   local k
-  for name, p in pairs(A.raid:GetRoster()) do
+  for name, p in pairs(A.group:GetRoster()) do
     if not p.isSitting then
       k = sortRoles[p.role]..(p.class and CLASS_SORT_CHAR[p.class] or CLASS_SORT_CHAR["_unknown"])..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
@@ -43,7 +43,7 @@ function M:BuildDelta()
   -- Sort keys.
   -- TODO: potential hook for plugins that want to implement a custom sort mode.
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
-    local TANK, HEALER = A.raid.ROLES.TANK, A.raid.ROLES.HEALER
+    local TANK, HEALER = A.group.ROLES.TANK, A.group.ROLES.HEALER
     local pa, pb
     sort(keys, function(a, b)
       pa, pb = playersByKey[a], playersByKey[b]
@@ -68,7 +68,7 @@ function M:BuildDelta()
   -- If they're in the wrong group, add them to the delta tables.
   wipe(R.deltaPlayers)
   wipe(R.deltaNewGroups)
-  local numGroups = floor((A.raid:GetSize() - A.raid:NumSitting() - 1) / 5) + 1
+  local numGroups = floor((A.group:GetSize() - A.group:NumSitting() - 1) / 5) + 1
   if A.sorter:IsSplittingRaid() and numGroups % 2 == 1 then
     numGroups = numGroups + 1
   end
@@ -106,7 +106,7 @@ function M:BuildDelta()
 end
 
 function M:GetSplitGroups()
-  local numGroups = floor((A.raid:GetSize() - A.raid:NumSitting() - 1) / 5) + 1
+  local numGroups = floor((A.group:GetSize() - A.group:NumSitting() - 1) / 5) + 1
   if numGroups % 2 == 1 then
     numGroups = numGroups + 1
   end
@@ -156,20 +156,20 @@ function M:ProcessDelta()
   if M:IsDeltaEmpty() then
     return
   end
-  local index = R.deltaPlayers[1].index
+  local rindex = R.deltaPlayers[1].rindex
   local newGroup = R.deltaNewGroups[1]
   local name = R.deltaPlayers[1].name
   -- Simplest case: the new group has room.
-  if A.raid:GetGroupSize(newGroup) < 5 then
-    startAction(name, newGroup, function () SetRaidSubgroup(index, newGroup) end, "set "..index.." "..newGroup)
+  if A.group:GetGroupSize(newGroup) < 5 then
+    startAction(name, newGroup, function () SetRaidSubgroup(rindex, newGroup) end, "set "..rindex.." "..newGroup)
     return
   end
   -- Else find a partner to swap groups with.
   -- Best case: there is a one-to-one swap possible.
   for d = 2, #R.deltaPlayers do
     if R.deltaPlayers[d].group == newGroup and R.deltaNewGroups[d] == R.deltaPlayers[1].group then
-      local index2 = R.deltaPlayers[d].index
-      startAction(name, newGroup, function () SwapRaidSubgroup(index, index2) end, "swap "..index.." "..index2)
+      local rindex2 = R.deltaPlayers[d].rindex
+      startAction(name, newGroup, function () SwapRaidSubgroup(rindex, rindex2) end, "swap "..rindex.." "..rindex2)
       return
     end
   end
@@ -178,8 +178,8 @@ function M:ProcessDelta()
   -- They'll get sorted correctly on another iteration.
   for d = 2, #R.deltaPlayers do
     if R.deltaPlayers[d].group == newGroup then
-      local index2 = R.deltaPlayers[d].index
-      startAction(name, newGroup, function () SwapRaidSubgroup(index, index2) end, "swapX "..index.." "..index2)
+      local rindex2 = R.deltaPlayers[d].rindex
+      startAction(name, newGroup, function () SwapRaidSubgroup(rindex, rindex2) end, "swapX "..rindex.." "..rindex2)
       return
     end
   end
@@ -193,7 +193,7 @@ end
 
 function M:DidActionFinish()
   if R.action.name and R.action.newGroup then
-    local p = A.raid:GetPlayer(R.action.name)
+    local p = A.group:GetPlayer(R.action.name)
     return p and (p.group == R.action.newGroup)
   end
 end
@@ -204,7 +204,7 @@ function M:DebugPrintDelta()
     local p
     for i = 1, #R.deltaPlayers do
       p = R.deltaPlayers[i]
-      A.console:DebugMore(M, format("  %d: group=%d newGroup=%d index=%d name=%s", i, p.group, R.deltaNewGroups[i], p.index, p.name))
+      A.console:DebugMore(M, format("  %d: group=%d newGroup=%d rindex=%d name=%s", i, p.group, R.deltaNewGroups[i], p.rindex, p.name))
     end
   end
 end

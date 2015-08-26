@@ -42,7 +42,7 @@ local function inspectTimerTick()
       if A.DEBUG >= 2 then A.console:Debugf(M, "queue remove non-existent %s", name) end
     else
       count = count + 1
-      if not notifySent and (now > R.lastNotifyTime + DELAY_NOTIFY) and CanInspect(name) and UnitIsConnected(name) and A.raid:IsInSameZone(name) then
+      if not notifySent and (now > R.lastNotifyTime + DELAY_NOTIFY) and CanInspect(name) and UnitIsConnected(name) and A.group:IsInSameZone(name) then
         notifySent = true
         R.lastNotifyTime = now
         NotifyInspect(name)

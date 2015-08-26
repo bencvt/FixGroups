@@ -59,7 +59,7 @@ end
 
 function M:OnEnable()
   M:RegisterEvent("INSPECT_READY")
-  M:RegisterMessage("FIXGROUPS_RAID_LEFT")
+  M:RegisterMessage("FIXGROUPS_PLAYER_LEFT")
   if not A.db.faction.dpsRoleCache then
     A.db.faction.dpsRoleCache = {melee={}, ranged={}}
   end
@@ -132,10 +132,10 @@ function M:INSPECT_READY(event, guid)
   end
 
   -- Rebuild roster.
-  A.raid:ForceBuildRoster()
+  A.group:ForceBuildRoster()
 end
 
-function M:FIXGROUPS_RAID_LEFT(player)
+function M:FIXGROUPS_PLAYER_LEFT(player)
   if not player.isUnknown and player.name then
     if A.DEBUG >= 2 then A.console:Debugf(M, "cancelled needToInspect %s", player.name) end
     R.needToInspect[player.name] = false
@@ -150,12 +150,12 @@ end
 function M:GetDamagerRole(player)
   -- Check for unambiguous classes.
   if player.class and CLASS_DAMAGER_ROLES[player.class] then
-    return (CLASS_DAMAGER_ROLES[player.class] == "melee") and A.raid.ROLES.MELEE or A.raid.ROLES.RANGED
+    return (CLASS_DAMAGER_ROLES[player.class] == "melee") and A.group.ROLES.MELEE or A.group.ROLES.RANGED
   end
 
   -- Sanity check unit name.
   if player.isUnknown or not player.name or not UnitExists(player.name) then
-    return A.raid.ROLES.UNKNOWN
+    return A.group.ROLES.UNKNOWN
   end
 
   -- Ambiguous class, need to check spec.
@@ -163,16 +163,16 @@ function M:GetDamagerRole(player)
     local specId = GetSpecializationInfo(GetSpecialization())
     if specId then
       if SPECID_ROLES[specId] == "melee" then
-        return A.raid.ROLES.MELEE
+        return A.group.ROLES.MELEE
       elseif SPECID_ROLES[specId] == "ranged" then
-        return A.raid.ROLES.RANGED
+        return A.group.ROLES.RANGED
       elseif SPECID_ROLES[specId] == "tank" then
-        return A.raid.ROLES.TANK
+        return A.group.ROLES.TANK
       elseif SPECID_ROLES[specId] == "healer" then
-        return A.raid.ROLES.HEALER
+        return A.group.ROLES.HEALER
       end
     end
-    return A.raid.ROLES.UNKNOWN
+    return A.group.ROLES.UNKNOWN
   end
 
   -- We're looking at another player. Try the session cache first.
@@ -181,23 +181,23 @@ function M:GetDamagerRole(player)
   -- request is complete.
   local fullName = A.util:NameAndRealm(player.name)
   if R.sessionCache.melee[fullName] then
-    return A.raid.ROLES.MELEE
+    return A.group.ROLES.MELEE
   elseif R.sessionCache.ranged[fullName] then
-    return A.raid.ROLES.RANGED
+    return A.group.ROLES.RANGED
   elseif R.sessionCache.tank[fullName] then
-    return A.raid.ROLES.TANK
+    return A.group.ROLES.TANK
   elseif R.sessionCache.healer[fullName] then
-    return A.raid.ROLES.HEALER
+    return A.group.ROLES.HEALER
   elseif A.db.faction.dpsRoleCache.melee[fullName] then
     if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.melee found %s", fullName) end
     requestInspect(player.name, fullName)
-    return A.raid.ROLES.MELEE
+    return A.group.ROLES.MELEE
   elseif A.db.faction.dpsRoleCache.ranged[fullName] then
     if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.ranged found %s", fullName) end
     requestInspect(player.name, fullName)
-    return A.raid.ROLES.RANGED
+    return A.group.ROLES.RANGED
   else
     requestInspect(player.name, fullName)
-    return A.raid.ROLES.UNKNOWN
+    return A.group.ROLES.UNKNOWN
   end
 end

@@ -4,6 +4,8 @@ local L = LibStub("AceLocale-3.0"):NewLocale(..., "enUS", true)
 L["versionAuthor"] = "v%s by %s"
 L["word.and"] = "and"
 L["word.or"] = "or"
+L["word.raid"] = "raid"
+L["word.party"] = "party"
 
 -- AddonChannel module
 L["addonChannel.print.newerVersion"] = "%s version %s is available. You're currently running version %s."
@@ -111,8 +113,8 @@ L["console.print.notInRaid"] = "Groups can only be sorted while in a raid."
 L["console.print.badArgument"] = "Unknown argument %s. Type %s for valid arguments."
 
 -- DataBroker module
-L["dataBroker.raidComp.name"] = "Raid Comp"
-L["dataBroker.raidComp.notInRaid"] = "not in raid"
+L["dataBroker.groupComp.name"] = "Group Comp"
+L["dataBroker.groupComp.notInGroup"] = "not in group"
 
 -- Marker module
 L["marker.print.needSetMainTank"] = "%s is not set as main tank!"
@@ -193,9 +195,9 @@ L["options.widget.watchChat.desc"] = "When the keywords %s or %s are seen in cha
 L["options.widget.announceChat.text"] = "Announce when players have been rearranged to instance chat"
 
 L["options.header.interop"] = "Addon integration"
-L["options.widget.dataBrokerRaidCompStyle.text"] = "%s display style"
-L["options.widget.dataBrokerRaidCompStyle.desc.1"] = "%s is available as a Data Broker object (a.k.a. an LDB plugin). If you're running an addon that displays Data Broker objects, you can have the raid comp on the screen at all times."
-L["options.widget.dataBrokerRaidCompStyle.desc.2"] = "There are many Data Broker display addons out there. Some of the more popular ones are %s, %s, %s, %s, and %s."
+L["options.widget.dataBrokerGroupCompStyle.text"] = "%s display style"
+L["options.widget.dataBrokerGroupCompStyle.desc.1"] = "%s is available as a Data Broker object (a.k.a. an LDB plugin). If you're running an addon that displays Data Broker objects, you can have the group comp on the screen at all times."
+L["options.widget.dataBrokerGroupCompStyle.desc.2"] = "There are many Data Broker display addons out there. Some of the more popular ones are %s, %s, %s, %s, and %s."
 
 -- Sorter module
 L["sorter.print.combatPaused"] = "Rearranging players paused due to combat."
@@ -213,7 +215,6 @@ L["sorter.print.excludedSitting.singular"] = "Excluded 1 player sitting in group
 L["sorter.print.excludedSitting.plural"] = "Excluded %d players sitting in groups %d-8."
 
 -- Tooltips for minimap icon and raid tab button
-L["tooltip.header.raidComp"] = "raid: %s"
 L["tooltip.left.clickLeft"] = "Left Click"
 L["tooltip.left.clickRight"] = "Right Click"
 L["tooltip.left.shiftClickLeft"] = "Hold Shift + Left Click"

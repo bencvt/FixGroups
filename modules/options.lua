@@ -26,7 +26,7 @@ M.private = {
         watchChat = true,
         announceChatAlways = false,
         announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
-        dataBrokerRaidCompStyle = 1,
+        dataBrokerGroupCompStyle = 1,
       },
     },
   },
@@ -492,23 +492,23 @@ R.optionsTable = {
       name = "", -- set in M:OnEnable
       fontSize = "medium",
     },
-    dataBrokerRaidCompStyle = {
+    dataBrokerGroupCompStyle = {
       order = INTEROP+20,
-      name = format(L["options.widget.dataBrokerRaidCompStyle.text"], L["dataBroker.raidComp.name"]),
-      desc = format(L["options.widget.dataBrokerRaidCompStyle.desc.1"], H(L["dataBroker.raidComp.name"])).."|n|n"..format(L["options.widget.dataBrokerRaidCompStyle.desc.2"], HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")),
+      name = format(L["options.widget.dataBrokerGroupCompStyle.text"], L["dataBroker.groupComp.name"]),
+      desc = format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["dataBroker.groupComp.name"])).."|n|n"..format(L["options.widget.dataBrokerGroupCompStyle.desc.2"], HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")),
       type = "select",
       width = "double",
       style = "dropdown",
       values = {
-        [1] = A.util:FormatRaidComp(1, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [2] = A.util:FormatRaidComp(2, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [3] = A.util:FormatRaidComp(3, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [4] = A.util:FormatRaidComp(4, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [5] = A.util:FormatRaidComp(5, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [6] = A.util:FormatRaidComp(6, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [1] = A.util:FormatGroupComp(1, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [2] = A.util:FormatGroupComp(2, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [3] = A.util:FormatGroupComp(3, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [4] = A.util:FormatGroupComp(4, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [5] = A.util:FormatGroupComp(5, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [6] = A.util:FormatGroupComp(6, "2/4/14", "6+8", 2, 4, 14, 6, 8),
       },
-      get = function(i) return max(1, min(6, A.options.dataBrokerRaidCompStyle)) end,
-      set = function(i,v) A.options.dataBrokerRaidCompStyle = max(1, min(6, v)) A.dataBroker:RefreshRaidComp() end,
+      get = function(i) return max(1, min(6, A.options.dataBrokerGroupCompStyle)) end,
+      set = function(i,v) A.options.dataBrokerGroupCompStyle = max(1, min(6, v)) A.dataBroker:RefreshGroupComp() end,
     },
     -- -------------------------------------------------------------------------
     headerRESET = {

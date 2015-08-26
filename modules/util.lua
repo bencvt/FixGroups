@@ -117,7 +117,7 @@ function M:GetGroupChannel()
   return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "PARTY"
 end
 
-function M:FormatRaidComp(style, compTHD, compMRU, t, h, m, r, u)
+function M:FormatGroupComp(style, compTHD, compMRU, t, h, m, r, u)
   if style == 1 then
     return format("%d%s %d%s %d%s%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER, M:HighlightDim(compMRU))
   elseif style == 2 then
@@ -131,7 +131,7 @@ function M:FormatRaidComp(style, compTHD, compMRU, t, h, m, r, u)
   elseif style == 6 then
     return compTHD
   else
-    return M:FormatRaidComp(1, compTHD, compMRU, t, h, m, r, u)
+    return M:FormatGroupComp(1, compTHD, compMRU, t, h, m, r, u)
   end
 end
 

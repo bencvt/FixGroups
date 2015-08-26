@@ -111,9 +111,10 @@ end
 
 function M:SetupTooltip(tooltip, isMinimapIcon)
   tooltip:ClearLines()
-  if A.raid:GetComp() then
-    local t, h, m, r, u = A.raid:GetRoleCountsTHMRU()
-    tooltip:AddDoubleLine(A.NAME, format("%d%s %d%s %d%s", t, A.util.TEXT_ICON.ROLE.TANK, h, A.util.TEXT_ICON.ROLE.HEALER, m+r+u, A.util.TEXT_ICON.ROLE.DAMAGER))
+  if IsInGroup() then
+    local compTHD, compMRU = A.group:GetComp()
+    local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
+    tooltip:AddDoubleLine(A.NAME, A.util:FormatGroupComp(1, compTHD, compMRU, t, h, m, r, u))
   else
     tooltip:AddLine(A.NAME)
   end

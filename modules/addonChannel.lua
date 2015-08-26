@@ -16,7 +16,7 @@ local DELAY_BROADCAST_VERSION = 15.5
 
 function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_ADDON")
-  M:RegisterMessage("FIXGROUPS_RAID_JOINED")
+  M:RegisterMessage("FIXGROUPS_PLAYER_JOINED")
   RegisterAddonMessagePrefix(PREFIX)
 end
 
@@ -43,7 +43,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   end
 end
 
-function M:FIXGROUPS_RAID_JOINED(event, player)
+function M:FIXGROUPS_PLAYER_JOINED(event, player)
   if not R.broadcastVersionTimer then
     R.broadcastVersionTimer = M:ScheduleTimer(function ()
       if R.broadcastVersionTimer then
