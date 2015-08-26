@@ -14,7 +14,7 @@ local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 -- Indexes correspond to A.raid.ROLES constants.
-local ROLE_NAMES = {"tank", "melee", "unknown", "ranged", "healer"}
+local ROLE_NAMES = {"tank",  "healer", "melee", "ranged", "unknown"}
 -- Actually it's 255, but we'll be conservative.
 local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0

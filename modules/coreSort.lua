@@ -12,9 +12,9 @@ M.private = {
 local R = M.private
 
 local DELAY_ACTION = 0.01
--- ROLE_SORT_x indexes correspond to A.raid.ROLES constants.
-local ROLE_SORT_CHAR_TMURH = {"a", "b", "c", "c", "d"}
-local ROLE_SORT_CHAR_THMUR = {"a", "c", "d", "d", "b"}
+-- ROLE_SORT_CHAR_x indexes correspond to A.raid.ROLES constants.
+local ROLE_SORT_CHAR_TMURH = {"a", "d", "b", "c", "c"}
+local ROLE_SORT_CHAR_THMUR = {"a", "b", "c", "d", "d"}
 local CLASS_SORT_CHAR = {}
 for i, class in ipairs(CLASS_SORT_ORDER) do
   CLASS_SORT_CHAR[class] = string.char(64 + i)

@@ -26,8 +26,8 @@ local function raidComp_OnEvent(self, event, ...)
     if not c1 then
       txt = NOT_IN_RAID
     elseif style == 2 then
-      local t, m, u, r, h = A.raid:GetRoleCounts()
-      txt = format("%d%s %d%s %d%s", t, ICON_TANK, h, ICON_HEALER, m+u+r, ICON_DAMAGER)
+      local t, h, m, r, u = A.raid:GetRoleCounts()
+      txt = format("%d%s %d%s %d%s", t, ICON_TANK, h, ICON_HEALER, m+r+u, ICON_DAMAGER)
     elseif style == 3 then
       txt = format("Raid: %s", H(A.raid:GetComp()))
     elseif style == 4 then
@@ -37,8 +37,8 @@ local function raidComp_OnEvent(self, event, ...)
     elseif style == 6 then
       txt = format("2%s 4%s 14%s%s", A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER, HD("(6+8)"))
     else
-      local t, m, u, r, h = A.raid:GetRoleCounts()
-      txt = format("%d%s %d%s %d%s%s", t, ICON_TANK, h, ICON_HEALER, m+u+r, ICON_DAMAGER, HD(c2))
+      local t, h, m, r, u = A.raid:GetRoleCounts()
+      txt = format("%d%s %d%s %d%s%s", t, ICON_TANK, h, ICON_HEALER, m+r+u, ICON_DAMAGER, HD(c2))
     end
     frame.text:SetFormattedText(txt)
   end, DELAY_REFRESH)
@@ -52,12 +52,12 @@ end
 local function raidComp_OnEnter(self)
   if A.DEBUG >= 1 then A.console:Debug(M, "DT_OnEnter") end
   DT:SetupTooltip(self)
-  local t, m, u, r, h = A.raid:GetRoleCounts()
+  local t, h, m, r, u = A.raid:GetRoleCounts()
   DT.tooltip:AddDoubleLine(L["dataText.raidComp.name"]..":", (A.raid:GetSize() > 0) and A.raid:GetComp() or NOT_IN_RAID, 1,1,0, 1,1,0)
   DT.tooltip:AddLine(" ")
   DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." Tanks",        tostring(t), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.HEALER.." Healers",    tostring(h), 1,1,1, 1,1,0)
-  DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.DAMAGER.." Damagers",  tostring(m+u+r), 1,1,1, 1,1,0)
+  DT.tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.DAMAGER.." Damagers",  tostring(m+r+u), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine("        Melee",   HD(tostring(m)), 1,1,1, 1,1,0)
   DT.tooltip:AddDoubleLine("        Ranged",  HD(tostring(r)), 1,1,1, 1,1,0)
   if u > 0 then

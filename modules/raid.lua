@@ -22,7 +22,7 @@ local R = M.private
 
 local DELAY_REBUILD_FOR_UNKNOWN = 2.0
 
-M.ROLES = {TANK=1, MELEE=2, UNKNOWN=3, RANGED=4, HEALER=5}
+M.ROLES = {TANK=1, HEALER=2, MELEE=3, RANGED=4, UNKNOWN=5}
 
 for i = 1, 40 do
   R.rosterArray[i] = {}
@@ -107,8 +107,8 @@ local function buildRoster()
     end
     R.roster[p.name] = p
   end
-  local t, m, u, r, h = unpack(R.roleCounts)
-  R.comp1 = format("%d/%d/%d", t, h, m+u+r)
+  local t, h, m, r, u = unpack(R.roleCounts)
+  R.comp1 = format("%d/%d/%d", t, h, m+r+u)
   if u > 0 then
     R.comp2 = format("%d+%d+%d", m, r, u)
   else
