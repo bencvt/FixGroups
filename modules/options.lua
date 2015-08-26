@@ -26,7 +26,7 @@ M.private = {
         watchChat = true,
         announceChatAlways = false,
         announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
-        dataTextRaidCompStyle = 1,
+        dataBrokerRaidCompStyle = 1,
       },
     },
   },
@@ -492,25 +492,23 @@ R.optionsTable = {
       name = "", -- set in M:OnEnable
       fontSize = "medium",
     },
-    dataTextRaidCompStyle = {
+    dataBrokerRaidCompStyle = {
       order = INTEROP+20,
-      name = format(L["options.widget.dataTextRaidCompStyle.text"], L["dataText.raidComp.name"]),
-      desc = format(L["options.widget.dataTextRaidCompStyle.desc.1"], A.NAME, H(L["dataText.raidComp.name"])).."|n|n"..L["options.widget.dataTextRaidCompStyle.desc.1"],
+      name = format(L["options.widget.dataBrokerRaidCompStyle.text"], L["dataBroker.raidComp.name"]),
+      desc = format(L["options.widget.dataBrokerRaidCompStyle.desc.1"], H(L["dataBroker.raidComp.name"])).."|n|n"..format(L["options.widget.dataBrokerRaidCompStyle.desc.2"], HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")),
       type = "select",
       width = "double",
       style = "dropdown",
       values = {
-        [1] = format("2%s 4%s 14%s%s", A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER, HD("(6+8)")),
-        [2] = format("2%s 4%s 14%s", A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER),
-        [3] = format("Raid: %s", H("2/4/14 (6+8)")),
-        [4] = format("Raid: %s", H("2/4/14")),
-        [5] = "2/4/14 (6+8)",
-        [6] = "2/4/14",
+        [1] = A.util:FormatRaidComp(1, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [2] = A.util:FormatRaidComp(2, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [3] = A.util:FormatRaidComp(3, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [4] = A.util:FormatRaidComp(4, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [5] = A.util:FormatRaidComp(5, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [6] = A.util:FormatRaidComp(6, "2/4/14", "6+8", 2, 4, 14, 6, 8),
       },
-      get = function(i) return max(1, min(6, A.options.dataTextRaidCompStyle)) end,
-      -- TODO need to force an update somehow
-      set = function(i,v) A.options.dataTextRaidCompStyle = max(1, min(6, v)) end,
-      --disabled = function(i) return not IsAddOnLoaded("ElvUI") end,
+      get = function(i) return max(1, min(6, A.options.dataBrokerRaidCompStyle)) end,
+      set = function(i,v) A.options.dataBrokerRaidCompStyle = max(1, min(6, v)) A.dataBroker:RefreshRaidComp() end,
     },
     -- -------------------------------------------------------------------------
     headerRESET = {

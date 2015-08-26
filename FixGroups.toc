@@ -29,7 +29,7 @@ modules\choose.lua
 modules\console.lua
 modules\coreSort.lua
 modules\damagerRole.lua
-modules\dataText.lua
+modules\dataBroker.lua
 modules\gui.lua
 modules\inspect.lua
 modules\marker.lua

@@ -24,9 +24,9 @@ M.TEXT_ICON = {
   },
 }
 
-local floor, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
+local floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
 local tconcat = table.concat
-local GetAddOnMetadata, GetInstanceInfo, GetLFGMode, GetLocale, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, GetLFGMode, GetLocale, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local GetAddOnMetadata, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS 
 
 function M:LocaleSerialComma()
@@ -115,6 +115,24 @@ function M:GetGroupChannel()
     return IsInRaid(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "RAID"
   end
   return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "PARTY"
+end
+
+function M:FormatRaidComp(style, c1, c2, t, h, m, r, u)
+  if style == 1 then
+    return format("%d%s %d%s %d%s%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER, M:HighlightDim(c2))
+  elseif style == 2 then
+    return format("%d%s %d%s %d%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER)
+  elseif style == 3 then
+    return format("Raid: %s", M:Highlight(format("%s (%s)", c1, c2)))
+  elseif style == 4 then
+    return format("Raid: %s", M:Highlight(c1))
+  elseif style == 5 then
+    return format("%s (%s)", c1, c2)
+  elseif style == 6 then
+    return c1
+  else
+    return M:FormatRaidComp(1, c1, c2, t, h, m, r, u)
+  end
 end
 
 function M:Highlight(text)

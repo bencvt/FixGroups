@@ -110,9 +110,9 @@ L["console.help.blank"] = "fix groups"
 L["console.print.notInRaid"] = "Groups can only be sorted while in a raid."
 L["console.print.badArgument"] = "Unknown argument %s. Type %s for valid arguments."
 
--- DataText module
-L["dataText.raidComp.name"] = "Raid Comp"
-L["dataText.raidComp.notInRaid"] = "not in raid"
+-- DataBroker module
+L["dataBroker.raidComp.name"] = "Raid Comp"
+L["dataBroker.raidComp.notInRaid"] = "not in raid"
 
 -- Marker module
 L["marker.print.needSetMainTank"] = "%s is not set as main tank!"
@@ -193,9 +193,9 @@ L["options.widget.watchChat.desc"] = "When the keywords %s or %s are seen in cha
 L["options.widget.announceChat.text"] = "Announce when players have been rearranged to instance chat"
 
 L["options.header.interop"] = "Addon integration"
-L["options.widget.dataTextRaidCompStyle.text"] = "ElvUI %s DataText style"
-L["options.widget.dataTextRaidCompStyle.desc.1"] = "If you're using ElvUI then %s adds a new DataText called %s."
-L["options.widget.dataTextRaidCompStyle.desc.2"] = "To add this to your UI, go to the DataTexts section of the ElvUI config window."
+L["options.widget.dataBrokerRaidCompStyle.text"] = "%s display style"
+L["options.widget.dataBrokerRaidCompStyle.desc.1"] = "%s is available as a Data Broker object (a.k.a. an LDB plugin). If you're running an addon that displays Data Broker objects, you can have the raid comp on the screen at all times."
+L["options.widget.dataBrokerRaidCompStyle.desc.2"] = "There are many Data Broker display addons out there. Some of the more popular ones are %s, %s, %s, %s, and %s."
 
 -- Sorter module
 L["sorter.print.combatPaused"] = "Rearranging players paused due to combat."
