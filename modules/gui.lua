@@ -119,22 +119,22 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
     tooltip:AddLine(A.NAME)
   end
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["tooltip.left.clickLeft"],        L["tooltip.right.fixGroups"], 1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(L["phrase.mouse.clickLeft"],        L["tooltip.right.fixGroups"], 1,1,1, 1,1,0)
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["tooltip.left.clickRight"],       L["tooltip.right.split.1"],   1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(L["phrase.mouse.clickRight"],       L["tooltip.right.split.1"],   1,1,1, 1,1,0)
   tooltip:AddDoubleLine(" ",                                L["tooltip.right.split.2"],   1,1,1, 1,1,0)
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["tooltip.left.shiftClickLeft"],   L["tooltip.right.config"],    1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(L["phrase.mouse.shiftClickLeft"],   L["tooltip.right.config"],    1,1,1, 1,1,0)
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["tooltip.left.shiftClickRight"],  L["tooltip.right.meter.1"],   1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(L["phrase.mouse.shiftClickRight"],  L["tooltip.right.meter.1"],   1,1,1, 1,1,0)
   tooltip:AddDoubleLine(" ",                                L["tooltip.right.meter.2"],   1,1,1, 1,1,0)
   -- Ctrl + Left Click is an undocumented shortcut, subject to change or removal
   -- in a future version of this addon.
   --tooltip:AddLine(" ")
-  --tooltip:AddDoubleLine(L["tooltip.left.ctrlClickLeft"],    L["tooltip.right.nosort"],    1,1,1, 1,1,0)
+  --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickLeft"],    L["tooltip.right.nosort"],    1,1,1, 1,1,0)
   if isMinimapIcon then
     tooltip:AddLine(" ")
-    tooltip:AddDoubleLine(L["tooltip.left.drag"],           L["tooltip.right.moveMinimapIcon"], 1,1,1, 1,1,0)
+    tooltip:AddDoubleLine(L["phrase.mouse.drag"],           L["tooltip.right.moveMinimapIcon"], 1,1,1, 1,1,0)
   end
   tooltip:Show()
 end

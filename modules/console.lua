@@ -25,7 +25,7 @@ function M:Printf(...)
 end
 
 function M:PrintHelp()
-  M:Printf(L["versionAuthor"], A.VERSION, HA(A.AUTHOR))
+  M:Printf(L["phrase.versionAuthor"], A.VERSION, HA(A.AUTHOR))
   print(format(L["console.help.header"], H("/fixgroups"), H("/fg")))
   print(format("  %s %s %s - %s", H("/fg help"),    L["word.or"], H("/fg about"),   L["console.help.help"]))
   print(format("  %s %s %s - %s", H("/fg config"),  L["word.or"], H("/fg options"), format(L["console.help.config"], A.NAME)))
@@ -93,13 +93,13 @@ end
 
 function M:Debug(module, ...)
   if isDebuggingModule(module) then
-    print("|cff999999["..date("%H:%M:%S").." "..(module and module:GetName() or A.NAME).."] |r|cffffcc99", ..., "|r")
+    print("|cff999999["..date("%H:%M:%S").." "..tostring(module or A.NAME).."]|r|cffffcc99", ..., "|r")
   end
 end
 
 function M:Debugf(module, ...)
   if isDebuggingModule(module) then
-    print("|cff999999["..date("%H:%M:%S").." "..(module and module:GetName() or A.NAME).."] |r|cffffcc99", format(...), "|r")
+    print("|cff999999["..date("%H:%M:%S").." "..tostring(module or A.NAME).."]|r|cffffcc99", format(...), "|r")
   end
 end
 

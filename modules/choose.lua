@@ -23,6 +23,12 @@ local DELAY_ROLL = 0.5
 local DISPATCH_TABLE, CLASS_ALIASES = false, false
 local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
 
+L["choose.player.tank"]     = A.util:LocaleLowerNoun(L["word.tank.singular"])
+L["choose.player.healer"]   = A.util:LocaleLowerNoun(L["word.healer.singular"])
+L["choose.player.damager"]  = A.util:LocaleLowerNoun(L["word.damager.singular"])
+L["choose.player.melee"]    = A.util:LocaleLowerNoun(L["word.melee.singular"])
+L["choose.player.ranged"]   = A.util:LocaleLowerNoun(L["word.ranged.singular"])
+
 local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
 local tconcat = table.concat
 local GetGuildInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetGuildInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned
@@ -144,7 +150,7 @@ end
 function M:PrintHelp()
   local validTokens = format("%s, %s%s %s %s", H(L["choose.player.tierToken.conqueror.short"]), H(L["choose.player.tierToken.protector.short"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.player.tierToken.vanquisher.short"]))
   local validRoles = format("%s, %s, %s, %s, %s%s %s %s", H(L["choose.player.any"]), H(L["choose.player.tank"]), H(L["choose.player.healer"]), H(L["choose.player.damager"]), H(L["choose.player.melee"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.player.ranged"]))
-  A.console:Printf(L["versionAuthor"], A.VERSION, HA(A.AUTHOR))
+  A.console:Printf(L["phrase.versionAuthor"], A.VERSION, HA(A.AUTHOR))
   print(format(L["choose.help.header"], H("/choose"), H("/fg choose")))
   print(format("  %s - %s", H("/choose "..L["choose.help.option.arg"]), L["choose.help.option"]))
   print(format("  %s - %s", H("/choose "..L["choose.help.class.arg"]), L["choose.help.class"]))
@@ -154,7 +160,7 @@ function M:PrintHelp()
 end
 
 function M:PrintExamples()
-  A.console:Printf(L["versionAuthor"], A.VERSION, HA(A.AUTHOR))
+  A.console:Printf(L["phrase.versionAuthor"], A.VERSION, HA(A.AUTHOR))
   print(format(L["choose.examples.header"], H("/choose")))
   print("  "..H(format("/choose %s", L["choose.role.melee"])))
   print("  "..H(format("/choose %s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["HUNTER"]))))

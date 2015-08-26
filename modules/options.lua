@@ -81,7 +81,7 @@ local BUTTONS, CONSOLE, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, INTEROP, RESET = 
 
 R.optionsTable = {
   type = "group",
-  name = HA(A.NAME).." "..format(L["versionAuthor"], A.VERSION, HA(A.AUTHOR)),
+  name = HA(A.NAME).." "..format(L["phrase.versionAuthor"], A.VERSION, HA(A.AUTHOR)),
   args = {
     desc = {
       order = 0,
@@ -239,8 +239,8 @@ R.optionsTable = {
       width = "double",
       style = "dropdown",
       values = {
-        [1] = L["options.value.sortMode.TMURH"],
-        [2] = L["options.value.sortMode.THMUR"],
+        [1] = format("%s > %s > %s > %s", L["word.tank.plural"], L["word.melee.plural"], L["word.ranged.plural"], L["word.healer.plural"]),
+        [2] = format("%s > %s > %s > %s", L["word.tank.plural"], L["word.healer.plural"], L["word.melee.plural"], L["word.ranged.plural"]),
         [3] = L["options.value.sortMode.meter"],
         [4] = L["options.value.sortMode.nosort"],
       },
@@ -302,7 +302,7 @@ R.optionsTable = {
     },
     tankMarkIcon1 = {
       order = RAIDASSIST+60+1,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank1.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"].." 1",
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -314,7 +314,7 @@ R.optionsTable = {
     },
     tankMarkIcon2 = {
       order = RAIDASSIST+60+2,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank2.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"].." 2",
       desc = L["options.widget.raidTank.desc"],
        type = "select",
       width = "half",
@@ -326,7 +326,7 @@ R.optionsTable = {
     },
     tankMarkIcon3 = {
       order = RAIDASSIST+60+3,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank3.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"].." 3",
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -338,7 +338,7 @@ R.optionsTable = {
     },
     tankMarkIcon4 = {
       order = RAIDASSIST+60+4,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank4.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"].." 4",
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -350,7 +350,7 @@ R.optionsTable = {
     },
     tankMarkIcon5 = {
       order = RAIDASSIST+60+5,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank5.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"].." 5",
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -362,7 +362,7 @@ R.optionsTable = {
     },
     tankMarkIcon6 = {
       order = RAIDASSIST+60+6,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank6.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"].." 6",
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -374,7 +374,7 @@ R.optionsTable = {
     },
     tankMarkIcon7 = {
       order = RAIDASSIST+60+7,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank7.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"].." 7",
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -386,7 +386,7 @@ R.optionsTable = {
     },
     tankMarkIcon8 = {
       order = RAIDASSIST+60+8,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.raidTank8.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"].." 8",
       desc = L["options.widget.raidTank.desc"],
       type = "select",
       width = "half",
@@ -422,7 +422,7 @@ R.optionsTable = {
     },
     partyMarkIcon1 = {
       order = PARTY+10+1,
-      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["options.widget.partyMarkIcon1.text"],
+      name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"],
       desc = L["options.widget.partyMarkIcon1.desc"].."|n|n"..L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -434,7 +434,7 @@ R.optionsTable = {
     },
     partyMarkIcon2 = {
       order = PARTY+10+2,
-      name = A.util.TEXT_ICON.ROLE.HEALER.." "..L["options.widget.partyMarkIcon2.text"],
+      name = A.util.TEXT_ICON.ROLE.HEALER.." "..L["word.healer.singular"],
       desc = L["options.widget.partyMarkIcon2.desc"].."|n|n"..L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -446,7 +446,7 @@ R.optionsTable = {
     },
     partyMarkIcon3 = {
       order = PARTY+10+3,
-      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["options.widget.partyMarkIcon3.text"],
+      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["word.damager.singular"].." 1",
       desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -458,7 +458,7 @@ R.optionsTable = {
     },
     partyMarkIcon4 = {
       order = PARTY+10+4,
-      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["options.widget.partyMarkIcon4.text"],
+      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["word.damager.singular"].." 2",
       desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -470,7 +470,7 @@ R.optionsTable = {
     },
     partyMarkIcon5 = {
       order = PARTY+10+5,
-      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["options.widget.partyMarkIcon5.text"],
+      name = A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["word.damager.singular"].." 3",
       desc = L["options.widget.partyMarkIcon.desc"],
       type = "select",
       width = "half",
@@ -495,17 +495,17 @@ R.optionsTable = {
     dataBrokerGroupCompStyle = {
       order = INTEROP+20,
       name = format(L["options.widget.dataBrokerGroupCompStyle.text"], L["dataBroker.groupComp.name"]),
-      desc = format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["dataBroker.groupComp.name"])).."|n|n"..format(L["options.widget.dataBrokerGroupCompStyle.desc.2"], HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")),
+      desc = format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["dataBroker.groupComp.name"])).."|n|n"..format(L["options.widget.dataBrokerGroupCompStyle.desc.2"], A.util:LocaleTableConcat({HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")})),
       type = "select",
       width = "double",
       style = "dropdown",
       values = {
-        [1] = A.util:FormatGroupComp(1, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [2] = A.util:FormatGroupComp(2, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [3] = A.util:FormatGroupComp(3, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [4] = A.util:FormatGroupComp(4, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [5] = A.util:FormatGroupComp(5, "2/4/14", "6+8", 2, 4, 14, 6, 8),
-        [6] = A.util:FormatGroupComp(6, "2/4/14", "6+8", 2, 4, 14, 6, 8),
+        [1] = A.util:FormatGroupComp(1, "2/4/14", "6+8", 2, 4, 6, 8, 0),
+        [2] = A.util:FormatGroupComp(2, "2/4/14", "6+8", 2, 4, 6, 8, 0),
+        [3] = A.util:FormatGroupComp(3, "2/4/14", "6+8", 2, 4, 6, 8, 0),
+        [4] = A.util:FormatGroupComp(4, "2/4/14", "6+8", 2, 4, 6, 8, 0),
+        [5] = A.util:FormatGroupComp(5, "2/4/14", "6+8", 2, 4, 6, 8, 0),
+        [6] = A.util:FormatGroupComp(6, "2/4/14", "6+8", 2, 4, 6, 8, 0),
       },
       get = function(i) return max(1, min(6, A.options.dataBrokerGroupCompStyle)) end,
       set = function(i,v) A.options.dataBrokerGroupCompStyle = max(1, min(6, v)) A.dataBroker:RefreshGroupComp() end,

@@ -109,17 +109,17 @@ function M:FixRaid(isRequestFromAssist)
     if #unsetTanks > 0 then
       bad = true
       if #unsetTanks == 1 then
-        A.console:Printf(L["marker.print.needSetMainTank"], A.util:LocaleTableConcat(unsetTanks))
+        A.console:Printf(L["marker.print.needSetMainTank.singular"], A.util:LocaleTableConcat(unsetTanks))
       else
-        A.console:Printf(L["marker.print.needSetMainTanks"], A.util:LocaleTableConcat(unsetTanks))
+        A.console:Printf(L["marker.print.needSetMainTank.plural"], A.util:LocaleTableConcat(unsetTanks))
       end
     end
     if #setNonTanks > 0 then
       bad = true
       if #setNonTanks == 1 then
-        A.console:Printf(L["marker.print.needClearMainTank"], A.util:LocaleTableConcat(setNonTanks))
+        A.console:Printf(L["marker.print.needClearMainTank.singular"], A.util:LocaleTableConcat(setNonTanks))
       else
-        A.console:Printf(L["marker.print.needClearMainTanks"], A.util:LocaleTableConcat(setNonTanks))
+        A.console:Printf(L["marker.print.needClearMainTank.plural"], A.util:LocaleTableConcat(setNonTanks))
       end
     end
     if bad then

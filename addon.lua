@@ -8,4 +8,4 @@ A.DEBUG_MODULES = "*"  -- use comma-separated module names to filter
 A.L = LibStub("AceLocale-3.0"):GetLocale(A.NAME)
 addonTable[1] = A
 addonTable[2] = A.L
-_G[A.NAME] = addonTable
+_G[A.NAME] = A
