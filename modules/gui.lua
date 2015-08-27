@@ -38,7 +38,7 @@ local function handleClick(_, button)
 end
 
 local function watchChat(event, message, sender)
-  if A.DEBUG >= 1 then A.console:Debugf(M, "watchChat event=%s message=%s sender=%s", event, message, sender) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "watchChat event=%s message=[%s] sender=%s", event, A.util:Escape(message), sender) end
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
     -- Search for both the default and the localized keywords.
     message = strlower(message)
