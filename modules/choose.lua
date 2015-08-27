@@ -592,6 +592,58 @@ function M:Command(args)
   end
 end
 
+function M:Mockup(addLine)
+  local cmd = function(t) return format("|cffffffff> %s|r", t) end
+  local THRALL = "|r|c"..A.util:ClassColor("SHAMAN").."Thrall|r"
+  local lead = function(t) return format("|cffff4809[Raid Leader] [%s|cffff4809] %s|r", THRALL, t) end
+  local raid = function(s, c, t) return format("|cffff7f00[Raid] [|c%s%s|r|cffff7f00] %s|r", A.util:ClassColor(c), s, t) end
+  local roll = function(r, lo, hi) return "|cffffff00"..format(RANDOM_ROLL_RESULT, "Thrall", r, lo, hi).."|r" end
+  addLine(lead("who is kiting the siegemakers?"))
+  addLine(lead("no volunteers...i'll just pick someone"))
+  addLine(cmd("/choose hunter"))
+  addLine(lead(format(L["choose.print.choosing.class"], "hunter").." 1=Hemet 2=Rexxar 3=Sylvanas"))
+  addLine(roll(2, 1, 3))
+  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 2, "Rexxar", 4)))
+  addLine(" ")
+  addLine(" ")
+  addLine(lead("any volunteers to get the last interrupt?"))
+  addLine(lead("no one? okay, i'll find a \"volunteer\" =p"))
+  addLine(cmd("/choose melee"))
+  addLine(lead(format(L["choose.print.choosing.melee"]).." 1=Darion 2=Garona 3=Garrosh 4=Staghelm 5=Taran 6=Thrall 7=Valeera 8=Varian 9=Yrel"))
+  addLine(roll(9, 1, 9))
+  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 9, "Yrel", 2)))
+  addLine(" ")
+  addLine(" ")
+  addLine(lead("let's flip a coin to see what boss we do next lol"))
+  addLine(cmd("/choose high council or kormrok"))
+  addLine(lead(format(L["choose.print.choosing.option"]).." 1=high council 2=kormrok"))
+  addLine(roll(1, 1, 2))
+  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.option"], 1, "high council")))
+  addLine(" ")
+  addLine(" ")
+  addLine(lead("which healer wants to go in the second portal?"))
+  addLine(raid("Liandrin", "PALADIN", "me i guess"))
+  addLine(raid("Anduin", "PRIEST", "I can"))
+  addLine(raid("Drekthar", "SHAMAN", "doesn't matter, i can if you want"))
+  addLine(lead("yay, volunteers!"))
+  addLine(lead("we only need one, so"))
+  addLine(cmd("/choose Liandrin, Anduin, Drek"))
+  addLine(lead(format(L["choose.print.choosing.option"]).." 1=Liandrin 2=Anduin 3=Drek"))
+  addLine(roll(1, 1, 3))
+  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.option"], 1, "Liandrin")))
+  addLine(" ")
+  addLine(" ")
+  addLine(lead("since no one rolled on this tier token, i'll just loot it to someone at random for a chance at warforged/socket/etc."))
+  addLine(cmd("/choose vanq"))
+  addLine(lead(format(L["choose.print.choosing.tierToken"], "Vanquisher", "death knight/druid/rogue/mage").." 1=Celestine 2=Darion 3=Garona 4=Jaina 5=Khadgar 6=Malfurion 7=Staghelm 8=Valeera"))
+  addLine(roll(5, 1, 8))
+  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 5, "Khadgar", 4)))
+end
+
+function M:PrintMockup()
+  M:Mockup(function(line) print(line) end)
+end
+
 function M:DebugPrintDispatchTable()
   buildDispatchTable()
   A.console:Debug(M, "DISPATCH_TABLE:")
