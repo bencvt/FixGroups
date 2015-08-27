@@ -166,16 +166,15 @@ function M:HighlightDim(text)
   return "|cff999999"..(text or self).."|r"
 end
 
-function M:UnitClassColor(unitID)
-  local c = select(2, UnitClass(unitID))
-  if c and RAID_CLASS_COLORS[c] then
-    c = RAID_CLASS_COLORS[c].colorStr
+function M:ClassColor(class)
+  if class and RAID_CLASS_COLORS[class] then
+    class = RAID_CLASS_COLORS[class].colorStr
   end
-  return (c or "ff999999")
+  return (class or "ff999999")
 end
 
 function M:UnitNameWithColor(unitID)
-  return "|c"..M:UnitClassColor(unitID)..(UnitName(unitID) or "Unknown").."|r"
+  return "|c"..M:ClassColor(select(2, UnitClass(unitID)))..(UnitName(unitID) or "Unknown").."|r"
 end
 
 function M:NameAndRealm(name)

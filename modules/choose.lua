@@ -13,8 +13,6 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
--- Indexes correspond to A.group.ROLES constants.
-local ROLE_NAMES = {"tank", "healer", "melee", "ranged", "unknown"}
 -- Actually it's 255, but we'll be conservative.
 local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0
@@ -312,7 +310,7 @@ local function choosePlayer(mode, arg)
         include = UnitIsInMyGuild(player.unitID)
       elseif mode == "damager" then
         include = player.isDamager
-      elseif mode == ROLE_NAMES[player.role] then
+      elseif mode == A.group.ROLE_NAMES[player.role] then
         include = true
       else
         include = validClasses[player.class]

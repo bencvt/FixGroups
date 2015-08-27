@@ -23,6 +23,7 @@ M.private = {
         showMinimapIconAlways = true,
         showMinimapIconPRN = false, -- ignored (implied false) if showMinimapIconAlways == true
         addButtonToRaidTab = true,
+        enhanceGroupRelatedSystemMessages = true,
         watchChat = true,
         announceChatAlways = false,
         announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
@@ -56,7 +57,12 @@ local MARKS = {
 local DELAY_OPTIONS_PANE_LOADED = 0.01
 
 local format, ipairs, min, max, tinsert = format, ipairs, min, max, tinsert
+local tconcat = table.concat
 -- GLOBALS: LibStub
+
+local function paragraphs(lines)
+  return tconcat(lines, "|n|n")
+end
 
 local function getOptionMark(arr, index)
   if arr[index] and arr[index] <= 8 then
@@ -134,7 +140,10 @@ R.optionsTable = {
       order = CONSOLE+10,
       type = "execute",
       name = "/fg help",
-      desc = format(L["button.fixGroupsHelp.desc.1"], H("/fixgroups"), H("/fg")).."|n|n"..format(L["button.fixGroupsHelp.desc.2"], H("/fg help")),
+      desc = paragraphs({
+        format(L["button.fixGroupsHelp.desc.1"], H("/fixgroups"), H("/fg")),
+        format(L["button.fixGroupsHelp.desc.2"], H("/fg help")),
+      }),
       func = function() A.console:Command("help") end,
     },
     buttonCommandChoose = {
@@ -172,6 +181,21 @@ R.optionsTable = {
       width = "full",
       get = function(i) return A.options.addButtonToRaidTab end,
       set = function(i,v) A.options.addButtonToRaidTab = v A.gui:Refresh() end,
+    },
+    enhanceGroupRelatedSystemMessages = {
+      order = UI+30,
+      name = L["options.widget.enhanceGroupRelatedSystemMessages.text"],
+      desc = paragraphs({
+        L["options.widget.enhanceGroupRelatedSystemMessages.desc.1"],
+        L["options.widget.enhanceGroupRelatedSystemMessages.desc.2"],
+        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, "Thrall").."|r",
+        L["options.widget.enhanceGroupRelatedSystemMessages.desc.3"],
+        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, format("|c%sThrall|r|cffffff00 (%s)", A.util:ClassColor("SHAMAN"), A.util:LocaleLowerNoun(L["word.melee.singular"]))).." "..A.util:FormatGroupComp(5, 2, 4, 6, 8, 0)..".|r",
+      }),
+      type = "toggle",
+      width = "full",
+      get = function(i) return A.options.enhanceGroupRelatedSystemMessages end,
+      set = function(i,v) A.options.enhanceGroupRelatedSystemMessages = v end,
     },
     -- -------------------------------------------------------------------------
     --headerCHAT = {
@@ -399,7 +423,10 @@ R.optionsTable = {
     splitOddEven = {
       order = RAIDASSIST+70,
       name = L["options.widget.splitOddEven.text"],
-      desc = L["options.widget.splitOddEven.desc.1"].."|n|n"..format(L["options.widget.splitOddEven.desc.2"], H("/fg split"), H(L["button.splitGroups.text"])),
+      desc = paragraphs({
+        L["options.widget.splitOddEven.desc.1"],
+        format(L["options.widget.splitOddEven.desc.2"], H("/fg split"), H(L["button.splitGroups.text"])),
+      }),
       type = "toggle",
       width = "full",
       get = function(i) return A.options.splitOddEven end,
@@ -423,7 +450,10 @@ R.optionsTable = {
     partyMarkIcon1 = {
       order = PARTY+10+1,
       name = A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.singular"],
-      desc = L["options.widget.partyMarkIcon1.desc"].."|n|n"..L["options.widget.partyMarkIcon.desc"],
+      desc = paragraphs({
+        L["options.widget.partyMarkIcon1.desc"],
+        L["options.widget.partyMarkIcon.desc"],
+      }),
       type = "select",
       width = "half",
       style = "dropdown",
@@ -435,7 +465,10 @@ R.optionsTable = {
     partyMarkIcon2 = {
       order = PARTY+10+2,
       name = A.util.TEXT_ICON.ROLE.HEALER.." "..L["word.healer.singular"],
-      desc = L["options.widget.partyMarkIcon2.desc"].."|n|n"..L["options.widget.partyMarkIcon.desc"],
+      desc = paragraphs({
+        L["options.widget.partyMarkIcon2.desc"],
+        L["options.widget.partyMarkIcon.desc"],
+      }),
       type = "select",
       width = "half",
       style = "dropdown",
@@ -495,17 +528,20 @@ R.optionsTable = {
     dataBrokerGroupCompStyle = {
       order = INTEROP+20,
       name = format(L["options.widget.dataBrokerGroupCompStyle.text"], L["dataBroker.groupComp.name"]),
-      desc = format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["dataBroker.groupComp.name"])).."|n|n"..format(L["options.widget.dataBrokerGroupCompStyle.desc.2"], A.util:LocaleTableConcat({HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")})),
+      desc = paragraphs({
+        format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["dataBroker.groupComp.name"])),
+        format(L["options.widget.dataBrokerGroupCompStyle.desc.2"], A.util:LocaleTableConcat({HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")})),
+      }),
       type = "select",
       width = "double",
       style = "dropdown",
       values = {
-        [1] = A.util:FormatGroupComp(1, "2/4/14", "6+8", 2, 4, 6, 8, 0),
-        [2] = A.util:FormatGroupComp(2, "2/4/14", "6+8", 2, 4, 6, 8, 0),
-        [3] = A.util:FormatGroupComp(3, "2/4/14", "6+8", 2, 4, 6, 8, 0),
-        [4] = A.util:FormatGroupComp(4, "2/4/14", "6+8", 2, 4, 6, 8, 0),
-        [5] = A.util:FormatGroupComp(5, "2/4/14", "6+8", 2, 4, 6, 8, 0),
-        [6] = A.util:FormatGroupComp(6, "2/4/14", "6+8", 2, 4, 6, 8, 0),
+        [1] = A.util:FormatGroupComp(1, 2, 4, 6, 8, 0),
+        [2] = A.util:FormatGroupComp(2, 2, 4, 6, 8, 0),
+        [3] = A.util:FormatGroupComp(3, 2, 4, 6, 8, 0),
+        [4] = A.util:FormatGroupComp(4, 2, 4, 6, 8, 0),
+        [5] = A.util:FormatGroupComp(5, 2, 4, 6, 8, 0),
+        [6] = A.util:FormatGroupComp(6, 2, 4, 6, 8, 0),
       },
       get = function(i) return max(1, min(6, A.options.dataBrokerGroupCompStyle)) end,
       set = function(i,v) A.options.dataBrokerGroupCompStyle = max(1, min(6, v)) A.dataBroker:RefreshGroupComp() end,
@@ -554,7 +590,11 @@ function M:OnEnable()
     tinsert(t, HA(a))
   end
   t = A.util:LocaleTableConcat(t, L["word.or"])
-  R.optionsTable.args.sortMode.desc = format(L["options.widget.sortMode.desc.1"], t).."|n|n"..L["options.widget.sortMode.desc.2"].."|n|n"..format(L["options.widget.sortMode.desc.3"], H("/fg meter"), H(L["button.fixGroups.text"]))
+  R.optionsTable.args.sortMode.desc = paragraphs({
+    format(L["options.widget.sortMode.desc.1"], t),
+    L["options.widget.sortMode.desc.2"],
+    format(L["options.widget.sortMode.desc.3"], H("/fg meter"), H(L["button.fixGroups.text"])),
+  })
 
   R.optionsTable.args.damageMeterAddonDesc.name = A.meter:TestInterop().."|n|n"
 end

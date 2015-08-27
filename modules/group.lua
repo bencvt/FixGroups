@@ -18,9 +18,10 @@ M.private = {
 }
 local R = M.private
 
-local DELAY_REBUILD_FOR_UNKNOWN = 2.0
+local DELAY_REBUILD_FOR_UNKNOWN = 5.0
 
 M.ROLES = {TANK=1, HEALER=2, MELEE=3, RANGED=4, UNKNOWN=5}
+M.ROLE_NAMES = {"tank", "healer", "melee", "ranged", "unknown"}
 
 for i = 1, 40 do
   R.rosterArray[i] = {}
@@ -271,6 +272,11 @@ end
 
 function M:GetRoleCountsTHMRU()
   return unpack(R.roleCountsTHMRU)
+end
+
+function M:GetComp(style)
+  local t, h, m, r, u = unpack(R.roleCountsTHMRU)
+  return A.util:FormatGroupComp(style, t, h, m, r, u)
 end
 
 function M:GetUnknownNames()

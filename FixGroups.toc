@@ -35,5 +35,6 @@ modules\gui.lua
 modules\inspect.lua
 modules\marker.lua
 modules\meter.lua
+modules\modJoinLeave.lua
 modules\options.lua
 modules\sorter.lua

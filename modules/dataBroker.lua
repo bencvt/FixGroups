@@ -21,7 +21,6 @@ end
 
 local function groupCompOnTooltipShow(tooltip)
   if A.DEBUG >= 1 then A.console:Debugf(M, "groupCompOnTooltipShow tooltip=%s", tostring(tooltip or "<nil>")) end
-  local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
   if IsInGroup() then
     local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
     tooltip:AddDoubleLine(format("%s (%s):", L["dataBroker.groupComp.name"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.util:FormatGroupComp(6, t, h, m, r, u), 1,1,0, 1,1,0)
@@ -33,7 +32,7 @@ local function groupCompOnTooltipShow(tooltip)
     tooltip:AddDoubleLine(indent..L["word.melee.plural"],   HD(tostring(m)), 1,1,1, 1,1,0)
     tooltip:AddDoubleLine(indent..L["word.ranged.plural"],  HD(tostring(r)), 1,1,1, 1,1,0)
     if u > 0 then
-      tooltip:AddDoubleLine(indent..L["word.unknownRole.plural"], HD(tostring(u)), 1,1,1, 1,1,0)
+      tooltip:AddDoubleLine(indent..L["word.unknown.plural"], HD(tostring(u)), 1,1,1, 1,1,0)
       tooltip:AddLine(" ")
       tooltip:AddLine(format(L["phrase.waitingOnDataFromServerFor"], ((u > 1) and "|n" or "")..A.group:GetUnknownNames()))
     end
@@ -79,8 +78,7 @@ end
 
 function M:RefreshGroupComp()
   if IsInGroup() and A.group:GetSize() > 0 then
-    local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
-    R.groupComp.text = A.util:FormatGroupComp(A.options.dataBrokerGroupCompStyle, t, h, m, r, u)
+    R.groupComp.text = A.group:GetComp(A.options.dataBrokerGroupCompStyle)
   else
     R.groupComp.text = NOT_IN_GROUP
   end

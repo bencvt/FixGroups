@@ -112,8 +112,7 @@ end
 function M:SetupTooltip(tooltip, isMinimapIcon)
   tooltip:ClearLines()
   if IsInGroup() then
-    local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
-    tooltip:AddDoubleLine(A.NAME, A.util:FormatGroupComp(1, t, h, m, r, u))
+    tooltip:AddDoubleLine(A.NAME, A.group:GetComp(1))
   else
     tooltip:AddLine(A.NAME)
   end
