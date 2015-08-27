@@ -33,3 +33,11 @@ For developers, beta testers, and translators (anyone is welcome to contribute):
  * Main project site: http://wow.curseforge.com/addons/fixgroups/
 
  * GitHub mirror: https://github.com/bencvt/FixGroups
+
+## Thanks yous
+
+Many thanks to the following individuals for their help on this addon:
+
+ * @pas06 - German translation
+
+ * @kisswow - Korean translation
