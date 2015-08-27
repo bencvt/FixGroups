@@ -128,21 +128,29 @@ function M:GetGroupChannel()
   return IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "PARTY"
 end
 
-function M:FormatGroupComp(style, compTHD, compMRU, t, h, m, r, u)
+local function compMRU(m, r, u)
+  if u > 0 then
+    return format("%d+%d+%d", m, r, u)
+  else
+    return format("%d+%d", m, r)
+  end
+end
+
+function M:FormatGroupComp(style, t, h, m, r, u)
   if style == 1 then
-    return format("%d%s %d%s %d%s%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER, M:HighlightDim(compMRU))
+    return format("%d%s %d%s %d%s%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER, M:HighlightDim(compMRU(m, r, u)))
   elseif style == 2 then
     return format("%d%s %d%s %d%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER)
   elseif style == 3 then
-    return format("Raid: %s", M:Highlight(format("%s (%s)", compTHD, compMRU)))
+    return format("Raid: %s", M:Highlight(format("%d/%d/%d (%s)", t, h, m+r+u, compMRU(m, r, u))))
   elseif style == 4 then
-    return format("Raid: %s", M:Highlight(compTHD))
+    return format("Raid: %s", M:Highlight(format("%d/%d/%d", t, h, m+r+u)))
   elseif style == 5 then
-    return format("%s (%s)", compTHD, compMRU)
+    return format("%d/%d/%d (%s)", t, h, m+r+u, compMRU(m, r, u))
   elseif style == 6 then
-    return compTHD
+    return format("%d/%d/%d", t, h, m+r+u)
   else
-    return M:FormatGroupComp(1, compTHD, compMRU, t, h, m, r, u)
+    return M:FormatGroupComp(1, t, h, m, r, u)
   end
 end
 

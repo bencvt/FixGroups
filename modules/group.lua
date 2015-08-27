@@ -4,15 +4,13 @@ A.group = M
 M.private = {
   roster = {},
   rosterArray = {},
-  compTHD = false,
-  compMRU = false,
   prevRoster = {},
   prevRosterArray = {},
-  prevCompTHD = false,
-  prevCompMRU = false,
   size = 0,
   groupSizes = {0, 0, 0, 0, 0, 0, 0, 0},
   roleCountsTHMRU = {0, 0, 0, 0, 0},
+  roleCountsString = false,
+  prevRoleCountsString = false,
   builtUniqueNames = false,
   rebuildTimer = false,
   tmp1 = {},
@@ -49,10 +47,8 @@ local function wipeRoster()
     R.roleCountsTHMRU[i] = 0
   end
   R.builtUniqueNames = false
-  R.prevCompTHD = R.compTHD
-  R.prevCompMRU = R.compMRU
-  R.compTHD = false
-  R.compMRU = false
+  R.prevRoleCountsString = R.roleCountsString
+  R.roleCountsString = false
 
   local tmp = wipe(R.prevRoster)
   R.prevRoster = R.roster
@@ -186,14 +182,9 @@ local function buildRoster()
     buildSoloRoster(1)
   end
 
-  -- Build comp strings.
-  local t, h, m, r, u = unpack(R.roleCountsTHMRU)
-  R.compTHD = format("%d/%d/%d", t, h, m+r+u)
-  if u > 0 then
-    R.compMRU = format("%d+%d+%d", m, r, u)
-  else
-    R.compMRU = format("%d+%d", m, r)
-  end
+  -- Build comp string.
+  R.roleCountsString = tconcat(R.roleCountsTHMRU, ":")
+
   -- Schedule rebuild if there are any unknown players.
   if areAnyUnknown then
     if not R.rebuildTimer then
@@ -264,9 +255,9 @@ function M:ForceBuildRoster()
     end
   end
   
-  if R.prevCompTHD ~= R.compTHD or R.prevCompMRU ~= R.compMRU then
-    if A.DEBUG >= 1 then A.console:Debugf(M, "COMP_CHANGED %s (%s) -> %s (%s)", tostring(R.prevCompTHD), tostring(R.prevCompMRU), R.compTHD, R.compMRU) end
-    M:SendMessage("FIXGROUPS_COMP_CHANGED", R.prevCompTHD, R.prevCompMRU, R.compTHD, R.compMRU)
+  if R.prevRoleCountsString ~= R.roleCountsString then
+    if A.DEBUG >= 1 then A.console:Debugf(M, "COMP_CHANGED %s -> %s", tostring(R.prevRoleCountsString), R.roleCountsString) end
+    M:SendMessage("FIXGROUPS_COMP_CHANGED", R.prevRoleCountsString, R.roleCountsString)
   end
 end
 
@@ -300,10 +291,6 @@ end
 
 function M:GetGroupSize(group)
   return R.groupSizes[group]
-end
-
-function M:GetComp()
-  return R.compTHD, R.compMRU
 end
 
 function M:GetPlayer(name)
@@ -371,7 +358,7 @@ function M:IsInSameZone(name)
 end
 
 function M:DebugPrintRoster()
-  A.console:Debugf(M, "roster size=%d groupSizes={%s} roleCountsTHMRU={%s} comp=%s (%s):", R.size, tconcat(R.groupSizes, ","), tconcat(R.roleCountsTHMRU, ","), R.compTHD, R.compMRU)
+  A.console:Debugf(M, "roster size=%d groupSizes={%s} roleCountsTHMRU={%s}:", R.size, tconcat(R.groupSizes, ","), tconcat(R.roleCountsTHMRU, ","))
   local p, line
   for i = 1, R.size do
     p = R.rosterArray[i]
