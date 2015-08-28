@@ -119,7 +119,7 @@ R.optionsTable = {
       type = "execute",
       name = L["button.fixGroups.text"],
       desc = L["button.fixGroups.desc"],
-      func = function(_, button) A.gui:ButtonPress(button) end,
+      func = function(_, button) A.buttonGui:ButtonPress(button) end,
       --disabled = function(i) return not IsInGroup() end,
     },
     buttonCommandSplit = {
@@ -171,7 +171,7 @@ R.optionsTable = {
         [3] = L["options.value.never"],
       },
       get = function(i) if A.options.showMinimapIconAlways then return 1 elseif A.options.showMinimapIconPRN then return 2 end return 3 end,
-      set = function(i,v) A.options.showMinimapIconAlways, A.options.showMinimapIconPRN = (v==1), (v==2) A.gui:Refresh() end,
+      set = function(i,v) A.options.showMinimapIconAlways, A.options.showMinimapIconPRN = (v==1), (v==2) A.buttonGui:Refresh() end,
     },
     addButtonToRaidTab = {
       order = UI+20,
@@ -180,7 +180,7 @@ R.optionsTable = {
       type = "toggle",
       width = "full",
       get = function(i) return A.options.addButtonToRaidTab end,
-      set = function(i,v) A.options.addButtonToRaidTab = v A.gui:Refresh() end,
+      set = function(i,v) A.options.addButtonToRaidTab = v A.buttonGui:Refresh() end,
     },
     enhanceGroupRelatedSystemMessages = {
       order = UI+30,
@@ -565,7 +565,7 @@ R.optionsTable = {
         A.options = A.db.profile.options
         A.options.minimapIcon = minimapIcon
         A.console:Print(L["button.resetAllOptions.print"])
-        A.gui:Refresh()
+        A.buttonGui:Refresh()
       end,
     },
   },

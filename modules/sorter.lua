@@ -72,7 +72,7 @@ function M:Stop()
   R.startTime = false
   R.sortMode = false
   R.resumeAfterCombat = false
-  A.gui:Refresh()
+  A.buttonGui:Refresh()
 end
 
 function M:StopTimedOut()
@@ -93,7 +93,7 @@ function M:StopIfNeeded()
     if A.options.resumeAfterCombat then
       A.console:Print(L["sorter.print.combatPaused"])
       R.resumeAfterCombat = resumeSortMode
-      A.gui:Refresh()
+      A.buttonGui:Refresh()
     else
       A.console:Print(L["sorter.print.combatCancelled"])
     end
@@ -167,7 +167,7 @@ function M:ProcessStep()
   if A.coreSort:IsActionScheduled() then
     R.stepCount = R.stepCount + 1
     M:ScheduleTimeout()
-    A.gui:Refresh()
+    A.buttonGui:Refresh()
   else
     M:Stop()
   end

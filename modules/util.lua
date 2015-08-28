@@ -26,7 +26,7 @@ M.TEXT_ICON = {
 
 local floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
 local tconcat = table.concat
-local GetAddOnMetadata, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local GetAddOnMetadata, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, InterfaceOptionsFrame_OpenToCategory, IsInGroup, IsInInstance, IsInRaid, OpenFriendsFrame, ToggleFriendsFrame, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = GetAddOnMetadata, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, InterfaceOptionsFrame_OpenToCategory, IsInGroup, IsInInstance, IsInRaid, OpenFriendsFrame, ToggleFriendsFrame, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS 
 
 function M:LocaleSerialComma()
@@ -204,4 +204,17 @@ function M:GetUniqueNameParty(unitID)
   end
   onlyName = M:StripRealm(UnitName(unitID))
   return nameCounts[onlyName] > 1 and M:NameAndRealm(UnitName(unitID)) or onlyName
+end
+
+function M:OpenRaidTab()
+  OpenFriendsFrame(4)
+end
+
+function M:ToggleRaidTab()
+  ToggleFriendsFrame(4)
+end
+
+function M:OpenConfig()
+  InterfaceOptionsFrame_OpenToCategory(A.NAME)
+  InterfaceOptionsFrame_OpenToCategory(A.NAME)
 end

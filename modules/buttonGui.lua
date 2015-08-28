@@ -1,6 +1,6 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("gui", "AceEvent-3.0", "AceTimer-3.0")
-A.gui = M
+local M = A:NewModule("buttonGui", "AceEvent-3.0", "AceTimer-3.0")
+A.buttonGui = M
 M.private = {
   icon = false,
   iconLDB = false,
@@ -13,8 +13,8 @@ local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
 local format, strfind, strlower = format, strfind, strlower
-local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInRaid, IsShiftKeyDown, OpenFriendsFrame, UnitName
--- GLOBALS: LibStub, ElvUI, GameTooltip, RaidFrame, RaidFrameRaidInfoButton,InterfaceOptionsFrame_OpenToCategory
+local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName
+-- GLOBALS: LibStub, ElvUI, GameTooltip, RaidFrame, RaidFrameRaidInfoButton
 
 local LOCALE_KW_1 = strlower(string.trim(L["chatKeyword.fixGroups"]))
 local LOCALE_KW_2 = strlower(string.trim(L["chatKeyword.markTanks"]))
@@ -43,7 +43,6 @@ local function watchChat(event, message, sender)
     -- Search for both the default and the localized keywords.
     message = strlower(message)
     if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, LOCALE_KW_1) or strfind(message, LOCALE_KW_2) then
-      M:OpenRaidTab()
       M:FlashRaidTabButton()
     end
   end
@@ -145,16 +144,8 @@ function M:ButtonPress(button)
   handleClick(button)
 end
 
-function M:OpenRaidTab()
-  OpenFriendsFrame(4)
-end
-
-function M:OpenConfig()
-  InterfaceOptionsFrame_OpenToCategory(A.NAME)
-  InterfaceOptionsFrame_OpenToCategory(A.NAME)
-end
-
 function M:FlashRaidTabButton()
+  A.util:OpenRaidTab()
   if R.flashTimer or not A.options.addButtonToRaidTab then
     return
   end

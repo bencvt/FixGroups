@@ -25,13 +25,13 @@ addon.lua
 modules\util.lua
 
 modules\addonChannel.lua
+modules\buttonGui.lua
 modules\chooseCommand.lua
 modules\console.lua
 modules\coreSort.lua
 modules\damagerRole.lua
 modules\dataBroker.lua
 modules\group.lua
-modules\gui.lua
 modules\inspect.lua
 modules\marker.lua
 modules\meter.lua

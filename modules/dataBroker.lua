@@ -11,12 +11,12 @@ local NOT_IN_GROUP = HD(L["dataBroker.groupComp.notInGroup"])
 local ICON_TANK, ICON_HEALER, ICON_DAMAGER = A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER
 
 local format, tostring = format, tostring
-local IsAddOnLoaded, IsInGroup, IsInRaid, ToggleFriendsFrame = IsAddOnLoaded, IsInGroup, IsInRaid, ToggleFriendsFrame
+local IsAddOnLoaded, IsInGroup, IsInRaid = IsAddOnLoaded, IsInGroup, IsInRaid
 -- GLOBALS: C_LFGList, LibStub
 
 local function groupCompOnClick(frame, button)
   if A.DEBUG >= 2 then A.console:Debugf(M, "groupCompOnClick frame=%s button=%s", tostring(frame or "<nil>"), tostring(button or "<nil>")) end
-  ToggleFriendsFrame(4)
+  A.util:ToggleRaidTab()
 end
 
 local function groupCompOnTooltipShow(tooltip)
