@@ -57,8 +57,18 @@ local function inspectTimerTick()
   end
 end
 
+local function isQueueEmpty()
+  for name, _ in pairs(R.requests) do
+    return false
+  end
+  return true
+end
+
 local function inspectTimerStart()
   inspectTimerStop("sanity check")
+  if isQueueEmpty() then
+    return
+  end
   R.timer = M:ScheduleRepeatingTimer(inspectTimerTick, DELAY_TIMER)
   if A.DEBUG >= 2 then A.console:Debug(M, "timer start") end
   inspectTimerTick()
