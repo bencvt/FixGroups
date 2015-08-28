@@ -7,6 +7,7 @@ M.private = {
   requestTimestamp = false,
   expectNumChatMsgs = false,
   expectSystemMsgPrefix = false,
+  lastCommand = false,
   tmp1 = {},
   tmp2 = {},
 }
@@ -16,7 +17,7 @@ local H, HA = A.util.Highlight, A.util.HighlightAddon
 -- Actually it's 255, but we'll be conservative.
 local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0
-local DELAY_ROLL = 0.5
+local DELAY_GROUP_ROLL = 0.5
 -- Lazily populated.
 local DISPATCH_TABLE, CLASS_ALIASES = false, false
 local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
@@ -64,7 +65,13 @@ local function startRoll()
   local rollPrefix = format(RANDOM_ROLL_RESULT, UnitName("player"), 867, 530, 9)
   rollPrefix = strsub(rollPrefix, 1, strfind(rollPrefix, "867") - 1)
   startExpecting(false, rollPrefix)
-  M:ScheduleTimer(function() RandomRoll(1, #R.options) end, DELAY_ROLL)
+  if IsInGroup() then
+    -- Slow your roll some more.
+    -- See comment in the announceChoicesAndRoll method for why.
+    M:ScheduleTimer(function() RandomRoll(1, #R.options) end, DELAY_GROUP_ROLL)
+  else
+    RandomRoll(1, #R.options)
+  end
 end
 
 local function watchChat(event, message, sender)
@@ -425,6 +432,14 @@ local function chooseOption(sep, args)
   announceChoicesAndRoll(true, L["choose.print.choosing.option"])
 end
 
+local function chooseLast()
+  if R.lastCommand then
+    M:Command(R.lastCommand)
+  else
+    A.console:Printf(L["choose.print.noLastCommand"], H("/choose"))
+  end
+end
+
 local function buildDispatchTable()
   if DISPATCH_TABLE then
     return
@@ -490,6 +505,13 @@ local function buildDispatchTable()
     leather       ={choosePlayer, "armor", "leather"},
     mail          ={choosePlayer, "armor", "mail"},
     plate         ={choosePlayer, "armor", "plate"},
+    last          ={chooseLast},
+    again         ={chooseLast},
+    previous      ={chooseLast},
+    prev          ={chooseLast},
+    ["repeat"]    ={chooseLast},
+    ["^"]         ={chooseLast},
+    ["\""]        ={chooseLast},
   }
   -- Add non-localized class names.
   CLASS_ALIASES = {}
@@ -584,6 +606,9 @@ function M:Command(args)
   if dispatch then
     local func, mode, args = unpack(dispatch)
     func(mode, args)
+    if func == chooseLast then
+      return
+    end
   elseif args == "" then
     -- TODO: GUI
     M:PrintHelp()
@@ -594,10 +619,12 @@ function M:Command(args)
   elseif strfind(args, " ") then
     chooseOption(" ", args)
   elseif strfind(args, "/") and chooseMultipleClasses(args) then
-    return
+    -- Do nothing. The action is in the if clause above.
   else
     A.console:Printf(L["choose.print.badArgument"], H(args), H("/choose"))
+    return
   end
+  R.lastCommand = args
 end
 
 function M:Mockup(addLine)
