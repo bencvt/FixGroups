@@ -126,7 +126,9 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
   tooltip:AddDoubleLine(L["phrase.mouse.shiftClickRight"],  L["tooltip.right.meter.1"],   1,1,1, 1,1,0)
   tooltip:AddDoubleLine(" ",                                L["tooltip.right.meter.2"],   1,1,1, 1,1,0)
   -- Ctrl + Left Click is an undocumented shortcut, subject to change or removal
-  -- in a future version of this addon.
+  -- in a future version of this addon. We could make the mouse shortcuts
+  -- user-configurable, but that's probably overkill... the default shortcuts
+  -- are pretty reasonable as-is.
   --tooltip:AddLine(" ")
   --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickLeft"],    L["tooltip.right.nosort"],    1,1,1, 1,1,0)
   if isMinimapIcon then
