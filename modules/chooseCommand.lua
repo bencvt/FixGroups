@@ -22,12 +22,6 @@ local DELAY_GROUP_ROLL = 0.5
 local DISPATCH_TABLE, CLASS_ALIAS = false, false
 local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
 
-L["choose.player.tank"]     = A.util:LocaleLowerNoun(L["word.tank.singular"])
-L["choose.player.healer"]   = A.util:LocaleLowerNoun(L["word.healer.singular"])
-L["choose.player.damager"]  = A.util:LocaleLowerNoun(L["word.damager.singular"])
-L["choose.player.melee"]    = A.util:LocaleLowerNoun(L["word.melee.singular"])
-L["choose.player.ranged"]   = A.util:LocaleLowerNoun(L["word.ranged.singular"])
-
 local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
 local tconcat = table.concat
 local GetGuildInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetGuildInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned
@@ -191,55 +185,65 @@ local function announceChoicesAndRoll(reallyRoll, line)
   end
 end
 
-local function getValidClasses(mode, arg)
-  if mode == "class" then
-    return arg
-  elseif mode == "tierToken" then
+local function getValidClasses(mode, modeType)
+  if modeType == "class" then
     local c = wipe(R.tmp1)
-    if arg == "conqueror" then
+    local class, found
+    for alias in gmatch(gsub(strlower(mode), "%s+", ""), "[^/%+%|]+") do
+      class = CLASS_ALIAS[alias]
+      if not class then
+        return false
+      end
+      found = true
+      c[class] = true
+    end
+    return found and c or false
+  elseif modeType == "tierToken" then
+    local c = wipe(R.tmp1)
+    if mode == "conqueror" then
       c["PALADIN"] = true
       c["PRIEST"] = true
       c["WARLOCK"] = true
       c["DEMONHUNTER"] = true
-    elseif arg == "protector" then
+    elseif mode == "protector" then
       c["WARRIOR"] = true
       c["MONK"] = true
       c["SHAMAN"] = true
       c["HUNTER"] = true
-    elseif arg == "vanquisher" then
+    elseif mode == "vanquisher" then
       c["DEATHKNIGHT"] = true
       c["MAGE"] = true
       c["DRUID"] = true
       c["ROGUE"] = true
     else
-      A.console:Errorf(M, "invalid tier token %s!", tostring(arg or "<nil>"))
+      A.console:Errorf(M, "invalid %s %s!", modeType, tostring(mode))
     end
     return c
-  elseif mode == "armor" then
+  elseif modeType == "armor" then
     local c = wipe(R.tmp1)
-    if arg == "cloth" then
+    if mode == "cloth" then
       c["PRIEST"] = true
       c["MAGE"] = true
       c["WARLOCK"] = true
-    elseif arg == "leather" then
+    elseif mode == "leather" then
       c["MONK"] = true
       c["DRUID"] = true
       c["ROGUE"] = true
       c["DEMONHUNTER"] = true
-    elseif arg == "mail" then
+    elseif mode == "mail" then
       c["SHAMAN"] = true
       c["HUNTER"] = true
-    elseif arg == "plate" then
+    elseif mode == "plate" then
       c["WARRIOR"] = true
       c["DEATHKNIGHT"] = true
       c["PALADIN"] = true
     else
-      A.console:Errorf(M, "invalid armor type %s!", tostring(arg or "<nil>"))
+      A.console:Errorf(M, "invalid %s %s!", modeType, tostring(mode))
     end
     return c
-  elseif mode == "primaryStat" then
+  elseif modeType == "primaryStat" then
     local c = wipe(R.tmp1)
-    if arg == "intellect" then
+    if mode == "intellect" then
       c["PALADIN"] = true
       c["MONK"] = true
       c["DRUID"] = true
@@ -247,38 +251,40 @@ local function getValidClasses(mode, arg)
       c["MAGE"] = true
       c["WARLOCK"] = true
       c["SHAMAN"] = true
-    elseif arg == "agility" then
+    elseif mode == "agility" then
       c["MONK"] = true
       c["DRUID"] = true
       c["ROGUE"] = true
       c["SHAMAN"] = true
       c["HUNTER"] = true
       c["DEMONHUNTER"] = true
-    elseif arg == "strength" then
+    elseif mode == "strength" then
       c["WARRIOR"] = true
       c["DEATHKNIGHT"] = true
       c["PALADIN"] = true
     else
-      A.console:Errorf(M, "invalid primary stat %s!", tostring(arg or "<nil>"))
+      A.console:Errorf(M, "invalid %s %s!", modeType, tostring(mode))
     end
     return c
   end
 end
 
-local function choosePlayer(mode, arg)
+local function choosePlayer(mode, modeType)
+  if A.DEBUG >= 1 then A.console:Debugf(M, "choosePlayer mode=%s modeType=%s", tostring(mode), tostring(modeType)) end
   if isExpecting() then
     return
   end
 
-  local validClasses = getValidClasses(mode, arg)
+  local validClasses = getValidClasses(mode, modeType)
   R.optionsArePlayers = true
   wipe(R.options)
   local include
+  A.group:ForceBuildRoster(M, "choosePlayer")
   A.group:BuildUniqueNames()
   for _, player in pairs(A.group:GetRoster()) do
     if not player.isUnknown then
-      if mode == "fromGroup" then
-        include = (player.group == arg)
+      if modeType == "fromGroup" then
+        include = (player.group == mode)
       elseif mode == "anyIncludingSitting" then
         include = true
       elseif player.isSitting or mode == "sitting" then
@@ -309,6 +315,7 @@ local function choosePlayer(mode, arg)
   end
   sort(R.options)
   
+  local arg1 = mode
   local arg2
   if validClasses then
     local localClasses = wipe(R.tmp2)
@@ -316,31 +323,32 @@ local function choosePlayer(mode, arg)
     for _, class in ipairs(CLASS_SORT_ORDER) do
       if validClasses[class] then
         cMale, cFemale = LOCALIZED_CLASS_NAMES_MALE[class], LOCALIZED_CLASS_NAMES_FEMALE[class]
-        tinsert(localClasses, (mode == "class") and A.util:LocaleLowerNoun(cMale) or cMale)
+        tinsert(localClasses, (modeType == "class") and A.util:LocaleLowerNoun(cMale) or cMale)
         if cMale ~= cFemale then
-          tinsert(localClasses, (mode == "class") and A.util:LocaleLowerNoun(cFemale) or cFemale)
+          tinsert(localClasses, (modeType == "class") and A.util:LocaleLowerNoun(cFemale) or cFemale)
         end
       end
     end
-    if mode == "class" then
-      arg = A.util:LocaleTableConcat(localClasses, L["word.or"])
+    if modeType == "class" then
+      arg1 = A.util:LocaleTableConcat(localClasses, L["word.or"])
     else
-      arg, arg2 = L["choose.player."..mode.."."..arg], tconcat(localClasses, "/")
+      arg1 = strtrim(tostring(strsplit(",", L["choose.modeAliases."..mode])))
+      arg2 = tconcat(localClasses, "/")
     end
   elseif mode == "sitting" then
-    arg = A.util:GetMaxGroupsForInstance() + 1
+    arg1 = A.util:GetMaxGroupsForInstance() + 1
   elseif mode == "notMe" then
     if IsInRaid() then
-      arg = A.group:GetPlayer(UnitName("player")).uniqueName
+      arg1 = A.group:GetPlayer(UnitName("player")).uniqueName
     else
-      arg = A.util:GetUniqueNameParty("player")
+      arg1 = A.util:GetUniqueNameParty("player")
     end
   elseif mode == "guildmate" then
-    arg = GetGuildInfo("player")
+    arg1 = GetGuildInfo("player")
   end
 
-  local line = format(L["choose.print.choosing."..mode], arg, arg2)
-  if mode == "sitting" and arg >= 8 then
+  local line = format(L["choose.print.choosing."..(modeType or mode)], arg1, arg2)
+  if mode == "sitting" and arg1 >= 8 then
     line = L["choose.print.choosing.sitting.noGroups"]
   end
 
@@ -356,22 +364,11 @@ local function choosePlayer(mode, arg)
   end
 end
 
-local function chooseMultipleClasses(args)
-  local validClasses = wipe(R.tmp1)
-  local found
-  for c in gmatch(strlower(args), "[^/%+%|]+") do
-    c = CLASS_ALIAS[strtrim(c)]
-    if not c then
-      return false
-    end
-    found = true
-    validClasses[c] = true
+local function chooseClasses(args)
+  if getValidClasses(args, "class") then
+    choosePlayer(args, "class")
+    return true
   end
-  if not found then
-    return false
-  end
-  choosePlayer("class", validClasses)
-  return true
 end
 
 local function chooseGroup()
@@ -470,23 +467,23 @@ local function buildDispatchTable()
     dd            ={choosePlayer, "damager"},
     melee         ={choosePlayer, "melee"},
     ranged        ={choosePlayer, "ranged"},
-    conqueror     ={choosePlayer, "tierToken", "conqueror"},
-    conq          ={choosePlayer, "tierToken", "conqueror"},
-    protector     ={choosePlayer, "tierToken", "protector"},
-    prot          ={choosePlayer, "tierToken", "protector"},
-    vanquisher    ={choosePlayer, "tierToken", "vanquisher"},
-    vanq          ={choosePlayer, "tierToken", "vanquisher"},
-    intellect     ={choosePlayer, "primaryStat", "intellect"},
-    intel         ={choosePlayer, "primaryStat", "intellect"},
-    int           ={choosePlayer, "primaryStat", "intellect"},
-    agility       ={choosePlayer, "primaryStat", "agility"},
-    agi           ={choosePlayer, "primaryStat", "agility"},
-    strength      ={choosePlayer, "primaryStat", "strength"},
-    str           ={choosePlayer, "primaryStat", "strength"},
-    cloth         ={choosePlayer, "armor", "cloth"},
-    leather       ={choosePlayer, "armor", "leather"},
-    mail          ={choosePlayer, "armor", "mail"},
-    plate         ={choosePlayer, "armor", "plate"},
+    conqueror     ={choosePlayer, "conqueror", "tierToken"},
+    conq          ={choosePlayer, "conqueror", "tierToken"},
+    protector     ={choosePlayer, "protector", "tierToken"},
+    prot          ={choosePlayer, "protector", "tierToken"},
+    vanquisher    ={choosePlayer, "vanquisher", "tierToken"},
+    vanq          ={choosePlayer, "vanquisher", "tierToken"},
+    intellect     ={choosePlayer, "intellect", "tierToken"},
+    intel         ={choosePlayer, "intellect", "tierToken"},
+    int           ={choosePlayer, "intellect", "tierToken"},
+    agility       ={choosePlayer, "agility", "tierToken"},
+    agi           ={choosePlayer, "agility", "tierToken"},
+    strength      ={choosePlayer, "strength", "tierToken"},
+    str           ={choosePlayer, "strength", "tierToken"},
+    cloth         ={choosePlayer, "cloth", "armor"},
+    leather       ={choosePlayer, "leather", "armor"},
+    mail          ={choosePlayer, "mail", "armor"},
+    plate         ={choosePlayer, "plate", "armor"},
     last          ={chooseLast},
     again         ={chooseLast},
     previous      ={chooseLast},
@@ -497,23 +494,25 @@ local function buildDispatchTable()
   }
   -- Add non-localized class names.
   CLASS_ALIAS = {}
+  local classLower
   for _, class in ipairs(CLASS_SORT_ORDER) do
-    CLASS_ALIAS[strlower(class)] = class
-    DISPATCH_TABLE[strlower(class)] = {choosePlayer, "class", {[class]=true}}
+    classLower = strlower(class)
+    CLASS_ALIAS[classLower] = class
+    DISPATCH_TABLE[classLower] = {choosePlayer, classLower, "class"}
   end
 
-  -- Start a second table of command aliases, to be merged into
+  -- Start a second table of command aliases, staged to be merged into
   -- DISPATCH_TABLE later on.
   local add = wipe(R.tmp1)
 
   -- Add localized class names.
   for class, alias in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-    CLASS_ALIAS[gsub(strlower(alias), " ", "")] = class
+    CLASS_ALIAS[gsub(strlower(alias), "%s+", "")] = class
   end
   for class, alias in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-    CLASS_ALIAS[gsub(strlower(alias), " ", "")] = class
+    CLASS_ALIAS[gsub(strlower(alias), "%s+", "")] = class
   end
-  -- Add shorthand aliases.
+  -- Add non-localized shorthand class aliases.
   CLASS_ALIAS["warr"] = "WARRIOR"
   CLASS_ALIAS["dk"] = "DEATHKNIGHT"
   CLASS_ALIAS["pal"] = "PALADIN"
@@ -523,21 +522,15 @@ local function buildDispatchTable()
   CLASS_ALIAS["sham"] = "SHAMAN"
   CLASS_ALIAS["shammy"] = "SHAMAN"
   CLASS_ALIAS["dh"] = "DEMONHUNTER"
-  -- Best guesses at non-English shorthand. Feel free to open a ticket if
-  -- there's a commonly-used shorthand/slang for a WoW class in your language
-  -- missing from this list.
-  CLASS_ALIAS["guerr"] = "WARRIOR"
-  CLASS_ALIAS["chevalier"] = "DEATHKNIGHT" -- frFR Chevalier de la mort
-  CLASS_ALIAS["caballero"] = "DEATHKNIGHT" -- esES/esMX Caballero de la Muerte
-  CLASS_ALIAS["cavaleiro"] = "DEATHKNIGHT" -- ptBR Cavaleiro da Morte
-  CLASS_ALIAS["cavaliere"] = "DEATHKNIGHT" -- itIT Cavaliere della Morte
-  CLASS_ALIAS["chev"] = "DEATHKNIGHT"
-  CLASS_ALIAS["cab"] = "DEATHKNIGHT"
-  CLASS_ALIAS["cav"] = "DEATHKNIGHT"
-  CLASS_ALIAS["hexen"] = "WARLOCK" -- deDE Hexenmeister/Hexenmeisterin
-  CLASS_ALIAS["scham"] = "SHAMAN"
-  CLASS_ALIAS["cham"] = "SHAMAN"
-  CLASS_ALIAS["xam"] = "SHAMAN"
+  -- Add localized shorthand class aliases.
+  for _, class in ipairs(CLASS_SORT_ORDER) do
+    for alias in gmatch(gsub(strlower(L["choose.classAliases."..strlower(class)]), "%s+", ""), "[^,]+") do
+      if alias ~= "" then
+        CLASS_ALIAS[alias] = class
+      end
+    end
+  end
+  -- Add all class aliases to the staging table.
   local d
   for alias, class in pairs(CLASS_ALIAS) do
     d = DISPATCH_TABLE[strlower(class)]
@@ -546,34 +539,38 @@ local function buildDispatchTable()
     end
   end
 
-  -- Add localized aliases for chooseGroup and choosePlayer commands.
-  add[strlower(L["choose.group"])] = DISPATCH_TABLE.group
-  for cmd, d in pairs(DISPATCH_TABLE) do
-    if d[1] == choosePlayer and d[2] ~= "class" then
-      if d[3] then
-        add[strlower(L["choose.player."..d[2].."."..d[3]])] = d
-      else
-        add[strlower(L["choose.player."..d[2]])] = d
-      end
-    end
-  end
-  add[strlower(L["choose.player.tierToken.conqueror.short"])] = DISPATCH_TABLE.conq
-  add[strlower(L["choose.player.tierToken.protector.short"])] = DISPATCH_TABLE.prot
-  add[strlower(L["choose.player.tierToken.vanquisher.short"])] = DISPATCH_TABLE.vanq
-
   -- Add group1, group2, etc., and their localized aliases.
   for i = 1, 8 do
-    local d = {choosePlayer, "fromGroup", i}
+    local d = {choosePlayer, i, "fromGroup"}
     add["g"..i] = d
     add["group"..i] = d
     add["party"..i] = d
-    add[strlower(L["choose.player.fromGroup"])..i] = d
+    for alias in gmatch(gsub(strlower(L["choose.modeAliases.fromGroup"]), "%s+", ""), "[^,]+") do
+      if alias ~= "" then
+        add[alias..i] = d
+      end
+    end
+  end
+
+  -- Add localized aliases for various other modes.
+  for mode in gmatch("group,guildmate,any,sitting,anyIncludingSitting,notMe,dead,alive,tank,healer,damager,melee,ranged,conqueror,protector,vanquisher,intellect,agility,strength,cloth,leather,mail,plate", "[^,]+") do
+    for alias in gmatch(gsub(strlower(L["choose.modeAliases."..mode]), "%s+", ""), "[^,]+") do
+      if alias ~= "" then
+        add[alias] = DISPATCH_TABLE[strlower(mode)]
+      end
+    end
+  end
+  -- Just in case they got missed in the locale file:
+  for _, role in ipairs({"tank", "healer", "damager", "melee", "ranged"}) do
+    for _, number in ipairs({"singular", "plural"}) do
+      add[gsub(strlower(L["word."..role.."."..number]), "%s+", "")] = DISPATCH_TABLE[role]
+    end
   end
 
   -- Finally, merge into DISPATCH_TABLE, with original entries taking
   -- precedence over aliases.
   for cmd, d in pairs(add) do
-    if strfind(cmd, "[ /,]") or cmd ~= strlower(strtrim(cmd)) or cmd == "" then
+    if strfind(cmd, "[%s,]") or cmd ~= strlower(strtrim(cmd)) or cmd == "" then
       A.console:Errorf(M, "bad localized key [%s] for {%s}", cmd, A.util:AutoConvertTableConcat(d, ","))
     elseif not DISPATCH_TABLE[cmd] then
       DISPATCH_TABLE[cmd] = d
@@ -597,7 +594,7 @@ function M:Command(args)
     chooseOption(",", args)
   elseif strfind(args, " ") then
     chooseOption(" ", args)
-  elseif strfind(args, "/") and chooseMultipleClasses(args) then
+  elseif strfind(args, "[/%+%|]") and chooseClasses(args) then
     -- Do nothing. The action is in the if clause above.
   else
     A.console:Printf(L["choose.print.badArgument"], H(args), H("/choose"))
