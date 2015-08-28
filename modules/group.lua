@@ -23,6 +23,11 @@ local DELAY_REBUILD_FOR_UNKNOWN = 5.0
 M.ROLES = {TANK=1, HEALER=2, MELEE=3, RANGED=4, UNKNOWN=5}
 M.ROLE_NAMES = {"tank", "healer", "melee", "ranged", "unknown"}
 
+-- Maintain rosterArray to avoid creating up to 40 new tables every time
+-- we build the roster. The individual tables are wiped on demand.
+-- There will be leftover data whenever a player drops, but it's harmless.
+-- The leftover table is not indexed in R.roster and will be re-used if the
+-- group refills.
 for i = 1, 40 do
   R.rosterArray[i] = {}
   R.prevRosterArray[i] = {}
@@ -55,11 +60,6 @@ local function wipeRoster()
   R.prevRoster = R.roster
   R.roster = tmp
 
-  -- Maintain rosterArray to avoid creating up to 40 new tables every time
-  -- we build the roster. The individual tables are wiped on demand.
-  -- There will be leftover data whenever a player drops, but it's harmless.
-  -- The leftover table is not indexed in R.roster and will be re-used if the
-  -- group refills.
   tmp = R.prevRosterArray
   R.prevRosterArray = R.rosterArray
   R.rosterArray = tmp
@@ -114,7 +114,7 @@ local function findPartyUnitID(name, nextGuess)
   for i = 1, R.size do
     name = GetRaidRosterInfo(i)
     if name then
-      for j = 1, 4 do
+      for j = nextGuess, 4 do
         unitID = "party"..j
         if UnitIsUnit(name, unitID) then
           existing[unitID] = true
@@ -358,13 +358,13 @@ function M:IsDamager(name)
 end
 
 function M:IsInSameZone(name)
-  if R.roster[name] then
+  if name and R.roster[name] then
     return R.roster[name].zone == R.roster[UnitName("player")].zone
   end
 end
 
 function M:DebugPrintRoster()
-  A.console:Debugf(M, "roster size=%d groupSizes={%s} roleCountsTHMRU={%s}:", R.size, tconcat(R.groupSizes, ","), tconcat(R.roleCountsTHMRU, ","))
+  A.console:Debugf(M, "roster size=%d groupSizes={%s} roleCountsString=[%s]:", R.size, tconcat(R.groupSizes, ","), R.roleCountsString)
   local p, line
   for i = 1, R.size do
     p = R.rosterArray[i]
