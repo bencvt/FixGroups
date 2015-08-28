@@ -151,7 +151,7 @@ R.optionsTable = {
       type = "execute",
       name = "/choose",
       desc = format(L["button.choose.desc"], H("/choose")),
-      func = function() A.choose:Command("") end,
+      func = function() A.chooseCommand:Command("") end,
     },
     -- -------------------------------------------------------------------------
     headerUI = {

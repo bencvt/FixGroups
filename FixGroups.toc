@@ -25,7 +25,7 @@ addon.lua
 modules\util.lua
 
 modules\addonChannel.lua
-modules\choose.lua
+modules\chooseCommand.lua
 modules\console.lua
 modules\coreSort.lua
 modules\damagerRole.lua

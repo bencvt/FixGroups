@@ -51,7 +51,7 @@ function M:Command(args)
     A.sorter:Stop()
     return
   elseif argsLower == "choose" or strmatch(argsLower, "^choose ") then
-    A.choose:Command(strsub(args, strlen("choose") + 1))
+    A.chooseCommand:Command(strsub(args, strlen("choose") + 1))
     return
   end
 

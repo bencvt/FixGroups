@@ -1,6 +1,6 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("choose", "AceConsole-3.0", "AceEvent-3.0")
-A.choose = M
+local M = A:NewModule("chooseCommand", "AceConsole-3.0", "AceEvent-3.0")
+A.chooseCommand = M
 M.private = {
   options = {},
   optionsArePlayers = false,
