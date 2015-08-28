@@ -49,11 +49,11 @@ function M:FilterSystemMsg(event, message, ...)
   end
   if A.DEBUG >= 1 then A.console:Debugf(M, "message=[%s] matchedName=%s isJoin=%s", A.util:Escape(message), matchedName, tostring(isJoin)) end
   if isJoin then
-    A.group:ForceBuildRoster()
+    A.group:ForceBuildRoster(M, event..":Joined")
   end
   local player = A.group:FindPlayer(matchedName)
   if not isJoin then
-    A.group:ForceBuildRoster()
+    A.group:ForceBuildRoster(M, event..":Left")
     -- Despite the rebuild, it's still safe to keep using the player reference
     -- for the rest of this method.
   end

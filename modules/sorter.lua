@@ -228,7 +228,7 @@ function M:ScheduleTimeout()
       M:StopTimedOut()
       return
     end
-    A.group:ForceBuildRoster()
+    A.group:ForceBuildRoster(M, "Timeout")
     M:ProcessStep()
   end, DELAY_TIMEOUT)
 end

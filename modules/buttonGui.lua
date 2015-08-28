@@ -12,7 +12,7 @@ local R = M.private
 local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
-local format, strfind, strlower = format, strfind, strlower
+local format, strfind, strlower, tostring = format, strfind, strlower, tostring
 local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName
 -- GLOBALS: LibStub, ElvUI, GameTooltip, RaidFrame, RaidFrameRaidInfoButton
 
@@ -132,6 +132,11 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
   if isMinimapIcon then
     tooltip:AddLine(" ")
     tooltip:AddDoubleLine(L["phrase.mouse.drag"],           L["tooltip.right.moveMinimapIcon"], 1,1,1, 1,1,0)
+  end
+  if A.DEBUG >= 1 then
+    tooltip:AddLine(" ")
+    tooltip:AddLine("DEBUG group rebuild stats:")
+    A.group:DebugGetStats(function(caller, count) tooltip:AddDoubleLine("  "..tostring(caller), count) end)
   end
   tooltip:Show()
 end

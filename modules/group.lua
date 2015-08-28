@@ -13,6 +13,7 @@ M.private = {
   prevRoleCountsString = false,
   builtUniqueNames = false,
   rebuildTimer = false,
+  stats = {},
   tmp1 = {},
   tmp2 = {},
 }
@@ -38,7 +39,7 @@ local tconcat = table.concat
 local GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName
 
 function M:OnEnable()
-  local rebuild = function () M:ForceBuildRoster() end
+  local rebuild = function(event) M:ForceBuildRoster(M, event) end
   for _, event in ipairs({"GROUP_ROSTER_UPDATE", "PLAYER_SPECIALIZATION_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}) do
     M:RegisterEvent(event, rebuild)
   end
@@ -67,7 +68,7 @@ end
 
 local function rebuildTimerDone()
   R.rebuildTimer = false
-  M:ForceBuildRoster()
+  M:ForceBuildRoster(M, "rebuildTimerDone")
 end
 
 local function buildSoloRoster(rindex)
@@ -224,7 +225,11 @@ function M:BuildUniqueNames()
   R.builtUniqueNames = true
 end
 
-function M:ForceBuildRoster()
+function M:ForceBuildRoster(callerModule, callerEvent)
+  if A.DEBUG >= 1 then
+    local caller = tostring(callerModule and callerModule:GetName())..":"..tostring(callerEvent)
+    R.stats[caller] = (R.stats[caller] or 0) + 1
+  end
   buildRoster()
   if A.DEBUG >= 2 then M:DebugPrintRoster() end
   
@@ -361,6 +366,17 @@ function M:IsInSameZone(name)
   if name and R.roster[name] then
     return R.roster[name].zone == R.roster[UnitName("player")].zone
   end
+end
+
+function M:DebugGetStats(addDoubleLine)
+  for _, caller in ipairs(A.util:SortedKeys(R.stats, R.tmp1)) do
+    addDoubleLine(caller, R.stats[caller])
+  end
+end
+
+function M:DebugPrintStats()
+  A.console:Debugf(M, "stats:")
+  M:DebugGetStats(function(caller, count) A.console:DebugMore(M, format("  %s = %d", tostring(caller), count)) end)
 end
 
 function M:DebugPrintRoster()

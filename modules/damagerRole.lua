@@ -132,7 +132,7 @@ function M:INSPECT_READY(event, guid)
   end
 
   -- Rebuild roster.
-  A.group:ForceBuildRoster()
+  A.group:ForceBuildRoster(M, event)
 end
 
 function M:FIXGROUPS_PLAYER_LEFT(player)
