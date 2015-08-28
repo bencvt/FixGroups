@@ -150,7 +150,7 @@ R.optionsTable = {
       order = CONSOLE+20,
       type = "execute",
       name = "/choose",
-      desc = format(L["button.choose.desc"], H("/choose")),
+      desc = format(L["choose.gui.intro"], H("/choose")),
       func = function() A.chooseCommand:Command("") end,
     },
     -- -------------------------------------------------------------------------

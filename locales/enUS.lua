@@ -5,6 +5,8 @@ L["word.and"] = "and"
 L["word.or"] = "or"
 L["word.raid"] = "raid"
 L["word.party"] = "party"
+L["word.alias.singular"] = "Alias"
+L["word.alias.plural"] = "Aliases"
 L["word.tank.singular"] = "Tank"
 L["word.tank.plural"] = "Tanks"
 L["word.healer.singular"] = "Healer"
@@ -33,6 +35,7 @@ L["phrase.mouse.drag"] = "Hold Left Click + Drag"
 L["addonChannel.print.newerVersion"] = "%s version %s is available. You're currently running version %s."
 
 -- Button labels
+L["button.close.text"] = "Close"
 L["button.fixGroups.text"] = "Fix Groups"
 L["button.fixGroups.desc"] = "The button on the raid tab and the minimap icon also work to fix groups."
 L["button.fixGroups.working.text"] = "Rearranging..."
@@ -41,7 +44,6 @@ L["button.splitGroups.text"] = "Split Groups"
 L["button.splitGroups.desc"] = "Split raid into two sides based on overall damage/healing done."
 L["button.fixGroupsHelp.desc.1"] = "The %s (or %s) command allows you to control the addon without using the GUI. You can use this in a macro, or just type it in chat."
 L["button.fixGroupsHelp.desc.2"] = "Click this button to run %s, which will show you the various arguments."
-L["button.choose.desc"] = "Run the %s command, which helps you randomly pick things in a way that's transparent and fair to everyone in your raid."
 L["button.resetAllOptions.text"] = "Reset all options to default"
 L["button.resetAllOptions.print"] = "All options reset to default."
 
@@ -114,6 +116,12 @@ L["choose.player.tierToken.vanquisher.short"] = "vanq"
 L["choose.examples.playerNames"] = "Thisplayer Thatplayer"
 L["choose.examples.giveUpOrNot"] = "give up or keep going"
 L["choose.examples.raids"] = "Highmaul, Blackrock Foundry, Hellfire Citadel"
+
+-- Choose GUI module
+L["choose.gui.title"] = "%s command"
+L["choose.gui.intro"] = "Need to flip a coin to make a decision? Use the %s command to randomly select an option or a player. The choice will be instant, transparent, and fair thanks to WoW's built-in /roll command."
+L["choose.gui.header.buttons"] = "% command arguments"
+L["choose.gui.header.examples"] = "Examples of the % command in action"
 
 -- Console module
 L["console.help.header"] = "Arguments for the %s command (or %s):"
