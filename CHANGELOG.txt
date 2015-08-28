@@ -1,5 +1,6 @@
 v1.3:
   - add /choose command
+  - add partial Korean and Russian translations, thanks @kisswow and @mednik
   - various improvements to damage meter addon integration, including support for TinyDPS
   - add option to enhance group-related system messages to include player role and new group comp
   - group comp available as a Data Broker object (a.k.a. LDB plugin), full breakdown in tooltip

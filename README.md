@@ -31,13 +31,13 @@ For players:
 For developers, beta testers, and translators (anyone is welcome to contribute):
 
  * Main project site: http://wow.curseforge.com/addons/fixgroups/
-
  * GitHub mirror: https://github.com/bencvt/FixGroups
 
 ## Thanks yous
 
-Many thanks to the following individuals for their help on this addon:
+Many thanks to the following translators for their help on this addon:
 
- * @pas06 - German translation
-
- * @kisswow - Korean translation
+ * German: @pas06
+ * Korean: @kisswow
+ * Russian: @mednik
+ * http://wow.curseforge.com/addons/fixgroups/localization/translators/
