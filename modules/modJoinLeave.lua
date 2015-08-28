@@ -69,7 +69,7 @@ function M:FilterSystemMsg(event, message, ...)
   local color = A.util:ClassColor(player and player.class)
   local namePattern = gsub(matchedName, "%-", "%%-")
   message = gsub(message, namePattern, format("|c%s%s|r%s", color, matchedName, role), 1)
-  message = format("%s %s.", message, newComp)
+  message = message.." "..A.util:HighlightDim(newComp..".")
   return false, message, ...
 end
 
