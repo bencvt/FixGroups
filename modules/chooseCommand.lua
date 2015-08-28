@@ -311,9 +311,9 @@ local function choosePlayer(mode, arg)
       elseif mode == "damager" then
         include = player.isDamager
       elseif mode == "tank" or mode == "healer" or mode == "melee" then
-        include = (A.group.ROLE_NAMES[player.role] == mode)
+        include = (A.group.ROLE_NAME[player.role] == mode)
       elseif mode == "ranged" then
-        include = (A.group.ROLE_NAMES[player.role] == "ranged" or A.group.ROLE_NAMES[player.role] == "unknown")
+        include = (A.group.ROLE_NAME[player.role] == "ranged" or A.group.ROLE_NAME[player.role] == "unknown")
       else
         include = validClasses[player.class]
       end

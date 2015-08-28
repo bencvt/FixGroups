@@ -21,8 +21,8 @@ local R = M.private
 
 local DELAY_REBUILD_FOR_UNKNOWN = 5.0
 
-M.ROLES = {TANK=1, HEALER=2, MELEE=3, RANGED=4, UNKNOWN=5}
-M.ROLE_NAMES = {"tank", "healer", "melee", "ranged", "unknown"}
+M.ROLE = {TANK=1, HEALER=2, MELEE=3, RANGED=4, UNKNOWN=5}
+M.ROLE_NAME = {"tank", "healer", "melee", "ranged", "unknown"}
 
 -- Maintain rosterArray to avoid creating up to 40 new tables every time
 -- we build the roster. The individual tables are wiped on demand.
@@ -83,12 +83,12 @@ local function buildSoloRoster(rindex)
   R.groupSizes[1] = R.groupSizes[1] + 1
   local unitRole = select(6, GetSpecializationInfo(GetSpecialization()))
   if unitRole == "TANK" then
-    p.role = M.ROLES.TANK
+    p.role = M.ROLE.TANK
   elseif unitRole == "HEALER" then
-    p.role = M.ROLES.HEALER
+    p.role = M.ROLE.HEALER
   else
     p.role = A.damagerRole:GetDamagerRole(p)
-    if p.role ~= M.ROLES.TANK and p.role ~= M.ROLES.HEALER then
+    if p.role ~= M.ROLE.TANK and p.role ~= M.ROLE.HEALER then
       p.isDamager = true
     end
   end
@@ -165,12 +165,12 @@ local function buildRoster()
       R.groupSizes[p.group] = R.groupSizes[p.group] + 1
       unitRole = UnitGroupRolesAssigned(p.unitID)
       if unitRole == "TANK" then
-        p.role = M.ROLES.TANK
+        p.role = M.ROLE.TANK
       elseif unitRole == "HEALER" then
-        p.role = M.ROLES.HEALER
+        p.role = M.ROLE.HEALER
       else
         p.role = A.damagerRole:GetDamagerRole(p)
-        if p.role ~= M.ROLES.TANK and p.role ~= M.ROLES.HEALER then
+        if p.role ~= M.ROLE.TANK and p.role ~= M.ROLE.HEALER then
           p.isDamager = true
         end
       end
@@ -289,7 +289,7 @@ function M:GetUnknownNames()
   local p
   for _, name in ipairs(A.util:SortedKeys(R.roster, R.tmp2)) do
     p = R.roster[name]
-    if p.role == M.ROLES.UNKNOWN then
+    if p.role == M.ROLE.UNKNOWN then
       tinsert(names, A.util:UnitNameWithColor(name))
     end
   end
@@ -297,7 +297,7 @@ function M:GetUnknownNames()
 end
 
 function M:PrintIfThereAreUnknowns()
-  local u = R.roleCountsTHMRU[M.ROLES.UNKNOWN]
+  local u = R.roleCountsTHMRU[M.ROLE.UNKNOWN]
   if u > 0 then
     local line = format(L["phrase.waitingOnDataFromServerFor"], M:GetUnknownNames())
     line = line.." "..(u == 1 and L["phrase.assumingRangedForNow.singular"] or L["phrase.assumingRangedForNow.plural"])
@@ -352,19 +352,19 @@ function M:GetRoster()
 end
 
 function M:IsHealer(name)
-  return name and R.roster[name] and (R.roster[name].role == M.ROLES.HEALER)
+  return name and R.roster[name] and (R.roster[name].role == M.ROLE.HEALER)
 end
 
 function M:IsTank(name)
-  return name and R.roster[name] and (R.roster[name].role == M.ROLES.TANK)
+  return name and R.roster[name] and (R.roster[name].role == M.ROLE.TANK)
 end
 
 function M:IsMelee(name)
-  return name and R.roster[name] and (R.roster[name].role == M.ROLES.MELEE)
+  return name and R.roster[name] and (R.roster[name].role == M.ROLE.MELEE)
 end
 
 function M:IsRanged(name)
-  return name and R.roster[name] and (R.roster[name].role == M.ROLES.RANGED)
+  return name and R.roster[name] and (R.roster[name].role == M.ROLE.RANGED)
 end
 
 function M:IsDamager(name)

@@ -58,7 +58,7 @@ function M:FilterSystemMsg(event, message, ...)
     -- for the rest of this method.
   end
   local newComp = A.group:GetComp(5)
-  local role = player and A.group.ROLE_NAMES[player.role]
+  local role = player and A.group.ROLE_NAME[player.role]
   if role and role ~= "unknown" then
     role = format(" (%s)", A.util:LocaleLowerNoun(L["word."..role..".singular"]))
   elseif player and player.isDamager then

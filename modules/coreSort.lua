@@ -12,7 +12,7 @@ M.private = {
 local R = M.private
 
 local DELAY_ACTION = 0.01
--- ROLE_SORT_CHAR_x indexes correspond to A.group.ROLES constants (THMRU).
+-- ROLE_SORT_CHAR_x indexes correspond to A.group.ROLE constants (THMRU).
 local ROLE_SORT_CHAR_TMURH = {"a", "z", "b", "c", "c"}
 local ROLE_SORT_CHAR_THMUR = {"a", "b", "c", "d", "d"}
 local ROLE_PAD_CHAR, ROLE_PAD_PLAYER = "e", {name="_unknown", role=5, isDummy=true}
@@ -58,7 +58,7 @@ function M:BuildDelta()
   -- Sort keys.
   -- TODO: potential hook for plugins that want to implement a custom sort mode.
   if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
-    local TANK, HEALER = A.group.ROLES.TANK, A.group.ROLES.HEALER
+    local TANK, HEALER = A.group.ROLE.TANK, A.group.ROLE.HEALER
     local pa, pb
     sort(keys, function(a, b)
       pa, pb = playersByKey[a], playersByKey[b]

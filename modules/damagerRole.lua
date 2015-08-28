@@ -8,7 +8,7 @@ M.private = {
 }
 local R = M.private
 
-local CLASS_DAMAGER_ROLES = {
+local CLASS_DAMAGER_ROLE = {
   WARRIOR     = "melee",
   DEATHKNIGHT = "melee",
   PALADIN     = "melee",
@@ -23,7 +23,7 @@ local CLASS_DAMAGER_ROLES = {
   DEMONHUNTER = "melee",
 }
 -- We have to include tanks and healers to handle people who clear their role.
-local SPECID_ROLES = {
+local SPECID_ROLE = {
   [262] = "ranged",  -- Elemental Shaman
   [263] = "melee",   -- Enhancement Shaman
   [264] = "healer",  -- Restoration Shaman
@@ -91,7 +91,7 @@ function M:INSPECT_READY(event, guid)
   end
 
   local fullName = R.needToInspect[name]
-  local role = SPECID_ROLES[specId]
+  local role = SPECID_ROLE[specId]
   if not fullName then
     -- We didn't request this inspect, but let's see if we can make use of it.
     if not role or role == "tank" or role == "healer" or not UnitExists(name) then
@@ -149,30 +149,30 @@ end
 
 function M:GetDamagerRole(player)
   -- Check for unambiguous classes.
-  if player.class and CLASS_DAMAGER_ROLES[player.class] then
-    return (CLASS_DAMAGER_ROLES[player.class] == "melee") and A.group.ROLES.MELEE or A.group.ROLES.RANGED
+  if player.class and CLASS_DAMAGER_ROLE[player.class] then
+    return (CLASS_DAMAGER_ROLE[player.class] == "melee") and A.group.ROLE.MELEE or A.group.ROLE.RANGED
   end
 
   -- Sanity check unit name.
   if player.isUnknown or not player.name or not UnitExists(player.name) then
-    return A.group.ROLES.UNKNOWN
+    return A.group.ROLE.UNKNOWN
   end
 
   -- Ambiguous class, need to check spec.
   if UnitIsUnit(player.name, "player") then
     local specId = GetSpecializationInfo(GetSpecialization())
     if specId then
-      if SPECID_ROLES[specId] == "melee" then
-        return A.group.ROLES.MELEE
-      elseif SPECID_ROLES[specId] == "ranged" then
-        return A.group.ROLES.RANGED
-      elseif SPECID_ROLES[specId] == "tank" then
-        return A.group.ROLES.TANK
-      elseif SPECID_ROLES[specId] == "healer" then
-        return A.group.ROLES.HEALER
+      if SPECID_ROLE[specId] == "melee" then
+        return A.group.ROLE.MELEE
+      elseif SPECID_ROLE[specId] == "ranged" then
+        return A.group.ROLE.RANGED
+      elseif SPECID_ROLE[specId] == "tank" then
+        return A.group.ROLE.TANK
+      elseif SPECID_ROLE[specId] == "healer" then
+        return A.group.ROLE.HEALER
       end
     end
-    return A.group.ROLES.UNKNOWN
+    return A.group.ROLE.UNKNOWN
   end
 
   -- We're looking at another player. Try the session cache first.
@@ -181,23 +181,23 @@ function M:GetDamagerRole(player)
   -- request is complete.
   local fullName = A.util:NameAndRealm(player.name)
   if R.sessionCache.melee[fullName] then
-    return A.group.ROLES.MELEE
+    return A.group.ROLE.MELEE
   elseif R.sessionCache.ranged[fullName] then
-    return A.group.ROLES.RANGED
+    return A.group.ROLE.RANGED
   elseif R.sessionCache.tank[fullName] then
-    return A.group.ROLES.TANK
+    return A.group.ROLE.TANK
   elseif R.sessionCache.healer[fullName] then
-    return A.group.ROLES.HEALER
+    return A.group.ROLE.HEALER
   elseif A.db.faction.dpsRoleCache.melee[fullName] then
     if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.melee found %s", fullName) end
     requestInspect(player.name, fullName)
-    return A.group.ROLES.MELEE
+    return A.group.ROLE.MELEE
   elseif A.db.faction.dpsRoleCache.ranged[fullName] then
     if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.ranged found %s", fullName) end
     requestInspect(player.name, fullName)
-    return A.group.ROLES.RANGED
+    return A.group.ROLE.RANGED
   else
     requestInspect(player.name, fullName)
-    return A.group.ROLES.UNKNOWN
+    return A.group.ROLE.UNKNOWN
   end
 end
