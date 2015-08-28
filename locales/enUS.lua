@@ -1,6 +1,10 @@
 local L = LibStub("AceLocale-3.0"):NewLocale(..., "enUS", true)
 
--- Basic words and phrases
+-- Basic letters, words, phrases, and character names
+L["letter.1"] = "A"
+L["letter.2"] = "B"
+L["letter.3"] = "C"
+
 L["word.and"] = "and"
 L["word.or"] = "or"
 L["word.raid"] = "raid"
@@ -19,6 +23,7 @@ L["word.ranged.singular"] = "Ranged"
 L["word.ranged.plural"] = "Ranged"
 L["word.unknown.singular"] = "Unknown"
 L["word.unknown.plural"] = "Unknown"
+
 L["phrase.versionAuthor"] = "v%s by %s"
 L["phrase.waitingOnDataFromServerFor"] = "Waiting on data from the server for %s."
 L["phrase.assumingRangedForNow.singular"] = "Assuming they're ranged for now."
@@ -30,6 +35,8 @@ L["phrase.mouse.shiftClickRight"] = "Hold Shift + Right Click"
 L["phrase.mouse.ctrlClickLeft"] = "Hold Ctrl + Left Click"
 L["phrase.mouse.ctrlClickRight"] = "Hold Ctrl + Right Click"
 L["phrase.mouse.drag"] = "Hold Left Click + Drag"
+
+L["character.thrall"] = "Thrall"
 
 -- AddonChannel module
 L["addonChannel.print.newerVersion"] = "%s version %s is available. You're currently running version %s."
@@ -64,6 +71,7 @@ L["choose.help.tierToken"] = "choose a random player on a particular tier token:
 L["choose.help.blank"] = "choose any random player"
 L["choose.help.examples"] = "Type %s for examples."
 L["choose.examples.header"] = "Here are some ways to use the %s command:"
+
 L["choose.print.choosing.option"] = "Choosing a random option..."
 L["choose.print.choosing.group"] = "Choosing a random group with players in it..."
 L["choose.print.choosing.sitting"] = "Choosing a random player sitting in groups %d-8..."

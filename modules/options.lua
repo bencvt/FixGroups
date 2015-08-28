@@ -188,16 +188,15 @@ R.optionsTable = {
       desc = paragraphs({
         L["options.widget.enhanceGroupRelatedSystemMessages.desc.1"],
         L["options.widget.enhanceGroupRelatedSystemMessages.desc.2"],
-        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, "Thrall").."|r",
+        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, L["character.thrall"]).."|r",
         L["options.widget.enhanceGroupRelatedSystemMessages.desc.3"],
-        --TODO localize Thrall etc.
         --TODO make this a set of options, with a preview.
         -- [x] Class color
         -- [On|On with icon|Off] Add role
         -- [x] Colorize "joined"/"left" to green/red
         -- [style] Add group comp
         -- [x] Dim group comp color
-        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, format("|c%sThrall|r|cffffff00 (%s)", A.util:ClassColor("SHAMAN"), L["word.melee.singular"])).." |r"..HD(A.util:FormatGroupComp(5, 2, 4, 6, 8, 0).."."),
+        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, format("|c%s%s|r|cffffff00 (%s)", A.util:ClassColor("SHAMAN"), L["character.thrall"], L["word.melee.singular"])).." |r"..HD(A.util:FormatGroupComp(5, 2, 4, 6, 8, 0).."."),
       }),
       type = "toggle",
       width = "full",

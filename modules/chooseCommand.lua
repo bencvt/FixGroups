@@ -600,10 +600,10 @@ end
 
 function M:Mockup(addLine)
   local cmd = function(t) return format("|cffffffff> %s|r", t) end
-  local THRALL = "|r|c"..A.util:ClassColor("SHAMAN").."Thrall|r"
+  local THRALL = format("|r|c%s%s|r", A.util:ClassColor("SHAMAN"), L["character.thrall"])
   local lead = function(t) return format("|cffff4809[Raid Leader] [%s|cffff4809] %s|r", THRALL, t) end
   local raid = function(s, c, t) return format("|cffff7f00[Raid] [|c%s%s|r|cffff7f00] %s|r", A.util:ClassColor(c), s, t) end
-  local roll = function(r, lo, hi) return "|cffffff00"..format(RANDOM_ROLL_RESULT, "Thrall", r, lo, hi).."|r" end
+  local roll = function(r, lo, hi) return "|cffffff00"..format(RANDOM_ROLL_RESULT, L["character.thrall"], r, lo, hi).."|r" end
   addLine(lead("who is kiting the siegemakers?"))
   addLine(lead("no volunteers...i'll just pick someone"))
   addLine(cmd("/choose hunter"))
@@ -615,7 +615,7 @@ function M:Mockup(addLine)
   addLine(lead("any volunteers to get the last interrupt?"))
   addLine(lead("no one? okay, i'll find a \"volunteer\" =p"))
   addLine(cmd("/choose melee"))
-  addLine(lead(format(L["choose.print.choosing.melee"]).." 1=Darion 2=Garona 3=Garrosh 4=Staghelm 5=Taran 6=Thrall 7=Valeera 8=Varian 9=Yrel"))
+  addLine(lead(format(L["choose.print.choosing.melee"]).." 1=Darion 2=Garona 3=Garrosh 4=Staghelm 5=Taran 6="..L["character.thrall"].." 7=Valeera 8=Varian 9=Yrel"))
   addLine(roll(9, 1, 9))
   addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 9, "Yrel", 2)))
   addLine(" ")
