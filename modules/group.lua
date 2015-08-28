@@ -296,6 +296,15 @@ function M:GetUnknownNames()
   return A.util:LocaleTableConcat(names)
 end
 
+function M:PrintIfThereAreUnknowns()
+  local u = R.roleCountsTHMRU[M.ROLES.UNKNOWN]
+  if u > 0 then
+    local line = format(L["phrase.waitingOnDataFromServerFor"], M:GetUnknownNames())
+    line = line.." "..(u == 1 and L["phrase.assumingRangedForNow.singular"] or L["phrase.assumingRangedForNow.plural"])
+    A.console:Print(line)
+  end
+end
+
 function M:GetSize()
   return R.size
 end

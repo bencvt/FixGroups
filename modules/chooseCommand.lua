@@ -1,5 +1,5 @@
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("chooseCommand", "AceConsole-3.0", "AceEvent-3.0")
+local M = A:NewModule("chooseCommand", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
 A.chooseCommand = M
 M.private = {
   options = {},
@@ -310,8 +310,10 @@ local function choosePlayer(mode, arg)
         include = UnitIsInMyGuild(player.unitID)
       elseif mode == "damager" then
         include = player.isDamager
-      elseif mode == A.group.ROLE_NAMES[player.role] then
-        include = true
+      elseif mode == "tank" or mode == "healer" or mode == "melee" then
+        include = (A.group.ROLE_NAMES[player.role] == mode)
+      elseif mode == "ranged" then
+        include = (A.group.ROLE_NAMES[player.role] == "ranged" or A.group.ROLE_NAMES[player.role] == "unknown")
       else
         include = validClasses[player.class]
       end
@@ -355,6 +357,10 @@ local function choosePlayer(mode, arg)
   local line = format(L["choose.print.choosing."..mode], arg, arg2)
   if mode == "sitting" and arg >= 8 then
     line = L["choose.print.choosing.sitting.noGroups"]
+  end
+
+  if mode == "melee" or mode == "ranged" then
+    A.group:PrintIfThereAreUnknowns()
   end
 
   if #R.options > 0 then

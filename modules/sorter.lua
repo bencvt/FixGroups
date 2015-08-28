@@ -107,6 +107,7 @@ local function start(mode)
   if M:StopIfNeeded() then
     return
   end
+  A.group:PrintIfThereAreUnknowns()
   if M:IsSortingByMeter() or M:IsSplittingRaid() then
     -- Damage/healing meter snapshot is built once at the start,
     -- not once every step.

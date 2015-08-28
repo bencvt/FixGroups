@@ -7,6 +7,7 @@ v1.3:
   - group comp includes melee and ranged counts
   - group comp correctly excludes sitting players
   - when sorting healers last in non-full Mythic and Raid Finder groups, ensure they're in the same group
+  - when sorting a group with a DPS Shaman or Druid that we haven't inspected yet, note that they'll be sorted as ranged for now
   - use Blizzard's standard class order for sorting (as of 6.x: Warrior>DK>Paladin>Monk>Priest>Shaman>Druid>Rogue>Mage>Warlock>Hunter)
   - console commands are now case-insensitive
 

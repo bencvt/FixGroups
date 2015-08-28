@@ -190,7 +190,14 @@ R.optionsTable = {
         L["options.widget.enhanceGroupRelatedSystemMessages.desc.2"],
         "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, "Thrall").."|r",
         L["options.widget.enhanceGroupRelatedSystemMessages.desc.3"],
-        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, format("|c%sThrall|r|cffffff00 (%s)", A.util:ClassColor("SHAMAN"), A.util:LocaleLowerNoun(L["word.melee.singular"]))).." |r"..HD(A.util:FormatGroupComp(5, 2, 4, 6, 8, 0).."."),
+        --TODO localize Thrall etc.
+        --TODO make this a set of options, with a preview.
+        -- [x] Class color
+        -- [On|On with icon|Off] Add role
+        -- [x] Colorize "joined"/"left" to green/red
+        -- [style] Add group comp
+        -- [x] Dim group comp color
+        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, format("|c%sThrall|r|cffffff00 (%s)", A.util:ClassColor("SHAMAN"), L["word.melee.singular"])).." |r"..HD(A.util:FormatGroupComp(5, 2, 4, 6, 8, 0).."."),
       }),
       type = "toggle",
       width = "full",
