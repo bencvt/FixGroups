@@ -152,28 +152,6 @@ function M:CHAT_MSG_SYSTEM(event, message)
   sendMessage(format(L["choose.print.chose.option"], choseIndex, choseValue), false, true)
 end
 
-function M:PrintHelp()
-  local validTokens = format("%s, %s%s %s %s", H(L["choose.player.tierToken.conqueror.short"]), H(L["choose.player.tierToken.protector.short"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.player.tierToken.vanquisher.short"]))
-  local validRoles = format("%s, %s, %s, %s, %s%s %s %s", H(L["choose.player.any"]), H(L["choose.player.tank"]), H(L["choose.player.healer"]), H(L["choose.player.damager"]), H(L["choose.player.melee"]), A.util:LocaleSerialComma(), L["word.or"], H(L["choose.player.ranged"]))
-  A.console:Printf(L["phrase.versionAuthor"], A.VERSION, HA(A.AUTHOR))
-  print(format(L["choose.help.header"], H("/choose"), H("/fg choose")))
-  print(format("  %s - %s", H("/choose "..L["choose.help.option.arg"]), L["choose.help.option"]))
-  print(format("  %s - %s", H("/choose "..L["choose.help.class.arg"]), L["choose.help.class"]))
-  print(format("  %s - %s", H("/choose "..L["choose.help.tierToken.arg"]), format(L["choose.help.tierToken"], validTokens)))
-  print(format("  %s - %s", H("/choose "..L["choose.help.role.arg"]), format(L["choose.help.role"], validRoles)))
-  print(format(L["choose.help.examples"], H("/choose examples")))
-end
-
-function M:PrintExamples()
-  A.console:Printf(L["phrase.versionAuthor"], A.VERSION, HA(A.AUTHOR))
-  print(format(L["choose.examples.header"], H("/choose")))
-  print("  "..H(format("/choose %s", L["choose.role.melee"])))
-  print("  "..H(format("/choose %s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["HUNTER"]))))
-  print("  "..H(format("/choose %s", L["choose.examples.playerNames"])))
-  print("  "..H(format("/choose %s", L["choose.examples.giveUpOrNot"])))
-  print("  "..H(format("/choose %s", L["choose.examples.raids"])))
-end
-
 local function announceChoicesAndRoll(reallyRoll, line)
   -- Announce exactly what we'll be rolling on.
   -- Use on multiple lines if needed.
@@ -447,10 +425,14 @@ local function buildDispatchTable()
 
   -- Base dispatch table.
   DISPATCH_TABLE = {
-    help          ={M.PrintHelp},
-    about         ={M.PrintHelp},
-    example       ={M.PrintExamples},
-    examples      ={M.PrintExamples},
+    [""]          ={A.chooseGui.Open},
+    window        ={A.chooseGui.Open},
+    gui           ={A.chooseGui.Open},
+    ui            ={A.chooseGui.Open},
+    help          ={A.chooseGui.Open},
+    about         ={A.chooseGui.Open},
+    example       ={A.chooseGui.Open},
+    examples      ={A.chooseGui.Open},
     group         ={chooseGroup},
     party         ={chooseGroup},
     guildmate     ={choosePlayer, "guildmate"},
@@ -609,9 +591,6 @@ function M:Command(args)
     if func == chooseLast then
       return
     end
-  elseif args == "" then
-    -- TODO: GUI
-    M:PrintHelp()
   elseif strfind(args, SPACE_OR_SPACE) then
     chooseOption(",", gsub(args, SPACE_OR_SPACE, ","))
   elseif strfind(args, ",") then

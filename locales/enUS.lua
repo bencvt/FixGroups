@@ -59,19 +59,6 @@ L["chatKeyword.fixGroups"] = "fix groups"
 L["chatKeyword.markTanks"] = "mark tanks"
 
 -- Choose module
-L["choose.help.header"] = "Arguments for the %s command (or %s):"
-L["choose.help.option.arg"] = "<option1>, <option2>[, <option3> etc.]"
-L["choose.help.option"] = "choose a random option"
-L["choose.help.role.arg"] = "<role>"
-L["choose.help.role"] = "choose a random player, role can be %s"
-L["choose.help.class.arg"] = "<class>"
-L["choose.help.class"] = "choose a random player of a particular class"
-L["choose.help.tierToken.arg"] = "<token>"
-L["choose.help.tierToken"] = "choose a random player on a particular tier token: %s"
-L["choose.help.blank"] = "choose any random player"
-L["choose.help.examples"] = "Type %s for examples."
-L["choose.examples.header"] = "Here are some ways to use the %s command:"
-
 L["choose.print.choosing.option"] = "Choosing a random option..."
 L["choose.print.choosing.group"] = "Choosing a random group with players in it..."
 L["choose.print.choosing.sitting"] = "Choosing a random player sitting in groups %d-8..."
@@ -121,10 +108,6 @@ L["choose.player.tierToken.vanquisher"] = "Vanquisher"
 L["choose.player.tierToken.conqueror.short"] = "conq"
 L["choose.player.tierToken.protector.short"] = "prot"
 L["choose.player.tierToken.vanquisher.short"] = "vanq"
-
-L["choose.examples.playerNames"] = "Thisplayer Thatplayer"
-L["choose.examples.giveUpOrNot"] = "give up or keep going"
-L["choose.examples.raids"] = "Highmaul, Blackrock Foundry, Hellfire Citadel"
 
 -- Choose GUI module
 L["choose.gui.title"] = "%s command"
