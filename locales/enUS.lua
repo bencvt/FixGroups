@@ -127,8 +127,8 @@ L["choose.classAliases.demonhunter"] = "dh"
 -- Choose GUI module
 L["choose.gui.title"] = "%s command"
 L["choose.gui.intro"] = "Need to flip a coin to make a decision? Use the %s command to randomly select an option or a player. The choice will be instant, transparent, and fair thanks to WoW's built-in /roll command."
-L["choose.gui.header.buttons"] = "% command arguments"
-L["choose.gui.header.examples"] = "Examples of the % command in action"
+L["choose.gui.header.buttons"] = "%s command arguments"
+L["choose.gui.header.examples"] = "Examples of the %s command in action"
 
 -- Console module
 L["console.help.header"] = "Arguments for the %s command (or %s):"
