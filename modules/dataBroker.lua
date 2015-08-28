@@ -11,12 +11,16 @@ local NOT_IN_GROUP = HD(L["dataBroker.groupComp.notInGroup"])
 local ICON_TANK, ICON_HEALER, ICON_DAMAGER = A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER
 
 local format, tostring = format, tostring
-local IsAddOnLoaded, IsInGroup, IsInRaid = IsAddOnLoaded, IsInGroup, IsInRaid
+local IsAddOnLoaded, IsInGroup, IsInRaid, IsShiftKeyDown = IsAddOnLoaded, IsInGroup, IsInRaid, IsShiftKeyDown
 -- GLOBALS: C_LFGList, LibStub
 
 local function groupCompOnClick(frame, button)
   if A.DEBUG >= 2 then A.console:Debugf(M, "groupCompOnClick frame=%s button=%s", tostring(frame or "<nil>"), tostring(button or "<nil>")) end
-  A.util:ToggleRaidTab()
+  if IsShiftKeyDown() then
+    A.util:InsertText(A.group:GetComp(5))
+  else
+    A.util:ToggleRaidTab()
+  end
 end
 
 local function groupCompOnTooltipShow(tooltip)
@@ -54,7 +58,7 @@ local function groupCompOnTooltipShow(tooltip)
 end
 
 function M:OnEnable()
-  -- See also: the gui module, which defines another LDB DataObject for the
+  -- See also: the buttonGui module, which defines another LDB DataObject for the
   -- minimap icon (type="launcher").
   local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
   R.groupComp = {
