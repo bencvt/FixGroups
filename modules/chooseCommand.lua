@@ -19,7 +19,7 @@ local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0
 local DELAY_GROUP_ROLL = 0.5
 -- Lazily populated.
-local DISPATCH_TABLE, CLASS_ALIASES = false, false
+local DISPATCH_TABLE, CLASS_ALIAS = false, false
 local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
 
 L["choose.player.tank"]     = A.util:LocaleLowerNoun(L["word.tank.singular"])
@@ -382,7 +382,7 @@ local function chooseMultipleClasses(args)
   local validClasses = wipe(R.tmp1)
   local found
   for c in gmatch(strlower(args), "[^/%+%|]+") do
-    c = CLASS_ALIASES[strtrim(c)]
+    c = CLASS_ALIAS[strtrim(c)]
     if not c then
       return false
     end
@@ -514,9 +514,9 @@ local function buildDispatchTable()
     ["\""]        ={chooseLast},
   }
   -- Add non-localized class names.
-  CLASS_ALIASES = {}
+  CLASS_ALIAS = {}
   for _, class in ipairs(CLASS_SORT_ORDER) do
-    CLASS_ALIASES[strlower(class)] = class
+    CLASS_ALIAS[strlower(class)] = class
     DISPATCH_TABLE[strlower(class)] = {choosePlayer, "class", {[class]=true}}
   end
 
@@ -526,38 +526,38 @@ local function buildDispatchTable()
 
   -- Add localized class names.
   for class, alias in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-    CLASS_ALIASES[gsub(strlower(alias), " ", "")] = class
+    CLASS_ALIAS[gsub(strlower(alias), " ", "")] = class
   end
   for class, alias in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-    CLASS_ALIASES[gsub(strlower(alias), " ", "")] = class
+    CLASS_ALIAS[gsub(strlower(alias), " ", "")] = class
   end
   -- Add shorthand aliases.
-  CLASS_ALIASES["warr"] = "WARRIOR"
-  CLASS_ALIASES["dk"] = "DEATHKNIGHT"
-  CLASS_ALIASES["pal"] = "PALADIN"
-  CLASS_ALIASES["pala"] = "PALADIN"
-  CLASS_ALIASES["pally"] = "PALADIN"
-  CLASS_ALIASES["lock"] = "WARLOCK"
-  CLASS_ALIASES["sham"] = "SHAMAN"
-  CLASS_ALIASES["shammy"] = "SHAMAN"
-  CLASS_ALIASES["dh"] = "DEMONHUNTER"
+  CLASS_ALIAS["warr"] = "WARRIOR"
+  CLASS_ALIAS["dk"] = "DEATHKNIGHT"
+  CLASS_ALIAS["pal"] = "PALADIN"
+  CLASS_ALIAS["pala"] = "PALADIN"
+  CLASS_ALIAS["pally"] = "PALADIN"
+  CLASS_ALIAS["lock"] = "WARLOCK"
+  CLASS_ALIAS["sham"] = "SHAMAN"
+  CLASS_ALIAS["shammy"] = "SHAMAN"
+  CLASS_ALIAS["dh"] = "DEMONHUNTER"
   -- Best guesses at non-English shorthand. Feel free to open a ticket if
   -- there's a commonly-used shorthand/slang for a WoW class in your language
   -- missing from this list.
-  CLASS_ALIASES["guerr"] = "WARRIOR"
-  CLASS_ALIASES["chevalier"] = "DEATHKNIGHT" -- frFR Chevalier de la mort
-  CLASS_ALIASES["caballero"] = "DEATHKNIGHT" -- esES/esMX Caballero de la Muerte
-  CLASS_ALIASES["cavaleiro"] = "DEATHKNIGHT" -- ptBR Cavaleiro da Morte
-  CLASS_ALIASES["cavaliere"] = "DEATHKNIGHT" -- itIT Cavaliere della Morte
-  CLASS_ALIASES["chev"] = "DEATHKNIGHT"
-  CLASS_ALIASES["cab"] = "DEATHKNIGHT"
-  CLASS_ALIASES["cav"] = "DEATHKNIGHT"
-  CLASS_ALIASES["hexen"] = "WARLOCK" -- deDE Hexenmeister/Hexenmeisterin
-  CLASS_ALIASES["scham"] = "SHAMAN"
-  CLASS_ALIASES["cham"] = "SHAMAN"
-  CLASS_ALIASES["xam"] = "SHAMAN"
+  CLASS_ALIAS["guerr"] = "WARRIOR"
+  CLASS_ALIAS["chevalier"] = "DEATHKNIGHT" -- frFR Chevalier de la mort
+  CLASS_ALIAS["caballero"] = "DEATHKNIGHT" -- esES/esMX Caballero de la Muerte
+  CLASS_ALIAS["cavaleiro"] = "DEATHKNIGHT" -- ptBR Cavaleiro da Morte
+  CLASS_ALIAS["cavaliere"] = "DEATHKNIGHT" -- itIT Cavaliere della Morte
+  CLASS_ALIAS["chev"] = "DEATHKNIGHT"
+  CLASS_ALIAS["cab"] = "DEATHKNIGHT"
+  CLASS_ALIAS["cav"] = "DEATHKNIGHT"
+  CLASS_ALIAS["hexen"] = "WARLOCK" -- deDE Hexenmeister/Hexenmeisterin
+  CLASS_ALIAS["scham"] = "SHAMAN"
+  CLASS_ALIAS["cham"] = "SHAMAN"
+  CLASS_ALIAS["xam"] = "SHAMAN"
   local d
-  for alias, class in pairs(CLASS_ALIASES) do
+  for alias, class in pairs(CLASS_ALIAS) do
     d = DISPATCH_TABLE[strlower(class)]
     if d then
       add[alias] = d
@@ -689,8 +689,8 @@ end
 
 function M:DebugPrintClassAliases()
   buildDispatchTable()
-  A.console:Debug(M, "CLASS_ALIASES:")
-  for _, alias in pairs(A.util:SortedKeys(CLASS_ALIASES, R.tmp1)) do
-    A.console:DebugMore(M, format("  %s=%s", alias, CLASS_ALIASES[alias]))
+  A.console:Debug(M, "CLASS_ALIAS:")
+  for _, alias in pairs(A.util:SortedKeys(CLASS_ALIAS, R.tmp1)) do
+    A.console:DebugMore(M, format("  %s=%s", alias, CLASS_ALIAS[alias]))
   end
 end
