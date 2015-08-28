@@ -374,7 +374,7 @@ end
 local function chooseMultipleClasses(args)
   local validClasses = wipe(R.tmp1)
   local found
-  for c in gmatch(strlower(args), "[^/]+") do
+  for c in gmatch(strlower(args), "[^/%+%|]+") do
     c = CLASS_ALIASES[strtrim(c)]
     if not c then
       return false
@@ -455,6 +455,8 @@ local function buildDispatchTable()
     idle          ={choosePlayer, "sitting"},
     anyincludingsitting ={choosePlayer, "anyIncludingSitting"},
     anysitting          ={choosePlayer, "anyIncludingSitting"},
+    ["any+sitting"]     ={choosePlayer, "anyIncludingSitting"},
+    ["any|sitting"]     ={choosePlayer, "anyIncludingSitting"},
     ["any/sitting"]     ={choosePlayer, "anyIncludingSitting"},
     notme         ={choosePlayer, "notMe"},
     somebodyelse  ={choosePlayer, "notMe"},
