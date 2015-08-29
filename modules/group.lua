@@ -39,6 +39,8 @@ local tconcat = table.concat
 local GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName
 
 function M:OnEnable()
+  -- TODO also PLAYER_ENTERING_WORLD.
+  -- TODO for PLAYER_SPECIALIZATION_CHANGED, whichever player it was should have their entry (if any) damagerRole session cache cleared prior to the roster rebuild.
   local rebuild = function(event) M:ForceBuildRoster(M, event) end
   for _, event in ipairs({"GROUP_ROSTER_UPDATE", "PLAYER_SPECIALIZATION_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}) do
     M:RegisterEvent(event, rebuild)

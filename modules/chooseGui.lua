@@ -49,6 +49,7 @@ local function addModeButton(frame, mode, modeType)
       return
     end
     A.chooseCommand:Command(mode)
+    -- TODO close window unless IsCtrlKeyDown
   end)
   button:SetCallback("OnEnter", function(widget)
     -- TODO show a tooltip with localized description and list of aliases

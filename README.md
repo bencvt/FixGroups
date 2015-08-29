@@ -24,9 +24,10 @@ Other features:
 
 ## Links
 
-For players:
+For players, you can download and install this addon from:
 
- * Download and install this addon from http://www.curse.com/addons/wow/fixgroups
+ * Curse: http://www.curse.com/addons/wow/fixgroups
+ * TODO mirror
 
 For developers, beta testers, and translators (anyone is welcome to contribute):
 
