@@ -8,8 +8,10 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
-local format, tinsert = format, tinsert
+local format, gsub, ipairs, strlower, tinsert = format, gsub, ipairs, strlower, tinsert
 local tconcat = table.concat
+local GameFontHighlight, IsShiftKeyDown, UIParent = GameFontHighlight, IsShiftKeyDown, UIParent
+local CLASS_SORT_ORDER = CLASS_SORT_ORDER
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -31,12 +33,26 @@ local function onLeaveButton(widget)
   R.window:SetStatusText("")
 end
 
+local function getCommand(mode, modeType)
+  if modeType == "option" then
+    mode = gsub(mode, ",%s*%.+", "")
+  end
+  return "/choose "..mode
+end
+
 local function addModeButton(frame, mode, modeType)
   local button = AceGUI:Create("Button")
   button:SetText(mode)
+  button:SetCallback("OnClick", function(widget)
+    if IsShiftKeyDown() then
+      A.util:InsertText(getCommand(mode, modeType))
+      return
+    end
+    A.chooseCommand:Command(mode)
+  end)
   button:SetCallback("OnEnter", function(widget)
     -- TODO show a tooltip with localized description and list of aliases
-    R.window:SetStatusText(H("/choose "..mode))
+    R.window:SetStatusText(H(getCommand(mode, modeType)))
   end)
   button:SetCallback("OnLeave", onLeaveButton)
   button:SetWidth(104)
@@ -120,8 +136,9 @@ function M:Open()
   addModeButton(c, "g8", "fromGroup")
   addModeButton(c, "group")
   addPadding(c)
-  addModeButton(c, "A or B")
-  addModeButton(c, "A, B, C, ...")
+  addModeButton(c, "A or B", "option")
+  addModeButton(c, "A, B, C, ...", "option")
+  addModeButton(c, "last")
   addPadding(c)
 
   widget = AceGUI:Create("Heading")

@@ -18,9 +18,11 @@ local H, HA = A.util.Highlight, A.util.HighlightAddon
 local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0
 local DELAY_GROUP_ROLL = 0.5
--- Lazily populated.
-local DISPATCH_TABLE, CLASS_ALIAS = false, false
 local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
+-- DISPATCH_TABLE, CLASS_ALIAS, and M. are lazily populated.
+local DISPATCH_TABLE = false
+local CLASS_ALIAS = false
+M.MODE_ALIASES = false
 
 local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
 local tconcat = table.concat
@@ -420,99 +422,145 @@ local function buildDispatchTable()
     return
   end
 
-  -- Base dispatch table.
-  DISPATCH_TABLE = {
-    [""]          ={A.chooseGui.Open},
-    window        ={A.chooseGui.Open},
-    gui           ={A.chooseGui.Open},
-    ui            ={A.chooseGui.Open},
-    help          ={A.chooseGui.Open},
-    about         ={A.chooseGui.Open},
-    example       ={A.chooseGui.Open},
-    examples      ={A.chooseGui.Open},
-    group         ={chooseGroup},
-    party         ={chooseGroup},
-    guildmate     ={choosePlayer, "guildmate"},
-    guildie       ={choosePlayer, "guildmate"},
-    guildy        ={choosePlayer, "guildmate"},
-    guild         ={choosePlayer, "guildmate"},
-    any           ={choosePlayer, "any"},
-    anyone        ={choosePlayer, "any"},
-    anybody       ={choosePlayer, "any"},
-    someone       ={choosePlayer, "any"},
-    somebody      ={choosePlayer, "any"},
-    player        ={choosePlayer, "any"},
-    sitting       ={choosePlayer, "sitting"},
-    bench         ={choosePlayer, "sitting"},
-    standby       ={choosePlayer, "sitting"},
-    inactive      ={choosePlayer, "sitting"},
-    idle          ={choosePlayer, "sitting"},
-    anyincludingsitting ={choosePlayer, "anyIncludingSitting"},
-    anysitting          ={choosePlayer, "anyIncludingSitting"},
-    ["any+sitting"]     ={choosePlayer, "anyIncludingSitting"},
-    ["any|sitting"]     ={choosePlayer, "anyIncludingSitting"},
-    ["any/sitting"]     ={choosePlayer, "anyIncludingSitting"},
-    notme         ={choosePlayer, "notMe"},
-    somebodyelse  ={choosePlayer, "notMe"},
-    dead          ={choosePlayer, "dead"},
-    alive         ={choosePlayer, "alive"},
-    live          ={choosePlayer, "alive"},
-    living        ={choosePlayer, "alive"},
-    tank          ={choosePlayer, "tank"},
-    healer        ={choosePlayer, "healer"},
-    heal          ={choosePlayer, "healer"},
-    damager       ={choosePlayer, "damager"},
-    damage        ={choosePlayer, "damager"},
-    dps           ={choosePlayer, "damager"},
-    dd            ={choosePlayer, "damager"},
-    melee         ={choosePlayer, "melee"},
-    ranged        ={choosePlayer, "ranged"},
-    conqueror     ={choosePlayer, "conqueror", "tierToken"},
-    conq          ={choosePlayer, "conqueror", "tierToken"},
-    protector     ={choosePlayer, "protector", "tierToken"},
-    prot          ={choosePlayer, "protector", "tierToken"},
-    vanquisher    ={choosePlayer, "vanquisher", "tierToken"},
-    vanq          ={choosePlayer, "vanquisher", "tierToken"},
-    intellect     ={choosePlayer, "intellect", "tierToken"},
-    intel         ={choosePlayer, "intellect", "tierToken"},
-    int           ={choosePlayer, "intellect", "tierToken"},
-    agility       ={choosePlayer, "agility", "tierToken"},
-    agi           ={choosePlayer, "agility", "tierToken"},
-    strength      ={choosePlayer, "strength", "tierToken"},
-    str           ={choosePlayer, "strength", "tierToken"},
-    cloth         ={choosePlayer, "cloth", "armor"},
-    leather       ={choosePlayer, "leather", "armor"},
-    mail          ={choosePlayer, "mail", "armor"},
-    plate         ={choosePlayer, "plate", "armor"},
-    last          ={chooseLast},
-    again         ={chooseLast},
-    previous      ={chooseLast},
-    prev          ={chooseLast},
-    ["repeat"]    ={chooseLast},
-    ["^"]         ={chooseLast},
-    ["\""]        ={chooseLast},
-  }
-  -- Add non-localized class names.
+  DISPATCH_TABLE = {}
   CLASS_ALIAS = {}
-  local classLower
+  R.MODE_ALIASES = {}
+
+  local function clean(mode)
+    return gsub(strlower(mode), "%s+", "")
+  end
+  
+  local function add(mode, d, okayToOverwrite)
+    local cmd = clean(mode)
+    if DISPATCH_TABLE[cmd] and not okayToOverwrite then
+      A.console:Errorf(M, "duplicate definition for [%s] mode", mode)
+    end
+    DISPATCH_TABLE[cmd] = d
+    d.primary = mode
+    d.alias = function(...)
+      for i = 1, select("#", ...) do
+        cmd = clean(select(i, ...))
+        -- First come first serve
+        if not DISPATCH_TABLE[cmd] then
+          DISPATCH_TABLE[cmd] = d
+        end
+      end
+      return d
+    end
+    return d
+  end
+
+  local d, classLower
+
+  -- Basic modes and non-localized aliases.
+  add("gui", {A.chooseGui.Open}).alias(
+      "ui",
+      "window",
+      "",
+      "help",
+      "about",
+      "example",
+      "examples")
+  add("group", {chooseGroup}).alias(
+      "party")
+  add("guildmate", {choosePlayer, "guildmate"}).alias(
+      "guildie",
+      "guildy",
+      "guild")
+  add("any", {choosePlayer, "any"}).alias(
+      "anyone",
+      "anybody",
+      "someone",
+      "somebody",
+      "player")
+  add("sitting", {choosePlayer, "sitting"}).alias(
+      "benched",
+      "bench",
+      "standby",
+      "inactive",
+      "idle")
+  add("anyIncludingSitting", {choosePlayer, "anyIncludingSitting"}).alias(
+      "any+sitting",
+      "any|sitting",
+      "standby",
+      "inactive",
+      "idle")
+  add("notMe", {choosePlayer, "notMe"}).alias(
+      "somebodyElse")
+  add("dead", {choosePlayer, "dead"})
+  add("alive", {choosePlayer, "alive"}).alias(
+      "live",
+      "living")
+  add("tank", {choosePlayer, "tank"})
+  add("healer", {choosePlayer, "tank"}).alias(
+      "heal")
+  add("damager", {choosePlayer, "damager"}).alias(
+      "damage",
+      "dps",
+      "dd")
+  add("melee", {choosePlayer, "melee"})
+  add("ranged", {choosePlayer, "ranged"}).alias(
+      "range")
+  add("conqueror", {choosePlayer, "conqueror", "tierToken"}).alias(
+      "conq")
+  add("protector", {choosePlayer, "protector", "tierToken"}).alias(
+      "prot")
+  add("vanquisher", {choosePlayer, "vanquisher", "tierToken"}).alias(
+      "vanq")
+  add("intellect", {choosePlayer, "intellect", "primaryStat"}).alias(
+      "intel",
+      "int")
+  add("agility", {choosePlayer, "agility", "primaryStat"}).alias(
+      "agi")
+  add("strength", {choosePlayer, "strength", "primaryStat"}).alias(
+      "str")
+  add("cloth", {choosePlayer, "strength", "armor"})
+  add("leather", {choosePlayer, "leather", "armor"})
+  add("mail", {choosePlayer, "mail", "armor"})
+  add("plate", {choosePlayer, "plate", "armor"})
+  add("last", {chooseLast}).alias(
+    "again",
+    "repeat",
+    "^",
+    "\"",
+    "previous",
+    "prev")
+
+  -- Localized aliases for basic modes.
+  for _, d in pairs(DISPATCH_TABLE) do
+    if d.primary then
+      for alias in gmatch(clean(L["choose.modeAliases."..d.primary]), "[^,]+") do
+        if alias ~= "" then
+          d.alias(alias)
+        end
+      end
+    end
+  end
+  -- Just in case they got missed in the locale file:
+  for _, role in ipairs({"tank", "healer", "damager", "melee", "ranged"}) do
+    for _, number in ipairs({"singular", "plural"}) do
+      DISPATCH_TABLE[role].alias(clean((L["word."..role.."."..number])))
+    end
+  end
+
+  -- group1, group2, etc., and their localized aliases.
+  for i = 1, 8 do
+    d = {choosePlayer, i, "fromGroup"}
+    add("g"..i, d, true).alias("group"..i, "party"..i)
+    for alias in gmatch(clean(L["choose.modeAliases.fromGroup"]), "[^,]+") do
+      if alias ~= "" then
+        d.alias(alias..i)
+      end
+    end
+  end
+
+  -- Non-localized class names.
   for _, class in ipairs(CLASS_SORT_ORDER) do
     classLower = strlower(class)
     CLASS_ALIAS[classLower] = class
-    DISPATCH_TABLE[classLower] = {choosePlayer, classLower, "class"}
+    add(classLower, {choosePlayer, classLower, "class"}, true)
   end
-
-  -- Start a second table of command aliases, staged to be merged into
-  -- DISPATCH_TABLE later on.
-  local add = wipe(R.tmp1)
-
-  -- Add localized class names.
-  for class, alias in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-    CLASS_ALIAS[gsub(strlower(alias), "%s+", "")] = class
-  end
-  for class, alias in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
-    CLASS_ALIAS[gsub(strlower(alias), "%s+", "")] = class
-  end
-  -- Add non-localized shorthand class aliases.
+  -- Non-localized shorthand class aliases.
   CLASS_ALIAS["warr"] = "WARRIOR"
   CLASS_ALIAS["dk"] = "DEATHKNIGHT"
   CLASS_ALIAS["pal"] = "PALADIN"
@@ -522,58 +570,26 @@ local function buildDispatchTable()
   CLASS_ALIAS["sham"] = "SHAMAN"
   CLASS_ALIAS["shammy"] = "SHAMAN"
   CLASS_ALIAS["dh"] = "DEMONHUNTER"
-  -- Add localized shorthand class aliases.
+  -- Localized class names.
+  for class, alias in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+    CLASS_ALIAS[clean(alias)] = class
+  end
+  for class, alias in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+    CLASS_ALIAS[clean(alias)] = class
+  end
+  -- Localized shorthand class aliases.
   for _, class in ipairs(CLASS_SORT_ORDER) do
-    for alias in gmatch(gsub(strlower(L["choose.classAliases."..strlower(class)]), "%s+", ""), "[^,]+") do
+    for alias in gmatch(clean(L["choose.classAliases."..strlower(class)]), "[^,]+") do
       if alias ~= "" then
         CLASS_ALIAS[alias] = class
       end
     end
   end
-  -- Add all class aliases to the staging table.
-  local d
+  -- Load all class aliases to the dispatch table.
   for alias, class in pairs(CLASS_ALIAS) do
     d = DISPATCH_TABLE[strlower(class)]
     if d then
-      add[alias] = d
-    end
-  end
-
-  -- Add group1, group2, etc., and their localized aliases.
-  for i = 1, 8 do
-    local d = {choosePlayer, i, "fromGroup"}
-    add["g"..i] = d
-    add["group"..i] = d
-    add["party"..i] = d
-    for alias in gmatch(gsub(strlower(L["choose.modeAliases.fromGroup"]), "%s+", ""), "[^,]+") do
-      if alias ~= "" then
-        add[alias..i] = d
-      end
-    end
-  end
-
-  -- Add localized aliases for various other modes.
-  for mode in gmatch("group,guildmate,any,sitting,anyIncludingSitting,notMe,dead,alive,tank,healer,damager,melee,ranged,conqueror,protector,vanquisher,intellect,agility,strength,cloth,leather,mail,plate", "[^,]+") do
-    for alias in gmatch(gsub(strlower(L["choose.modeAliases."..mode]), "%s+", ""), "[^,]+") do
-      if alias ~= "" then
-        add[alias] = DISPATCH_TABLE[strlower(mode)]
-      end
-    end
-  end
-  -- Just in case they got missed in the locale file:
-  for _, role in ipairs({"tank", "healer", "damager", "melee", "ranged"}) do
-    for _, number in ipairs({"singular", "plural"}) do
-      add[gsub(strlower(L["word."..role.."."..number]), "%s+", "")] = DISPATCH_TABLE[role]
-    end
-  end
-
-  -- Finally, merge into DISPATCH_TABLE, with original entries taking
-  -- precedence over aliases.
-  for cmd, d in pairs(add) do
-    if strfind(cmd, "[%s,]") or cmd ~= strlower(strtrim(cmd)) or cmd == "" then
-      A.console:Errorf(M, "bad localized key [%s] for {%s}", cmd, A.util:AutoConvertTableConcat(d, ","))
-    elseif not DISPATCH_TABLE[cmd] then
-      DISPATCH_TABLE[cmd] = d
+      d.alias(alias)
     end
   end
 end
@@ -606,7 +622,7 @@ end
 function M:Mockup(addLine)
   local cmd = function(t) return format("|cffffffff> %s|r", t) end
   local THRALL = format("|r|c%s%s|r", A.util:ClassColor("SHAMAN"), L["character.thrall"])
-  local lead = function(t) return format("|cffff4809[Raid Leader] [%s|cffff4809] %s|r", THRALL, t) end
+  local lead = function(t) return format("|cffff7f00[Raid] [%s|cffff7f00] %s|r", THRALL, t) end
   local raid = function(s, c, t) return format("|cffff7f00[Raid] [|c%s%s|r|cffff7f00] %s|r", A.util:ClassColor(c), s, t) end
   local roll = function(r, lo, hi) return "|cffffff00"..format(RANDOM_ROLL_RESULT, L["character.thrall"], r, lo, hi).."|r" end
   addLine(lead("who is kiting the siegemakers?"))
