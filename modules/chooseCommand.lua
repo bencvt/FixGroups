@@ -133,7 +133,7 @@ function M:CHAT_MSG_SYSTEM(event, message)
   -- We have a match. Reset for the next /choose command and parse it.
   stopExpecting()
   local v = strsub(message, i + strlen(prefix))
-  v = strsub(v, 1, strfind(v, " "))
+  v = strsub(v, 1, strfind(v, "%s"))
   local choseIndex = tonumber(strtrim(v))
   local choseValue = choseIndex > 0 and choseIndex <= #R.options and R.options[choseIndex] or "?"
 
@@ -608,8 +608,8 @@ function M:Command(args)
     chooseOption(",", gsub(args, SPACE_OR_SPACE, ","))
   elseif strfind(args, ",") then
     chooseOption(",", args)
-  elseif strfind(args, " ") then
-    chooseOption(" ", args)
+  elseif strfind(args, "%s") then
+    chooseOption("%s", args)
   elseif strfind(args, "[/%+%|]") and chooseClasses(args) then
     -- Do nothing. The action is in the if clause above.
   else
@@ -671,7 +671,7 @@ function M:Mockup(addLine)
   addLine(" ")
   addLine(lead("since no one rolled on this tier token, i'll just loot it to someone at random for a chance at warforged/socket/etc."))
   addLine(cmd("/choose vanq"))
-  addLine(lead(format(L["choose.print.choosing.tierToken"], "Vanquisher", "death knight/druid/rogue/mage").." 1=Celestine 2=Darion 3=Garona 4=Jaina 5=Khadgar 6=Malfurion 7=Staghelm 8=Valeera"))
+  addLine(lead(format(L["choose.print.choosing.tierToken"], "Vanquisher", "Death Knight/Druid/Rogue/Mage").." 1=Celestine 2=Darion 3=Garona 4=Jaina 5=Khadgar 6=Malfurion 7=Staghelm 8=Valeera"))
   addLine(roll(5, 1, 8))
   addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 5, "Khadgar", 4)))
 end

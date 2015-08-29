@@ -178,7 +178,7 @@ function M:UnitNameWithColor(unitID)
 end
 
 function M:NameAndRealm(name)
-  if strfind(name, "-") then
+  if strfind(name, "%-") then
     return name
   end
   local realm = select(2, UnitFullName(name))
