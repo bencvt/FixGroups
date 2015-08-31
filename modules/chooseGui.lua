@@ -10,7 +10,7 @@ local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local format, gsub, ipairs, strlower, tinsert = format, gsub, ipairs, strlower, tinsert
 local tconcat = table.concat
-local GameFontHighlight, IsShiftKeyDown, UIParent = GameFontHighlight, IsShiftKeyDown, UIParent
+local GameFontHighlight, GameTooltip, IsShiftKeyDown, UIParent = GameFontHighlight, GameTooltip, IsShiftKeyDown, UIParent
 local CLASS_SORT_ORDER = CLASS_SORT_ORDER
 
 local AceGUI = LibStub("AceGUI-3.0")
@@ -29,31 +29,42 @@ local function addPadding(frame)
 end
 
 local function onLeaveButton(widget)
-  -- TODO hide tooltip
+  GameTooltip:Hide()
   R.window:SetStatusText("")
 end
 
 local function getCommand(mode, modeType)
-  if modeType == "option" then
-    mode = gsub(mode, ",%s*%.+", "")
-  end
   return "/choose "..mode
 end
 
 local function addModeButton(frame, mode, modeType)
   local button = AceGUI:Create("Button")
-  button:SetText(mode)
+  local label
+  if mode == "option2" then
+    mode = format("%s %s %s", L["letter.1"], L["word.or"], L["letter.2"])
+    label = mode
+  elseif mode == "option3+" then
+    mode = format("%s, %s, %s", L["letter.1"], L["letter.2"], L["letter.3"])
+    label = mode..", ..."
+  else
+    label = A.chooseCommand.MODE_ALIAS[mode].primary
+    if modeType == "tierToken" then
+      label = A.util:LocaleLowerNoun(label)
+    end
+  end
+  button:SetText(label)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
       A.util:InsertText(getCommand(mode, modeType))
       return
     end
     A.chooseCommand:Command(mode)
-    -- TODO close window unless IsCtrlKeyDown
+    if IsControlKeyDown() then
+      R.window:Hide()
+    end
   end)
   button:SetCallback("OnEnter", function(widget)
-    -- TODO show a tooltip with localized description and list of aliases
-    R.window:SetStatusText(H(getCommand(mode, modeType)))
+    M:SetupTooltip(widget, mode, modeType)
   end)
   button:SetCallback("OnLeave", onLeaveButton)
   button:SetWidth(104)
@@ -96,19 +107,16 @@ function M:Open()
   widget:SetFullWidth(true)
   c:AddChild(widget)
 
-  -- TODO localize
   addModeButton(c, "any")
   addModeButton(c, "tank")
   addModeButton(c, "healer")
   addModeButton(c, "damager")
   addModeButton(c, "melee")
   addModeButton(c, "ranged")
-  addModeButton(c, "any+sitting")
-  addModeButton(c, "sitting")
+  addModeButton(c, "notMe")
+  addModeButton(c, "guildmate")
   addModeButton(c, "dead")
   addModeButton(c, "alive")
-  addModeButton(c, "guildmate")
-  addModeButton(c, "notMe")
   addPadding(c)
   for i, class in ipairs(CLASS_SORT_ORDER) do
     addModeButton(c, strlower(class), "class")
@@ -122,10 +130,10 @@ function M:Open()
   addModeButton(c, "agility", "primaryStat")
   addModeButton(c, "strength", "primaryStat")
   addPadding(c)
-  addModeButton(c, "cloth", "armorType")
-  addModeButton(c, "leather", "armorType")
-  addModeButton(c, "mail", "armorType")
-  addModeButton(c, "plate", "armorType")
+  addModeButton(c, "cloth", "armor")
+  addModeButton(c, "leather", "armor")
+  addModeButton(c, "mail", "armor")
+  addModeButton(c, "plate", "armor")
   addPadding(c)
   addModeButton(c, "g1", "fromGroup")
   addModeButton(c, "g2", "fromGroup")
@@ -135,10 +143,12 @@ function M:Open()
   addModeButton(c, "g6", "fromGroup")
   addModeButton(c, "g7", "fromGroup")
   addModeButton(c, "g8", "fromGroup")
+  addModeButton(c, "sitting")
+  addModeButton(c, "anyIncludingSitting")
   addModeButton(c, "group")
   addPadding(c)
-  addModeButton(c, "A or B", "option")
-  addModeButton(c, "A, B, C, ...", "option")
+  addModeButton(c, "option2", "option")
+  addModeButton(c, "option3+", "option")
   addModeButton(c, "last")
   addPadding(c)
 
@@ -159,4 +169,32 @@ function M:Open()
   widget:SetText(R.mockSession)
   widget:SetFullWidth(true)
   c:AddChild(widget)
+end
+
+function M:SetupTooltip(widget, mode, modeType)
+  R.window:SetStatusText(H(getCommand(mode, modeType)))
+  local t = GameTooltip
+	t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+  t:ClearLines()
+  -- Title, split into two lines if too long.
+  local title = A.chooseCommand:GetChoosingDesc(mode, modeType, true)
+  if modeType == "tierToken" or modeType == "armor" or modeType == "primaryStat" then
+    title = gsub(title, " %(", "|n(")
+  end
+  t:AddLine(title)
+  if modeType == "class" then
+    t:AddLine(" ")
+    local example = format("/choose %s/%s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["MAGE"]), A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["DRUID"]))
+    t:AddLine(format(L["choose.gui.note.multipleClasses"], H(example)), 1,1,1, true)
+  end
+  t:AddLine(" ")
+  if modeType == "option" then
+    t:AddLine(format(L["choose.gui.note.option.1"], H("/choose")), 1,1,1, true)
+    t:AddLine(" ")
+    t:AddLine(L["choose.gui.note.option.2"], 1,1,1, true)
+  else
+    -- Aliases.
+    t:AddDoubleLine(A.chooseCommand.MODE_ALIAS[mode].left, A.chooseCommand.MODE_ALIAS[mode].right, 1,1,1, 1,1,1)
+  end
+  t:Show()
 end

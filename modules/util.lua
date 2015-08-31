@@ -169,6 +169,8 @@ end
 function M:ClassColor(class)
   if class and RAID_CLASS_COLORS[class] then
     class = RAID_CLASS_COLORS[class].colorStr
+  else
+    class = false
   end
   return (class or "ff999999")
 end

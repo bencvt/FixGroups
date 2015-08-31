@@ -12,17 +12,17 @@ M.private = {
   tmp2 = {},
 }
 local R = M.private
-local H, HA = A.util.Highlight, A.util.HighlightAddon
+local H, HA, HD = A.util.Highlight, A.util.HighlightAddon, A.util.HighlightDim
 
 -- Actually it's 255, but we'll be conservative.
 local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0
 local DELAY_GROUP_ROLL = 0.5
 local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
--- DISPATCH_TABLE, CLASS_ALIAS, and M. are lazily populated.
-local DISPATCH_TABLE = false
+-- DISPATCH, CLASS_ALIAS, and M.MODE_ALIAS are lazily populated.
+local DISPATCH = false
 local CLASS_ALIAS = false
-M.MODE_ALIASES = false
+M.MODE_ALIAS = false
 
 local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
 local tconcat = table.concat
@@ -286,7 +286,7 @@ local function choosePlayer(mode, modeType)
   for _, player in pairs(A.group:GetRoster()) do
     if not player.isUnknown then
       if modeType == "fromGroup" then
-        include = (player.group == mode)
+        include = ("g"..player.group == mode)
       elseif mode == "anyIncludingSitting" then
         include = true
       elseif player.isSitting or mode == "sitting" then
@@ -317,17 +317,36 @@ local function choosePlayer(mode, modeType)
   end
   sort(R.options)
   
+  if mode == "melee" or mode == "ranged" then
+    A.group:PrintIfThereAreUnknowns()
+  end
+
+  local line = M:GetChoosingDesc(mode, modeType, (not IsInGroup()), validClasses)
+  if #R.options > 0 then
+    announceChoicesAndRoll(true, line)
+  else
+    announceChoicesAndRoll(false, line)
+    A.console:Print(L["choose.print.noPlayers"])
+  end
+end
+
+function M:GetChoosingDesc(mode, modeType, useColor, validClasses)
   local arg1 = mode
   local arg2
+  validClasses = validClasses or getValidClasses(mode, modeType)
   if validClasses then
     local localClasses = wipe(R.tmp2)
-    local cMale, cFemale
+    local c, cMale, cFemale
     for _, class in ipairs(CLASS_SORT_ORDER) do
       if validClasses[class] then
         cMale, cFemale = LOCALIZED_CLASS_NAMES_MALE[class], LOCALIZED_CLASS_NAMES_FEMALE[class]
-        tinsert(localClasses, (modeType == "class") and A.util:LocaleLowerNoun(cMale) or cMale)
+        c = (modeType == "class") and A.util:LocaleLowerNoun(cMale) or cMale
+        c = useColor and format("|c%s%s|r", A.util:ClassColor(class), c) or c
+        tinsert(localClasses, c)
         if cMale ~= cFemale then
-          tinsert(localClasses, (modeType == "class") and A.util:LocaleLowerNoun(cFemale) or cFemale)
+          c = (modeType == "class") and A.util:LocaleLowerNoun(cFemale) or cFemale
+          c = useColor and format("|c%s%s|r", A.util:ClassColor(class), c) or c
+          tinsert(localClasses, c)
         end
       end
     end
@@ -337,33 +356,34 @@ local function choosePlayer(mode, modeType)
       arg1 = strtrim(tostring(strsplit(",", L["choose.modeAliases."..mode])))
       arg2 = tconcat(localClasses, "/")
     end
+  elseif modeType == "fromGroup" then
+    arg1 = tonumber(strsub(mode, 2))
   elseif mode == "sitting" then
     arg1 = A.util:GetMaxGroupsForInstance() + 1
+    if arg1 >= 8 then
+      return L["choose.print.choosing.sitting.noGroups"]
+    end
   elseif mode == "notMe" then
     if IsInRaid() then
+      A.group.BuildUniqueNames()
       arg1 = A.group:GetPlayer(UnitName("player")).uniqueName
     else
       arg1 = A.util:GetUniqueNameParty("player")
     end
+    if useColor then
+      arg1 = format("|c%s%s|r", A.util:ClassColor(select(2, UnitClass("player"))), arg1)
+    end
   elseif mode == "guildmate" then
     arg1 = GetGuildInfo("player")
+    if not arg1 then
+      return L["choose.print.choosing.guildmate.noGuild"]
+    elseif useColor then
+      arg1 = format("|cff40ff40%s|r", arg1)
+    end
+  elseif mode == "last" then
+    arg1 = H("/choose")
   end
-
-  local line = format(L["choose.print.choosing."..(modeType or mode)], arg1, arg2)
-  if mode == "sitting" and arg1 >= 8 then
-    line = L["choose.print.choosing.sitting.noGroups"]
-  end
-
-  if mode == "melee" or mode == "ranged" then
-    A.group:PrintIfThereAreUnknowns()
-  end
-
-  if #R.options > 0 then
-    announceChoicesAndRoll(true, line)
-  else
-    announceChoicesAndRoll(false, line)
-    A.console:Print(L["choose.print.noPlayers"])
-  end
+  return format(L["choose.print.choosing."..(modeType or mode)], arg1, arg2)
 end
 
 local function chooseClasses(args)
@@ -418,147 +438,149 @@ local function chooseLast()
 end
 
 local function buildDispatchTable()
-  if DISPATCH_TABLE then
+  if DISPATCH then
     return
   end
 
-  DISPATCH_TABLE = {}
+  DISPATCH = {}
   CLASS_ALIAS = {}
-  R.MODE_ALIASES = {}
+  local aliasLocal, aliasNonLocal = {}, {}
 
   local function clean(mode)
     return gsub(strlower(mode), "%s+", "")
   end
-  
+
   local function add(mode, d, okayToOverwrite)
     local cmd = clean(mode)
-    if DISPATCH_TABLE[cmd] and not okayToOverwrite then
+    if DISPATCH[cmd] and not okayToOverwrite then
       A.console:Errorf(M, "duplicate definition for [%s] mode", mode)
     end
-    DISPATCH_TABLE[cmd] = d
+    DISPATCH[cmd] = d
+    aliasLocal[mode] = aliasLocal[mode] or {}
+    aliasNonLocal[mode] = aliasNonLocal[mode] or {mode}
     d.primary = mode
-    d.alias = function(...)
-      for i = 1, select("#", ...) do
-        cmd = clean(select(i, ...))
-        -- First come first serve
-        if not DISPATCH_TABLE[cmd] then
-          DISPATCH_TABLE[cmd] = d
-        end
+    local addAlias = function(aliasTable, alias)
+      alias = gsub(alias, "%s+", "")
+      cmd = strlower(alias)
+      -- First come first serve
+      if not DISPATCH[cmd] then
+        DISPATCH[cmd] = d
       end
-      return d
+      if DISPATCH[cmd] == d then
+        tinsert(aliasTable[mode], alias)
+      end
+    end
+    d.alias = function(isLocalized, alias)
+      addAlias(isLocalized and aliasLocal or aliasNonLocal, alias)
+    end
+    d.aliasN = function(aliases)
+      for _, alias in ipairs(aliases) do
+        addAlias(aliasNonLocal, alias)
+      end
     end
     return d
   end
 
-  local d, classLower
+  local c, d, classLower
 
   -- Basic modes and non-localized aliases.
-  add("gui", {A.chooseGui.Open}).alias(
+  add("gui", {A.chooseGui.Open}).aliasN({
       "ui",
       "window",
       "",
       "help",
       "about",
       "example",
-      "examples")
-  add("group", {chooseGroup}).alias(
-      "party")
-  add("guildmate", {choosePlayer, "guildmate"}).alias(
+      "examples"})
+  add("group", {chooseGroup}).aliasN({
+      "party"})
+  add("guildmate", {choosePlayer, "guildmate"}).aliasN({
       "guildie",
       "guildy",
-      "guild")
-  add("any", {choosePlayer, "any"}).alias(
+      "guild"})
+  add("any", {choosePlayer, "any"}).aliasN({
       "anyone",
       "anybody",
       "someone",
       "somebody",
-      "player")
-  add("sitting", {choosePlayer, "sitting"}).alias(
+      "player"})
+  add("sitting", {choosePlayer, "sitting"}).aliasN({
       "benched",
       "bench",
       "standby",
       "inactive",
-      "idle")
-  add("anyIncludingSitting", {choosePlayer, "anyIncludingSitting"}).alias(
+      "idle"})
+  add("anyIncludingSitting", {choosePlayer, "anyIncludingSitting"}).aliasN({
       "any+sitting",
       "any|sitting",
       "standby",
       "inactive",
-      "idle")
-  add("notMe", {choosePlayer, "notMe"}).alias(
-      "somebodyElse")
+      "idle"})
+  add("notMe", {choosePlayer, "notMe"}).alias(false, "somebodyElse")
   add("dead", {choosePlayer, "dead"})
-  add("alive", {choosePlayer, "alive"}).alias(
+  add("alive", {choosePlayer, "alive"}).aliasN({
       "live",
-      "living")
+      "living"})
   add("tank", {choosePlayer, "tank"})
-  add("healer", {choosePlayer, "tank"}).alias(
-      "heal")
-  add("damager", {choosePlayer, "damager"}).alias(
+  add("healer", {choosePlayer, "healer"}).alias(false, "heal")
+  add("damager", {choosePlayer, "damager"}).aliasN({
       "damage",
       "dps",
-      "dd")
+      "dd"})
   add("melee", {choosePlayer, "melee"})
-  add("ranged", {choosePlayer, "ranged"}).alias(
-      "range")
-  add("conqueror", {choosePlayer, "conqueror", "tierToken"}).alias(
-      "conq")
-  add("protector", {choosePlayer, "protector", "tierToken"}).alias(
-      "prot")
-  add("vanquisher", {choosePlayer, "vanquisher", "tierToken"}).alias(
-      "vanq")
-  add("intellect", {choosePlayer, "intellect", "primaryStat"}).alias(
+  add("ranged", {choosePlayer, "ranged"}).alias(false, "range")
+  add("conqueror", {choosePlayer, "conqueror", "tierToken"}).alias(false, "conq")
+  add("protector", {choosePlayer, "protector", "tierToken"}).alias(false, "prot")
+  add("vanquisher", {choosePlayer, "vanquisher", "tierToken"}).alias(false, "vanq")
+  add("intellect", {choosePlayer, "intellect", "primaryStat"}).aliasN({
       "intel",
-      "int")
-  add("agility", {choosePlayer, "agility", "primaryStat"}).alias(
-      "agi")
-  add("strength", {choosePlayer, "strength", "primaryStat"}).alias(
-      "str")
-  add("cloth", {choosePlayer, "strength", "armor"})
+      "int"})
+  add("agility", {choosePlayer, "agility", "primaryStat"}).alias(false, "agi")
+  add("strength", {choosePlayer, "strength", "primaryStat"}).alias(false, "str")
+  add("cloth", {choosePlayer, "cloth", "armor"})
   add("leather", {choosePlayer, "leather", "armor"})
   add("mail", {choosePlayer, "mail", "armor"})
   add("plate", {choosePlayer, "plate", "armor"})
-  add("last", {chooseLast}).alias(
+  add("last", {chooseLast}).aliasN({
     "again",
     "repeat",
     "^",
     "\"",
     "previous",
-    "prev")
+    "prev"})
 
   -- Localized aliases for basic modes.
-  for _, d in pairs(DISPATCH_TABLE) do
+  for _, d in pairs(DISPATCH) do
     if d.primary then
-      for alias in gmatch(clean(L["choose.modeAliases."..d.primary]), "[^,]+") do
+      for alias in gmatch(L["choose.modeAliases."..d.primary], "[^,]+") do
         if alias ~= "" then
-          d.alias(alias)
+          d.alias(true, alias)
         end
       end
     end
   end
   -- Just in case they got missed in the locale file:
   for _, role in ipairs({"tank", "healer", "damager", "melee", "ranged"}) do
-    for _, number in ipairs({"singular", "plural"}) do
-      DISPATCH_TABLE[role].alias(clean((L["word."..role.."."..number])))
-    end
+    DISPATCH[role].alias(true, strtrim((L["word."..role..".singular"])))
   end
 
   -- group1, group2, etc., and their localized aliases.
   for i = 1, 8 do
-    d = {choosePlayer, i, "fromGroup"}
-    add("g"..i, d, true).alias("group"..i, "party"..i)
-    for alias in gmatch(clean(L["choose.modeAliases.fromGroup"]), "[^,]+") do
+    d = {choosePlayer, "g"..i, "fromGroup"}
+    add("g"..i, d, true).alias(false, "group"..i, "party"..i)
+    for alias in gmatch(L["choose.modeAliases.fromGroup"], "[^,]+") do
+      alias = strtrim(alias)
       if alias ~= "" then
-        d.alias(alias..i)
+        d.alias(false, alias..i)
       end
     end
   end
 
   -- Non-localized class names.
   for _, class in ipairs(CLASS_SORT_ORDER) do
-    classLower = strlower(class)
-    CLASS_ALIAS[classLower] = class
-    add(classLower, {choosePlayer, classLower, "class"}, true)
+    c = clean(class)
+    CLASS_ALIAS[c] = class
+    add(c, {choosePlayer, c, "class"}, true)
   end
   -- Non-localized shorthand class aliases.
   CLASS_ALIAS["warr"] = "WARRIOR"
@@ -570,34 +592,99 @@ local function buildDispatchTable()
   CLASS_ALIAS["sham"] = "SHAMAN"
   CLASS_ALIAS["shammy"] = "SHAMAN"
   CLASS_ALIAS["dh"] = "DEMONHUNTER"
+  -- Load non-localized class aliases to the dispatch table.
+  for alias, class in pairs(CLASS_ALIAS) do
+    d = DISPATCH[strlower(class)]
+    if d then
+      d.alias(false, alias)
+    end
+  end
   -- Localized class names.
   for class, alias in pairs(LOCALIZED_CLASS_NAMES_MALE) do
     CLASS_ALIAS[clean(alias)] = class
+    DISPATCH[strlower(class)].alias(true, A.util:LocaleLowerNoun(alias))
   end
   for class, alias in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
     CLASS_ALIAS[clean(alias)] = class
+    DISPATCH[strlower(class)].alias(true, A.util:LocaleLowerNoun(alias))
   end
   -- Localized shorthand class aliases.
   for _, class in ipairs(CLASS_SORT_ORDER) do
-    for alias in gmatch(clean(L["choose.classAliases."..strlower(class)]), "[^,]+") do
+    for alias in gmatch(L["choose.classAliases."..strlower(class)], "[^,]+") do
+      alias = strtrim(alias)
       if alias ~= "" then
-        CLASS_ALIAS[alias] = class
+        CLASS_ALIAS[clean(alias)] = class
+        DISPATCH[strlower(class)].alias(true, alias)
       end
     end
   end
-  -- Load all class aliases to the dispatch table.
-  for alias, class in pairs(CLASS_ALIAS) do
-    d = DISPATCH_TABLE[strlower(class)]
-    if d then
-      d.alias(alias)
+
+  -- Populate M.MODE_ALIAS.
+  M.MODE_ALIAS = {}
+  local key, keyAlt, primaryAlias, aliasSet, aliasList
+  for mode, _ in pairs(aliasLocal) do
+    -- Move the aliases to a set, adding highlighting.
+    aliasSet = wipe(R.tmp1)
+    primaryAlias = false
+    for i, alias in ipairs(aliasLocal[mode]) do
+      key = "a"..clean(alias)
+      if not aliasSet[key] then
+        if not primaryAlias then
+          primaryAlias = alias
+        end
+        aliasSet[key] = H(alias)
+      end
+    end
+    wipe(aliasLocal[mode])
+    for i, alias in ipairs(aliasNonLocal[mode]) do
+      keyAlt = "a"..clean(alias)
+      key = "b"..clean(alias)
+      if not aliasSet[keyAlt] and not aliasSet[key] then
+        if not primaryAlias then
+          primaryAlias = alias
+        end
+        aliasSet[key] = H(alias)
+      end
+    end
+    wipe(aliasNonLocal[mode])
+
+    -- Remove the primary alias.
+    aliasSet["a"..clean(primaryAlias)] = nil
+    aliasSet["b"..clean(primaryAlias)] = nil
+
+    -- Move the aliases to a list and sort it. Localized aliases first.
+    aliasList = wipe(R.tmp2)
+    for key, _ in pairs(aliasSet) do
+      tinsert(aliasList, key)
+    end
+    sort(aliasList)
+
+    -- Get the true alias.
+    for i, key in ipairs(aliasList) do
+      aliasList[i] = aliasSet[key]
+    end
+
+    -- Convert to a flat string.
+    M.MODE_ALIAS[mode] = {primary=primaryAlias}
+    if #aliasList == 0 then
+      M.MODE_ALIAS[mode].left = L["word.alias.plural"]..":"
+      M.MODE_ALIAS[mode].right = HD(L["word.none"])
+    elseif #aliasList == 1 then
+      M.MODE_ALIAS[mode].left = L["word.alias.singular"]..":"
+      M.MODE_ALIAS[mode].right = aliasList[1]
+    else
+      M.MODE_ALIAS[mode].left = L["word.alias.plural"]..":"
+      M.MODE_ALIAS[mode].right = tconcat(aliasList, ", ")
     end
   end
+  wipe(aliasLocal)
+  wipe(aliasNonLocal)
 end
 
 function M:Command(args)
   buildDispatchTable()
   args = strtrim(args)
-  local dispatch = DISPATCH_TABLE[strlower(args)]
+  local dispatch = DISPATCH[strlower(args)]
   if dispatch then
     local func, mode, args = unpack(dispatch)
     func(mode, args)
@@ -650,7 +737,7 @@ function M:Mockup(addLine)
   addLine(" ")
   addLine(raid("Garona", "ROGUE", "sorry guys I need to be afk for this next pull, my kid just made a mess"))
   addLine(lead("okay, i know everyone sitting out wants to get in for these mythic bosses"))
-  addLine(lead("you're all equally skilled so i'm just going roll the dice to see who gets to sub in"))
+  addLine(lead("you're all equally skilled so i'm just going to roll the dice to see who gets to sub in"))
   addLine(cmd("/choose sitting"))
   addLine(lead(format(L["choose.print.choosing.sitting"], 7).." 1=Edwin 2=Rhonin 3=Senjin 4=Vanessa"))
   addLine(roll(2, 1, 4))
@@ -682,9 +769,9 @@ end
 
 function M:DebugPrintDispatchTable()
   buildDispatchTable()
-  A.console:Debug(M, "DISPATCH_TABLE:")
-  for _, cmd in pairs(A.util:SortedKeys(DISPATCH_TABLE, R.tmp1)) do
-    A.console:DebugMore(M, format("  %s={%s}", cmd, A.util:AutoConvertTableConcat(DISPATCH_TABLE[cmd], ",")))
+  A.console:Debug(M, "DISPATCH:")
+  for _, cmd in pairs(A.util:SortedKeys(DISPATCH, R.tmp1)) do
+    A.console:DebugMore(M, format("  %s={%s}", cmd, A.util:AutoConvertTableConcat(DISPATCH[cmd], ",")))
   end
 end
 
