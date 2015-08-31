@@ -81,7 +81,7 @@ function M:INSPECT_READY(event, guid)
   -- Look up name, fullName, and specId.
   local name, realm = select(6, GetPlayerInfoByGUID(guid))
   if name and realm then
-    name = name.."-"..realm
+    name = name.."-"..gsub(realm, "[ %-]", "")
   end
 
   -- Ignore any garbage responses from the server.
