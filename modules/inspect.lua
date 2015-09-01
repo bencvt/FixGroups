@@ -79,8 +79,8 @@ function M:INSPECT_READY(event, guid)
   if not name then
     return
   end
-  if realm then
-    name = name.."-"..realm
+  if realm and realm ~= "" then
+    name = name.."-"..gsub(realm, "[ %-]", "")
   end
   if A.DEBUG >= 1 and R.requests[name] then A.console:Debugf(M, "recv %s", name) end
   R.requests[name] = nil
