@@ -242,14 +242,14 @@ R.optionsTable = {
       fontSize = "medium",
       hidden = function(i) M:UpdateSysMsgPreview(2, i.option) end,
     },
-    sysMsgPreview3 = {
-      order = SYSMSG+13,
-      type = "description",
-      width = "full",
-      name = "",
-      fontSize = "medium",
-      hidden = function(i) M:UpdateSysMsgPreview(3, i.option) end,
-    },
+    --sysMsgPreview3 = {
+    --  order = SYSMSG+13,
+    --  type = "description",
+    --  width = "full",
+    --  name = "",
+    --  fontSize = "medium",
+    --  hidden = function(i) M:UpdateSysMsgPreview(3, i.option) end,
+    --},
     sysMsgClassColor = {
       order = SYSMSG+20,
       name = L["options.widget.sysMsgClassColor.text"],

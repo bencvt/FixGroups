@@ -4,13 +4,13 @@ A.modJoinLeave = M
 
 local format, gsub, pairs, strmatch, tostring = format, gsub, pairs, strmatch, tostring
 local ChatFrame_AddMessageEventFilter, ChatFrame_RemoveMessageEventFilter = ChatFrame_AddMessageEventFilter, ChatFrame_RemoveMessageEventFilter
+local ERR_RAID_YOU_JOINED = ERR_RAID_YOU_JOINED
 local _G = _G
 
 -- Lazily built.
 local PATTERNS = false
 
--- TODO extend this to include:
---ERR_RAID_YOU_JOINED = "You have joined a raid group.";
+-- TODO extend this to include role change messages. These aren't actual system messages though. Will need to hook ChatFrame_DisplaySystemMessageInPrimary.
 --ROLE_CHANGED_INFORM = "%s is now %s.";
 --ROLE_CHANGED_INFORM_WITH_SOURCE = "%s is now %s. (Changed by %s.)";
 --ROLE_REMOVED_INFORM = "%s no longer has a selected role.";
@@ -34,6 +34,9 @@ local function matchMessage(message)
       [makePattern("ERR_INSTANCE_GROUP_ADDED_S")]   = true,
       [makePattern("ERR_INSTANCE_GROUP_REMOVED_S")] = false,
     }
+  end
+  if message == ERR_RAID_YOU_JOINED then
+    return UnitName("player"), true
   end
   local name
   for pattern, isJoin in pairs(PATTERNS) do
