@@ -4,6 +4,7 @@ A.options = M
 M.private = {
   optionsGUI = false,
   optionsTable = false,
+  sysMsgPreviewWidgets = {false, false},
   defaults = {
     profile = {
       options = {
@@ -23,10 +24,16 @@ M.private = {
         showMinimapIconAlways = true,
         showMinimapIconPRN = false, -- ignored (implied false) if showMinimapIconAlways == true
         addButtonToRaidTab = true,
-        enhanceGroupRelatedSystemMessages = true,
         watchChat = true,
         announceChatAlways = false,
         announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
+        sysMsg = {
+          classColor = true,
+          roleName = true,
+          roleIcon = true,
+          groupComp = true,
+          groupCompDim = true,
+        },
         dataBrokerGroupCompStyle = 1,
       },
     },
@@ -56,8 +63,9 @@ local MARKS = {
 }
 local DELAY_OPTIONS_PANE_LOADED = 0.01
 
-local format, ipairs, min, max, tinsert = format, ipairs, min, max, tinsert
+local format, gsub, ipairs, min, max, tinsert = format, gsub, ipairs, min, max, tinsert
 local tconcat = table.concat
+local ERR_RAID_MEMBER_ADDED_S, ROLE_CHANGED_INFORM = ERR_RAID_MEMBER_ADDED_S, ROLE_CHANGED_INFORM
 -- GLOBALS: LibStub
 
 local function paragraphs(lines)
@@ -83,7 +91,7 @@ local function setOptionMark(arr, index, value)
   -- Don't bother fixing duplicates.
 end
 
-local BUTTONS, CONSOLE, RAIDLEAD, RAIDASSIST, PARTY, UI, CHAT, INTEROP, RESET = 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
+local BUTTONS, CONSOLE, RAIDLEAD, RAIDASSIST, PARTY, UI, SYSMSG, INTEROP, RESET = 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000
 
 R.optionsTable = {
   type = "group",
@@ -182,35 +190,8 @@ R.optionsTable = {
       get = function(i) return A.options.addButtonToRaidTab end,
       set = function(i,v) A.options.addButtonToRaidTab = v A.buttonGui:Refresh() end,
     },
-    enhanceGroupRelatedSystemMessages = {
-      order = UI+30,
-      name = L["options.widget.enhanceGroupRelatedSystemMessages.text"],
-      desc = paragraphs({
-        L["options.widget.enhanceGroupRelatedSystemMessages.desc.1"],
-        L["options.widget.enhanceGroupRelatedSystemMessages.desc.2"],
-        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, L["character.thrall"]).."|r",
-        L["options.widget.enhanceGroupRelatedSystemMessages.desc.3"],
-        --TODO make this a set of options, with a preview.
-        -- [x] Class color
-        -- [On|On with icon|Off] Add role
-        -- [x] Colorize "joined"/"left" to green/red
-        -- [style] Add group comp
-        -- [x] Dim group comp color
-        "|cffffff00"..format(ERR_RAID_MEMBER_ADDED_S, format("|c%s%s|r|cffffff00 (%s)", A.util:ClassColor("SHAMAN"), L["character.thrall"], L["word.melee.singular"])).." |r"..HD(A.util:FormatGroupComp(5, 2, 4, 6, 8, 0).."."),
-      }),
-      type = "toggle",
-      width = "full",
-      get = function(i) return A.options.enhanceGroupRelatedSystemMessages end,
-      set = function(i,v) A.options.enhanceGroupRelatedSystemMessages = v end,
-    },
-    -- -------------------------------------------------------------------------
-    --headerCHAT = {
-    --  order = CHAT,
-    --  type = "header",
-    --  name = ...,
-    --},
     watchChat = {
-      order = CHAT+10,
+      order = UI+30,
       name = L["options.widget.watchChat.text"],
       desc = format(L["options.widget.watchChat.desc"], H(L["chatKeyword.fixGroups"]), H(L["chatKeyword.markTanks"])),
       type = "toggle",
@@ -219,7 +200,7 @@ R.optionsTable = {
       set = function(i,v) A.options.watchChat = v end,
     },
     announceChat = {
-      order = CHAT+20,
+      order = UI+40,
       name = L["options.widget.announceChat.text"],
       type = "select",
       width = "double",
@@ -231,6 +212,76 @@ R.optionsTable = {
       },
       get = function(i) if A.options.announceChatAlways then return 1 elseif A.options.announceChatPRN then return 2 end return 3 end,
       set = function(i,v) A.options.announceChatAlways, A.options.announceChatPRN = (v==1), (v==2) end,
+    },
+    -- -------------------------------------------------------------------------
+    headerSYSMSG = {
+      order = SYSMSG,
+      type = "header",
+      name = L["options.header.sysMsg"],
+    },
+    sysMsgLabel = {
+      order = SYSMSG+10,
+      type = "description",
+      width = "full",
+      name = L["options.widget.sysMsgLabel.name"],
+      fontSize = "medium",
+    },
+    sysMsgPreview1 = {
+      order = SYSMSG+11,
+      type = "description",
+      width = "full",
+      name = "",
+      fontSize = "medium",
+      hidden = function(i) M:UpdateSysMsgPreview(1, i.option) end,
+    },
+    sysMsgPreview2 = {
+      order = SYSMSG+12,
+      type = "description",
+      width = "full",
+      name = "",
+      fontSize = "medium",
+      hidden = function(i) M:UpdateSysMsgPreview(2, i.option) end,
+    },
+    sysMsgClassColor = {
+      order = SYSMSG+20,
+      name = L["options.widget.sysMsgClassColor.text"],
+      type = "toggle",
+      width = "full",
+      get = function(i) return A.options.sysMsg.classColor end,
+      set = function(i,v) A.options.sysMsg.classColor = v end,
+    },
+    sysMsgRoleName = {
+      order = SYSMSG+30,
+      name = L["options.widget.sysMsgRoleName.text"],
+      type = "toggle",
+      width = "full",
+      get = function(i) return A.options.sysMsg.roleName end,
+      set = function(i,v) A.options.sysMsg.roleName = v end,
+    },
+    sysMsgRoleIcon = {
+      order = SYSMSG+40,
+      name = L["options.widget.sysMsgRoleIcon.text"],
+      type = "toggle",
+      width = "full",
+      get = function(i) return A.options.sysMsg.roleIcon end,
+      set = function(i,v) A.options.sysMsg.roleIcon = v end,
+    },
+    sysMsgGroupComp = {
+      order = SYSMSG+50,
+      name = L["options.widget.sysMsgGroupComp.text"],
+      type = "toggle",
+      width = "full",
+      get = function(i) return A.options.sysMsg.groupComp end,
+      set = function(i,v) A.options.sysMsg.groupComp = v A.options.sysMsg.groupCompDim = v end,
+    },
+    sysMsgGroupCompDim = {
+      order = SYSMSG+60,
+      name = L["options.widget.sysMsgGroupCompDim.text"],
+      type = "toggle",
+      width = "full",
+      get = function(i) return A.options.sysMsg.groupCompDim end,
+      set = function(i,v) A.options.sysMsg.groupCompDim = v end,
+      disabled = function(i) return not A.options.sysMsg.groupComp end,
     },
     -- -------------------------------------------------------------------------
     headerRAIDLEAD = {
@@ -611,5 +662,19 @@ function M:OptionsPaneLoaded()
       -- Enable right-click on all buttons in the options pane.
       g.frame:RegisterForClicks("AnyUp")
     end
+  end
+end
+
+function M:UpdateSysMsgPreview(which, option)
+  local msg
+  if which == 1 then
+    msg = format(ERR_RAID_MEMBER_ADDED_S, A.group.EXAMPLE_PLAYER.name)
+  elseif which == 2 then
+    msg = format(ROLE_CHANGED_INFORM, A.group.EXAMPLE_PLAYER.name, "TODO")
+  end
+  if msg then
+    msg = A.modJoinLeave:Modify(msg, true)
+    msg = gsub(msg, "%|r", "%|r%|cffffff00")
+    option.name = format("    |cffffff00%s|r", msg)
   end
 end
