@@ -13,6 +13,8 @@ local PATTERNS = false
 --ERR_RAID_YOU_JOINED = "You have joined a raid group.";
 --ROLE_CHANGED_INFORM = "%s is now %s.";
 --ROLE_CHANGED_INFORM_WITH_SOURCE = "%s is now %s. (Changed by %s.)";
+--ROLE_REMOVED_INFORM = "%s no longer has a selected role.";
+--ROLE_REMOVED_INFORM_WITH_SOURCE = "%s no longer has a selected role. (Changed by %s.)";
 
 local function matchMessage(message)
   if not PATTERNS then
@@ -53,13 +55,14 @@ function M:Modify(message, isPreview)
   if not found then
     return message
   end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "message=[%s]", A.util:Escape(message)) end
 
   -- Verify that this is a message we should modify.
   local matchedName, isJoin = matchMessage(message)
   if not matchedName then
     return message
   end
-  if A.DEBUG >= 1 then A.console:Debugf(M, "message=[%s] matchedName=%s isJoin=%s", A.util:Escape(message), matchedName, tostring(isJoin)) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "matchedName=%s isJoin=%s", matchedName, tostring(isJoin)) end
 
   -- Get player from roster.
   local player
@@ -79,32 +82,34 @@ function M:Modify(message, isPreview)
 
   local namePattern = gsub(matchedName, "%-", "%%-")
 
-  if A.options.sysMsg.roleName or A.options.sysMsg.roleIcon then
+  if A.options.sysMsg.roleName then
     local role = player and A.group.ROLE_NAME[player.role]
-    local n = ""
     if role and role ~= "unknown" then
-      if A.options.sysMsg.roleIcon then
-        if role == "tank" then
-          n = A.util.TEXT_ICON.ROLE.TANK
-        elseif role == "healer" then
-          n = A.util.TEXT_ICON.ROLE.HEALER
-        else
-          n = A.util.TEXT_ICON.ROLE.DAMAGER
-        end
-      end
-      if A.options.sysMsg.roleName then
-        n = n..((n == "") and n or " ")..L["word."..role..".singular"]
+      role = L["word."..role..".singular"]
+    elseif player and player.isDamager then
+      role = L["word.damager.singular"]
+    end
+    if role then
+      message = gsub(message, namePattern, format("%s (%s)", matchedName, role), 1)
+    end
+  end
+
+  if A.options.sysMsg.roleIcon then
+    local role = player and A.group.ROLE_NAME[player.role]
+    if role and role ~= "unknown" then
+      if role == "tank" then
+        role = A.util.TEXT_ICON.ROLE.TANK
+      elseif role == "healer" then
+        role = A.util.TEXT_ICON.ROLE.HEALER
+      else
+        role = A.util.TEXT_ICON.ROLE.DAMAGER
       end
     elseif player and player.isDamager then
-      if A.options.sysMsg.roleIcon then
-        n = A.util.TEXT_ICON.ROLE.DAMAGER
-      end
-      if A.options.sysMsg.roleName then
-        n = n..((n == "") and n or " ")..L["word.damager.singular"]
-      end
+      role = A.util.TEXT_ICON.ROLE.DAMAGER
     end
-    role = (n == "") and n or format(" (%s)", n)
-    message = gsub(message, namePattern, format("%s%s", matchedName, role), 1)
+    if role then
+      message = gsub(message, namePattern, format("%s %s", matchedName, role), 1)
+    end
   end
 
   if A.options.sysMsg.classColor then

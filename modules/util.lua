@@ -8,9 +8,9 @@ local R = M.private
 
 M.TEXT_ICON = {
   ROLE = {
-    TANK      = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t",
-    HEALER    = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t",
-    DAMAGER   = "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t",
+    TANK      = INLINE_TANK_ICON,     -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t"
+    HEALER    = INLINE_HEALER_ICON,   -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t"
+    DAMAGER   = INLINE_DAMAGER_ICON,  -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t"
   },
   MARK = {
     STAR      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t",
