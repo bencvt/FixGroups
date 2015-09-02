@@ -119,8 +119,12 @@ function M:Modify(message, isPreview)
     else
       newComp = A.group:GetComp(5)
     end
-    if A.options.sysMsg.groupCompDim then
-      message = format("%s %s.", message, A.util:HighlightDim(newComp))
+    if A.options.sysMsg.groupCompHighlight then
+      if isJoin then
+        message = format("%s |cff00ff00%s.|r", message, newComp)
+      else
+        message = format("%s |cffff0000%s.|r", message, newComp)
+      end
     else
       message = format("%s %s.", message, newComp)
     end

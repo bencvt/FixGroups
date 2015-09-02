@@ -226,7 +226,7 @@ L["options.widget.sysMsgClassColor.text"] = "Add class color"
 L["options.widget.sysMsgRoleName.text"] = "Add role name"
 L["options.widget.sysMsgRoleIcon.text"] = "Add role icon"
 L["options.widget.sysMsgGroupComp.text"] = "Add new group comp"
-L["options.widget.sysMsgGroupCompDim.text"] = "Make new group comp dim"
+L["options.widget.sysMsgGroupCompHighlight.text"] = "Highlight new group comp"
 
 L["options.header.interop"] = "Addon integration"
 L["options.widget.dataBrokerGroupCompStyle.text"] = "%s display style"
