@@ -711,7 +711,7 @@ function M:Mockup(addLine)
   local THRALL = format("|r|c%s%s|r", A.util:ClassColor("SHAMAN"), L["character.thrall"])
   local lead = function(t) return format("|cffff7f00[Raid] [%s|cffff7f00] %s|r", THRALL, t) end
   local raid = function(s, c, t) return format("|cffff7f00[Raid] [|c%s%s|r|cffff7f00] %s|r", A.util:ClassColor(c), s, t) end
-  local roll = function(r, lo, hi) return "|cffffff00"..format(RANDOM_ROLL_RESULT, L["character.thrall"], r, lo, hi).."|r" end
+  local roll = function(r, lo, hi) return A.util:ColorSystem(format(RANDOM_ROLL_RESULT, L["character.thrall"], r, lo, hi)) end
   addLine(lead("who is kiting the siegemakers?"))
   addLine(lead("no volunteers...i'll just pick someone"))
   addLine(cmd("/choose hunter"))

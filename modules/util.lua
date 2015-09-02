@@ -27,7 +27,7 @@ M.TEXT_ICON = {
 local floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
 local tconcat = table.concat
 local ChatFrame_OpenChat, GetAddOnMetadata, GetCurrentKeyBoardFocus, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, InterfaceOptionsFrame_OpenToCategory, IsInGroup, IsInInstance, IsInRaid, OpenFriendsFrame, ToggleFriendsFrame, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = ChatFrame_OpenChat, GetAddOnMetadata, GetCurrentKeyBoardFocus, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, InterfaceOptionsFrame_OpenToCategory, IsInGroup, IsInInstance, IsInRaid, OpenFriendsFrame, ToggleFriendsFrame, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
-local LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS 
+local ChatTypeInfo, LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS = ChatTypeInfo, LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS 
 
 function M:LocaleSerialComma()
   return (GetLocale() == "enUS") and "," or ""
@@ -164,6 +164,11 @@ end
 
 function M:HighlightDim(text)
   return "|cff999999"..(text or self).."|r"
+end
+
+function M:ColorSystem(text)
+  local c = format("|cff%02x%02x%02x", ChatTypeInfo["SYSTEM"].r*0xff, ChatTypeInfo["SYSTEM"].g*0xff, ChatTypeInfo["SYSTEM"].b*0xff)
+  return c..gsub(text, "%|r", "%|r%"..c).."|r"
 end
 
 function M:ClassColor(class)

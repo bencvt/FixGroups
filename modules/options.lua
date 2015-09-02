@@ -65,7 +65,7 @@ local DELAY_OPTIONS_PANE_LOADED = 0.01
 
 local format, gsub, ipairs, min, max, tinsert = format, gsub, ipairs, min, max, tinsert
 local tconcat = table.concat
-local ERR_RAID_MEMBER_ADDED_S, ROLE_CHANGED_INFORM = ERR_RAID_MEMBER_ADDED_S, ROLE_CHANGED_INFORM
+local ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, ROLE_CHANGED_INFORM = ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, ROLE_CHANGED_INFORM
 -- GLOBALS: LibStub
 
 local function paragraphs(lines)
@@ -241,6 +241,14 @@ R.optionsTable = {
       name = "",
       fontSize = "medium",
       hidden = function(i) M:UpdateSysMsgPreview(2, i.option) end,
+    },
+    sysMsgPreview3 = {
+      order = SYSMSG+13,
+      type = "description",
+      width = "full",
+      name = "",
+      fontSize = "medium",
+      hidden = function(i) M:UpdateSysMsgPreview(3, i.option) end,
     },
     sysMsgClassColor = {
       order = SYSMSG+20,
@@ -666,15 +674,18 @@ function M:OptionsPaneLoaded()
 end
 
 function M:UpdateSysMsgPreview(which, option)
-  local msg
+  local msg, comp
   if which == 1 then
-    msg = format(ERR_RAID_MEMBER_ADDED_S, A.group.EXAMPLE_PLAYER.name)
+    msg = format(ERR_RAID_MEMBER_REMOVED_S, A.group.EXAMPLE_PLAYER.name)
+    comp = A.util:FormatGroupComp(5, 2,3,10, 3,6,0)
   elseif which == 2 then
-    msg = format(ROLE_CHANGED_INFORM, A.group.EXAMPLE_PLAYER.name, "TODO")
+    msg = format(ERR_RAID_MEMBER_ADDED_S, A.group.EXAMPLE_PLAYER.name)
+    comp = A.util:FormatGroupComp(5, 2,3,10, 4,6,0)
+  elseif which == 3 then
+    msg = format(ROLE_CHANGED_INFORM, A.group.EXAMPLE_PLAYER2.name, "TODO")
+    comp = A.util:FormatGroupComp(5, 2,4,9, 3,6,0)
+  else
+    return
   end
-  if msg then
-    msg = A.modJoinLeave:Modify(msg, true)
-    msg = gsub(msg, "%|r", "%|r%|cffffff00")
-    option.name = format("    |cffffff00%s|r", msg)
-  end
+  option.name = "    "..A.util:ColorSystem(A.modJoinLeave:Modify(msg, comp))
 end
