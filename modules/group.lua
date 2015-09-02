@@ -58,12 +58,14 @@ function M:PLAYER_ENTERING_WORLD(event)
 end
 
 function M:PLAYER_SPECIALIZATION_CHANGED(event, unitID)
-  local name, realm = UnitName(unitID)
-  if name and realm and realm ~= "" then
-    name = name.."-"..gsub(realm, "[ %-]", "")
-  end
-  if name then
-    A.damagerRole:ForgetSession(name)
+  if unitID then
+    local name, realm = UnitName(unitID)
+    if name and realm and realm ~= "" then
+      name = name.."-"..gsub(realm, "[ %-]", "")
+    end
+    if name then
+      A.damagerRole:ForgetSession(name)
+    end
   end
   M:ForceBuildRoster(M, event)
 end
