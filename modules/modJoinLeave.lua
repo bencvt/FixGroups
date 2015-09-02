@@ -122,8 +122,12 @@ function M:Modify(message, isPreview)
 
   if A.options.sysMsg.groupComp then
     local newComp = isPreview or A.group:GetComp(5)
-    if A.options.sysMsg.groupCompHighlight and isJoin then
-      message = format("%s |cff00ff00%s.|r", message, newComp)
+    if A.options.sysMsg.groupCompHighlight then
+      if isJoin then
+        message = format("%s |cff00ff00%s.|r", message, newComp)
+      else
+        message = format("%s |cff999999%s.|r", message, newComp)
+      end
     else
       message = format("%s %s.", message, newComp)
     end

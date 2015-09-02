@@ -36,17 +36,48 @@ for i = 1, 40 do
   R.prevRosterArray[i] = {}
 end
 
-local format, ipairs, pairs, select, tinsert, tostring, unpack, wipe = format, ipairs, pairs, select, tinsert, tostring, unpack, wipe
+local format, gsub, ipairs, pairs, select, tinsert, tostring, unpack, wipe = format, gsub, ipairs, pairs, select, tinsert, tostring, unpack, wipe
 local tconcat = table.concat
 local GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName
 
 function M:OnEnable()
-  -- TODO also PLAYER_ENTERING_WORLD.
-  -- TODO for PLAYER_SPECIALIZATION_CHANGED, whichever player it was should have their entry (if any) damagerRole session cache cleared prior to the roster rebuild.
-  local rebuild = function(event) M:ForceBuildRoster(M, event) end
-  for _, event in ipairs({"GROUP_ROSTER_UPDATE", "PLAYER_SPECIALIZATION_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}) do
-    M:RegisterEvent(event, rebuild)
+  M:RegisterEvent("GROUP_ROSTER_UPDATE")
+  M:RegisterEvent("PLAYER_ENTERING_WORLD")
+  M:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+  M:RegisterEvent("ZONE_CHANGED")
+  M:RegisterEvent("ZONE_CHANGED_INDOORS")
+  M:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+end
+
+function M:GROUP_ROSTER_UPDATE(event)
+  M:ForceBuildRoster(M, event)
+end
+
+function M:PLAYER_ENTERING_WORLD(event)
+  M:ForceBuildRoster(M, event)
+end
+
+function M:PLAYER_SPECIALIZATION_CHANGED(event, unitID)
+  local name, realm = UnitName(unitID)
+  if name and realm and realm ~= "" then
+    name = name.."-"..gsub(realm, "[ %-]", "")
   end
+  if name then
+    A.damagerRole:ForgetSession(name)
+  end
+  M:ForceBuildRoster(M, event)
+end
+
+function M:ZONE_CHANGED(event)
+  M:ForceBuildRoster(M, event)
+end
+
+function M:ZONE_CHANGED_INDOORS(event)
+  M:ForceBuildRoster(M, event)
+end
+
+function M:ZONE_CHANGED_NEW_AREA(event)
+  M:ForceBuildRoster(M, event)
 end
 
 local function wipeRoster()

@@ -147,6 +147,14 @@ local function requestInspect(name, fullName)
   A.inspect:Request(name)
 end
 
+function M:ForgetSession(name)
+  local fullName = A.util:NameAndRealm(name)
+  if A.DEBUG >= 1 then A.console:Debugf(M, "forgetSession %s", fullName) end
+  for _, c in pairs(R.sessionCache) do
+    c[fullName] = nil
+  end
+end
+
 function M:GetDamagerRole(player)
   -- Check for unambiguous classes.
   if player.class and CLASS_DAMAGER_ROLE[player.class] then
