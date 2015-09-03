@@ -12,7 +12,7 @@ Other features:
 
  * **Split** your raid into two roughly equal sides for raid encounters that need it. Manually combing through damage meters to ensure that your heavy hitters are spread appropriately is for the birds. FixGroups takes care of that for you, integrating with your damage meter addon directly. **Recount**, **Skada**, **TinyDPS**, and **Details!** are all supported.
 
- * **Choose** a "volunteer" when you need someone to handle a certain mechanic in a fight using the **`/choose`** console command. You can narrow down the candidate pool by using **`/choose ranged`**, **`/choose hunter`**, etc. This command has many other uses as well. Type **`/choose help`** in-game for details.
+ * **Choose** a "volunteer" when you need someone to handle a certain mechanic in a fight using the **`/choose`** console command. You can narrow down the candidate pool by using **`/choose ranged`**, **`/choose hunter`**, etc. This command has many other uses as well. Type **`/choose`** in-game for details.
 
  * **Track** your group comp automatically. An example comp is **`2/4/13 (5+8)`**, which is shorthand for *"a group composed of 2 tanks, 4 healers, and 13 dps, 5 of which are melee and 8 of which are ranged."*
 
@@ -20,14 +20,14 @@ Other features:
 
    * The FixGroups button/icon **tooltip** includes the comp.
 
-   * Put the comp **anywhere in your UI** if you're running a Data Broker display addon like Titan Panel or ElvUI. FixGroups makes the comp available as a Data Broker object (a.k.a. LDB plugin).
+   * Put the comp **anywhere in your UI** if you're running a Data Broker display addon like **Titan Panel**, **ChocolateBar**, or **ElvUI**. FixGroups makes the comp available as a Data Broker object (a.k.a. LDB plugin).
 
 ## Links
 
 For players, you can download and install this addon from:
 
  * Curse: http://www.curse.com/addons/wow/fixgroups
- * TODO mirror
+ * WoWInterface: http://www.wowinterface.com/downloads/info23671-FixGroups.html
 
 For developers, beta testers, and translators (anyone is welcome to contribute):
 
