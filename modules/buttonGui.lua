@@ -13,8 +13,8 @@ local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
 local format, strfind, strlower, tostring = format, strfind, strlower, tostring
-local CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName = CreateFrame, IsAddOnLoaded, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName
--- GLOBALS: LibStub, ElvUI, GameTooltip, RaidFrame, RaidFrameRaidInfoButton
+local CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName = CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName
+-- GLOBALS: LibStub, GameTooltip, RaidFrame, RaidFrameRaidInfoButton
 
 local LOCALE_KW_1 = strlower(string.trim(L["chatKeyword.fixGroups"]))
 local LOCALE_KW_2 = strlower(string.trim(L["chatKeyword.markTanks"]))
@@ -80,12 +80,10 @@ local function setupRaidTabButton()
   b:SetScript("OnClick", handleClick)
   b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") M:SetupTooltip(GameTooltip, false) end)
   b:SetScript("OnLeave", function () GameTooltip:Hide() end)
-  if IsAddOnLoaded("ElvUI") and ElvUI then
-    local E = ElvUI[1]
-    if E.private.skins.blizzard.enable and E.private.skins.blizzard.nonraid then
-      b:StripTextures()
-      E:GetModule("Skins"):HandleButton(b)
-    end
+  local skin = A.util:GetElvUISkinModule()
+  if skin then
+    b:StripTextures()
+    skin:HandleButton(b)
   end
   if A.options.addButtonToRaidTab then
     b:Show()

@@ -3,7 +3,7 @@ local M = A:NewModule("chooseGui")
 A.chooseGui = M
 M.private = {
   window = false,
-  close = {},
+  closeButton = {},
   mockSession = false,
 }
 local R = M.private
@@ -11,15 +11,20 @@ local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local format, gsub, ipairs, strlower, tinsert = format, gsub, ipairs, strlower, tinsert
 local tconcat = table.concat
-local CreateFrame, GameFontHighlight, GameTooltip, IsAddOnLoaded, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = CreateFrame, GameFontHighlight, GameTooltip, IsAddOnLoaded, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
+local CreateFrame, GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = CreateFrame, GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE
--- GLOBALS: ElvUI
 
 local AceGUI = LibStub("AceGUI-3.0")
 
 local function onCloseWindow(widget)
   R.window = false
   AceGUI:Release(widget)
+end
+
+local function onKeyDownCloseButton(button, key)
+  if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
+    M:Close()
+  end
 end
 
 local function addPadding(frame)
@@ -77,14 +82,15 @@ end
 local function addCloseButton()
   -- AceGUI puts the close button on the bottom right, which is fine.
   -- However for consistency's sake we also want an X in the upper right.
-  local C = R.close
-  local hasElvUI = IsAddOnLoaded("ElvUI") and ElvUI
+  -- We also have the close button catch the escape key.
+  local C = R.closeButton
+  local skin = A.util:GetElvUISkinModule()
 
   C.frame = C.frame or CreateFrame("FRAME")
   C.frame:SetParent(R.window.frame)
   C.frame:SetWidth(17)
   C.frame:SetHeight(40)
-  C.frame:SetPoint("TOPRIGHT", hasElvUI and 0 or -16, 12)
+  C.frame:SetPoint("TOPRIGHT", skin and 0 or -16, 12)
 
   C.button = C.button or CreateFrame("BUTTON")
   C.button:SetParent(C.frame)
@@ -94,10 +100,12 @@ local function addCloseButton()
   C.button:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Up.blp")
   C.button:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Down.blp")
   C.button:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
-  C.button:SetScript("OnClick", M.CloseWindow)
+  C.button:SetScript("OnClick", M.Close)
+  C.button:SetScript("OnKeyDown", onKeyDownCloseButton)
+  C.button:SetPropagateKeyboardInput(true)
 
-  if hasElvUI then
-    ElvUI[1]:GetModule("Skins"):HandleCloseButton(C.button)
+  if skin then
+    skin:HandleCloseButton(C.button)
   else
     C.borderTB = C.borderTB or C.frame:CreateTexture(nil, "BACKGROUND")
     C.borderTB:SetParent(C.frame)
