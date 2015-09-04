@@ -201,6 +201,7 @@ L["options.widget.tankMainTank.desc"] = "Unfortunately WoW does not allow addons
 L["options.widget.openRaidTab.text"] = "Open raid tab when main tank needs to be set"
 L["options.widget.tankMark.text"] = "Put target markers on tanks"
 L["options.widget.raidTank.desc"] = "Tanks are sorted alphabetically."
+L["options.widget.clearRaidMarks.text"] = "Clear target markers from all other raid members"
 L["options.widget.splitOddEven.text"] = "When splitting groups, use odd/even groups"
 L["options.widget.splitOddEven.desc.1"] = "If this option is not checked then groups will be adjacent instead (i.e., 1-2 and 3-4, 1-3 and 4-6, or 1-4 and 5-8.)"
 L["options.widget.splitOddEven.desc.2"] = "To split groups, type %s, click the %s button, or right click the minimap icon."

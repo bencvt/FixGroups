@@ -71,7 +71,13 @@ function M:FixRaid(isRequestFromAssist)
       if IsInRaid() and A.util:IsLeader() and A.options.tankAssist and (unitRole == "TANK" or isML) and (not rank or rank < 1) then
         PromoteToAssistant(unitID)
       end
+      if not isRequestFromAssist and A.options.clearRaidMarks then
+        if GetRaidTargetIndex(unitID) then
+          SetRaidTarget(unitID, 0)
+        end
+      end
       if unitRole == "TANK" then
+        -- Don't mark tanks right away. We need to assign them alphabetically.
         tinsert(marks, {key=name, unitID=unitID})
         if raidRole ~= "MAINTANK" then
           -- Can't call protected func: SetPartyAssignment("MAINTANK", unitID)

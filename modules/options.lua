@@ -18,6 +18,7 @@ M.private = {
         openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
         tankMark = true,
         tankMarkIcons = {4, 6, 1, 2, 3, 7, 9, 9},
+        clearRaidMarks = false,
         partyMark = true,
         partyMarkIcons = {4, 6, 9, 9, 9},
         minimapIcon = {}, -- handled by LibDBIcon
@@ -485,8 +486,16 @@ R.optionsTable = {
       set = function(i,v) setOptionMark(A.options.tankMarkIcons, 8, v) end,
       disabled = function(i) return not A.options.tankMark end,
     },
-    splitOddEven = {
+    clearRaidMarks = {
       order = RAIDASSIST+70,
+      name = L["options.widget.clearRaidMarks.text"],
+      type = "toggle",
+      width = "full",
+      get = function(i) return A.options.clearRaidMarks end,
+      set = function(i,v) A.sorter:Stop() A.options.clearRaidMarks = v end,
+    },
+    splitOddEven = {
+      order = RAIDASSIST+80,
       name = L["options.widget.splitOddEven.text"],
       desc = paragraphs({
         L["options.widget.splitOddEven.desc.1"],
