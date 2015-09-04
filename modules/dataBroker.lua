@@ -27,7 +27,7 @@ local function groupCompOnTooltipShow(tooltip)
   if A.DEBUG >= 1 then A.console:Debugf(M, "groupCompOnTooltipShow tooltip=%s", tostring(tooltip or "<nil>")) end
   if IsInGroup() then
     local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
-    tooltip:AddDoubleLine(format("%s (%s):", L["dataBroker.groupComp.name"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.util:FormatGroupComp(6, t, h, m, r, u), 1,1,0, 1,1,0)
+    tooltip:AddDoubleLine(format("%s (%s):", L["phrase.groupComp"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.util:FormatGroupComp(6, t, h, m, r, u), 1,1,0, 1,1,0)
     tooltip:AddLine(" ")
     tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.plural"],       tostring(t), 1,1,1, 1,1,0)
     tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.HEALER.." "..L["word.healer.plural"],   tostring(h), 1,1,1, 1,1,0)
@@ -46,7 +46,7 @@ local function groupCompOnTooltipShow(tooltip)
       tooltip:AddDoubleLine(format(L["dataBroker.groupComp.sitting"], A.util:GetMaxGroupsForInstance() + 1), HD(tostring(sitting)), 1,1,1, 1,1,0)
     end
   else
-    tooltip:AddDoubleLine(format("%s:", L["dataBroker.groupComp.name"]), NOT_IN_GROUP, 1,1,0, 1,1,0)
+    tooltip:AddDoubleLine(format("%s:", L["phrase.groupComp"]), NOT_IN_GROUP, 1,1,0, 1,1,0)
   end
   if C_LFGList.GetActiveEntryInfo() then
     tooltip:AddLine(" ")
@@ -64,7 +64,7 @@ function M:OnEnable()
   R.groupComp = {
     type = "data source",
     text = NOT_IN_GROUP,
-    label = L["dataBroker.groupComp.name"],
+    label = L["phrase.groupComp"],
     OnClick = groupCompOnClick,
     OnTooltipShow = groupCompOnTooltipShow,
   }

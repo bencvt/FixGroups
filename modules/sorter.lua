@@ -182,18 +182,23 @@ function M:AnnounceComplete()
       A.console:Print(L["sorter.print.alreadySorted"])
     end
   else
+    -- Announce sort mode.
     local msg
     if M:IsSplittingRaid() then
       msg = format(L["sorter.print.split"], A.coreSort:GetSplitGroups())
     else
       msg = L["sorter.print."..R.sortMode]
     end
+    -- Announce group comp.
+    msg = format("%s %s: %s.", msg, L["phrase.groupComp"], A.group:GetComp(5))
+    -- Announce who we excluded, if any.
     local sitting = A.group:NumSitting()
     if sitting == 1 then
       msg = msg.." "..format(L["sorter.print.excludedSitting.singular"], A.util:GetMaxGroupsForInstance()+1)
     elseif sitting > 1 then
       msg = msg.." "..format(L["sorter.print.excludedSitting.plural"], sitting, A.util:GetMaxGroupsForInstance()+1)
     end
+    -- Announce to group or to self.
     if A.options.announceChatAlways or (A.options.announceChatPRN and R.lastSortMode ~= R.sortMode) then
       SendChatMessage(format("[%s] %s", A.NAME, msg), A.util:GetGroupChannel())
     else

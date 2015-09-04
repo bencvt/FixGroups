@@ -592,9 +592,9 @@ R.optionsTable = {
     },
     dataBrokerGroupCompStyle = {
       order = INTEROP+20,
-      name = format(L["options.widget.dataBrokerGroupCompStyle.text"], L["dataBroker.groupComp.name"]),
+      name = format(L["options.widget.dataBrokerGroupCompStyle.text"], L["phrase.groupComp"]),
       desc = paragraphs({
-        format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["dataBroker.groupComp.name"])),
+        format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["phrase.groupComp"])),
         format(L["options.widget.dataBrokerGroupCompStyle.desc.2"], A.util:LocaleTableConcat({HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")})),
       }),
       type = "select",

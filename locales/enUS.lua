@@ -26,6 +26,7 @@ L["word.unknown.singular"] = "Unknown"
 L["word.unknown.plural"] = "Unknown"
 
 L["phrase.versionAuthor"] = "v%s by %s"
+L["phrase.groupComp"] = "Group Comp"
 L["phrase.waitingOnDataFromServerFor"] = "Waiting on data from the server for %s."
 L["phrase.assumingRangedForNow.singular"] = "Assuming they're ranged for now."
 L["phrase.assumingRangedForNow.plural"] = "Assuming they're ranged for now."
@@ -151,7 +152,6 @@ L["console.print.notInRaid"] = "Groups can only be sorted while in a raid."
 L["console.print.badArgument"] = "Unknown argument %s. Type %s for valid arguments."
 
 -- DataBroker module
-L["dataBroker.groupComp.name"] = "Group Comp"
 L["dataBroker.groupComp.notInGroup"] = "not in group"
 L["dataBroker.groupComp.sitting"] = "Sitting in groups %d-8"
 L["dataBroker.groupComp.groupQueued"] = "Your group is queued in LFG."
