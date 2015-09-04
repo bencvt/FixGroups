@@ -36,12 +36,14 @@ local SPECID_ROLE = {
   --[254] = "ranged",  -- Marksmanship Hunter
   --[255] = "melee",   -- Survival Hunter
 }
+-- Lazily populated.
+local BUFF_ROLE = false
 local DELAY_DB_CLEANUP = 20.0
 local DB_CLEANUP_MAX_AGE_DAYS = 21
 local DB_CLEANUP_PUG_PENALTY = 60*60*24*(DB_CLEANUP_MAX_AGE_DAYS - 1)
 
 local format, gsub, max, pairs, select, time, tostring = format, gsub, max, pairs, select, time, tostring
-local GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, InCombatLockdown, UnitExists, UnitIsInMyGuild, UnitIsUnit = GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, InCombatLockdown, UnitExists, UnitIsInMyGuild, UnitIsUnit
+local GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, GetSpellInfo, InCombatLockdown, UnitBuff, UnitClass, UnitExists, UnitIsInMyGuild, UnitIsUnit = GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, GetSpellInfo, InCombatLockdown, UnitBuff, UnitClass, UnitExists, UnitIsInMyGuild, UnitIsUnit
 
 local function cleanDbCache(role)
   local earliest = time() - (60*60*24*DB_CLEANUP_MAX_AGE_DAYS)
@@ -142,14 +144,37 @@ function M:FIXGROUPS_PLAYER_LEFT(player)
   end
 end
 
-local function requestInspect(name, fullName)
-  R.needToInspect[name] = fullName
-  A.inspect:Request(name)
+local function guessMeleeOrRangedFromBuffs(name)
+  if not BUFF_ROLE then
+    BUFF_ROLE = {}
+    for buff, role in pairs({
+      [156064]  = A.group.ROLE.MELEE,   -- Greater Draenic Agility Flask
+      [156073]  = A.group.ROLE.MELEE,   -- Draenic Agility Flask
+      [156079]  = A.group.ROLE.RANGED,  -- Greater Draenic Intellect Flask
+      [156070]  = A.group.ROLE.RANGED,  -- Draenic Intellect Flask
+      [24858]   = A.group.ROLE.RANGED,  -- Moonkin Form
+    }) do
+      buff = GetSpellInfo(buff)
+      if buff then
+        if A.DEBUG >= 1 then A.console:Debugf(M, "buff=%s role=%s", buff, role) end
+        BUFF_ROLE[buff] = role
+      end
+    end
+  end
+  if UnitClass(name) == "HUNTER" then
+    return
+  end
+  for buff, role in pairs(BUFF_ROLE) do
+    if UnitBuff(name, buff) then
+      if A.DEBUG >= 2 then A.console:Debugf(M, "guessMeleeOrRangedFromBuffs found name=%s buff=%s role=%s", name, buff, role) end
+      return role
+    end
+  end
 end
 
 function M:ForgetSession(name)
   local fullName = A.util:NameAndRealm(name)
-  if A.DEBUG >= 1 then A.console:Debugf(M, "forgetSession %s", fullName) end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "forgetSession %s", fullName) end
   for _, c in pairs(R.sessionCache) do
     c[fullName] = nil
   end
@@ -184,9 +209,6 @@ function M:GetDamagerRole(player)
   end
 
   -- We're looking at another player. Try the session cache first.
-  -- If that's no help, look up the player's specId using the inspect module.
-  -- If the db cache has data, use it for the time being, until the inspect
-  -- request is complete.
   local fullName = A.util:NameAndRealm(player.name)
   if R.sessionCache.melee[fullName] then
     return A.group.ROLE.MELEE
@@ -196,16 +218,28 @@ function M:GetDamagerRole(player)
     return A.group.ROLE.TANK
   elseif R.sessionCache.healer[fullName] then
     return A.group.ROLE.HEALER
+  end
+
+  -- Okay, the session cache failed. Add the player to the inspection request
+  -- queue so we can get their true specID.
+  R.needToInspect[player.name] = fullName
+  A.inspect:Request(player.name)
+
+  -- In the meantime, try two fallbacks to get a tentative answer:
+  -- 1) Guess based on the presence of certain buffs; and
+  -- 2) Check the db cache, if we've encountered this player before.
+  local role = guessMeleeOrRangedFromBuffs(player.name)
+  if role then
+    return role
   elseif A.db.faction.dpsRoleCache.melee[fullName] then
     if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.melee found %s", fullName) end
-    requestInspect(player.name, fullName)
     return A.group.ROLE.MELEE
   elseif A.db.faction.dpsRoleCache.ranged[fullName] then
     if A.DEBUG >= 1 then A.console:Debugf(M, "dbCache.ranged found %s", fullName) end
-    requestInspect(player.name, fullName)
     return A.group.ROLE.RANGED
   else
-    requestInspect(player.name, fullName)
+    -- Oh well.
+    if A.DEBUG >= 1 then A.console:Debugf(M, "unknown role: %s", fullName) end
     return A.group.ROLE.UNKNOWN
   end
 end
