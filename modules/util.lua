@@ -72,7 +72,7 @@ end
 function M:AutoConvertTableConcat(t, sep)
   local t2 = wipe(R.tmp1)
   for _, v in ipairs(t) do
-    tinsert(t2, tostring(v or "<nil>"))
+    tinsert(t2, tostring(v))
   end
   return tconcat(t2, sep)
 end

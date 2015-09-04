@@ -131,7 +131,7 @@ function M:StartDefault()
   else
     M:Stop()
     if mode ~= "nosort" then
-      A.console:Errorf(M, "invalid sort mode %s!", tostring(mode or "<nil>"))
+      A.console:Errorf(M, "invalid sort mode %s!", tostring(mode))
     end
   end
 end

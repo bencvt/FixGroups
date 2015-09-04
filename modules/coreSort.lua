@@ -225,5 +225,5 @@ function M:DebugPrintDelta()
 end
 
 function M:DebugPrintAction()
-  A.console:Debugf(M, "action: %s to %s: %s", (R.action.name or "<nil>"), (R.action.newGroup or "<nil>"), (R.action.desc or "<nil>"))
+  A.console:Debugf(M, "action: %s to %s: %s", tostring(R.action.name), tostring(R.action.newGroup), tostring(R.action.desc))
 end

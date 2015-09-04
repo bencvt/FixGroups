@@ -15,7 +15,7 @@ local IsAddOnLoaded, IsInGroup, IsInRaid, IsShiftKeyDown = IsAddOnLoaded, IsInGr
 -- GLOBALS: C_LFGList, LibStub
 
 local function groupCompOnClick(frame, button)
-  if A.DEBUG >= 2 then A.console:Debugf(M, "groupCompOnClick frame=%s button=%s", tostring(frame or "<nil>"), tostring(button or "<nil>")) end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "groupCompOnClick frame=%s button=%s", tostring(frame), tostring(button)) end
   if IsShiftKeyDown() then
     if button == "RightButton" then
       A.util:InsertText(A.group:GetComp(A.util.GROUP_COMP_STYLE.VERBOSE))
@@ -28,7 +28,7 @@ local function groupCompOnClick(frame, button)
 end
 
 local function groupCompOnTooltipShow(tooltip)
-  if A.DEBUG >= 1 then A.console:Debugf(M, "groupCompOnTooltipShow tooltip=%s", tostring(tooltip or "<nil>")) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "groupCompOnTooltipShow tooltip=%s", tostring(tooltip)) end
   if IsInGroup() then
     local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
     tooltip:AddDoubleLine(format("%s (%s):", L["phrase.groupComp"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_SHORT, t, h, m, r, u), 1,1,0, 1,1,0)

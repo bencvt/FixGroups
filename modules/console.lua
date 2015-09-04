@@ -112,7 +112,7 @@ end
 function M:DebugDump(module, ...)
   local t = {}
   for i = 1, select("#", ...) do
-    tinsert(t, tostring(select(i, ...) or "<nil>"))
+    tinsert(t, tostring(select(i, ...)))
   end
   M:Debug(module, tconcat(t, ", "))
 end
