@@ -66,7 +66,7 @@ local DELAY_OPTIONS_PANE_LOADED = 0.01
 
 local format, gsub, ipairs, min, max, tinsert = format, gsub, ipairs, min, max, tinsert
 local tconcat = table.concat
-local ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, ROLE_CHANGED_INFORM = ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, ROLE_CHANGED_INFORM
+local DAMAGER, ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, INLINE_DAMAGER_ICON, ROLE_CHANGED_INFORM = DAMAGER, ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, INLINE_DAMAGER_ICON, ROLE_CHANGED_INFORM
 -- GLOBALS: LibStub
 
 local function paragraphs(lines)
@@ -243,14 +243,14 @@ R.optionsTable = {
       fontSize = "medium",
       hidden = function(i) M:UpdateSysMsgPreview(2, i.option) end,
     },
-    --sysMsgPreview3 = {
-    --  order = SYSMSG+13,
-    --  type = "description",
-    --  width = "full",
-    --  name = "",
-    --  fontSize = "medium",
-    --  hidden = function(i) M:UpdateSysMsgPreview(3, i.option) end,
-    --},
+    sysMsgPreview3 = {
+      order = SYSMSG+13,
+      type = "description",
+      width = "full",
+      name = "",
+      fontSize = "medium",
+      hidden = function(i) M:UpdateSysMsgPreview(3, i.option) end,
+    },
     sysMsgClassColor = {
       order = SYSMSG+20,
       name = L["options.widget.sysMsgClassColor.text"],
@@ -684,18 +684,21 @@ function M:OptionsPaneLoaded()
 end
 
 function M:UpdateSysMsgPreview(which, option)
-  local msg, comp
+  local comp, player, msg
   if which == 1 then
-    msg = format(ERR_RAID_MEMBER_REMOVED_S, A.group.EXAMPLE_PLAYER.name)
     comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 3, 3, 6, 0)
+    player = A.group.EXAMPLE_PLAYER
+    msg = format(ERR_RAID_MEMBER_REMOVED_S, player.name)
   elseif which == 2 then
-    msg = format(ERR_RAID_MEMBER_ADDED_S, A.group.EXAMPLE_PLAYER.name)
     comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 3, 4, 6, 0)
+    player = A.group.EXAMPLE_PLAYER
+    msg = format(ERR_RAID_MEMBER_ADDED_S, player.name)
   elseif which == 3 then
-    msg = format(ROLE_CHANGED_INFORM, A.group.EXAMPLE_PLAYER2.name, "TODO")
-    comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 4, 3, 6, 0)
+    comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 2, 5, 6, 0)
+    player = A.group.EXAMPLE_PLAYER2
+    msg = format(ROLE_CHANGED_INFORM, player.name, INLINE_DAMAGER_ICON.." "..DAMAGER)
   else
     return
   end
-  option.name = "    "..A.util:ColorSystem(A.modJoinLeave:Modify(msg, comp))
+  option.name = "    "..A.util:ColorSystem(A.modJoinLeave:Modify(msg, comp, player))
 end

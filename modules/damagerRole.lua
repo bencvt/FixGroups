@@ -8,7 +8,7 @@ M.private = {
 }
 local R = M.private
 
-local CLASS_DAMAGER_ROLE = {
+M.CLASS_DAMAGER_ROLE = {
   WARRIOR     = "melee",
   DEATHKNIGHT = "melee",
   PALADIN     = "melee",
@@ -182,8 +182,8 @@ end
 
 function M:GetDamagerRole(player)
   -- Check for unambiguous classes.
-  if player.class and CLASS_DAMAGER_ROLE[player.class] then
-    return (CLASS_DAMAGER_ROLE[player.class] == "melee") and A.group.ROLE.MELEE or A.group.ROLE.RANGED
+  if player.class and M.CLASS_DAMAGER_ROLE[player.class] then
+    return (M.CLASS_DAMAGER_ROLE[player.class] == "melee") and A.group.ROLE.MELEE or A.group.ROLE.RANGED
   end
 
   -- Sanity check unit name.

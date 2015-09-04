@@ -20,11 +20,12 @@ M.private = {
 local R = M.private
 
 local DELAY_REBUILD_FOR_UNKNOWN = 5.0
+local DELAY_REBUILD_FOR_EVENT = 1.0
 
 M.ROLE = {TANK=1, HEALER=2, MELEE=3, RANGED=4, UNKNOWN=5}
 M.ROLE_NAME = {"tank", "healer", "melee", "ranged", "unknown"}
 M.EXAMPLE_PLAYER = {rindex=4, name="Thrall", rank=1, group=2, class="SHAMAN", zone="Tanaan", unitID="raid4", role=M.ROLE.MELEE, isDamager=true}
-M.EXAMPLE_PLAYER2 = {rindex=7, name="Liandrin", rank=1, group=5, class="PALADIN", zone="Tanaan", unitID="raid7", role=M.ROLE.HEALER}
+M.EXAMPLE_PLAYER2 = {rindex=7, name="Velen", rank=1, group=5, class="PRIEST", zone="Tanaan", unitID="raid7", role=M.ROLE.HEALER}
 
 -- Maintain rosterArray to avoid creating up to 40 new tables every time
 -- we build the roster. The individual tables are wiped on demand.
@@ -40,10 +41,17 @@ local format, gsub, ipairs, pairs, select, tinsert, tostring, unpack, wipe = for
 local tconcat = table.concat
 local GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName
 
+local function rebuildTimerDone(event)
+  if A.DEBUG >= 1 then A.console:Debugf(M, "%s ForceBuildRoster", event) end
+  R.rebuildTimer = false
+  M:ForceBuildRoster(M, event)
+end
+
 function M:OnEnable()
   M:RegisterEvent("GROUP_ROSTER_UPDATE")
   M:RegisterEvent("PLAYER_ENTERING_WORLD")
   M:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+  M:RegisterEvent("ROLE_CHANGED_INFORM")
   M:RegisterEvent("ZONE_CHANGED")
   M:RegisterEvent("ZONE_CHANGED_INDOORS")
   M:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -67,7 +75,15 @@ function M:PLAYER_SPECIALIZATION_CHANGED(event, unitID)
       A.damagerRole:ForgetSession(name)
     end
   end
-  M:ForceBuildRoster(M, event)
+  if not R.rebuildTimer then
+    R.rebuildTimer = M:ScheduleTimer(rebuildTimerDone, DELAY_REBUILD_FOR_EVENT, event)
+  end
+end
+
+function M:ROLE_CHANGED_INFORM(event)
+  if not R.rebuildTimer then
+    R.rebuildTimer = M:ScheduleTimer(rebuildTimerDone, DELAY_REBUILD_FOR_EVENT, event)
+  end
 end
 
 function M:ZONE_CHANGED(event)
@@ -101,11 +117,6 @@ local function wipeRoster()
   tmp = R.prevRosterArray
   R.prevRosterArray = R.rosterArray
   R.rosterArray = tmp
-end
-
-local function rebuildTimerDone()
-  R.rebuildTimer = false
-  M:ForceBuildRoster(M, "rebuildTimerDone")
 end
 
 local function buildSoloRoster(rindex)
@@ -227,8 +238,7 @@ local function buildRoster()
   -- Schedule rebuild if there are any unknown players.
   if areAnyUnknown then
     if not R.rebuildTimer then
-      if A.DEBUG >= 1 then A.console:Debugf(M, "unknown player(s) in group, scheduling ForceBuildRoster") end
-      R.rebuildTimer = M:ScheduleTimer(rebuildTimerDone, DELAY_REBUILD_FOR_UNKNOWN)
+      R.rebuildTimer = M:ScheduleTimer(rebuildTimerDone, DELAY_REBUILD_FOR_UNKNOWN, "unknown")
     end
   elseif R.rebuildTimer then
     if A.DEBUG >= 1 then A.console:Debugf(M, "cancelling scheduled ForceBuildRoster") end
