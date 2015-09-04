@@ -190,7 +190,7 @@ function M:AnnounceComplete()
       msg = L["sorter.print."..R.sortMode]
     end
     -- Announce group comp.
-    msg = format("%s %s: %s.", msg, L["phrase.groupComp"], A.group:GetComp(5))
+    msg = format("%s %s: %s.", msg, L["phrase.groupComp"], A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))
     -- Announce who we excluded, if any.
     local sitting = A.group:NumSitting()
     if sitting == 1 then

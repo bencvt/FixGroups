@@ -610,6 +610,7 @@ R.optionsTable = {
       width = "double",
       style = "dropdown",
       values = {
+        -- Indexes correspond to A.util.GROUP_COMP_STYLE.
         [1] = A.util:FormatGroupComp(1, 2, 4, 6, 8, 0),
         [2] = A.util:FormatGroupComp(2, 2, 4, 6, 8, 0),
         [3] = A.util:FormatGroupComp(3, 2, 4, 6, 8, 0),
@@ -686,13 +687,13 @@ function M:UpdateSysMsgPreview(which, option)
   local msg, comp
   if which == 1 then
     msg = format(ERR_RAID_MEMBER_REMOVED_S, A.group.EXAMPLE_PLAYER.name)
-    comp = A.util:FormatGroupComp(5, 2,3,10, 3,6,0)
+    comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 3, 3, 6, 0)
   elseif which == 2 then
     msg = format(ERR_RAID_MEMBER_ADDED_S, A.group.EXAMPLE_PLAYER.name)
-    comp = A.util:FormatGroupComp(5, 2,3,10, 4,6,0)
+    comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 3, 4, 6, 0)
   elseif which == 3 then
     msg = format(ROLE_CHANGED_INFORM, A.group.EXAMPLE_PLAYER2.name, "TODO")
-    comp = A.util:FormatGroupComp(5, 2,4,9, 3,6,0)
+    comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 4, 3, 6, 0)
   else
     return
   end

@@ -17,7 +17,11 @@ local IsAddOnLoaded, IsInGroup, IsInRaid, IsShiftKeyDown = IsAddOnLoaded, IsInGr
 local function groupCompOnClick(frame, button)
   if A.DEBUG >= 2 then A.console:Debugf(M, "groupCompOnClick frame=%s button=%s", tostring(frame or "<nil>"), tostring(button or "<nil>")) end
   if IsShiftKeyDown() then
-    A.util:InsertText(A.group:GetComp(5))
+    if button == "RightButton" then
+      A.util:InsertText(A.group:GetComp(A.util.GROUP_COMP_STYLE.VERBOSE))
+    else
+      A.util:InsertText(A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))
+    end
   else
     A.util:ToggleRaidTab()
   end
@@ -27,7 +31,7 @@ local function groupCompOnTooltipShow(tooltip)
   if A.DEBUG >= 1 then A.console:Debugf(M, "groupCompOnTooltipShow tooltip=%s", tostring(tooltip or "<nil>")) end
   if IsInGroup() then
     local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
-    tooltip:AddDoubleLine(format("%s (%s):", L["phrase.groupComp"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.util:FormatGroupComp(6, t, h, m, r, u), 1,1,0, 1,1,0)
+    tooltip:AddDoubleLine(format("%s (%s):", L["phrase.groupComp"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_SHORT, t, h, m, r, u), 1,1,0, 1,1,0)
     tooltip:AddLine(" ")
     tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.plural"],       tostring(t), 1,1,1, 1,1,0)
     tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.HEALER.." "..L["word.healer.plural"],   tostring(h), 1,1,1, 1,1,0)

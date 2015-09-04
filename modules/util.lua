@@ -23,6 +23,15 @@ M.TEXT_ICON = {
     SKULL     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
   },
 }
+M.GROUP_COMP_STYLE = {
+  ICONS_FULL = 1,
+  ICONS_SHORT = 2,
+  GROUP_TYPE_FULL = 3,
+  GROUP_TYPE_SHORT = 4,
+  TEXT_FULL = 5,
+  TEXT_SHORT = 6,
+  VERBOSE = 999,
+}
 
 local floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
 local tconcat = table.concat
@@ -138,20 +147,38 @@ local function compMRU(m, r, u)
 end
 
 function M:FormatGroupComp(style, t, h, m, r, u)
-  if style == 1 then
-    return format("%d%s %d%s %d%s%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER, M:HighlightDim(compMRU(m, r, u)))
-  elseif style == 2 then
-    return format("%d%s %d%s %d%s", t, M.TEXT_ICON.ROLE.TANK, h, M.TEXT_ICON.ROLE.HEALER, m+r+u, M.TEXT_ICON.ROLE.DAMAGER)
-  elseif style == 3 then
-    return format("Raid: %s", M:Highlight(format("%d/%d/%d (%s)", t, h, m+r+u, compMRU(m, r, u))))
-  elseif style == 4 then
-    return format("Raid: %s", M:Highlight(format("%d/%d/%d", t, h, m+r+u)))
-  elseif style == 5 then
+  if style == M.GROUP_COMP_STYLE.ICONS_FULL then
+    return format("%d%s %d%s %d%s%s",
+      t, M.TEXT_ICON.ROLE.TANK,
+      h, M.TEXT_ICON.ROLE.HEALER,
+      m+r+u, M.TEXT_ICON.ROLE.DAMAGER,
+      M:HighlightDim(compMRU(m, r, u)))
+  elseif style == M.GROUP_COMP_STYLE.ICONS_SHORT then
+    return format("%d%s %d%s %d%s",
+      t, M.TEXT_ICON.ROLE.TANK,
+      h, M.TEXT_ICON.ROLE.HEALER,
+      m+r+u, M.TEXT_ICON.ROLE.DAMAGER)
+  elseif style == M.GROUP_COMP_STYLE.GROUP_TYPE_FULL then
+    return format("%s: %s",
+      IsInRaid() and L["word.raid"] or L["word.party"],
+      M:Highlight(format("%d/%d/%d (%s)", t, h, m+r+u, compMRU(m, r, u))))
+  elseif style == M.GROUP_COMP_STYLE.GROUP_TYPE_SHORT then
+    return format("%s: %s",
+      IsInRaid() and L["word.raid"] or L["word.party"],
+      M:Highlight(format("%d/%d/%d", t, h, m+r+u)))
+  elseif style == M.GROUP_COMP_STYLE.TEXT_FULL then
     return format("%d/%d/%d (%s)", t, h, m+r+u, compMRU(m, r, u))
-  elseif style == 6 then
+  elseif style == M.GROUP_COMP_STYLE.TEXT_SHORT then
     return format("%d/%d/%d", t, h, m+r+u)
+  elseif style == M.GROUP_COMP_STYLE.VERBOSE then
+    return format("%d %s / %d %s / %d %s (%d %s, %d %s)",
+      t,      ((t == 1)     and L["word.tank.singular"]     or L["word.tank.plural"]    ),
+      h,      ((h == 1)     and L["word.healer.singular"]   or L["word.healer.plural"]  ),
+      m+r+u,  ((m+r+u == 1) and L["word.damager.singular"]  or L["word.damager.plural"] ),
+      m,      ((m == 1)     and L["word.melee.singular"]    or L["word.melee.plural"]   ),
+      r,      ((r == 1)     and L["word.ranged.singular"]   or L["word.ranged.plural"]  ))
   else
-    return M:FormatGroupComp(1, t, h, m, r, u)
+    return M:FormatGroupComp(M.GROUP_COMP_STYLE.ICONS_FULL, t, h, m, r, u)
   end
 end
 
