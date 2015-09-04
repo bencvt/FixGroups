@@ -71,7 +71,7 @@ function M:FixRaid(isRequestFromAssist)
       if IsInRaid() and A.util:IsLeader() and A.options.tankAssist and (unitRole == "TANK" or isML) and (not rank or rank < 1) then
         PromoteToAssistant(unitID)
       end
-      if not isRequestFromAssist and A.options.clearRaidMarks then
+      if not isRequestFromAssist and A.options.clearRaidMarks and unitRole ~= "TANK" then
         if GetRaidTargetIndex(unitID) then
           SetRaidTarget(unitID, 0)
         end
