@@ -513,9 +513,7 @@ local function buildDispatchTable()
   add("anyIncludingSitting", {choosePlayer, "anyIncludingSitting"}).aliasN({
       "any+sitting",
       "any|sitting",
-      "standby",
-      "inactive",
-      "idle"})
+      "*"})
   add("notMe", {choosePlayer, "notMe"}).alias(false, "somebodyElse")
   add("dead", {choosePlayer, "dead"})
   add("alive", {choosePlayer, "alive"}).aliasN({
