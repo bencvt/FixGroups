@@ -76,7 +76,7 @@ function M:Stop()
 end
 
 function M:StopTimedOut()
-  A.console:Print(L["sorter.print.timedOut"])
+  A.console:Printf(L["sorter.print.timedOut"], L["sorter.mode."..R.sortMode])
   if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
   M:Stop()
 end
@@ -91,11 +91,11 @@ function M:StopIfNeeded()
     local resumeSortMode = R.sortMode
     M:Stop()
     if A.options.resumeAfterCombat then
-      A.console:Print(L["sorter.print.combatPaused"])
+      A.console:Printf(L["sorter.print.combatPaused"], L["sorter.mode."..R.sortMode])
       R.resumeAfterCombat = resumeSortMode
       A.buttonGui:Refresh()
     else
-      A.console:Print(L["sorter.print.combatCancelled"])
+      A.console:Printf(L["sorter.print.combatCancelled"], L["sorter.mode."..R.sortMode])
     end
     return true
   end
@@ -138,7 +138,7 @@ end
 
 function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
-    A.console:Print(L["sorter.print.combatResumed"])
+    A.console:Printf(L["sorter.print.combatResumed"], L["sorter.mode."..R.sortMode])
     local mode = R.resumeAfterCombat 
     R.resumeAfterCombat = false
     start(mode)
@@ -179,7 +179,7 @@ function M:AnnounceComplete()
     if M:IsSplittingRaid() then
       A.console:Print(L["sorter.print.alreadySplit"])
     else
-      A.console:Print(L["sorter.print.alreadySorted"])
+      A.console:Printf(L["sorter.print.alreadySorted"], L["sorter.mode."..R.sortMode])
     end
   else
     -- Announce sort mode.
@@ -187,7 +187,7 @@ function M:AnnounceComplete()
     if M:IsSplittingRaid() then
       msg = format(L["sorter.print.split"], A.coreSort:GetSplitGroups())
     else
-      msg = L["sorter.print."..R.sortMode]
+      msg = format(L["sorter.print.sorted"], L["sorter.mode."..R.sortMode])
     end
     -- Announce group comp.
     msg = format("%s %s: %s.", msg, L["phrase.groupComp"], A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))
