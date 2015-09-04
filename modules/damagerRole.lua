@@ -40,7 +40,7 @@ local DELAY_DB_CLEANUP = 20.0
 local DB_CLEANUP_MAX_AGE_DAYS = 21
 local DB_CLEANUP_PUG_PENALTY = 60*60*24*(DB_CLEANUP_MAX_AGE_DAYS - 1)
 
-local format, pairs, select, time, tostring = format, pairs, select, time, tostring
+local format, gsub, max, pairs, select, time, tostring = format, gsub, max, pairs, select, time, tostring
 local GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, InCombatLockdown, UnitExists, UnitIsInMyGuild, UnitIsUnit = GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, InCombatLockdown, UnitExists, UnitIsInMyGuild, UnitIsUnit
 
 local function cleanDbCache(role)
@@ -124,7 +124,7 @@ function M:INSPECT_READY(event, guid)
     local ts = time()
     if not UnitIsInMyGuild(name) then
       -- Non-guildies (i.e., PUGs) are cached for a much shorter time.
-      ts = ts - DB_CLEANUP_PUG_PENALTY
+      ts = max(ts - DB_CLEANUP_PUG_PENALTY, A.db.faction.dpsRoleCache[role][fullName] or 0)
     end
     A.db.faction.dpsRoleCache[role][fullName] = ts
     A.db.faction.dpsRoleCache[(role == "melee") and "ranged" or "melee"][fullName] = nil
