@@ -22,13 +22,6 @@ local function onCloseWindow(widget)
   AceGUI:Release(widget)
 end
 
-function M:CloseWindow()
-  if R.window then
-		PlaySound("gsTitleOptionExit")
-    R.window.frame:Hide()
-  end
-end
-
 local function addPadding(frame)
   local padding = AceGUI:Create("Label")
   padding:SetText(" ")
@@ -135,6 +128,13 @@ local function resetWindowSize()
   R.window:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
   R.window:SetWidth(700)
   R.window:SetHeight(569)
+end
+
+function M:Close()
+  if R.window then
+		PlaySound("gsTitleOptionExit")
+    R.window.frame:Hide()
+  end
 end
 
 function M:Open()
