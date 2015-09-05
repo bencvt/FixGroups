@@ -91,11 +91,11 @@ function M:StopIfNeeded()
     local resumeSortMode = R.sortMode
     M:Stop()
     if A.options.resumeAfterCombat then
-      A.console:Printf(L["sorter.print.combatPaused"], L["sorter.mode."..R.sortMode])
+      A.console:Printf(L["sorter.print.combatPaused"], L["sorter.mode."..resumeSortMode])
       R.resumeAfterCombat = resumeSortMode
       A.buttonGui:Refresh()
     else
-      A.console:Printf(L["sorter.print.combatCancelled"], L["sorter.mode."..R.sortMode])
+      A.console:Printf(L["sorter.print.combatCancelled"], L["sorter.mode."..resumeSortMode])
     end
     return true
   end
@@ -138,8 +138,8 @@ end
 
 function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
-    A.console:Printf(L["sorter.print.combatResumed"], L["sorter.mode."..R.sortMode])
     local mode = R.resumeAfterCombat 
+    A.console:Printf(L["sorter.print.combatResumed"], L["sorter.mode."..mode])
     R.resumeAfterCombat = false
     start(mode)
   end
