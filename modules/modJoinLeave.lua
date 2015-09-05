@@ -35,7 +35,11 @@ local function matchMessage(message)
     }
   end
   if message == ERR_RAID_YOU_JOINED then
-    return UnitName("player"), nil, nil, {parensRole=true, isJoin=true}
+    -- When a player first joins the raid, there will be a lot of unknown roles
+    -- out there until the server has had a chance to send us all the data.
+    -- Set the shortComp flag to just report the basic "T/H/D" comp, rather
+    -- than the full "T/H/D (M+R+U)".
+    return UnitName("player"), nil, nil, {isJoin=true, shortComp=true}
   end
   local matchName, matchRole, matchActor
   for pattern, matchInfo in pairs(PATTERNS) do
@@ -154,7 +158,7 @@ function M:Modify(message, previewComp, previewPlayer)
   if A.options.sysMsg.groupComp and not matchInfo.isRoleChange then
     -- See comment on role for the reason why we exclude the comp for role
     -- change system messages.
-    local newComp = previewComp or A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL)
+    local newComp = previewComp or A.group:GetComp(matchInfo.shortComp and A.util.GROUP_COMP_STYLE.TEXT_SHORT or A.util.GROUP_COMP_STYLE.TEXT_FULL)
     if A.options.sysMsg.groupCompHighlight then
       if matchInfo.isJoin then
         message = format("%s |cff00ff00%s.|r", message, newComp)
