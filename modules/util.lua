@@ -171,12 +171,14 @@ function M:FormatGroupComp(style, t, h, m, r, u)
   elseif style == M.GROUP_COMP_STYLE.TEXT_SHORT then
     return format("%d/%d/%d", t, h, m+r+u)
   elseif style == M.GROUP_COMP_STYLE.VERBOSE then
-    return format("%d %s / %d %s / %d %s (%d %s, %d %s)",
+    local unknown = (u > 0) and format(", %d %s", u, ((u == 1) and L["word.unknown.singular"] or L["word.unknown.plural"])) or ""
+    return format("%d %s / %d %s / %d %s (%d %s, %d %s%s)",
       t,      ((t == 1)     and L["word.tank.singular"]     or L["word.tank.plural"]    ),
       h,      ((h == 1)     and L["word.healer.singular"]   or L["word.healer.plural"]  ),
       m+r+u,  ((m+r+u == 1) and L["word.damager.singular"]  or L["word.damager.plural"] ),
       m,      ((m == 1)     and L["word.melee.singular"]    or L["word.melee.plural"]   ),
-      r,      ((r == 1)     and L["word.ranged.singular"]   or L["word.ranged.plural"]  ))
+      r,      ((r == 1)     and L["word.ranged.singular"]   or L["word.ranged.plural"]  ),
+      unknown)
   else
     return M:FormatGroupComp(M.GROUP_COMP_STYLE.ICONS_FULL, t, h, m, r, u)
   end
