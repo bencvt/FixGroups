@@ -18,7 +18,7 @@ local function matchMessage(message)
       s = format(_G[s], "!NAME!", "!ROLE!", "!NAME!")
       s = gsub(s, "([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1")
       s = gsub(s, "!NAME!", "([^%%s]+)")
-      s = gsub(s, "!ROLE!", "(.+)")
+      s = gsub(s, "!ROLE!", "(%|T[^%%s]+%|t [^%%s]+)")
       return s
     end
     PATTERNS = {
