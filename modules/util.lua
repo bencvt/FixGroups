@@ -8,20 +8,22 @@ local R = M.private
 
 M.TEXT_ICON = {
   ROLE = {
+    -- TODO: other alternative sets including LFGROLE_BW, UI-LFG-ICON-ROLES, UI-LFG-ICON-PORTRAITROLES
     TANK      = INLINE_TANK_ICON,     -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t"
     HEALER    = INLINE_HEALER_ICON,   -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t"
     DAMAGER   = INLINE_DAMAGER_ICON,  -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t"
   },
   MARK = {
-    STAR      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14:0:0|t",
-    CIRCLE    = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14:0:0|t",
-    DIAMOND   = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14:0:0|t",
-    TRIANGLE  = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14:0:0|t",
-    MOON      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14:0:0|t",
-    SQUARE    = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14:0:0|t",
-    CROSS     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14:0:0|t",
-    SKULL     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14:0:0|t",
+    STAR      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16:16:0:0|t",
+    CIRCLE    = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16:16:0:0|t",
+    DIAMOND   = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:16:16:0:0|t",
+    TRIANGLE  = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:16:16:0:0|t",
+    MOON      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:16:16:0:0|t",
+    SQUARE    = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:16:16:0:0|t",
+    CROSS     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:16:16:0:0|t",
+    SKULL     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:16:16:0:0|t",
   },
+  BLANK = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:16:16:0:0|t", --TODO
 }
 M.GROUP_COMP_STYLE = {
   ICONS_FULL = 1,
@@ -146,7 +148,7 @@ local function compMRU(m, r, u)
   end
 end
 
-function M:FormatGroupComp(style, t, h, m, r, u)
+function M:FormatGroupComp(style, t, h, m, r, u, isInRaid)
   if style == M.GROUP_COMP_STYLE.ICONS_FULL then
     return format("%d%s %d%s %d%s%s",
       t, M.TEXT_ICON.ROLE.TANK,
@@ -160,11 +162,11 @@ function M:FormatGroupComp(style, t, h, m, r, u)
       m+r+u, M.TEXT_ICON.ROLE.DAMAGER)
   elseif style == M.GROUP_COMP_STYLE.GROUP_TYPE_FULL then
     return format("%s: %s",
-      IsInRaid() and L["word.raid"] or L["word.party"],
+      (isInRaid or IsInRaid()) and L["word.raid"] or L["word.party"],
       M:Highlight(format("%d/%d/%d (%s)", t, h, m+r+u, compMRU(m, r, u))))
   elseif style == M.GROUP_COMP_STYLE.GROUP_TYPE_SHORT then
     return format("%s: %s",
-      IsInRaid() and L["word.raid"] or L["word.party"],
+      (isInRaid or IsInRaid()) and L["word.raid"] or L["word.party"],
       M:Highlight(format("%d/%d/%d", t, h, m+r+u)))
   elseif style == M.GROUP_COMP_STYLE.TEXT_FULL then
     return format("%d/%d/%d (%s)", t, h, m+r+u, compMRU(m, r, u))

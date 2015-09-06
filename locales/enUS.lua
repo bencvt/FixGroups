@@ -229,7 +229,7 @@ L["options.widget.sysMsgRoleIcon.text"] = "Add role icon"
 L["options.widget.sysMsgGroupComp.text"] = "Add new group comp"
 L["options.widget.sysMsgGroupCompHighlight.text"] = "Highlight new group comp"
 
-L["options.header.interop"] = "Addon integration"
+L["options.header.interop"] = "Data Broker"
 L["options.widget.dataBrokerGroupCompStyle.text"] = "%s display style"
 L["options.widget.dataBrokerGroupCompStyle.desc.1"] = "%s is available as a Data Broker object (a.k.a. an LDB plugin). If you're running an addon that displays Data Broker objects, you can have the group comp on the screen at all times."
 L["options.widget.dataBrokerGroupCompStyle.desc.2"] = "There are many Data Broker display addons out there. Some of the more popular ones are %s."

@@ -1,3 +1,6 @@
+v1.3.2:
+  - organize config dialog into tabs
+
 v1.3.1:
   - improve spec detection for DPS Shamans and Druids
   - improve group-related system messages: modify role changes too
