@@ -16,11 +16,11 @@ Other features:
 
  * **Track** your group comp automatically. An example comp is **`2/4/13 (5+8)`**, which is shorthand for *"a group composed of 2 tanks, 4 healers, and 13 dps, 5 of which are melee and 8 of which are ranged."*
 
-   * Whenever a player joins or leaves your group, the **server message** now includes the player's role and the new comp. Example: *"Deadlydk (melee) has joined the raid group. 2/4/14 (6+8)."*
+   * Whenever a player joins or leaves your group, the **server message** now includes the player's role and the new comp. Example: *"Darion (Melee) has joined the raid group. 2/4/14 (6+8)."*
 
    * The FixGroups button/icon **tooltip** includes the comp.
 
-   * Put the comp **anywhere in your UI** if you're running a Data Broker display addon like **Titan Panel**, **ChocolateBar**, or **ElvUI**. FixGroups makes the comp available as a Data Broker object (a.k.a. LDB plugin).
+   * Put the comp **anywhere in your UI** if you're running a Data Broker display addon (**Titan Panel**, **ChocolateBar**, **ElvUI**, etc.) FixGroups makes the comp available as a Data Broker object (a.k.a. LDB plugin).
 
 ## Links
 
