@@ -144,7 +144,7 @@ function M:TestInterop()
   return L["meter.print.noAddon"]
 end
 
-function M:BuildSnapshot()
+function M:BuildSnapshot(notifyIfNoAddon)
   wipe(R.snapshot)
   for _, name in ipairs(SUPPORTED_ADDONS_ORDER) do
     if IsAddOnLoaded(name) and _G[SUPPORTED_ADDONS[name].obj] then
@@ -157,6 +157,9 @@ function M:BuildSnapshot()
       if A.DEBUG >= 1 then M:DebugPrintMeterSnapshot() end
       return
     end
+  end
+  if notifyIfNoAddon then
+    A.console:Printf(L["meter.print.noAddon"])
   end
 end
 
