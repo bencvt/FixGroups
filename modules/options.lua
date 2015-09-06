@@ -102,20 +102,20 @@ R.optionsTable = {
       type = "group",
       name = "Main", --TODO localize
     },
-    ui = {
-      order = 20,
-      type = "group",
-      name = "User Interface", --TODO localize
-    },
     sort = {
-      order = 30,
+      order = 20,
       type = "group",
       name = "Sorting", --TODO localize
     },
     mark = {
-      order = 40,
+      order = 30,
       type = "group",
       name = "Marking", --TODO localize
+    },
+    ui = {
+      order = 40,
+      type = "group",
+      name = "User Interface", --TODO localize
     },
   },
 }
@@ -393,11 +393,19 @@ R.optionsTable.args.sort.args = {
     get = function(i) return A.options.resumeAfterCombat end,
     set = function(i,v) A.sorter:Stop() A.options.resumeAfterCombat = v end,
   },
-  damageMeterAddonDesc = {
+  announceChat = {
     order = 30,
-    type = "description",
-    name = "", -- set in M:OnEnable
-    fontSize = "medium",
+    name = L["options.widget.announceChat.text"],
+    type = "select",
+    width = "double",
+    style = "dropdown",
+    values = {
+      [1] = L["options.value.always"],
+      [2] = L["options.value.announceChatLimited"],
+      [3] = L["options.value.never"],
+    },
+    get = function(i) if A.options.announceChatAlways then return 1 elseif A.options.announceChatPRN then return 2 end return 3 end,
+    set = function(i,v) A.options.announceChatAlways, A.options.announceChatPRN = (v==1), (v==2) end,
   },
   splitOddEven = {
     order = 40,
@@ -411,19 +419,11 @@ R.optionsTable.args.sort.args = {
     get = function(i) return A.options.splitOddEven end,
     set = function(i,v) A.sorter:Stop() A.options.splitOddEven = v end,
   },
-  announceChat = {
+  damageMeterAddonDesc = {
     order = 50,
-    name = L["options.widget.announceChat.text"],
-    type = "select",
-    width = "double",
-    style = "dropdown",
-    values = {
-      [1] = L["options.value.always"],
-      [2] = L["options.value.announceChatLimited"],
-      [3] = L["options.value.never"],
-    },
-    get = function(i) if A.options.announceChatAlways then return 1 elseif A.options.announceChatPRN then return 2 end return 3 end,
-    set = function(i,v) A.options.announceChatAlways, A.options.announceChatPRN = (v==1), (v==2) end,
+    type = "description",
+    name = "", -- set in M:OnEnable
+    fontSize = "medium",
   },
 }
 
@@ -699,7 +699,7 @@ function M:OnEnable()
     format(L["options.widget.sortMode.desc.3"], H("/fg meter"), H(L["button.fixGroups.text"])),
   })
 
-  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = A.meter:TestInterop().."|n|n"
+  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = "|n"..A.meter:TestInterop()
 end
 
 function M:OptionsPaneLoaded()
