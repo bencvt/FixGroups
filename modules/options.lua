@@ -730,5 +730,5 @@ function M:UpdateSysMsgPreview(which, option)
   else
     return
   end
-  option.name = "    "..A.util.TEXT_ICON.BLANK..A.util:ColorSystem(A.modJoinLeave:Modify(msg, comp, player))
+  option.name = A.util:BlankInline(16, 24)..A.util:ColorSystem(A.modJoinLeave:Modify(msg, comp, player))
 end

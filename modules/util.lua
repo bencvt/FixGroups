@@ -23,7 +23,6 @@ M.TEXT_ICON = {
     CROSS     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:16:16:0:0|t",
     SKULL     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:16:16:0:0|t",
   },
-  BLANK = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:16:16:0:0|t", --TODO
 }
 M.GROUP_COMP_STYLE = {
   ICONS_FULL = 1,
@@ -268,6 +267,10 @@ function M:InsertText(text)
   else
     ChatFrame_OpenChat(text)
   end
+end
+
+function M:BlankInline(height, width)
+  return format("|TInterface\\AddOns\\%s\\media\\blank.blp:%d:%d:0:0|t", A.NAME, height or 8, width or 8)
 end
 
 function M:GetElvUISkinModule()
