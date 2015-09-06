@@ -4,6 +4,7 @@ A.sorter = M
 M.private = {
   sortMode = false,
   lastSortMode = false,
+  announced = false,
   resumeAfterCombat = false,
   startTime = false,
   stepCount = false,
@@ -175,6 +176,9 @@ function M:ProcessStep()
 end
 
 function M:AnnounceComplete()
+  if R.lastSortMode ~= R.sortMode then
+    R.announced = false
+  end
   if R.stepCount == 0 then
     if M:IsSplittingRaid() then
       A.console:Print(L["sorter.print.alreadySplit"])
@@ -199,8 +203,9 @@ function M:AnnounceComplete()
       msg = msg.." "..format(L["sorter.print.excludedSitting.plural"], sitting, A.util:GetMaxGroupsForInstance()+1)
     end
     -- Announce to group or to self.
-    if A.options.announceChatAlways or (A.options.announceChatPRN and R.lastSortMode ~= R.sortMode) then
+    if A.options.announceChatAlways or (A.options.announceChatPRN and not R.announced) then
       SendChatMessage(format("[%s] %s", A.NAME, msg), A.util:GetGroupChannel())
+      R.announced = true
     else
       A.console:Print(msg)
     end
