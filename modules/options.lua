@@ -124,7 +124,10 @@ R.optionsTable.args.main.args = {
   desc = {
     order = 0,
     type = "description",
-    name = L["options.widget.top.desc"].."|n|n",
+    image = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga",
+    imageWidth = 64,
+    imageHeight = 64,
+    name = L["options.widget.top.desc"],
     fontSize = "medium",
     hidden = function(i)
       -- For consistency's sake, we want the Fix Groups button in the options
@@ -146,8 +149,14 @@ R.optionsTable.args.main.args = {
       end, DELAY_OPTIONS_PANE_LOADED)
     end,
   },
+  -- -------------------------------------------------------------------------
+  headerCOMMAND = {
+    order = 100,
+    type = "header",
+    name = "",
+  },
   buttonCommandDefault = {
-    order = 10,
+    order = 110,
     type = "execute",
     name = L["button.fixGroups.text"],
     desc = L["button.fixGroups.desc"],
@@ -155,7 +164,7 @@ R.optionsTable.args.main.args = {
     --disabled = function(i) return not IsInGroup() end,
   },
   buttonCommandSplit = {
-    order = 20,
+    order = 120,
     type = "execute",
     name = L["button.splitGroups.text"],
     desc = L["button.splitGroups.desc"],
@@ -164,14 +173,12 @@ R.optionsTable.args.main.args = {
   },
   -- -------------------------------------------------------------------------
   headerCONSOLE = {
-    order = 100,
-    --type = "header",
-    --name = L["options.header.console"],
-    type = "description",
-    name = "|n",
+    order = 300,
+    type = "header",
+    name = L["options.header.console"],
   },
   buttonCommandFixGroupsHelp = {
-    order = 110,
+    order = 310,
     type = "execute",
     name = "/fg help",
     desc = paragraphs({
@@ -181,7 +188,7 @@ R.optionsTable.args.main.args = {
     func = function() A.console:Command("help") end,
   },
   buttonCommandChoose = {
-    order = 120,
+    order = 320,
     type = "execute",
     name = "/choose",
     desc = format(L["choose.gui.intro"], H("/choose")),
@@ -190,10 +197,8 @@ R.optionsTable.args.main.args = {
   -- -------------------------------------------------------------------------
   headerRESET = {
     order = 900,
-    --type = "header",
-    --name = "",
-    type = "description",
-    name = "|n|n",
+    type = "header",
+    name = "",
   },
   buttonReset = {
     order = 910,

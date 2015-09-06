@@ -12,12 +12,15 @@ local R = M.private
 local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
-local format, strfind, strlower, tostring = format, strfind, strlower, tostring
+local format, strfind, strlower, time, tostring = format, strfind, strlower, time, tostring
 local CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName = CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName
 -- GLOBALS: LibStub, GameTooltip, RaidFrame, RaidFrameRaidInfoButton
 
 local LOCALE_KW_1 = strlower(string.trim(L["chatKeyword.fixGroups"]))
 local LOCALE_KW_2 = strlower(string.trim(L["chatKeyword.markTanks"]))
+local CUBE_ICON_0 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga"
+local CUBE_ICON_1 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga"
+local CUBE_ICON_BW = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIconBW_64.tga"
 
 local function handleClick(_, button)
   if button == "RightButton" then
@@ -59,7 +62,7 @@ local function setupMinimapIcon()
   R.iconLDB = LibStub("LibDataBroker-1.1"):NewDataObject(A.NAME, {
     type = "launcher",
     text = A.NAME,
-    icon = "Interface\\ICONS\\INV_Misc_GroupLooking",
+    icon = CUBE_ICON_1,
     OnClick = handleClick,
     OnTooltipShow = function (tooltip) M:SetupTooltip(tooltip, true) end,
   })
@@ -188,15 +191,19 @@ function M:Refresh()
     return
   end
   if A.sorter:IsProcessing() then
-    setUI("button.fixGroups.working.text", "Interface\\TIMEMANAGER\\FFButton")
+    if time() % 2 == 0 then
+      setUI("button.fixGroups.working.text", CUBE_ICON_0)
+    else
+      setUI("button.fixGroups.working.text", CUBE_ICON_1)
+    end
   elseif A.sorter:IsPaused() then
-    setUI("button.fixGroups.paused.text", "Interface\\TIMEMANAGER\\PauseButton")
+    setUI("button.fixGroups.paused.text", CUBE_ICON_BW)
   elseif A.util:IsLeader() then
     setUI("button.fixGroups.text", "Interface\\GROUPFRAME\\UI-Group-LeaderIcon")
   elseif A.util:IsLeaderOrAssist() then
     setUI("button.fixGroups.text", "Interface\\GROUPFRAME\\UI-GROUP-ASSISTANTICON")
   else
-    setUI("button.fixGroups.text", "Interface\\ICONS\\INV_Misc_GroupLooking")
+    setUI("button.fixGroups.text", CUBE_ICON_1)
   end
   if A.options.showMinimapIconAlways or (A.options.showMinimapIconPRN and A.util:IsLeaderOrAssist()) then
     R.icon:Show(A.NAME)

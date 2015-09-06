@@ -165,6 +165,8 @@ function M:Open()
   R.window:AddChild(c)
 
   local widget = AceGUI:Create("Label")
+  widget:SetImage("Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga")
+  widget:SetImageSize(64, 64)
   widget:SetFontObject(GameFontHighlight)
   widget:SetText(format(L["choose.gui.intro"], H("/choose")))
   widget:SetFullWidth(true)
