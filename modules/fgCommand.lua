@@ -42,7 +42,13 @@ function M:Command(args)
     A.sorter:Stop()
     return
   elseif argsLower == "choose" or strmatch(argsLower, "^choose ") then
-    A.chooseCommand:Command(strsub(args, strlen("choose") + 1))
+    A.chooseCommand:Command("choose", strsub(args, strlen("choose") + 1))
+    return
+  elseif argsLower == "list" or strmatch(argsLower, "^list ") then
+    A.chooseCommand:Command("list", strsub(args, strlen("list") + 1))
+    return
+  elseif argsLower == "listself" or strmatch(argsLower, "^listself ") then
+    A.chooseCommand:Command("listself", strsub(args, strlen("listself") + 1))
     return
   end
 

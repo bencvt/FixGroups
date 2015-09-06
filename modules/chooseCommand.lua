@@ -90,15 +90,23 @@ local function watchChat(event, message, sender)
 end
 
 function M:OnEnable()
-  local function slashCmd(args)
-    M:Command(args)
+  local function slashChoose(args)
+    M:Command("choose", args)
+  end
+  local function slashList(args)
+    M:Command("list", args)
+  end
+  local function slashListSelf(args)
+    M:Command("listself", args)
   end
   -- "/pick" would be better, but that's already an emote.
   -- "/fg choose <args>" works as well, defined in the console module.
-  M:RegisterChatCommand("choose", slashCmd)
-  M:RegisterChatCommand("chose", slashCmd)
-  M:RegisterChatCommand("choo", slashCmd)
-  M:RegisterChatCommand("cho", slashCmd)
+  M:RegisterChatCommand("choose", slashChoose)
+  M:RegisterChatCommand("chose", slashChoose)
+  M:RegisterChatCommand("choo", slashChoose)
+  M:RegisterChatCommand("cho", slashChoose)
+  M:RegisterChatCommand("list", slashList)
+  M:RegisterChatCommand("listself", slashListSelf)
   M:RegisterEvent("CHAT_MSG_SYSTEM")
   M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT",         watchChat)
   M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT_LEADER",  watchChat)
@@ -431,7 +439,7 @@ end
 
 local function chooseLast()
   if R.lastCommand then
-    M:Command(R.lastCommand)
+    M:Command("choose", R.lastCommand)
   else
     A.console:Printf(L["choose.print.noLastCommand"], H("/choose"))
   end
@@ -679,7 +687,8 @@ local function buildDispatchTable()
   wipe(aliasNonLocal)
 end
 
-function M:Command(args)
+function M:Command(cmd, args)
+  -- TODO handle cmd == "list"/"listself"
   buildDispatchTable()
   args = strtrim(args)
   local dispatch = DISPATCH[strlower(args)]

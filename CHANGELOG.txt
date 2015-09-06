@@ -1,6 +1,7 @@
 v1.3.2:
   - add custom icon
   - organize config dialog into tabs
+  - add /list command: works the same as /choose but it doesn't do the extra /roll step
 
 v1.3.1:
   - improve spec detection for DPS Shamans and Druids

@@ -194,7 +194,7 @@ R.optionsTable.args.main.args = {
     name = "/choose",
     desc = format(L["choose.gui.intro"], H("/choose")),
     --TODO close options pane
-    func = function() A.chooseCommand:Command("") end,
+    func = function() A.chooseCommand:Command("choose", "") end,
   },
   -- -------------------------------------------------------------------------
   headerRESET = {

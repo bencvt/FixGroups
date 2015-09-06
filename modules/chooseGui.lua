@@ -65,7 +65,8 @@ local function addModeButton(frame, mode, modeType)
       A.util:InsertText(getCommand(mode, modeType))
       return
     end
-    A.chooseCommand:Command(mode)
+    --TODO right-click to /list instead of /choose. Do a /listself in the tooltip.
+    A.chooseCommand:Command("choose", mode)
     if IsControlKeyDown() then
       R.window:Hide()
     end
