@@ -688,20 +688,18 @@ end
 function M:OnEnable()
   -- Set a couple texts that couldn't be done earlier because the meter module
   -- had not yet been initialized.
---TODO
-if true then return end
   local t = {}
   for _, a in ipairs(A.meter.SUPPORTED_ADDONS_DISPLAY_ORDER) do
     tinsert(t, HA(a))
   end
   t = A.util:LocaleTableConcat(t, L["word.or"])
-  R.optionsTable.args.sortMode.desc = paragraphs({
+  R.optionsTable.args.sort.args.sortMode.desc = paragraphs({
     format(L["options.widget.sortMode.desc.1"], t),
     L["options.widget.sortMode.desc.2"],
     format(L["options.widget.sortMode.desc.3"], H("/fg meter"), H(L["button.fixGroups.text"])),
   })
 
-  R.optionsTable.args.damageMeterAddonDesc.name = A.meter:TestInterop().."|n|n"
+  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = A.meter:TestInterop().."|n|n"
 end
 
 function M:OptionsPaneLoaded()
