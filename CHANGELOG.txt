@@ -1,4 +1,5 @@
 v1.3.2:
+  - add custom icon
   - organize config dialog into tabs
 
 v1.3.1:
