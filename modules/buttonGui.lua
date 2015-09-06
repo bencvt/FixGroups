@@ -116,6 +116,10 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
   else
     tooltip:AddLine(A.NAME)
   end
+  if A.sorter:IsPaused() then
+    tooltip:AddLine(" ")
+    tooltip:AddLine(A.util:Highlight(A.sorter:GetPausedSortMode()))
+  end
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["phrase.mouse.clickLeft"],        L["tooltip.right.fixGroups"], 1,1,1, 1,1,0)
   tooltip:AddLine(" ")

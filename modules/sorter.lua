@@ -77,6 +77,10 @@ function M:IsPaused()
   return R.resumeAfterCombat.key and true or false
 end
 
+function M:GetPausedSortMode()
+  return format(L["sorter.print.combatPaused"], L["sorter.mode."..R.resumeAfterCombat.sortMode])
+end
+
 function M:CanBegin()
   return not M:IsProcessing() and not M:IsPaused() and not InCombatLockdown() and IsInRaid() and A.util:IsLeaderOrAssist()
 end
@@ -108,7 +112,7 @@ function M:StopIfNeeded()
     M:Stop()
     if A.options.resumeAfterCombat then
       swap(R, "resumeAfterCombat", "resumeSave")
-      A.console:Printf(L["sorter.print.combatPaused"], L["sorter.mode."..R.resumeAfterCombat.sortMode])
+      A.console:Print(M:GetPausedSortMode())
       A.buttonGui:Refresh()
     else
       A.console:Printf(L["sorter.print.combatCancelled"], L["sorter.mode."..R.resumeSave.sortMode])
