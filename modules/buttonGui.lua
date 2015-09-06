@@ -25,17 +25,17 @@ local CUBE_ICON_BW = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIconBW_64.tga"
 local function handleClick(_, button)
   if button == "RightButton" then
     if IsShiftKeyDown() then
-      A.console:Command("meter")
+      A.fgCommand:Command("meter")
     else
-      A.console:Command("split")
+      A.fgCommand:Command("split")
     end
   else
     if IsShiftKeyDown() then
-      A.console:Command("config")
+      A.fgCommand:Command("config")
     elseif IsControlKeyDown() then
-      A.console:Command("nosort")
+      A.fgCommand:Command("nosort")
     else
-      A.console:Command("default")
+      A.fgCommand:Command("default")
     end
   end
 end

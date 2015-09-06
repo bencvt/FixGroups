@@ -168,7 +168,7 @@ R.optionsTable.args.main.args = {
     type = "execute",
     name = L["button.splitGroups.text"],
     desc = L["button.splitGroups.desc"],
-    func = function() A.console:Command("split") end,
+    func = function() A.fgCommand:Command("split") end,
     --disabled = function(i) return not IsInRaid() end,
   },
   -- -------------------------------------------------------------------------
@@ -186,7 +186,7 @@ R.optionsTable.args.main.args = {
       format(L["button.fixGroupsHelp.desc.2"], H("/fg help")),
     }),
     --TODO make this a GUI instead; close options pane
-    func = function() A.console:Command("help") end,
+    func = function() A.fgCommand:Command("help") end,
   },
   buttonCommandChoose = {
     order = 320,
