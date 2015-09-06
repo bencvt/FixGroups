@@ -124,10 +124,10 @@ R.optionsTable.args.main.args = {
   desc = {
     order = 0,
     type = "description",
-    image = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga",
-    imageWidth = 64,
-    imageHeight = 64,
-    name = L["options.widget.top.desc"],
+    image = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_classIcons_256.tga",
+    imageWidth = 192,
+    imageHeight = 192,
+    name = format(L["options.widget.top.desc"], HA(A.NAME)),
     fontSize = "medium",
     hidden = function(i)
       -- For consistency's sake, we want the Fix Groups button in the options
@@ -150,11 +150,6 @@ R.optionsTable.args.main.args = {
     end,
   },
   -- -------------------------------------------------------------------------
-  headerCOMMAND = {
-    order = 100,
-    type = "header",
-    name = "",
-  },
   buttonCommandDefault = {
     order = 110,
     type = "execute",
@@ -172,8 +167,13 @@ R.optionsTable.args.main.args = {
     --disabled = function(i) return not IsInRaid() end,
   },
   -- -------------------------------------------------------------------------
-  headerCONSOLE = {
+  spacerConsole = {
     order = 300,
+    type = "description",
+    name = "|n",
+  },
+  headerConsole = {
+    order = 301,
     type = "header",
     name = L["options.header.console"],
   },
@@ -196,9 +196,22 @@ R.optionsTable.args.main.args = {
     --TODO close options pane
     func = function() A.chooseCommand:Command("choose", "") end,
   },
+  buttonCommandList = {
+    order = 320,
+    type = "execute",
+    name = "/list",
+    desc = format(L["button.list.desc"], H("/list"), H("/choose")),
+    --TODO close options pane
+    func = function() A.chooseCommand:Command("list", "") end,
+  },
   -- -------------------------------------------------------------------------
-  headerRESET = {
+  spacerReset = {
     order = 900,
+    type = "description",
+    name = "|n",
+  },
+  headerReset = {
+    order = 901,
     type = "header",
     name = "",
   },

@@ -53,10 +53,12 @@ L["button.splitGroups.text"] = "Split Groups"
 L["button.splitGroups.desc"] = "Split raid into two sides based on overall damage/healing done."
 L["button.fixGroupsHelp.desc.1"] = "The %s (or %s) command allows you to control the addon without using the GUI. You can use this in a macro, or just type it in chat."
 L["button.fixGroupsHelp.desc.2"] = "Click this button to run %s, which will show you the various arguments."
+L["button.list.desc"] = "The %s command works exactly the same as the %s command, except that it stops short of doing a /roll."
 L["button.resetAllOptions.text"] = "Reset all options to default"
 L["button.resetAllOptions.print"] = "All options reset to default."
 
 -- Chat keywords
+--TODO "set tanks" should be a keyword too
 L["chatKeyword.fixGroups"] = "fix groups"
 L["chatKeyword.markTanks"] = "mark tanks"
 
@@ -181,7 +183,7 @@ L["options.value.sortMode.meter"] = "Overall damage/healing done"
 L["options.value.sortMode.nosort"] = "Do not rearrange players"
 
 -- Options module: headers and widgets
-L["options.widget.top.desc"] = "Organizing groups is an important, if sometimes tedious, part of running a raid. This addon helps automate the process."
+L["options.widget.top.desc"] = "Organizing groups is an important, if sometimes tedious, part of running a raid. %s helps automate the process."
 
 L["options.header.console"] = "Console commands"
 
