@@ -180,12 +180,11 @@ function M:FilterSystemMsg(event, message, ...)
 end
 
 function M:OnEnable()
-	ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", M.FilterSystemMsg)
+  ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", M.FilterSystemMsg)
   M:RawHook("ChatFrame_DisplaySystemMessageInPrimary", true)
 end
 
-function M:OnDisable()
-	ChatFrame_RemoveMessageEventFilter("CHAT_MSG_SYSTEM", M.FilterSystemMsg)
+function M:OnDisable()  ChatFrame_RemoveMessageEventFilter("CHAT_MSG_SYSTEM", M.FilterSystemMsg)
 end
 
 function M:ChatFrame_DisplaySystemMessageInPrimary(message, ...)

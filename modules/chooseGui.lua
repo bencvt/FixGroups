@@ -140,7 +140,7 @@ end
 
 function M:Close()
   if R.window then
-		PlaySound("gsTitleOptionExit")
+    PlaySound("gsTitleOptionExit")
     R.window.frame:Hide()
   end
 end
@@ -244,7 +244,7 @@ end
 function M:SetupTooltip(widget, mode, modeType)
   R.window:SetStatusText(H(getCommand(mode, modeType)))
   local t = GameTooltip
-	t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
+  t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
   -- Title, split into two lines if too long.
   local title = A.chooseCommand:GetChoosingDesc(mode, modeType, true)
