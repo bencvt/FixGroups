@@ -2,10 +2,11 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("sorter", "AceEvent-3.0", "AceTimer-3.0")
 A.sorter = M
 M.private = {
-  sortMode = false,
-  lastSortMode = false,
+  active = {sortMode=false, clearGroups=false, skipGroups=false, key=false},
+  resumeAfterCombat = {},
+  resumeSave = {},
+  lastComplete = {},
   announced = false,
-  resumeAfterCombat = false,
   startTime = false,
   stepCount = false,
   timeoutTimer = false,
@@ -17,8 +18,14 @@ local MAX_STEPS = 30
 local MAX_TIMEOUTS = 20
 local DELAY_TIMEOUT = 1.0
 
-local floor, format, tostring, time = floor, format, tostring, time
+local floor, format, max, tostring, time, wipe = floor, format, max, tostring, time, wipe
 local InCombatLockdown, IsInRaid, SendChatMessage = InCombatLockdown, IsInRaid, SendChatMessage
+
+local function swap(t, k1, k2)
+  local tmp = t[k1]
+  t[k1] = t[k2]
+  t[k2] = tmp
+end
 
 function M:OnEnable()
   M:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -27,7 +34,7 @@ function M:OnEnable()
 end
 
 function M:PLAYER_ENTERING_WORLD(event)
-  R.lastSortMode = false
+  wipe(R.lastComplete)
 end
 
 function M:PLAYER_REGEN_ENABLED(event)
@@ -43,15 +50,23 @@ function M:FIXGROUPS_PLAYER_CHANGED_GROUP(event, name, prevGroup, group)
 end
 
 function M:IsSortingHealersBeforeDamagers()
-  return A.options.sortMode == "THMUR" and R.sortMode ~= "TMURH"
+  return A.options.sortMode == "THMUR" and R.active.sortMode ~= "TMURH"
+end
+
+function M:IsGroupIncluded(group)
+  return group > R.active.skipGroups
+end
+
+function M:GetGroupOffset()
+  return max(R.active.clearGroups, R.active.skipGroups)
 end
 
 function M:IsSortingByMeter()
-  return R.sortMode == "meter"
+  return R.active.sortMode == "meter"
 end
 
 function M:IsSplittingRaid()
-  return R.sortMode == "split"
+  return R.active.sortMode == "split"
 end
 
 function M:IsProcessing()
@@ -59,7 +74,7 @@ function M:IsProcessing()
 end
 
 function M:IsPaused()
-  return R.resumeAfterCombat and true or false
+  return R.resumeAfterCombat.key and true or false
 end
 
 function M:CanBegin()
@@ -68,16 +83,16 @@ end
 
 function M:Stop()
   A.coreSort:CancelAction()
+  wipe(R.active)
+  wipe(R.resumeAfterCombat)
   M:ClearTimeout(true)
   R.stepCount = false
   R.startTime = false
-  R.sortMode = false
-  R.resumeAfterCombat = false
   A.buttonGui:Refresh()
 end
 
 function M:StopTimedOut()
-  A.console:Printf(L["sorter.print.timedOut"], L["sorter.mode."..R.sortMode])
+  A.console:Printf(L["sorter.print.timedOut"], L["sorter.mode."..R.active.sortMode])
   if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
   M:Stop()
 end
@@ -89,22 +104,25 @@ function M:StopIfNeeded()
     return true
   end
   if InCombatLockdown() then
-    local resumeSortMode = R.sortMode
+    swap(R, "resumeSave", "active")
     M:Stop()
     if A.options.resumeAfterCombat then
-      A.console:Printf(L["sorter.print.combatPaused"], L["sorter.mode."..resumeSortMode])
-      R.resumeAfterCombat = resumeSortMode
+      swap(R, "resumeAfterCombat", "resumeSave")
+      A.console:Printf(L["sorter.print.combatPaused"], L["sorter.mode."..R.resumeAfterCombat.sortMode])
       A.buttonGui:Refresh()
     else
-      A.console:Printf(L["sorter.print.combatCancelled"], L["sorter.mode."..resumeSortMode])
+      A.console:Printf(L["sorter.print.combatCancelled"], L["sorter.mode."..R.resumeSave.sortMode])
     end
     return true
   end
 end
 
-local function start(mode)
+local function start(sortMode, clearGroups, skipGroups)
   M:Stop()
-  R.sortMode = mode
+  R.active.sortMode = sortMode
+  R.active.clearGroups = clearGroups
+  R.active.skipGroups = skipGroups
+  R.active.key = format("%s:%d:%d", sortMode, clearGroups, skipGroups)
   if M:StopIfNeeded() then
     return
   end
@@ -118,17 +136,17 @@ local function start(mode)
 end
 
 function M:StartMeter()
-  start("meter")
+  start("meter", 0, 0)
 end
 
 function M:StartSplit()
-  start("split")
+  start("split", 0, 0)
 end
 
-function M:StartDefault()
+function M:StartDefault(clearGroups, skipGroups)
   local mode = A.options.sortMode
-  if mode == "TMURH" or mode == "THMUR" or mode == "meter" then
-    start(mode)
+  if mode == "TMURH" or mode == "THMUR" or mode == "meter" or (mode == "nosort" and clearGroups > 0) then
+    start(mode, clearGroups, skipGroups)
   else
     M:Stop()
     if mode ~= "nosort" then
@@ -139,10 +157,10 @@ end
 
 function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
-    local mode = R.resumeAfterCombat 
-    A.console:Printf(L["sorter.print.combatResumed"], L["sorter.mode."..mode])
-    R.resumeAfterCombat = false
-    start(mode)
+    swap(R, "resumeSave", "resumeAfterCombat")
+    wipe(R.resumeAfterCombat)
+    A.console:Printf(L["sorter.print.combatResumed"], L["sorter.mode."..R.resumeSave.sortMode])
+    start(R.resumeSave.sortMode, R.resumeSave.clearGroups, R.resumeSave.skipGroups)
   end
 end
 
@@ -176,14 +194,14 @@ function M:ProcessStep()
 end
 
 function M:AnnounceComplete()
-  if R.lastSortMode ~= R.sortMode then
+  if R.lastComplete.key ~= R.active.key then
     R.announced = false
   end
   if R.stepCount == 0 then
     if M:IsSplittingRaid() then
       A.console:Print(L["sorter.print.alreadySplit"])
     else
-      A.console:Printf(L["sorter.print.alreadySorted"], L["sorter.mode."..R.sortMode])
+      A.console:Printf(L["sorter.print.alreadySorted"], L["sorter.mode."..R.active.sortMode])
     end
   else
     -- Announce sort mode.
@@ -191,7 +209,7 @@ function M:AnnounceComplete()
     if M:IsSplittingRaid() then
       msg = format(L["sorter.print.split"], A.coreSort:GetSplitGroups())
     else
-      msg = format(L["sorter.print.sorted"], L["sorter.mode."..R.sortMode])
+      msg = format(L["sorter.print.sorted"], L["sorter.mode."..R.active.sortMode])
     end
     -- Announce group comp.
     msg = format("%s %s: %s.", msg, L["phrase.groupComp"], A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))
@@ -211,7 +229,7 @@ function M:AnnounceComplete()
     end
     if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
   end
-  R.lastSortMode = R.sortMode
+  swap(R, "lastComplete", "active")
 end
 
 function M:ClearTimeout(resetCount)

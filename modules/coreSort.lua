@@ -35,7 +35,7 @@ function M:BuildDelta()
   local playersByKey = wipe(R.tmp2)
   local k
   for name, p in pairs(A.group:GetRoster()) do
-    if not p.isSitting then
+    if not p.isSitting and A.sorter:IsGroupIncluded(p.group) then
       k = sortRoles[p.role]..(p.class and CLASS_SORT_CHAR[p.class] or CLASS_SORT_CHAR["_unknown"])..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       playersByKey[k] = p
@@ -111,6 +111,7 @@ function M:BuildDelta()
       -- Just sorting the raid, not splitting it.
       newGroup = floor((i - 1) / 5) + 1
     end
+    newGroup = newGroup + A.sorter:GetGroupOffset()
     if newGroup ~= playersByKey[k].group and not playersByKey[k].isDummy then
       tinsert(R.deltaPlayers, playersByKey[k])
       tinsert(R.deltaNewGroups, newGroup)

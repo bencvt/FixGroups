@@ -180,10 +180,10 @@ R.optionsTable.args.main.args = {
   buttonCommandFixGroupsHelp = {
     order = 310,
     type = "execute",
-    name = "/fg help",
+    name = "/fg",
     desc = paragraphs({
       format(L["button.fixGroupsHelp.desc.1"], H("/fixgroups"), H("/fg")),
-      format(L["button.fixGroupsHelp.desc.2"], H("/fg help")),
+      format(L["button.fixGroupsHelp.desc.2"], H("/fg")),
     }),
     --TODO make this a GUI instead; close options pane
     func = function() A.fgCommand:Command("help") end,

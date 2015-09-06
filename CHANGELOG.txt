@@ -1,6 +1,8 @@
 v1.3.2:
   - add custom icon
   - organize config dialog into tabs
+  - add /fg clear1 and /fg clear2 commands to empty out groups 1/2
+  - add /fg skip1 and /fg skip2 commands to exclude players in groups 1/2
   - add /list command: works the same as /choose but it doesn't do the extra /roll step
 
 v1.3.1:
