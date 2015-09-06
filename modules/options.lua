@@ -185,6 +185,7 @@ R.optionsTable.args.main.args = {
       format(L["button.fixGroupsHelp.desc.1"], H("/fixgroups"), H("/fg")),
       format(L["button.fixGroupsHelp.desc.2"], H("/fg help")),
     }),
+    --TODO make this a GUI instead; close options pane
     func = function() A.console:Command("help") end,
   },
   buttonCommandChoose = {
@@ -192,6 +193,7 @@ R.optionsTable.args.main.args = {
     type = "execute",
     name = "/choose",
     desc = format(L["choose.gui.intro"], H("/choose")),
+    --TODO close options pane
     func = function() A.chooseCommand:Command("") end,
   },
   -- -------------------------------------------------------------------------
