@@ -124,7 +124,7 @@ function M:Open()
   addButton(c, "meter", {"dps"})
   addButton(c, "nosort")
   addPadding(c)
-  addButton(c, "config", {"options"})
+  addButton(c, "config", {"options"}, true)
   addPadding(c)
   addIndent(c)
   addButton(c, "choose", nil, true)
@@ -137,9 +137,6 @@ local function addHelpLines(t, cmd, noSameAs)
   if not noSameAs then
     if cmd == "sort" then
       t:AddLine(format(L["gui.fixGroups.help.note.sameAsLeftClicking"], H(L["button.fixGroups.text"])), 1,1,1, true)
-      t:AddLine(" ")
-    elseif cmd == "split" then
-      t:AddLine(format(L["gui.fixGroups.help.note.sameAsRightClicking"], H(L["button.fixGroups.text"])), 1,1,1, true)
       t:AddLine(" ")
     elseif cmd == "choose" or cmd == "list" or cmd == "listself" then
       t:AddLine(format(L["gui.fixGroups.help.note.sameAsCommand"], H("/"..cmd)), 1,1,1, false)

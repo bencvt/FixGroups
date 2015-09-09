@@ -166,7 +166,6 @@ L["gui.fixGroups.help.list"] = "List players matching a certain criteria to raid
 L["gui.fixGroups.help.listself"] = "List players matching a certain criteria to yourself."
 L["gui.fixGroups.help.note.sameAsCommand"] = "Same as the %s command."
 L["gui.fixGroups.help.note.sameAsLeftClicking"] = "Same as left-clicking the minimap icon or the %s button in the raid tab."
-L["gui.fixGroups.help.note.sameAsRightClicking"] = "Same as right-clicking the minimap icon or the %s button in the raid tab."
 L["gui.fixGroups.help.config"] = "Same as Esc>Interface>AddOns>%s."
 L["gui.fixGroups.help.note.meter.1"] = "Overall damage/healing data requires %s to be running."
 L["gui.fixGroups.help.note.meter.2"] = "This sort method can be useful for making quick decisions on who's worth an emergency heal or brez in PUGs."
@@ -269,9 +268,6 @@ L["sorter.print.excludedSitting.singular"] = "Excluded 1 player sitting in group
 L["sorter.print.excludedSitting.plural"] = "Excluded %d players sitting in groups %d-8."
 
 -- Tooltips for minimap icon and raid tab button
-L["tooltip.right.fixGroups"] = "Fix groups"
-L["tooltip.right.split.1"] = "Split raid into two sides based on"
-L["tooltip.right.split.2"] = "overall damage/healing done"
-L["tooltip.right.config"] = "Open config"
-L["tooltip.right.gui"] = "Open %s command help"
+L["tooltip.right.fixGroups"] = "Rearrange players,"
+L["tooltip.right.gui"] = "Other rearranging modes"
 L["tooltip.right.moveMinimapIcon"] = "Move minimap icon"
