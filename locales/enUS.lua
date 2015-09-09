@@ -261,7 +261,7 @@ L["sorter.print.excludedSitting.singular"] = "Excluded 1 player sitting in group
 L["sorter.print.excludedSitting.plural"] = "Excluded %d players sitting in groups %d-8."
 
 -- Tooltips for minimap icon and raid tab button
-L["tooltip.right.fixGroups"] = "Rearrange players,"
+L["tooltip.right.fixGroups"] = "Rearrange players:"
 L["tooltip.right.gui"] = "Other rearranging modes"
 L["tooltip.right.moveMinimapIcon"] = "Move minimap icon"
 L["tooltip.right.meter.1"] = "Fix groups, sorting by"
