@@ -68,7 +68,7 @@ function M:Modify(message, previewComp, previewPlayer)
   if not matchName then
     return message
   end
-  if A.DEBUG >= 1 then A.console:Debugf(M, "matchName=%s matchRole=%s matchActor=%s parensRole=%s isJoin=%s isLeave=%s isRoleChange=%s", tostring(matchName), tostring(matchRole), tostring(matchActor), tostring(matchInfo.parensRole), tostring(matchInfo.isJoin), tostring(matchInfo.isLeave), tostring(matchInfo.isRoleChange)) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "matchName=%s matchRole=%s matchActor=%s isJoin=%s isLeave=%s isRoleChange=%s noRole=%s", tostring(matchName), tostring(matchRole), tostring(matchActor), tostring(matchInfo.isJoin), tostring(matchInfo.isLeave), tostring(matchInfo.isRoleChange), tostring(matchInfo.noRole)) end
 
   -- Get player from roster.
   local player
@@ -112,9 +112,9 @@ function M:Modify(message, previewComp, previewPlayer)
     if not role or role == "unknown" or role == "damager" then
       if player and player.class then
         role = A.damagerRole.CLASS_DAMAGER_ROLE[player.class]
-        if not role then
-          role = "damager"
-        end
+      end
+      if not role or role == "unknown" then
+        role = "damager"
       end
     end
     -- Determine roleIcon, and localize role.
