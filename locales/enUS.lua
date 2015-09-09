@@ -92,7 +92,6 @@ L["choose.print.noPlayers"] = "There aren't any such players in your group."
 L["choose.print.noLastCommand"] = "There is no previous %s command."
 L["choose.print.chose.option"] = "Chose option #%d: %s."
 L["choose.print.chose.player"] = "Chose option #%d: %s in group %d."
-L["choose.print.badArgument"] = "Unknown argument %s. Type %s for valid arguments."
 
 L["choose.modeAliases.gui"] = "gui,window"
 L["choose.modeAliases.group"] = "group,party"
