@@ -1,9 +1,11 @@
 v1.3.2:
   - add custom icon
+  - add partial Chinese translation, thanks @cadcamzy
   - organize config dialog into tabs
+  - add GUI for /fg command, similar to the /choose GUI
   - add /fg clear1 and /fg clear2 commands to empty out groups 1/2
   - add /fg skip1 and /fg skip2 commands to exclude players in groups 1/2
-  - add /list command: works the same as /choose but it doesn't do the extra /roll step
+  - add /list and /listself commands: works the same as /choose but it doesn't do the extra /roll step
   - note the sort mode in tooltip when paused due to combat
 
 v1.3.1:
