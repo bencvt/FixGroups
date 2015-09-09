@@ -195,7 +195,7 @@ R.optionsTable.args.main.args = {
     order = 320,
     type = "execute",
     name = "/list",
-    desc = format(L["button.list.desc"], H("/list"), H("/choose")),
+    desc = format(L["gui.list.intro"], H("/list"), H("/choose")),
     func = function() A.utilGui:CloseConfig() A.chooseCommand:Command("list", "") end,
   },
   -- -------------------------------------------------------------------------

@@ -694,6 +694,9 @@ function M:Command(cmd, args)
   local dispatch = DISPATCH[strlower(args)]
   if dispatch then
     local func, mode, args = unpack(dispatch)
+    if func == A.chooseGui.Open then
+      mode, args = A.chooseGui, cmd
+    end
     func(mode, args)
     if func == chooseLast then
       return

@@ -55,7 +55,6 @@ L["button.fixGroups.working.text"] = "Rearranging..."
 L["button.fixGroups.paused.text"] = "In Combat..."
 L["button.splitGroups.text"] = "Split Groups"
 L["button.splitGroups.desc"] = "Split raid into two sides based on overall damage/healing done."
-L["button.list.desc"] = "The %s command works exactly the same as the %s command, except that it stops short of doing a /roll."
 L["button.resetAllOptions.text"] = "Reset all options to default"
 L["button.resetAllOptions.print"] = "All options reset to default."
 
@@ -145,6 +144,7 @@ L["gui.header.examples"] = "Examples of the %s command in action"
 
 -- Choose GUI module
 L["gui.choose.intro"] = "Need to flip a coin to make a decision? Use the %s command to randomly select an option or a player. The choice will be instant, transparent, and fair thanks to WoW's built-in /roll command."
+L["gui.list.intro"] = "The %s command works exactly the same as the %s command, except that it stops short of doing a /roll."
 L["gui.choose.note.multipleClasses"] = "You also can specify multiple classes. For example: %s."
 L["gui.choose.note.option.1"] = "To choose from a list of generic options rather than a player meeting certain criteria, simply list them after the %s command."
 L["gui.choose.note.option.2"] = "You can use commas or spaces to separate the options."

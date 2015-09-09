@@ -21,11 +21,11 @@ local function onLeaveButton(widget)
   R.window:SetStatusText("")
 end
 
-local function getCommand(mode, modeType)
-  return "/choose "..mode
+local function getCommand(cmd, mode, modeType)
+  return format("/%s %s", cmd, mode)
 end
 
-local function addModeButton(frame, mode, modeType)
+local function addModeButton(frame, cmd, mode, modeType)
   local button = AceGUI:Create("Button")
   local label
   if mode == "option2" then
@@ -43,17 +43,16 @@ local function addModeButton(frame, mode, modeType)
   button:SetText(label)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
-      A.utilGui:InsertText(getCommand(mode, modeType))
+      A.utilGui:InsertText(getCommand(cmd, mode, modeType))
       return
     end
-    --TODO right-click to /list instead of /choose. Do a /listself in the tooltip.
-    A.chooseCommand:Command("choose", mode)
+    A.chooseCommand:Command(cmd, mode)
     if IsControlKeyDown() then
       R.window:Hide()
     end
   end)
   button:SetCallback("OnEnter", function(widget)
-    M:SetupTooltip(widget, mode, modeType)
+    M:SetupTooltip(widget, cmd, mode, modeType)
   end)
   button:SetCallback("OnLeave", onLeaveButton)
   button:SetWidth(104)
@@ -88,14 +87,14 @@ function M:Close()
   end
 end
 
-function M:Open()
+function M:Open(cmd)
   if A.DEBUG >= 1 then A.console:Debugf(M, "open") end
   if R.window then
     resetWindowSize()
     return
   end
   R.window = AceGUI:Create("Frame")
-  R.window:SetTitle(A.NAME.." "..format(L["gui.title"], "/choose"))
+  R.window:SetTitle(A.NAME.." "..format(L["gui.title"], "/"..cmd))
   resetWindowSize()
   R.window:SetStatusText("")
   R.window:SetCallback("OnClose", onCloseWindow)
@@ -108,84 +107,98 @@ function M:Open()
   R.window:AddChild(c)
 
   local widget = AceGUI:Create("Label")
-  widget:SetImage("Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga")
+  if cmd == "choose" then
+    widget:SetImage("Interface\\BUTTONS\\UI-GroupLoot-Dice-Up")
+    widget:SetText(format(L["gui.choose.intro"], H("/"..cmd)))
+  elseif cmd == "list" then
+    widget:SetImage("Interface\\BUTTONS\\UI-GuildButton-MOTD-Up")
+    widget:SetText(L["gui.fixGroups.help.list"].." "..format(L["gui.list.intro"], H("/"..cmd), H("/choose")))
+  elseif cmd == "listself" then
+    widget:SetImage("Interface\\BUTTONS\\UI-GuildButton-MOTD-Disabled")
+    widget:SetText(L["gui.fixGroups.help.listself"].." "..format(L["gui.list.intro"], H("/"..cmd), H("/choose")))
+  else
+    A.console:Errorf(M, "invalid cmd %s!", tostring(cmd))
+    return
+  end
   widget:SetImageSize(64, 64)
   widget:SetFontObject(GameFontHighlight)
-  widget:SetText(format(L["gui.choose.intro"], H("/choose")))
   widget:SetFullWidth(true)
   c:AddChild(widget)
 
   widget = AceGUI:Create("Heading")
-  widget:SetText(format(L["gui.header.buttons"], H("/choose")))
+  widget:SetText(format(L["gui.header.buttons"], H("/"..cmd)))
   widget:SetFullWidth(true)
   c:AddChild(widget)
 
-  addModeButton(c, "any")
-  addModeButton(c, "tank")
-  addModeButton(c, "healer")
-  addModeButton(c, "damager")
-  addModeButton(c, "melee")
-  addModeButton(c, "ranged")
-  addModeButton(c, "notMe")
-  addModeButton(c, "guildmate")
-  addModeButton(c, "dead")
-  addModeButton(c, "alive")
+  addModeButton(c, cmd, "any")
+  addModeButton(c, cmd, "tank")
+  addModeButton(c, cmd, "healer")
+  addModeButton(c, cmd, "damager")
+  addModeButton(c, cmd, "melee")
+  addModeButton(c, cmd, "ranged")
+  addModeButton(c, cmd, "notMe")
+  addModeButton(c, cmd, "guildmate")
+  addModeButton(c, cmd, "dead")
+  addModeButton(c, cmd, "alive")
   addPadding(c)
   for i, class in ipairs(CLASS_SORT_ORDER) do
-    addModeButton(c, strlower(class), "class")
+    addModeButton(c, cmd, strlower(class), "class")
   end
   addPadding(c)
-  addModeButton(c, "conqueror", "tierToken")
-  addModeButton(c, "protector", "tierToken")
-  addModeButton(c, "vanquisher", "tierToken")
+  addModeButton(c, cmd, "conqueror", "tierToken")
+  addModeButton(c, cmd, "protector", "tierToken")
+  addModeButton(c, cmd, "vanquisher", "tierToken")
   addPadding(c)
-  addModeButton(c, "intellect", "primaryStat")
-  addModeButton(c, "agility", "primaryStat")
-  addModeButton(c, "strength", "primaryStat")
+  addModeButton(c, cmd, "intellect", "primaryStat")
+  addModeButton(c, cmd, "agility", "primaryStat")
+  addModeButton(c, cmd, "strength", "primaryStat")
   addPadding(c)
-  addModeButton(c, "cloth", "armor")
-  addModeButton(c, "leather", "armor")
-  addModeButton(c, "mail", "armor")
-  addModeButton(c, "plate", "armor")
+  addModeButton(c, cmd, "cloth", "armor")
+  addModeButton(c, cmd, "leather", "armor")
+  addModeButton(c, cmd, "mail", "armor")
+  addModeButton(c, cmd, "plate", "armor")
   addPadding(c)
-  addModeButton(c, "g1", "fromGroup")
-  addModeButton(c, "g2", "fromGroup")
-  addModeButton(c, "g3", "fromGroup")
-  addModeButton(c, "g4", "fromGroup")
-  addModeButton(c, "g5", "fromGroup")
-  addModeButton(c, "g6", "fromGroup")
-  addModeButton(c, "g7", "fromGroup")
-  addModeButton(c, "g8", "fromGroup")
-  addModeButton(c, "sitting")
-  addModeButton(c, "anyIncludingSitting")
-  addModeButton(c, "group")
+  addModeButton(c, cmd, "g1", "fromGroup")
+  addModeButton(c, cmd, "g2", "fromGroup")
+  addModeButton(c, cmd, "g3", "fromGroup")
+  addModeButton(c, cmd, "g4", "fromGroup")
+  addModeButton(c, cmd, "g5", "fromGroup")
+  addModeButton(c, cmd, "g6", "fromGroup")
+  addModeButton(c, cmd, "g7", "fromGroup")
+  addModeButton(c, cmd, "g8", "fromGroup")
+  addModeButton(c, cmd, "sitting")
+  addModeButton(c, cmd, "anyIncludingSitting")
+  addModeButton(c, cmd, "group")
   addPadding(c)
-  addModeButton(c, "option2", "option")
-  addModeButton(c, "option3+", "option")
-  addModeButton(c, "last")
-  addPadding(c)
+  addModeButton(c, cmd, "last")
 
-  widget = AceGUI:Create("Heading")
-  widget:SetText(format(L["gui.header.examples"], "/choose"))
-  widget:SetFullWidth(true)
-  c:AddChild(widget)
+  if cmd == "choose" then
+    addModeButton(c, cmd, "option2", "option")
+    addModeButton(c, cmd, "option3+", "option")
+    addPadding(c)
 
-  addPadding(c)
+    widget = AceGUI:Create("Heading")
+    widget:SetText(format(L["gui.header.examples"], "/"..cmd))
+    widget:SetFullWidth(true)
+    c:AddChild(widget)
 
-  if not R.mockSession then
-    R.mockSession = {}
-    A.chooseCommand:Mockup(function(line) tinsert(R.mockSession, line) end)
-    R.mockSession = tconcat(R.mockSession, "|n")
+    addPadding(c)
+
+    if not R.mockSession then
+      R.mockSession = {}
+      A.chooseCommand:Mockup(function(line) tinsert(R.mockSession, line) end)
+      R.mockSession = tconcat(R.mockSession, "|n")
+    end
+    widget = AceGUI:Create("Label")
+    widget:SetFontObject(GameFontHighlight)
+    widget:SetText(R.mockSession)
+    widget:SetFullWidth(true)
+    c:AddChild(widget)
   end
-  widget = AceGUI:Create("Label")
-  widget:SetFontObject(GameFontHighlight)
-  widget:SetText(R.mockSession)
-  widget:SetFullWidth(true)
-  c:AddChild(widget)
 end
 
-function M:SetupTooltip(widget, mode, modeType)
-  R.window:SetStatusText(H(getCommand(mode, modeType)))
+function M:SetupTooltip(widget, cmd, mode, modeType)
+  R.window:SetStatusText(H(getCommand(cmd, mode, modeType)))
   local t = GameTooltip
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
@@ -197,12 +210,12 @@ function M:SetupTooltip(widget, mode, modeType)
   t:AddLine(title)
   if modeType == "class" then
     t:AddLine(" ")
-    local example = format("/choose %s/%s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["MAGE"]), A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["DRUID"]))
+    local example = format("/%s %s/%s", cmd, A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["MAGE"]), A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["DRUID"]))
     t:AddLine(format(L["gui.choose.note.multipleClasses"], H(example)), 1,1,1, true)
   end
   t:AddLine(" ")
   if modeType == "option" then
-    t:AddLine(format(L["gui.choose.note.option.1"], H("/choose")), 1,1,1, true)
+    t:AddLine(format(L["gui.choose.note.option.1"], H("/"..cmd)), 1,1,1, true)
     t:AddLine(" ")
     t:AddLine(L["gui.choose.note.option.2"], 1,1,1, true)
   else
