@@ -95,7 +95,7 @@ function M:WatchChatKeywordMatches(messageLower)
   if not WATCH_CHAT_KEYWORDS then
     buildWatchChatKeywords()
   end
-  for _, pattern in pairs(WATCH_CHAT_KEYWORDS) do
+  for pattern, _ in pairs(WATCH_CHAT_KEYWORDS) do
     if strfind(messageLower, pattern) then
       return true
     end
