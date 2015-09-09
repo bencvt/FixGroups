@@ -153,7 +153,6 @@ L["gui.choose.note.option.2"] = "You can use commas or spaces to separate the op
 L["gui.fixGroups.intro"] = "The %s (or %s) command allows you to control the addon without using the GUI. You can use this in a macro, or just type it in chat."
 L["gui.fixGroups.help.sort"] = "Rearrange players using the default sort mode."
 L["gui.fixGroups.help.note.defaultMode"] = "The default sort mode is currently %s. It can be changed in the config."
-L["gui.fixGroups.help.mode"] = "Rearrange players %s."
 L["gui.fixGroups.help.nosort"] = "Fix groups, no sorting."
 L["gui.fixGroups.help.split"] = "Split raid into two sides based on overall damage/healing done."
 L["gui.fixGroups.help.cancel"] = "Stop rearranging players."

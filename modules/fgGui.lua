@@ -147,7 +147,7 @@ local function addHelpLines(t, cmd, noSameAs)
   if cmd == "config" then
     t:AddLine(format(L["gui.fixGroups.help."..cmd], A.NAME), 1,1,1, false)
   elseif cmd == "thmr" or cmd == "tmrh" or cmd == "meter" then
-    t:AddLine(format(L["gui.fixGroups.help.mode"], L["sorter.mode."..cmd]), 1,1,1, false)
+    t:AddLine(format("%s%s %s.", L["options.widget.sortMode.text"], (cmd ~= "meter" and ":" or ""), L["sorter.mode."..cmd]), 1,1,1, false)
   else
     t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,1, true)
   end
