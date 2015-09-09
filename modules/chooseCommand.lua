@@ -337,11 +337,21 @@ local function choosePlayer(cmd, mode, modeType)
   end
 
   local shouldRoll = #R.options > 0 and cmd == "choose"
-  local line = M:GetChoosingDesc(cmd, mode, modeType, (not IsInGroup()), validClasses)
+  local line = M:GetChoosingDesc(false, cmd, mode, modeType, (not IsInGroup()), validClasses)
   announceChoicesAndRoll(cmd, shouldRoll, line)
 end
 
-function M:GetChoosingDesc(cmd, mode, modeType, useColor, validClasses)
+local function formatCmd(isTooltip, cmd, arg)
+  local fmt
+  if cmd == "choose" then
+    fmt = isTooltip and L["choose.choosing.tooltip"] or L["choose.choosing.print"]
+  else
+    fmt = isTooltip and L["choose.list.tooltip"] or L["choose.list.print"]
+  end
+  return format(fmt, arg)
+end
+
+function M:GetChoosingDesc(isTooltip, cmd, mode, modeType, useColor, validClasses)
   local arg1 = mode
   local arg2
   validClasses = validClasses or getValidClasses(mode, modeType)
@@ -372,7 +382,7 @@ function M:GetChoosingDesc(cmd, mode, modeType, useColor, validClasses)
   elseif mode == "sitting" then
     arg1 = A.util:GetMaxGroupsForInstance() + 1
     if arg1 >= 8 then
-      return L["choose.print.choosing.sitting.noGroups"]
+      return formatCmd(isTooltip, cmd, L["choose.print.choosing.sitting.noGroups"])
     end
   elseif mode == "notMe" then
     if IsInRaid() then
@@ -387,14 +397,14 @@ function M:GetChoosingDesc(cmd, mode, modeType, useColor, validClasses)
   elseif mode == "guildmate" then
     arg1 = GetGuildInfo("player")
     if not arg1 then
-      return L["choose.print.choosing.guildmate.noGuild"]
+      return formatCmd(isTooltip, cmd, L["choose.print.choosing.guildmate.noGuild"])
     elseif useColor then
       arg1 = format("|cff40ff40%s|r", arg1)
     end
   elseif mode == "last" then
     arg1 = H("/"..cmd)
   end
-  return format(L["choose.print.choosing."..(modeType or mode)], arg1, arg2)
+  return formatCmd(isTooltip, cmd, format(L["choose.print.choosing."..(modeType or mode)], arg1, arg2))
 end
 
 local function chooseClasses(cmd, args)
@@ -419,8 +429,8 @@ local function chooseGroup(cmd)
   else
     tinsert(R.options, format("%s %d", LOCALE_GROUP or "group", 1))
   end
-  
-  announceChoicesAndRoll(cmd, cmd == "choose", L["choose.print.choosing.group"])
+
+  announceChoicesAndRoll(cmd, cmd == "choose", formatCmd(false, cmd, L["choose.print.choosing.group"]))
 end
 
 local function chooseOption(cmd, sep, args)
@@ -437,7 +447,7 @@ local function chooseOption(cmd, sep, args)
     end
   end
 
-  announceChoicesAndRoll(cmd, cmd == "choose", L["choose.print.choosing.option"])
+  announceChoicesAndRoll(cmd, cmd == "choose", formatCmd(false, cmd, L["choose.print.choosing.option"]))
 end
 
 local function chooseLast(cmd)

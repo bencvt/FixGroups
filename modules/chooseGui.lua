@@ -203,7 +203,12 @@ function M:SetupTooltip(widget, cmd, mode, modeType)
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
   -- Title, split into two lines if too long.
-  local title = A.chooseCommand:GetChoosingDesc(cmd, mode, modeType, true)
+  local title
+  if mode == "last" then
+    title = format(L["choose.print.last"], "/"..cmd)
+  else
+    title = A.chooseCommand:GetChoosingDesc(true, cmd, mode, modeType, true)
+  end
   if modeType == "tierToken" or modeType == "armor" or modeType == "primaryStat" then
     title = gsub(title, " %(", "|n(")
   end
