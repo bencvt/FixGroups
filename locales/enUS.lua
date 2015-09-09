@@ -41,6 +41,8 @@ L["phrase.print.badArgument"] = "Unknown argument %s. Type %s for valid argument
 L["phrase.print.notInRaid"] = "Groups can only be sorted while in a raid."
 
 L["character.thrall"] = "Thrall"
+L["character.liandrin"] = "Liandrin"
+L["character.velen"] = "Velen"
 
 -- AddonChannel module
 L["addonChannel.print.newerVersion"] = "%s version %s is available. You're currently running version %s."
