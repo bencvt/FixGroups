@@ -88,7 +88,7 @@ function M:Close()
 end
 
 function M:Open(cmd)
-  if A.DEBUG >= 1 then A.console:Debugf(M, "open") end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "open cmd=%s", tostring(cmd)) end
   if R.window then
     resetWindowSize()
     return
@@ -203,7 +203,7 @@ function M:SetupTooltip(widget, cmd, mode, modeType)
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
   -- Title, split into two lines if too long.
-  local title = A.chooseCommand:GetChoosingDesc(mode, modeType, true)
+  local title = A.chooseCommand:GetChoosingDesc(cmd, mode, modeType, true)
   if modeType == "tierToken" or modeType == "armor" or modeType == "primaryStat" then
     title = gsub(title, " %(", "|n(")
   end

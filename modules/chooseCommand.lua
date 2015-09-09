@@ -19,9 +19,10 @@ local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0
 local DELAY_GROUP_ROLL = 0.5
 local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
--- DISPATCH, CLASS_ALIAS, and M.MODE_ALIAS are lazily populated.
+-- DISPATCH, CLASS_ALIAS, LOCALE_GROUP, and M.MODE_ALIAS are lazily populated.
 local DISPATCH = false
 local CLASS_ALIAS = false
+local LOCALE_GROUP = false
 M.MODE_ALIAS = false
 
 local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
@@ -116,10 +117,10 @@ function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_PARTY_LEADER",          watchChat)
 end
 
-local function sendMessage(message, localOnly, prefixAddonName)
-  if localOnly or not IsInGroup() then
+local function sendMessage(cmd, message, localOnly, addPrefix)
+  if localOnly or not IsInGroup() or cmd == "listself" then
     A.console:Print(message)
-  elseif prefixAddonName then
+  elseif addPrefix then
     SendChatMessage(format("[%s] %s", A.NAME, message), A.util:GetGroupChannel())
   else
     SendChatMessage(message, A.util:GetGroupChannel())
@@ -149,24 +150,27 @@ function M:CHAT_MSG_SYSTEM(event, message)
   if R.optionsArePlayers then
     local player = A.group:FindPlayer(choseValue)
     if player and player.group then
-      sendMessage(format(L["choose.print.chose.player"], choseIndex, choseValue, player.group), false, true)
+      sendMessage("choose", format(L["choose.print.chose.player"], choseIndex, choseValue, player.group), false, true)
       return
     end
   end
-  sendMessage(format(L["choose.print.chose.option"], choseIndex, choseValue), false, true)
+  sendMessage("choose", format(L["choose.print.chose.option"], choseIndex, choseValue), false, true)
 end
 
-local function announceChoicesAndRoll(reallyRoll, line)
+local function announceChoicesAndRoll(cmd, shouldRoll, line)
   -- Announce exactly what we'll be rolling on.
   -- Use on multiple lines if needed.
+  local localOnly = not shouldRoll
+  local addPrefix = localOnly
   local numOptions = #R.options
   local numLines = 0
   for i, option in ipairs(R.options) do
     option = tostring(i).."="..tostring(option)..((i < numOptions and numOptions > 1) and "," or ".")
     if line and strlen(line) + 1 + strlen(option) >= MAX_CHAT_LINE_LEN then
-      sendMessage(line, not reallyRoll, false)
+      sendMessage(cmd, line, localOnly, addPrefix)
       numLines = numLines + 1
       line = false
+      addPrefix = false
     end
     if line then
       line = line.." "..option
@@ -176,9 +180,12 @@ local function announceChoicesAndRoll(reallyRoll, line)
   end
   if line then
     numLines = numLines + 1
-    sendMessage(line, not reallyRoll, false)
+    sendMessage(cmd, line, localOnly, addPrefix)
   end
-  if reallyRoll then
+  if numOptions == 0 then
+    sendMessage(cmd, L["choose.print.noPlayers"], localOnly, false)
+  end
+  if shouldRoll then
     if IsInGroup() then
       -- Wait until our announcement of the options to chat gets echoed back to
       -- us before we /roll. If we don't, thanks to lag it's possible the /roll
@@ -279,7 +286,7 @@ local function getValidClasses(mode, modeType)
   end
 end
 
-local function choosePlayer(mode, modeType)
+local function choosePlayer(cmd, mode, modeType)
   if A.DEBUG >= 1 then A.console:Debugf(M, "choosePlayer mode=%s modeType=%s", tostring(mode), tostring(modeType)) end
   if isExpecting() then
     return
@@ -329,16 +336,12 @@ local function choosePlayer(mode, modeType)
     A.group:PrintIfThereAreUnknowns()
   end
 
-  local line = M:GetChoosingDesc(mode, modeType, (not IsInGroup()), validClasses)
-  if #R.options > 0 then
-    announceChoicesAndRoll(true, line)
-  else
-    announceChoicesAndRoll(false, line)
-    A.console:Print(L["choose.print.noPlayers"])
-  end
+  local shouldRoll = #R.options > 0 and cmd == "choose"
+  local line = M:GetChoosingDesc(cmd, mode, modeType, (not IsInGroup()), validClasses)
+  announceChoicesAndRoll(cmd, shouldRoll, line)
 end
 
-function M:GetChoosingDesc(mode, modeType, useColor, validClasses)
+function M:GetChoosingDesc(cmd, mode, modeType, useColor, validClasses)
   local arg1 = mode
   local arg2
   validClasses = validClasses or getValidClasses(mode, modeType)
@@ -389,19 +392,19 @@ function M:GetChoosingDesc(mode, modeType, useColor, validClasses)
       arg1 = format("|cff40ff40%s|r", arg1)
     end
   elseif mode == "last" then
-    arg1 = H("/choose")
+    arg1 = H("/"..cmd)
   end
   return format(L["choose.print.choosing."..(modeType or mode)], arg1, arg2)
 end
 
-local function chooseClasses(args)
+local function chooseClasses(cmd, args)
   if getValidClasses(args, "class") then
-    choosePlayer(args, "class")
+    choosePlayer(cmd, args, "class")
     return true
   end
 end
 
-local function chooseGroup()
+local function chooseGroup(cmd)
   if isExpecting() then
     return
   end
@@ -410,17 +413,17 @@ local function chooseGroup()
   if IsInRaid() then
     for g = 1, 8 do
       if A.group:GetGroupSize(g) > 0 then
-        tinsert(R.options, format("%s %d", L["choose.group"], g))
+        tinsert(R.options, format("%s %d", LOCALE_GROUP or "group", g))
       end
     end
   else
-    tinsert(R.options, format("%s %d", L["choose.group"], 1))
+    tinsert(R.options, format("%s %d", LOCALE_GROUP or "group", 1))
   end
   
-  announceChoicesAndRoll(true, L["choose.print.choosing.group"])
+  announceChoicesAndRoll(cmd, cmd == "choose", L["choose.print.choosing.group"])
 end
 
-local function chooseOption(sep, args)
+local function chooseOption(cmd, sep, args)
   if isExpecting() then
     return
   end
@@ -434,14 +437,14 @@ local function chooseOption(sep, args)
     end
   end
 
-  announceChoicesAndRoll(true, L["choose.print.choosing.option"])
+  announceChoicesAndRoll(cmd, cmd == "choose", L["choose.print.choosing.option"])
 end
 
-local function chooseLast()
+local function chooseLast(cmd)
   if R.lastCommand then
-    M:Command("choose", R.lastCommand)
+    M:Command(cmd, R.lastCommand)
   else
-    A.console:Printf(L["choose.print.noLastCommand"], H("/choose"))
+    A.console:Printf(L["choose.print.noLastCommand"], H("/"..cmd))
   end
 end
 
@@ -560,6 +563,9 @@ local function buildDispatchTable()
     if d.primary then
       for alias in gmatch(L["choose.modeAliases."..d.primary], "[^,]+") do
         if alias ~= "" then
+          if d.primary == "group" and not LOCALE_GROUP then
+            LOCALE_GROUP = alias
+          end
           d.alias(true, alias)
         end
       end
@@ -688,26 +694,26 @@ local function buildDispatchTable()
 end
 
 function M:Command(cmd, args)
-  -- TODO handle cmd == "list"/"listself"
   buildDispatchTable()
   args = strtrim(args)
   local dispatch = DISPATCH[strlower(args)]
   if dispatch then
     local func, mode, args = unpack(dispatch)
     if func == A.chooseGui.Open then
-      mode, args = A.chooseGui, cmd
+      mode = cmd
+      cmd = A.chooseGui
     end
-    func(mode, args)
+    func(cmd, mode, args)
     if func == chooseLast then
       return
     end
   elseif strfind(args, SPACE_OR_SPACE) then
-    chooseOption(",", gsub(args, SPACE_OR_SPACE, ","))
+    chooseOption(cmd, ",", gsub(args, SPACE_OR_SPACE, ","))
   elseif strfind(args, ",") then
-    chooseOption(",", args)
+    chooseOption(cmd, ",", args)
   elseif strfind(args, "%s") then
-    chooseOption("%s", args)
-  elseif strfind(args, "[/%+%|]") and chooseClasses(args) then
+    chooseOption(cmd, "%s", args)
+  elseif strfind(args, "[/%+%|]") and chooseClasses(cmd, args) then
     -- Do nothing. The action is in the if clause above.
   else
     A.console:Printf(L["phrase.print.badArgument"], H(args), H("/choose"))
