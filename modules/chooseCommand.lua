@@ -314,8 +314,10 @@ local function choosePlayer(cmd, mode, modeType)
         include = ("g"..player.group == mode)
       elseif mode == "anyIncludingSitting" then
         include = true
+      elseif mode == "sitting" then
+        include = player.isSitting
       elseif player.isSitting or mode == "sitting" then
-        include = (mode == "sitting")
+        include = false
       elseif mode == "any" then
         include = true
       elseif mode == "notMe" then
