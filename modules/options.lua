@@ -10,7 +10,7 @@ M.private = {
       options = {
         tankAssist = true,
         fixOfflineML = true,
-        sortMode = "TMURH", -- other valid values: "THMUR", "meter", "nosort"
+        sortMode = "tmrh", -- other valid values: "thmr", "meter", "nosort"
         splitOddEven = true,
         resumeAfterCombat = true,
         tankMainTankAlways = false,
@@ -100,22 +100,22 @@ R.optionsTable = {
     main = {
       order = 10,
       type = "group",
-      name = "Main", --TODO localize
+      name = L["options.tab.main"],
     },
     sort = {
       order = 20,
       type = "group",
-      name = "Sorting", --TODO localize
+      name = L["options.tab.sorting"],
     },
     mark = {
       order = 30,
       type = "group",
-      name = "Marking", --TODO localize
+      name = L["options.tab.marking"],
     },
     ui = {
       order = 40,
       type = "group",
-      name = "User Interface", --TODO localize
+      name = L["options.tab.userInterface"],
     },
   },
 }
@@ -181,28 +181,22 @@ R.optionsTable.args.main.args = {
     order = 310,
     type = "execute",
     name = "/fg",
-    desc = paragraphs({
-      format(L["button.fixGroupsHelp.desc.1"], H("/fixgroups"), H("/fg")),
-      format(L["button.fixGroupsHelp.desc.2"], H("/fg")),
-    }),
-    --TODO make this a GUI instead; close options pane
-    func = function() A.fgCommand:Command("help") end,
+    desc = format(L["gui.fixGroups.intro"], H("/fg"), H("/fixgroups")),
+    func = function() A.utilGui:CloseConfig() A.fgCommand:Command("help") end,
   },
   buttonCommandChoose = {
     order = 320,
     type = "execute",
     name = "/choose",
-    desc = format(L["choose.gui.intro"], H("/choose")),
-    --TODO close options pane
-    func = function() A.chooseCommand:Command("choose", "") end,
+    desc = format(L["gui.choose.intro"], H("/choose")),
+    func = function() A.utilGui:CloseConfig() A.chooseCommand:Command("choose", "") end,
   },
   buttonCommandList = {
     order = 320,
     type = "execute",
     name = "/list",
     desc = format(L["button.list.desc"], H("/list"), H("/choose")),
-    --TODO close options pane
-    func = function() A.chooseCommand:Command("list", "") end,
+    func = function() A.utilGui:CloseConfig() A.chooseCommand:Command("list", "") end,
   },
   -- -------------------------------------------------------------------------
   spacerReset = {
@@ -234,12 +228,6 @@ R.optionsTable.args.main.args = {
 }
 
 R.optionsTable.args.ui.args = {
-  -- -------------------------------------------------------------------------
-  --headerUI = {
-  --  order = 0,
-  --  type = "header",
-  --  name = L["options.header.uiAndChat"],
-  --},
   showMinimapIcon = {
     order = 10,
     name = L["options.widget.showMinimapIcon.text"],
@@ -276,10 +264,8 @@ R.optionsTable.args.ui.args = {
   headerSYSMSG = {
     order = 200,
     type = "header",
-    --name = L["options.header.sysMsg"],
-    name = "Enhance Joined/Left Messages",--TODO
+    name = L["options.header.sysMsg"],
   },
-  --name = L["options.widget.sysMsgLabel.name"].."|n",
   sysMsgPreview1 = {
     order = 211,
     type = "description",
@@ -307,6 +293,7 @@ R.optionsTable.args.ui.args = {
   sysMsgClassColor = {
     order = 230,
     name = L["options.widget.sysMsgClassColor.text"],
+    desc = L["options.widget.sysMsg.desc"],
     type = "toggle",
     width = "full",
     get = function(i) return A.options.sysMsg.classColor end,
@@ -315,6 +302,7 @@ R.optionsTable.args.ui.args = {
   sysMsgRoleName = {
     order = 240,
     name = L["options.widget.sysMsgRoleName.text"],
+    desc = L["options.widget.sysMsg.desc"],
     type = "toggle",
     width = "full",
     get = function(i) return A.options.sysMsg.roleName end,
@@ -323,6 +311,7 @@ R.optionsTable.args.ui.args = {
   sysMsgRoleIcon = {
     order = 250,
     name = L["options.widget.sysMsgRoleIcon.text"],
+    desc = L["options.widget.sysMsg.desc"],
     type = "toggle",
     width = "full",
     get = function(i) return A.options.sysMsg.roleIcon end,
@@ -331,6 +320,7 @@ R.optionsTable.args.ui.args = {
   sysMsgGroupComp = {
     order = 260,
     name = L["options.widget.sysMsgGroupComp.text"],
+    desc = L["options.widget.sysMsg.desc"],
     type = "toggle",
     width = "full",
     get = function(i) return A.options.sysMsg.groupComp end,
@@ -339,6 +329,7 @@ R.optionsTable.args.ui.args = {
   sysMsgGroupCompHighlight = {
     order = 270,
     name = L["options.widget.sysMsgGroupCompHighlight.text"],
+    desc = L["options.widget.sysMsg.desc"],
     type = "toggle",
     width = "full",
     get = function(i) return A.options.sysMsg.groupCompHighlight end,
@@ -392,7 +383,7 @@ R.optionsTable.args.sort.args = {
     get = function(i)
       if A.options.sortMode == "nosort" then return 4
       elseif A.options.sortMode == "meter" then return 3
-      elseif A.options.sortMode == "THMUR" then return 2
+      elseif A.options.sortMode == "thmr" then return 2
       else return 1
       end
     end,
@@ -400,8 +391,8 @@ R.optionsTable.args.sort.args = {
       A.sorter:Stop()
       if v == 4 then A.options.sortMode = "nosort"
       elseif v == 3 then A.options.sortMode = "meter"
-      elseif v == 2 then A.options.sortMode = "THMUR"
-      else A.options.sortMode = "TMURH"
+      elseif v == 2 then A.options.sortMode = "thmr"
+      else A.options.sortMode = "tmrh"
       end
     end,
   },
@@ -701,6 +692,13 @@ function M:OnInitialize()
   -- Can always do A:GetModule("options") if needed.
   A.options = A.db.profile.options
 
+  -- Fix renamed sort modes
+  if A.sortMode == "THMUR" then
+    A.sortMode = "thmr"
+  elseif A.sortMode == "TMURH" then
+    A.sortMode = "tmrh"
+  end
+
   LibStub("AceConfig-3.0"):RegisterOptionsTable(A.NAME, R.optionsTable)
   R.optionsGUI = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(A.NAME, A.NAME)
 end
@@ -708,15 +706,10 @@ end
 function M:OnEnable()
   -- Set a couple texts that couldn't be done earlier because the meter module
   -- had not yet been initialized.
-  local t = {}
-  for _, a in ipairs(A.meter.SUPPORTED_ADDONS_DISPLAY_ORDER) do
-    tinsert(t, HA(a))
-  end
-  t = A.util:LocaleTableConcat(t, L["word.or"])
   R.optionsTable.args.sort.args.sortMode.desc = paragraphs({
-    format(L["options.widget.sortMode.desc.1"], t),
-    L["options.widget.sortMode.desc.2"],
-    format(L["options.widget.sortMode.desc.3"], H("/fg meter"), H(L["button.fixGroups.text"])),
+    format(L["gui.fixGroups.help.note.meter.1"], A.meter:GetSupportedAddonList()),
+    L["gui.fixGroups.help.note.meter.2"],
+    format(L["gui.fixGroups.help.note.meter.3"], H("/fg meter")),
   })
 
   R.optionsTable.args.sort.args.damageMeterAddonDesc.name = "|n"..A.meter:TestInterop()

@@ -135,6 +135,14 @@ local function calculateAverages()
   R.snapshot["_averageHealing"] = (countHealing > 0) and (totalHealing / countHealing) or 0
 end
 
+function M:GetSupportedAddonList()
+  local addons = wipe(R.tmp1)
+  for _, a in ipairs(M.SUPPORTED_ADDONS_DISPLAY_ORDER) do
+    tinsert(addons, HA(a))
+  end
+  return A.util:LocaleTableConcat(addons, L["word.or"])
+end
+
 function M:TestInterop()
   for _, name in ipairs(SUPPORTED_ADDONS_ORDER) do
     if IsAddOnLoaded(name) and _G[SUPPORTED_ADDONS[name].obj] then

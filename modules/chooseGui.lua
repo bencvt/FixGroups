@@ -16,19 +16,6 @@ local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE = CLASS_SORT_ORDER, LOCALIZED
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local function onCloseWindow(widget)
-  R.window = false
-  AceGUI:Release(widget)
-end
-
-local function addPadding(frame)
-  local padding = AceGUI:Create("Label")
-  padding:SetText(" ")
-  padding:SetFullWidth(true)
-  frame:AddChild(padding)
-  return padding
-end
-
 local function onLeaveButton(widget)
   GameTooltip:Hide()
   R.window:SetStatusText("")
@@ -74,6 +61,19 @@ local function addModeButton(frame, mode, modeType)
   return button
 end
 
+local function addPadding(frame)
+  local padding = AceGUI:Create("Label")
+  padding:SetText(" ")
+  padding:SetFullWidth(true)
+  frame:AddChild(padding)
+  return padding
+end
+
+local function onCloseWindow(widget)
+  R.window = false
+  AceGUI:Release(widget)
+end
+
 local function resetWindowSize()
   R.window:ClearAllPoints()
   R.window:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
@@ -95,7 +95,7 @@ function M:Open()
     return
   end
   R.window = AceGUI:Create("Frame")
-  R.window:SetTitle(A.NAME.." "..format(L["choose.gui.title"], "/choose"))
+  R.window:SetTitle(A.NAME.." "..format(L["gui.title"], "/choose"))
   resetWindowSize()
   R.window:SetStatusText("")
   R.window:SetCallback("OnClose", onCloseWindow)
@@ -108,15 +108,15 @@ function M:Open()
   R.window:AddChild(c)
 
   local widget = AceGUI:Create("Label")
-  widget:SetImage("Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga")
+  widget:SetImage("Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga")
   widget:SetImageSize(64, 64)
   widget:SetFontObject(GameFontHighlight)
-  widget:SetText(format(L["choose.gui.intro"], H("/choose")))
+  widget:SetText(format(L["gui.choose.intro"], H("/choose")))
   widget:SetFullWidth(true)
   c:AddChild(widget)
 
   widget = AceGUI:Create("Heading")
-  widget:SetText(format(L["choose.gui.header.buttons"], H("/choose")))
+  widget:SetText(format(L["gui.header.buttons"], H("/choose")))
   widget:SetFullWidth(true)
   c:AddChild(widget)
 
@@ -166,7 +166,7 @@ function M:Open()
   addPadding(c)
 
   widget = AceGUI:Create("Heading")
-  widget:SetText(format(L["choose.gui.header.examples"], "/choose"))
+  widget:SetText(format(L["gui.header.examples"], "/choose"))
   widget:SetFullWidth(true)
   c:AddChild(widget)
 
@@ -198,13 +198,13 @@ function M:SetupTooltip(widget, mode, modeType)
   if modeType == "class" then
     t:AddLine(" ")
     local example = format("/choose %s/%s", A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["MAGE"]), A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["DRUID"]))
-    t:AddLine(format(L["choose.gui.note.multipleClasses"], H(example)), 1,1,1, true)
+    t:AddLine(format(L["gui.choose.note.multipleClasses"], H(example)), 1,1,1, true)
   end
   t:AddLine(" ")
   if modeType == "option" then
-    t:AddLine(format(L["choose.gui.note.option.1"], H("/choose")), 1,1,1, true)
+    t:AddLine(format(L["gui.choose.note.option.1"], H("/choose")), 1,1,1, true)
     t:AddLine(" ")
-    t:AddLine(L["choose.gui.note.option.2"], 1,1,1, true)
+    t:AddLine(L["gui.choose.note.option.2"], 1,1,1, true)
   else
     -- Aliases.
     t:AddDoubleLine(A.chooseCommand.MODE_ALIAS[mode].left, A.chooseCommand.MODE_ALIAS[mode].right, 1,1,1, 1,1,1)

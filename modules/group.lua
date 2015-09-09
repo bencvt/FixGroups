@@ -431,12 +431,12 @@ function M:GetUniqueNameParty(unitID)
   for i = 1, 5 do
     partyUnitID = (i == 5) and "player" or ("party"..i)
     if UnitExists(partyUnitID) then
-      onlyName = M:StripRealm(UnitName(partyUnitID))
+      onlyName = A.util:StripRealm(UnitName(partyUnitID))
       nameCounts[onlyName] = (nameCounts[onlyName] or 0) + 1
     end
   end
-  onlyName = M:StripRealm(UnitName(unitID))
-  return nameCounts[onlyName] > 1 and M:NameAndRealm(UnitName(unitID)) or onlyName
+  onlyName = A.util:StripRealm(UnitName(unitID))
+  return nameCounts[onlyName] > 1 and A.util:NameAndRealm(UnitName(unitID)) or onlyName
 end
 
 function M:DebugGetStats(addDoubleLine)

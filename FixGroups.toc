@@ -33,6 +33,7 @@ modules\coreSort.lua
 modules\damagerRole.lua
 modules\dataBroker.lua
 modules\fgCommand.lua
+modules\fgGui.lua
 modules\group.lua
 modules\inspect.lua
 modules\marker.lua

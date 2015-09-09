@@ -707,7 +707,7 @@ function M:Command(cmd, args)
   elseif strfind(args, "[/%+%|]") and chooseClasses(args) then
     -- Do nothing. The action is in the if clause above.
   else
-    A.console:Printf(L["choose.print.badArgument"], H(args), H("/choose"))
+    A.console:Printf(L["phrase.print.badArgument"], H(args), H("/choose"))
     return
   end
   R.lastCommand = args

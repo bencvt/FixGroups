@@ -37,6 +37,8 @@ L["phrase.mouse.shiftClickRight"] = "Hold Shift + Right Click"
 L["phrase.mouse.ctrlClickLeft"] = "Hold Ctrl + Left Click"
 L["phrase.mouse.ctrlClickRight"] = "Hold Ctrl + Right Click"
 L["phrase.mouse.drag"] = "Hold Left Click + Drag"
+L["phrase.print.badArgument"] = "Unknown argument %s. Type %s for valid arguments."
+L["phrase.print.notInRaid"] = "Groups can only be sorted while in a raid."
 
 L["character.thrall"] = "Thrall"
 
@@ -51,8 +53,6 @@ L["button.fixGroups.working.text"] = "Rearranging..."
 L["button.fixGroups.paused.text"] = "In Combat..."
 L["button.splitGroups.text"] = "Split Groups"
 L["button.splitGroups.desc"] = "Split raid into two sides based on overall damage/healing done."
-L["button.fixGroupsHelp.desc.1"] = "The %s (or %s) command allows you to control the addon without using the GUI. You can use this in a macro, or just type it in chat."
-L["button.fixGroupsHelp.desc.2"] = "Click this button to run %s, which will show you the various arguments."
 L["button.list.desc"] = "The %s command works exactly the same as the %s command, except that it stops short of doing a /roll."
 L["button.resetAllOptions.text"] = "Reset all options to default"
 L["button.resetAllOptions.print"] = "All options reset to default."
@@ -131,33 +131,46 @@ L["choose.classAliases.warlock"] = "lock"
 L["choose.classAliases.hunter"] = ","
 L["choose.classAliases.demonhunter"] = "dh"
 
--- Choose GUI module
-L["choose.gui.title"] = "%s command"
-L["choose.gui.intro"] = "Need to flip a coin to make a decision? Use the %s command to randomly select an option or a player. The choice will be instant, transparent, and fair thanks to WoW's built-in /roll command."
-L["choose.gui.header.buttons"] = "%s command arguments"
-L["choose.gui.header.examples"] = "Examples of the %s command in action"
-L["choose.gui.note.multipleClasses"] = "You also can specify multiple classes. For example: %s."
-L["choose.gui.note.option.1"] = "To choose from a list of generic options rather than a player meeting certain criteria, simply list them after the %s command."
-L["choose.gui.note.option.2"] = "You can use commas or spaces to separate the options."
-
--- Console module
-L["console.help.header"] = "Arguments for the %s command (or %s):"
-L["console.help.help"] = "you're reading it"
-L["console.help.config"] = "same as Esc>Interface>AddOns>%s"
-L["console.help.seeChoose"] = "choose a random player or option, see %s"
-L["console.help.cancel"] = "stop rearranging players"
-L["console.help.nosort"] = "fix groups, no sorting"
-L["console.help.meter"] = "fix groups, sort by overall damage/healing done"
-L["console.help.split"] = "split raid into two sides based on overall damage/healing done"
-L["console.help.blank"] = "fix groups"
-L["console.print.notInRaid"] = "Groups can only be sorted while in a raid."
-L["console.print.badArgument"] = "Unknown argument %s. Type %s for valid arguments."
-
 -- DataBroker module
 L["dataBroker.groupComp.notInGroup"] = "not in group"
 L["dataBroker.groupComp.sitting"] = "Sitting in groups %d-8"
 L["dataBroker.groupComp.groupQueued"] = "Your group is queued in LFG."
 L["dataBroker.groupComp.openRaidTab"] = "Open Raid Tab"
+
+-- Generic GUI modules
+L["gui.title"] = "%s command"
+L["gui.header.buttons"] = "%s command arguments"
+L["gui.header.examples"] = "Examples of the %s command in action"
+
+-- Choose GUI module
+L["gui.choose.intro"] = "Need to flip a coin to make a decision? Use the %s command to randomly select an option or a player. The choice will be instant, transparent, and fair thanks to WoW's built-in /roll command."
+L["gui.choose.note.multipleClasses"] = "You also can specify multiple classes. For example: %s."
+L["gui.choose.note.option.1"] = "To choose from a list of generic options rather than a player meeting certain criteria, simply list them after the %s command."
+L["gui.choose.note.option.2"] = "You can use commas or spaces to separate the options."
+
+-- FixGroups GUI module
+L["gui.fixGroups.intro"] = "The %s (or %s) command allows you to control the addon without using the GUI. You can use this in a macro, or just type it in chat."
+L["gui.fixGroups.help.sort"] = "Rearrange players using the default sort mode."
+L["gui.fixGroups.help.note.defaultMode"] = "The default sort mode is currently %s. It can be changed in the config."
+L["gui.fixGroups.help.mode"] = "Rearrange players %s."
+L["gui.fixGroups.help.nosort"] = "Fix groups, no sorting."
+L["gui.fixGroups.help.split"] = "Split raid into two sides based on overall damage/healing done."
+L["gui.fixGroups.help.cancel"] = "Stop rearranging players."
+L["gui.fixGroups.help.clear1"] = "Clear players out of group 1."
+L["gui.fixGroups.help.clear2"] = "Clear players out of groups 1 and 2."
+L["gui.fixGroups.help.skip1"] = "Exclude any players that you have placed in group 1."
+L["gui.fixGroups.help.skip2"] = "Exclude any players that you have placed in groups 1 or 2."
+L["gui.fixGroups.help.note.clearSkip"] = "This can be useful for raid encounters that require assigning a group or groups of players to handle a certain mechanic. E.g., nether banish groups on Archimonde."
+L["gui.fixGroups.help.choose"] = "Choose a random player or option."
+L["gui.fixGroups.help.list"] = "List players matching a certain criteria to raid chat."
+L["gui.fixGroups.help.listself"] = "List players matching a certain criteria to yourself."
+L["gui.fixGroups.help.note.sameAsCommand"] = "Same as the %s command."
+L["gui.fixGroups.help.note.sameAsLeftClicking"] = "Same as left-clicking the minimap icon or the %s button in the raid tab."
+L["gui.fixGroups.help.note.sameAsRightClicking"] = "Same as right-clicking the minimap icon or the %s button in the raid tab."
+L["gui.fixGroups.help.config"] = "Same as Esc>Interface>AddOns>%s."
+L["gui.fixGroups.help.note.meter.1"] = "Overall damage/healing data requires %s to be running."
+L["gui.fixGroups.help.note.meter.2"] = "This sort method can be useful for making quick decisions on who's worth an emergency heal or brez in PUGs."
+L["gui.fixGroups.help.note.meter.3"] = "You can also type %s to do a one-off sort without changing the setting."
 
 -- Marker module
 L["marker.print.needSetMainTank.singular"] = "%s is not set as main tank!"
@@ -182,6 +195,12 @@ L["options.value.announceChatLimited"] = "Only after changing group sorting meth
 L["options.value.sortMode.meter"] = "Overall damage/healing done"
 L["options.value.sortMode.nosort"] = "Do not rearrange players"
 
+-- Options module: tabs
+L["options.tab.main"] = "Main"
+L["options.tab.sorting"] = "Sorting"
+L["options.tab.marking"] = "Marking"
+L["options.tab.userInterface"] = "User Interface"
+
 -- Options module: headers and widgets
 L["options.widget.top.desc"] = "Organizing groups is an important, if sometimes tedious, part of running a raid. %s helps automate the process."
 
@@ -194,9 +213,6 @@ L["options.widget.fixOfflineML.desc"] = "If the master looter is offline, make y
 
 L["options.header.raidAssist"] = "When raid leader or assist"
 L["options.widget.sortMode.text"] = "Rearrange players"
-L["options.widget.sortMode.desc.1"] = "The overall damage/healing done sort method will only work if %s is running."
-L["options.widget.sortMode.desc.2"] = "This sort method can be useful for making quick decisions on who's worth an emergency heal or brez in PUGs."
-L["options.widget.sortMode.desc.3"] = "You can also type %s or shift right click the minimap icon (or %s button) to do a one-off sort without changing the setting."
 L["options.widget.resumeAfterCombat.text"] = "Resume rearranging players when interrupted by combat"
 L["options.widget.tankMainTank.text"] = "Check whether main tanks are set"
 L["options.widget.tankMainTank.desc"] = "Unfortunately WoW does not allow addons to automatically set main tanks, but we can check for it at least."
@@ -215,7 +231,6 @@ L["options.widget.partyMarkIcon1.desc"] = "Or the 1st party member, if there is 
 L["options.widget.partyMarkIcon2.desc"] = "Or the 2nd party member, if there is no healer."
 L["options.widget.partyMarkIcon.desc"] = "Party members are sorted alphabetically."
 
-L["options.header.uiAndChat"] = "User interface and chat"
 L["options.widget.showMinimapIcon.text"] = "Show minimap icon"
 L["options.widget.addButtonToRaidTab.text"] = "Add button to raid tab"
 L["options.widget.addButtonToRaidTab.desc"] = "Add a %s button to the default Blizzard UI on the raid tab, functioning the same as the minimap icon. The default keybind to open the raid tab is O."
@@ -223,8 +238,8 @@ L["options.widget.watchChat.text"] = "Watch chat for requests to fix groups"
 L["options.widget.watchChat.desc"] = "When the keywords %s or %s are seen in chat while not in combat, automatically open the raid tab."
 L["options.widget.announceChat.text"] = "Announce when players have been rearranged to instance chat"
 
-L["options.header.sysMsg"] = "Enhance group-related system messages"
-L["options.widget.sysMsgLabel.name"] = "The system message that appears whenever a player joins or leaves a group can be modified to make it more informative. Examples:"
+L["options.header.sysMsg"] = "Enhance Joined/Left Messages"
+L["options.widget.sysMsg.desc"] = "The system message that appears whenever a player joins or leaves a group can be modified to make it more informative."
 L["options.widget.sysMsgClassColor.text"] = "Add class color"
 L["options.widget.sysMsgRoleName.text"] = "Add role name"
 L["options.widget.sysMsgRoleIcon.text"] = "Add role icon"
@@ -238,8 +253,9 @@ L["options.widget.dataBrokerGroupCompStyle.desc.2"] = "There are many Data Broke
 
 -- Sorter module
 L["sorter.mode.meter"] = "by damage/healing done"
-L["sorter.mode.TMURH"] = "tanks>melee>ranged>healers"
-L["sorter.mode.THMUR"] = "tanks>healers>melee>ranged"
+L["sorter.mode.tmrh"] = "tanks>melee>ranged>healers"
+L["sorter.mode.thmr"] = "tanks>healers>melee>ranged"
+L["sorter.mode.nosort"] = "no sorting"
 L["sorter.print.combatPaused"] = "Rearranging %s paused due to combat."
 L["sorter.print.combatCancelled"] = "Rearranging %s cancelled due to combat."
 L["sorter.print.combatResumed"] = "Resumed rearranging %s."
@@ -257,7 +273,5 @@ L["tooltip.right.fixGroups"] = "Fix groups"
 L["tooltip.right.split.1"] = "Split raid into two sides based on"
 L["tooltip.right.split.2"] = "overall damage/healing done"
 L["tooltip.right.config"] = "Open config"
-L["tooltip.right.meter.1"] = "Fix groups, sorting by"
-L["tooltip.right.meter.2"] = "overall damage/healing done"
-L["tooltip.right.nosort"] = "Fix tanks and ML only, no sorting"
+L["tooltip.right.gui"] = "Open %s command help"
 L["tooltip.right.moveMinimapIcon"] = "Move minimap icon"

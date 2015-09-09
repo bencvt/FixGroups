@@ -21,11 +21,12 @@ local LOCALE_KW_2 = strlower(string.trim(L["chatKeyword.markTanks"]))
 local CUBE_ICON_0 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga"
 local CUBE_ICON_1 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga"
 local CUBE_ICON_BW = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIconBW_64.tga"
+local TOOLTIP_RIGHT_GUI = format(L["tooltip.right.gui"], A.util:Highlight("/fg"))
 
 local function handleClick(_, button)
   if button == "RightButton" then
     if IsShiftKeyDown() then
-      A.fgCommand:Command("meter")
+      A.fgCommand:Command("")
     else
       A.fgCommand:Command("split")
     end
@@ -33,7 +34,7 @@ local function handleClick(_, button)
     if IsShiftKeyDown() then
       A.fgCommand:Command("config")
     elseif IsControlKeyDown() then
-      A.fgCommand:Command("nosort")
+      A.fgCommand:Command("cancel")
     else
       A.fgCommand:Command("default")
     end
@@ -128,14 +129,13 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["phrase.mouse.shiftClickLeft"],   L["tooltip.right.config"],    1,1,1, 1,1,0)
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["phrase.mouse.shiftClickRight"],  L["tooltip.right.meter.1"],   1,1,1, 1,1,0)
-  tooltip:AddDoubleLine(" ",                                L["tooltip.right.meter.2"],   1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(L["phrase.mouse.shiftClickRight"],  TOOLTIP_RIGHT_GUI,            1,1,1, 1,1,0)
   -- Ctrl + Left Click is an undocumented shortcut, subject to change or removal
   -- in a future version of this addon. We could make the mouse shortcuts
   -- user-configurable, but that's probably overkill... the default shortcuts
   -- are pretty reasonable as-is.
   --tooltip:AddLine(" ")
-  --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickLeft"],    L["tooltip.right.nosort"],    1,1,1, 1,1,0)
+  --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickLeft"],    L["tooltip.right.cancel"],    1,1,1, 1,1,0)
   if isMinimapIcon then
     tooltip:AddLine(" ")
     tooltip:AddDoubleLine(L["phrase.mouse.drag"],           L["tooltip.right.moveMinimapIcon"], 1,1,1, 1,1,0)

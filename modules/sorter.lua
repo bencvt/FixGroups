@@ -50,7 +50,7 @@ function M:FIXGROUPS_PLAYER_CHANGED_GROUP(event, name, prevGroup, group)
 end
 
 function M:IsSortingHealersBeforeDamagers()
-  return A.options.sortMode == "THMUR" and R.active.sortMode ~= "TMURH"
+  return A.options.sortMode == "thmr" and R.active.sortMode ~= "tmrh"
 end
 
 function M:IsGroupIncluded(group)
@@ -149,7 +149,7 @@ end
 
 function M:StartDefault(clearGroups, skipGroups)
   local mode = A.options.sortMode
-  if mode == "TMURH" or mode == "THMUR" or mode == "meter" or (mode == "nosort" and clearGroups > 0) then
+  if mode == "tmrh" or mode == "thmr" or mode == "meter" or (mode == "nosort" and clearGroups > 0) then
     start(mode, clearGroups, skipGroups)
   else
     M:Stop()

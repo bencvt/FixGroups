@@ -19,6 +19,12 @@ function M:OpenConfig()
   InterfaceOptionsFrame_OpenToCategory(A.NAME)
 end
 
+function M:CloseConfig()
+  if InterfaceOptionsFrame:IsShown() then
+    InterfaceOptionsFrame:Hide()
+  end
+end
+
 function M:InsertText(text)
   local editBox = GetCurrentKeyBoardFocus()
   if editBox then

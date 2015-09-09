@@ -15,26 +15,12 @@ function M:OnEnable()
   M:RegisterChatCommand("fg", slashCmd)
 end
 
-function M:PrintHelp()
-  M:Printf(L["phrase.versionAuthor"], A.VERSION, HA(A.AUTHOR))
-  print(format(L["console.help.header"], H("/fixgroups"), H("/fg")))
-  print(format("  %s %s %s - %s", H("/fg help"),    L["word.or"], H("/fg about"),   L["console.help.help"]))
-  print(format("  %s %s %s - %s", H("/fg config"),  L["word.or"], H("/fg options"), format(L["console.help.config"], A.NAME)))
-  print(format("  %s - %s",       H("/fg choose"),                                  format(L["console.help.seeChoose"], H("/choose help"))))
-  print(format("  %s - %s",       H("/fg cancel"),                                  L["console.help.cancel"]))
-  print(format("  %s - %s",       H("/fg nosort"),                                  L["console.help.nosort"]))
-  print(format("  %s %s %s - %s", H("/fg meter"),   L["word.or"], H("/fg dps"),     L["console.help.meter"]))
-  print(format("  %s - %s",       H("/fg split"),                                   L["console.help.split"]))
-  print(format("  %s - %s",       H("/fg sort"),                                    L["console.help.blank"]))
-end
-
 function M:Command(args)
   local argsLower = strlower(strtrim(args))
 
   -- Simple arguments.
   if argsLower == "" or argsLower == "gui" or argsLower == "ui" or argsLower == "window" or argsLower == "about" or argsLower == "help" then
-    -- TODO open gui instead
-    M:PrintHelp()
+    A.fgGui:Open()
     return
   elseif argsLower == "config" or argsLower == "options" then
     A.utilGui:OpenConfig()
@@ -59,8 +45,8 @@ function M:Command(args)
   -- Set tank marks and such.
   if IsInGroup() and not IsInRaid() then
     A.marker:FixParty()
-    if argsLower ~= "" and argsLower ~= "nosort" and argsLower ~= "default" then
-      M:Print(L["console.print.notInRaid"])
+    if argsLower ~= "nosort" and argsLower ~= "default" and argsLower ~= "sort" then
+      A.console:Print(L["phrase.print.notInRaid"])
     end
     return
   end
@@ -86,7 +72,7 @@ function M:Command(args)
   elseif argsLower == "default" or argsLower == "sort" then
     A.sorter:StartDefault(0, 0)
   else
-    M:Printf(L["console.print.badArgument"], H(args), H("/fg help"))
+    A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))
     return
   end
 end
