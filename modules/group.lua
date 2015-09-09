@@ -40,7 +40,7 @@ end
 
 local format, gsub, ipairs, pairs, select, tinsert, tostring, unpack, wipe = format, gsub, ipairs, pairs, select, tinsert, tostring, unpack, wipe
 local tconcat = table.concat
-local GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitGroupRolesAssigned, UnitIsUnit, UnitName
+local GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitExists, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitExists, UnitGroupRolesAssigned, UnitIsUnit, UnitName
 
 local function rebuildTimerDone(event)
   if A.DEBUG >= 1 then A.console:Debugf(M, "%s ForceBuildRoster", event) end
@@ -423,6 +423,20 @@ function M:IsInSameZone(name)
   if name and R.roster[name] then
     return R.roster[name].zone == R.roster[UnitName("player")].zone
   end
+end
+
+function M:GetUniqueNameParty(unitID)
+  local nameCounts = wipe(R.tmp1)
+  local partyUnitID, onlyName
+  for i = 1, 5 do
+    partyUnitID = (i == 5) and "player" or ("party"..i)
+    if UnitExists(partyUnitID) then
+      onlyName = M:StripRealm(UnitName(partyUnitID))
+      nameCounts[onlyName] = (nameCounts[onlyName] or 0) + 1
+    end
+  end
+  onlyName = M:StripRealm(UnitName(unitID))
+  return nameCounts[onlyName] > 1 and M:NameAndRealm(UnitName(unitID)) or onlyName
 end
 
 function M:DebugGetStats(addDoubleLine)

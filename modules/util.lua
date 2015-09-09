@@ -36,19 +36,14 @@ M.GROUP_COMP_STYLE = {
 
 local floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
 local tconcat = table.concat
-local ChatFrame_OpenChat, GetAddOnMetadata, GetCurrentKeyBoardFocus, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, IsInGroup, IsInInstance, IsInRaid, OpenFriendsFrame, ToggleFriendsFrame, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = ChatFrame_OpenChat, GetAddOnMetadata, GetCurrentKeyBoardFocus, GetInstanceInfo, GetLFGMode, GetLocale, GetRealmName, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, IsInGroup, IsInInstance, IsInRaid, OpenFriendsFrame, ToggleFriendsFrame, UnitClass, UnitExists, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
-local ChatTypeInfo, LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS = ChatTypeInfo, LE_PARTY_CATEGORY_INSTANCE, NUM_LE_LFG_CATEGORYS, RAID_CLASS_COLORS 
--- GLOBALS: ElvUI
+local ChatTypeInfo, GetAddOnMetadata, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = ChatTypeInfo, GetAddOnMetadata, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS
 
-function M:LocaleSerialComma()
-  return (GetLocale() == "enUS") and "," or ""
-end
+local LOCALE_SERIAL_COMMA =  (GetLocale() == "enUS") and "," or ""
+local LOCALE_UPPERCASE_NOUNS = (GetLocale() == "deDE")
 
 function M:LocaleLowerNoun(noun)
-  if GetLocale() == "deDE" then
-    return noun
-  end
-  return strlower(noun)
+  return LOCALE_UPPERCASE_NOUNS and noun or strlower(noun)
 end
 
 function M:LocaleTableConcat(t, conjunction)
@@ -59,11 +54,11 @@ function M:LocaleTableConcat(t, conjunction)
   elseif sz == 1 then
     return t[1]
   elseif sz == 2 then
-    return t[1].." "..conjunction.." "..t[2]
+    return format("%s %s %s", t[1], conjunction, t[2])
   end
   -- Temporarily modify the table get the ", and " in, then restore.
   local saveY, saveZ = t[sz-1], t[sz]
-  t[sz-1] = t[sz-1]..M:LocaleSerialComma().." "..conjunction.." "..t[sz]
+  t[sz-1] = format("%s%s %s %s", t[sz-1], LOCALE_SERIAL_COMMA, conjunction, t[sz])
   tremove(t)
   local result = tconcat(t, ", ")
   t[sz-1], t[sz] = saveY, saveZ
@@ -230,54 +225,6 @@ function M:StripRealm(name)
   return strsplit("-", name, 2)
 end
 
-function M:GetUniqueNameParty(unitID)
-  local nameCounts = wipe(R.tmp1)
-  local partyUnitID, onlyName
-  for i = 1, 5 do
-    partyUnitID = (i == 5) and "player" or ("party"..i)
-    if UnitExists(partyUnitID) then
-      onlyName = M:StripRealm(UnitName(partyUnitID))
-      nameCounts[onlyName] = (nameCounts[onlyName] or 0) + 1
-    end
-  end
-  onlyName = M:StripRealm(UnitName(unitID))
-  return nameCounts[onlyName] > 1 and M:NameAndRealm(UnitName(unitID)) or onlyName
-end
-
-function M:OpenRaidTab()
-  OpenFriendsFrame(4)
-end
-
-function M:ToggleRaidTab()
-  ToggleFriendsFrame(4)
-end
-
-function M:OpenConfig()
-  InterfaceOptionsFrame_OpenToCategory(A.NAME)
-  InterfaceOptionsFrame_OpenToCategory(A.NAME)
-end
-
-function M:InsertText(text)
-  local editBox = GetCurrentKeyBoardFocus()
-  if editBox then
-    if not strmatch(editBox:GetText(), "%s$") then
-      text = " "..text
-    end
-    editBox:Insert(text)
-  else
-    ChatFrame_OpenChat(text)
-  end
-end
-
 function M:BlankInline(height, width)
   return format("|TInterface\\AddOns\\%s\\media\\blank.blp:%d:%d:0:0|t", A.NAME, height or 8, width or 8)
-end
-
-function M:GetElvUISkinModule()
-  if IsAddOnLoaded("ElvUI") and ElvUI then
-    local E = ElvUI[1]
-    if E.private.skins.blizzard.enable and E.private.skins.blizzard.nonraid then
-      return E:GetModule("Skins")
-    end
-  end
 end

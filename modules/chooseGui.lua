@@ -11,7 +11,7 @@ local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local format, gsub, ipairs, strlower, tinsert = format, gsub, ipairs, strlower, tinsert
 local tconcat = table.concat
-local CreateFrame, GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = CreateFrame, GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
+local GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE
 
 local AceGUI = LibStub("AceGUI-3.0")
@@ -19,12 +19,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 local function onCloseWindow(widget)
   R.window = false
   AceGUI:Release(widget)
-end
-
-local function onKeyDownCloseButton(button, key)
-  if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
-    M:Close()
-  end
 end
 
 local function addPadding(frame)
@@ -62,7 +56,7 @@ local function addModeButton(frame, mode, modeType)
   button:SetText(label)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
-      A.util:InsertText(getCommand(mode, modeType))
+      A.utilGui:InsertText(getCommand(mode, modeType))
       return
     end
     --TODO right-click to /list instead of /choose. Do a /listself in the tooltip.
@@ -78,58 +72,6 @@ local function addModeButton(frame, mode, modeType)
   button:SetWidth(104)
   frame:AddChild(button)
   return button
-end
-
-local function addCloseButton()
-  -- AceGUI puts the close button on the bottom right, which is fine.
-  -- However for consistency's sake we also want an X in the upper right.
-  -- We also have the close button catch the escape key.
-  local C = R.closeButton
-  local skin = A.util:GetElvUISkinModule()
-
-  C.frame = C.frame or CreateFrame("FRAME")
-  C.frame:SetParent(R.window.frame)
-  C.frame:SetWidth(17)
-  C.frame:SetHeight(40)
-  C.frame:SetPoint("TOPRIGHT", skin and 0 or -16, 12)
-
-  C.button = C.button or CreateFrame("BUTTON")
-  C.button:SetParent(C.frame)
-  C.button:SetWidth(30)
-  C.button:SetHeight(30)
-  C.button:SetPoint("CENTER", C.frame, "CENTER", 1, -1)
-  C.button:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Up.blp")
-  C.button:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Down.blp")
-  C.button:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
-  C.button:SetScript("OnClick", M.Close)
-  C.button:SetScript("OnKeyDown", onKeyDownCloseButton)
-  C.button:SetPropagateKeyboardInput(true)
-
-  if skin then
-    skin:HandleCloseButton(C.button)
-  else
-    C.borderTB = C.borderTB or C.frame:CreateTexture(nil, "BACKGROUND")
-    C.borderTB:SetParent(C.frame)
-    C.borderTB:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-    C.borderTB:SetTexCoord(0.31, 0.67, 0, 0.63)
-    C.borderTB:SetAllPoints(C.frame)
-
-    C.borderL = C.borderL or C.frame:CreateTexture(nil, "BACKGROUND")
-    C.borderL:SetParent(C.frame)
-    C.borderL:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-    C.borderL:SetTexCoord(0.235, 0.275, 0, 0.63)
-    C.borderL:SetPoint("RIGHT", C.borderTB, "LEFT")
-    C.borderL:SetWidth(10)
-    C.borderL:SetHeight(40)
-
-    C.borderR = C.borderR or C.frame:CreateTexture(nil, "BACKGROUND")
-    C.borderR:SetParent(C.frame)
-    C.borderR:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-    C.borderR:SetTexCoord(0.72, 0.76, 0, 0.63)
-    C.borderR:SetPoint("LEFT", C.borderTB, "RIGHT")
-    C.borderR:SetWidth(10)
-    C.borderR:SetHeight(40)
-  end
 end
 
 local function resetWindowSize()
@@ -159,7 +101,7 @@ function M:Open()
   R.window:SetCallback("OnClose", onCloseWindow)
   R.window:SetLayout("Fill")
 
-  addCloseButton()
+  A.utilGui:AddCloseButton(R.window, R.closeButton, M.Close)
 
   local c = AceGUI:Create("ScrollFrame")
   c:SetLayout("Flow")

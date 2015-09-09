@@ -376,7 +376,7 @@ function M:GetChoosingDesc(mode, modeType, useColor, validClasses)
       A.group.BuildUniqueNames()
       arg1 = A.group:GetPlayer(UnitName("player")).uniqueName
     else
-      arg1 = A.util:GetUniqueNameParty("player")
+      arg1 = A.group:GetUniqueNameParty("player")
     end
     if useColor then
       arg1 = format("|c%s%s|r", A.util:ClassColor(select(2, UnitClass("player"))), arg1)

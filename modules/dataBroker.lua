@@ -18,12 +18,12 @@ local function groupCompOnClick(frame, button)
   if A.DEBUG >= 2 then A.console:Debugf(M, "groupCompOnClick frame=%s button=%s", tostring(frame), tostring(button)) end
   if IsShiftKeyDown() then
     if button == "RightButton" then
-      A.util:InsertText(A.group:GetComp(A.util.GROUP_COMP_STYLE.VERBOSE))
+      A.utilGui:InsertText(A.group:GetComp(A.util.GROUP_COMP_STYLE.VERBOSE))
     else
-      A.util:InsertText(A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))
+      A.utilGui:InsertText(A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))
     end
   else
-    A.util:ToggleRaidTab()
+    A.utilGui:ToggleRaidTab()
   end
 end
 

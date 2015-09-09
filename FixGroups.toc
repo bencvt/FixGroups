@@ -40,3 +40,4 @@ modules\meter.lua
 modules\modJoinLeave.lua
 modules\options.lua
 modules\sorter.lua
+modules\utilGui.lua

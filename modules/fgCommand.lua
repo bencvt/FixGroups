@@ -37,7 +37,7 @@ function M:Command(args)
     M:PrintHelp()
     return
   elseif argsLower == "config" or argsLower == "options" then
-    A.util:OpenConfig()
+    A.utilGui:OpenConfig()
     return
   elseif argsLower == "cancel" then
     A.sorter:Stop()

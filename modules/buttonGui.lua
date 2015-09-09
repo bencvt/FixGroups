@@ -83,7 +83,7 @@ local function setupRaidTabButton()
   b:SetScript("OnClick", handleClick)
   b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") M:SetupTooltip(GameTooltip, false) end)
   b:SetScript("OnLeave", function () GameTooltip:Hide() end)
-  local skin = A.util:GetElvUISkinModule()
+  local skin = A.utilGui:GetElvUISkinModule()
   if skin then
     b:StripTextures()
     skin:HandleButton(b)
@@ -157,7 +157,7 @@ function M:ButtonPress(button)
 end
 
 function M:FlashRaidTabButton()
-  A.util:OpenRaidTab()
+  A.utilGui:OpenRaidTab()
   if R.flashTimer or not A.options.addButtonToRaidTab then
     return
   end

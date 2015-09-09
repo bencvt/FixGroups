@@ -131,7 +131,7 @@ function M:FixRaid(isRequestFromAssist)
     if bad then
       if A.options.openRaidTabPRN then
         A.console:Print(L["marker.print.useRaidTab"])
-        A.util:OpenRaidTab()
+        A.utilGui:OpenRaidTab()
         return
       end
       A.console:Print(L["marker.print.openRaidTab"])
