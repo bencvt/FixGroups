@@ -25,6 +25,16 @@ local CLASS_ALIAS = false
 local LOCALE_GROUP = false
 M.MODE_ALIAS = false
 
+L["choose.print.choosing.armor"] = L["choose.print.choosing.armor"].." (%s)"
+L["choose.print.choosing.primaryStat"] = L["choose.print.choosing.primaryStat"].." (%s)"
+L["choose.print.choosing.class"] = "%s"
+L["choose.print.choosing.tierToken"] = "%s (%s)"
+L["choose.print.choosing.tank"]     = A.util:LocaleLowerNoun(L["word.tank.singular"])
+L["choose.print.choosing.healer"]   = A.util:LocaleLowerNoun(L["word.healer.singular"])
+L["choose.print.choosing.damager"]  = A.util:LocaleLowerNoun(L["word.damager.singular"])
+L["choose.print.choosing.ranged"]   = A.util:LocaleLowerNoun(L["word.ranged.singular"])
+L["choose.print.choosing.melee"]    = A.util:LocaleLowerNoun(L["word.melee.singular"])
+
 local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
 local tconcat = table.concat
 local GetGuildInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetGuildInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned
@@ -726,7 +736,7 @@ function M:Command(cmd, args)
   elseif strfind(args, "[/%+%|]") and chooseClasses(cmd, args) then
     -- Do nothing. The action is in the if clause above.
   else
-    A.console:Printf(L["phrase.print.badArgument"], H(args), H("/choose"))
+    A.console:Printf(L["phrase.print.badArgument"], H(args), H("/"..cmd))
     return
   end
   R.lastCommand = args
