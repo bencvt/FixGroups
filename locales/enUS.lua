@@ -58,11 +58,6 @@ L["button.splitGroups.desc"] = "Split raid into two sides based on overall damag
 L["button.resetAllOptions.text"] = "Reset all options to default"
 L["button.resetAllOptions.print"] = "All options reset to default."
 
--- Chat keywords
---TODO "set tanks" should be a keyword too
-L["chatKeyword.fixGroups"] = "fix groups"
-L["chatKeyword.markTanks"] = "mark tanks"
-
 -- Choose module
 L["choose.choosing.tooltip"] = "Choose a random %s."
 L["choose.choosing.print"] = "Choosing a random %s..."
@@ -135,6 +130,7 @@ L["dataBroker.groupComp.groupQueued"] = "Your group is queued in LFG."
 L["dataBroker.groupComp.openRaidTab"] = "Open Raid Tab"
 
 -- Generic GUI modules
+L["gui.chatKeywords"] = "fix groups,mark tanks,set tanks"
 L["gui.title"] = "%s command"
 L["gui.header.buttons"] = "%s command arguments"
 L["gui.header.examples"] = "Examples of the %s command in action"
@@ -231,7 +227,7 @@ L["options.widget.showMinimapIcon.text"] = "Show minimap icon"
 L["options.widget.addButtonToRaidTab.text"] = "Add button to raid tab"
 L["options.widget.addButtonToRaidTab.desc"] = "Add a %s button to the default Blizzard UI on the raid tab, functioning the same as the minimap icon. The default keybind to open the raid tab is O."
 L["options.widget.watchChat.text"] = "Watch chat for requests to fix groups"
-L["options.widget.watchChat.desc"] = "When the keywords %s or %s are seen in chat while not in combat, automatically open the raid tab."
+L["options.widget.watchChat.desc"] = "When the keywords %s are seen in chat while not in combat, automatically open the raid tab."
 L["options.widget.announceChat.text"] = "Announce when players have been rearranged to instance chat"
 
 L["options.header.sysMsg"] = "Enhance Joined/Left Messages"

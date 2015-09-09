@@ -34,13 +34,15 @@ M.GROUP_COMP_STYLE = {
   VERBOSE = 999,
 }
 
-local floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, format, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
+local floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
 local tconcat = table.concat
 local ChatTypeInfo, GetAddOnMetadata, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = ChatTypeInfo, GetAddOnMetadata, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS
 
 local LOCALE_SERIAL_COMMA =  (GetLocale() == "enUS") and "," or ""
 local LOCALE_UPPERCASE_NOUNS = (GetLocale() == "deDE")
+-- Lazily built.
+local WATCH_CHAT_KEYWORDS, WATCH_CHAT_KEYWORDS_LIST = false, false
 
 function M:LocaleLowerNoun(noun)
   return LOCALE_UPPERCASE_NOUNS and noun or strlower(noun)
@@ -75,6 +77,36 @@ end
 
 function M:Escape(text)
   return gsub(text, "|", "||")
+end
+
+local function buildWatchChatKeywords()
+  WATCH_CHAT_KEYWORDS = {}
+  WATCH_CHAT_KEYWORDS_LIST = {}
+  for kw in gmatch(gsub(L["gui.chatKeywords"], "%s+", ""), "[^,]+") do
+    if kw ~= "" then
+      WATCH_CHAT_KEYWORDS[strlower(kw)] = true
+      tinsert(WATCH_CHAT_KEYWORDS_LIST, M:Highlight(kw))
+    end
+  end
+  WATCH_CHAT_KEYWORDS_LIST = M:LocaleTableConcat(WATCH_CHAT_KEYWORDS_LIST, L["word.or"])
+end
+
+function M:WatchChatKeywordMatches(messageLower)
+  if not WATCH_CHAT_KEYWORDS then
+    buildWatchChatKeywords()
+  end
+  for _, pattern in pairs(WATCH_CHAT_KEYWORDS) do
+    if strfind(messageLower, pattern) then
+      return true
+    end
+  end
+end
+
+function M:GetWatchChatKeywordList()
+  if not WATCH_CHAT_KEYWORDS_LIST then
+    buildWatchChatKeywords()
+  end
+  return WATCH_CHAT_KEYWORDS_LIST
 end
 
 function M:SortedKeys(tbl, keys)

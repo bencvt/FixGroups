@@ -16,8 +16,6 @@ local format, strfind, strlower, time, tostring = format, strfind, strlower, tim
 local CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, UnitName = CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, UnitName
 -- GLOBALS: LibStub, GameTooltip, RaidFrame, RaidFrameRaidInfoButton
 
-local LOCALE_KW_1 = strlower(string.trim(L["chatKeyword.fixGroups"]))
-local LOCALE_KW_2 = strlower(string.trim(L["chatKeyword.markTanks"]))
 local CUBE_ICON_0 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga"
 local CUBE_ICON_1 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga"
 local CUBE_ICON_BW = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIconBW_64.tga"
@@ -38,9 +36,9 @@ end
 local function watchChat(event, message, sender)
   if A.DEBUG >= 1 then A.console:Debugf(M, "watchChat event=%s message=[%s] sender=%s", event, A.util:Escape(message), sender) end
   if A.options.watchChat and sender ~= UnitName("player") and message and A.sorter:CanBegin() then
-    -- Search for both the default and the localized keywords.
     message = strlower(message)
-    if strfind(message, "fix group") or strfind(message, "mark tank") or strfind(message, LOCALE_KW_1) or strfind(message, LOCALE_KW_2) then
+    -- Search for both the default and the localized keywords.
+    if strfind("fix%s+group", message) or strfind("mark%s+tank", message) or strfind("set%s+tank", message) or A.util:WatchChatKeywordMatches(message) then
       M:FlashRaidTabButton()
     end
   end
