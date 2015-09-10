@@ -1,3 +1,5 @@
+--- Handle exchanging addon messages with other players using WoW's
+-- CHAT_MSG_ADDON channels.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("addonChannel", "AceEvent-3.0", "AceTimer-3.0")
 A.addonChannel = M

@@ -1,3 +1,6 @@
+--- Coordinate player sorting. This usually involves multiple client/server
+-- round trips. Handle synchronization in general, including support for
+-- pausing/resuming a sort due to combat.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("sorter", "AceEvent-3.0", "AceTimer-3.0")
 A.sorter = M

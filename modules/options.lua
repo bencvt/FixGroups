@@ -1,3 +1,5 @@
+--- Define all user-configurable options and a GUI to modify them, used in
+-- WoW's Interface>Addons pane.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("options", "AceTimer-3.0")
 A.options = M

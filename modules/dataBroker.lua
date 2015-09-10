@@ -1,3 +1,4 @@
+--- Define a Data Broker Object (a.k.a. LDB plugin) named Group Comp.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("dataBroker", "AceEvent-3.0")
 A.dataBroker = M

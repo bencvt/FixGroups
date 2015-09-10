@@ -1,3 +1,4 @@
+--- Utility functions useful for defining GUIs.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("utilGui")
 A.utilGui = M

@@ -1,3 +1,4 @@
+--- Modify group-related system messages to make them more informative.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("modJoinLeave", "AceHook-3.0", "AceTimer-3.0")
 A.modJoinLeave = M

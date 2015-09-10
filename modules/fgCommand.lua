@@ -1,3 +1,4 @@
+--- Implement the /fg (/fixgroups) console command.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("fgCommand", "AceConsole-3.0")
 A.fgCommand = M

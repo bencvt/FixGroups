@@ -1,3 +1,4 @@
+--- Define a GUI for the /choose, /list, and /listself console commands.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("chooseGui")
 A.chooseGui = M

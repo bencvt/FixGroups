@@ -1,3 +1,5 @@
+--- General utility functions and constants. This module is loaded before all
+-- others, so it's safe to use at any point in other modules.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("util")
 A.util = M

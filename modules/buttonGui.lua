@@ -1,3 +1,5 @@
+--- Define the minimap icon, the Fix Groups button on the raid tab, and
+-- their tooltips.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("buttonGui", "AceEvent-3.0", "AceTimer-3.0")
 A.buttonGui = M

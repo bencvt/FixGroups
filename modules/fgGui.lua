@@ -1,3 +1,4 @@
+--- Define a GUI for the /fg (/fixgroups) console command.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("fgGui")
 A.fgGui = M

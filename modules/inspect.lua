@@ -1,3 +1,5 @@
+--- Send inspection requests to the server. Maintain a table of pending
+-- requests for players that we can't inspect yet. Pause during combat.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("inspect", "AceEvent-3.0", "AceTimer-3.0")
 A.inspect = M

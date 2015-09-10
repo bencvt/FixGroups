@@ -1,3 +1,4 @@
+--- Utility functions to output text to the console (i.e., default chat frame).
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("console")
 A.console = M

@@ -1,3 +1,18 @@
+--- Track the group roster and generate AceEvent messages when things change.
+-- Each player in the roster has their own table, with the following keys:
+-- @field rindex      internal raid index, volatile
+-- @field unitID      raidX, partyX, or player
+-- @field isUnknown   true if the server hasn't sent us data for this player yet
+-- @field name        player name or "Unknown"
+-- @field uniqueName  player name minus realm suffix, unless it's needed to
+--                    disambiguate multiple players with the same name
+-- @field class       non-localized string, e.g. "PALADIN"
+-- @field role        M.ROLE.x constant
+-- @field isDamager   true if role is melee, ranged, or unknown
+-- @field rank        0: raid member, 1: raid assist, 2: raid lead
+-- @field group       1-8
+-- @field isSitting   true if inside a non-40-man instance and group=7|8
+-- @field zone        localized string, e.g. "Tanaan"
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("group", "AceEvent-3.0", "AceTimer-3.0")
 A.group = M

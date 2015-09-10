@@ -1,3 +1,4 @@
+--- Low-level implementation of player sorting.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("coreSort", "AceTimer-3.0")
 A.coreSort = M

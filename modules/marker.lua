@@ -1,3 +1,5 @@
+--- Handle setting target marker icons on players, giving tanks assist,
+-- setting main tanks, and changing master looter.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("marker")
 A.marker = M

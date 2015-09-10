@@ -1,3 +1,4 @@
+--- Extract damage/healing meter data from other addons.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("meter")
 A.meter = M

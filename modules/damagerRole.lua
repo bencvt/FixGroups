@@ -1,3 +1,6 @@
+--- Determine whether a player in the group is melee or ranged. This is trivial
+-- for most cases, but requires inspecting the player if they're a DPS shaman
+-- or druid.
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("damagerRole", "AceEvent-3.0", "AceTimer-3.0")
 A.damagerRole = M
