@@ -133,6 +133,11 @@ local function start(sortMode, clearGroups, skipGroups)
   if M:StopIfNeeded() then
     return
   end
+  if clearGroups > 0 then
+    -- The whole point of having clearGroups is so the user can manually
+    -- populate those groups, so make it easy for them.
+    A.utilGui:OpenRaidTab()
+  end
   A.group:PrintIfThereAreUnknowns()
   if M:IsSortingByMeter() or M:IsSplittingRaid() then
     -- Damage/healing meter snapshot is built once at the start,

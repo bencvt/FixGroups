@@ -1,3 +1,6 @@
+v1.3.3:
+  - ensure raid tab is open when using /fg clear1 and /fg clear2
+
 v1.3.2:
   - add custom icon
   - add partial Chinese translation, thanks @cadcamzy
