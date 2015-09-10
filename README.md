@@ -18,8 +18,6 @@ Other features:
 
    * Whenever a player joins or leaves your group, the **server message** now includes the player's role and the new comp. Example: *"Darion (Melee) has joined the raid group. 2/4/14 (6+8)."*
 
-   * The FixGroups button/icon **tooltip** includes the comp.
-
    * Add the group comp to your UI if you're running a **Data Broker** display addon (**Titan Panel**, **ChocolateBar**, **ElvUI**, etc.) FixGroups makes the comp available as a Data Broker object (a.k.a. LDB plugin).
 
 ## Links
