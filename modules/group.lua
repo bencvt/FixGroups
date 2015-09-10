@@ -26,6 +26,7 @@ M.private = {
   roleCountsTHMRU = {0, 0, 0, 0, 0},
   roleCountsString = false,
   prevRoleCountsString = false,
+  recentlyDropped = {count=0, when=0},
   builtUniqueNames = false,
   rebuildTimer = false,
   stats = {},
@@ -53,7 +54,7 @@ for i = 1, 40 do
   R.prevRosterArray[i] = {}
 end
 
-local format, gsub, ipairs, pairs, select, tinsert, tostring, unpack, wipe = format, gsub, ipairs, pairs, select, tinsert, tostring, unpack, wipe
+local format, gsub, ipairs, pairs, select, time, tinsert, tostring, unpack, wipe = format, gsub, ipairs, pairs, select, time, tinsert, tostring, unpack, wipe
 local tconcat = table.concat
 local GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitExists, UnitGroupRolesAssigned, UnitIsUnit, UnitName = GetNumGroupMembers, GetRealZoneText, GetSpecialization, GetSpecializationInfo, GetRaidRosterInfo, IsInGroup, IsInRaid, UnitClass, UnitExists, UnitGroupRolesAssigned, UnitIsUnit, UnitName
 
@@ -308,11 +309,13 @@ function M:ForceBuildRoster(callerModule, callerEvent)
     end
   end
   
+  local dropped = 0
   for name, player in pairs(R.prevRoster) do
     if not player.isUnknown and not R.roster[name] then
       if A.DEBUG >= 1 then A.console:Debugf(M, "PLAYER_LEFT %s", name) end
       -- Message consumers should not modify the player table.
       M:SendMessage("FIXGROUPS_PLAYER_LEFT", player)
+      dropped = dropped + 1
     end
   end
   
@@ -327,6 +330,21 @@ function M:ForceBuildRoster(callerModule, callerEvent)
   if R.prevRoleCountsString ~= R.roleCountsString then
     if A.DEBUG >= 1 then A.console:Debugf(M, "COMP_CHANGED %s -> %s", tostring(R.prevRoleCountsString), R.roleCountsString) end
     M:SendMessage("FIXGROUPS_COMP_CHANGED", R.prevRoleCountsString, R.roleCountsString)
+  end
+  
+  if dropped > 0 then
+    local d, now = R.recentlyDropped, time()
+    if d.when + 2 < now then
+      d.count = 0
+    end
+    d.when = now
+    d.count = d.count + dropped
+    if d.count >= 5 then
+      -- The group is falling apart: 5 or more players recently dropped,
+      -- each within 2 seconds of the last.
+      if A.DEBUG >= 1 then A.console:Debugf(M, "GROUP_DISBANDING %d", d.count) end
+      M:SendMessage("FIXGROUPS_GROUP_DISBANDING", d.count)
+    end
   end
 end
 

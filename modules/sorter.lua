@@ -34,6 +34,7 @@ function M:OnEnable()
   M:RegisterEvent("PLAYER_ENTERING_WORLD")
   M:RegisterEvent("PLAYER_REGEN_ENABLED")
   M:RegisterMessage("FIXGROUPS_PLAYER_CHANGED_GROUP")
+  M:RegisterMessage("FIXGROUPS_GROUP_DISBANDING")
 end
 
 function M:PLAYER_ENTERING_WORLD(event)
@@ -50,6 +51,11 @@ function M:FIXGROUPS_PLAYER_CHANGED_GROUP(event, name, prevGroup, group)
   else
     if A.DEBUG >= 2 then A.console:Debugf(M, "someone else moved %s %d->%d", name, prevGroup, group) end
   end
+end
+
+function M:FIXGROUPS_GROUP_DISBANDING(event, numDropped)
+  A.console:Print(L["sorter.print.groupDisbanding"])
+  M:Stop()
 end
 
 function M:IsSortingHealersBeforeDamagers()
