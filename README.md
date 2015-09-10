@@ -39,6 +39,7 @@ For developers, beta testers, and translators (anyone is welcome to contribute):
 Many thanks to the following translators for their help on this addon:
 
  * German: @pas06
- * Korean: @kisswow
  * Russian: @mednik
+ * Chinese: @cadcamzy
+ * Korean: @kisswow
  * http://wow.curseforge.com/addons/fixgroups/localization/translators/
