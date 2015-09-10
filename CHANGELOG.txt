@@ -3,6 +3,7 @@ v1.3.2:
   - add partial Chinese translation, thanks @cadcamzy
   - resolve ticket #36: missing system messages when players leave/join
   - organize config dialog into tabs
+  - simplify the different ways to click the minimap button
   - add GUI for /fg command, similar to the /choose GUI
   - add /fg clear1 and /fg clear2 commands to empty out groups 1/2
   - add /fg skip1 and /fg skip2 commands to exclude players in groups 1/2
