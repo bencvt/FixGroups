@@ -19,7 +19,7 @@ local H, HA, HD = A.util.Highlight, A.util.HighlightAddon, A.util.HighlightDim
 local MAX_CHAT_LINE_LEN = 200
 local SERVER_TIMEOUT = 5.0
 local DELAY_GROUP_ROLL = 0.5
-local SPACE_OR_SPACE = " "..strlower(L["word.or"]).." "
+local SPACE_OR_SPACE = "%s+"..strlower(L["word.or"]).."%s+"
 -- DISPATCH, CLASS_ALIAS, LOCALE_GROUP, and M.MODE_ALIAS are lazily populated.
 local DISPATCH = false
 local CLASS_ALIAS = false
