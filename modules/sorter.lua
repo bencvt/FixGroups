@@ -54,8 +54,10 @@ function M:FIXGROUPS_PLAYER_CHANGED_GROUP(event, name, prevGroup, group)
 end
 
 function M:FIXGROUPS_GROUP_DISBANDING(event, numDropped)
-  A.console:Print(L["sorter.print.groupDisbanding"])
-  M:Stop()
+  if M:IsProcessing() or M:IsPaused() then
+    A.console:Print(L["sorter.print.groupDisbanding"])
+    M:Stop()
+  end
 end
 
 function M:IsSortingHealersBeforeDamagers()
