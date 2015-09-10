@@ -1,7 +1,7 @@
 --- Low-level implementation of player sorting.
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("coreSort", "AceTimer-3.0")
-A.coreSort = M
+local M = A:NewModule("sortRaid", "AceTimer-3.0")
+A.sortRaid = M
 M.private = {
   deltaPlayers = {},
   deltaNewGroups = {},

@@ -29,7 +29,6 @@ modules\buttonGui.lua
 modules\chooseCommand.lua
 modules\chooseGui.lua
 modules\console.lua
-modules\coreSort.lua
 modules\damagerRole.lua
 modules\dataBroker.lua
 modules\fgCommand.lua
@@ -41,4 +40,5 @@ modules\meter.lua
 modules\modJoinLeave.lua
 modules\options.lua
 modules\sorter.lua
+modules\sortRaid.lua
 modules\utilGui.lua

@@ -46,7 +46,7 @@ function M:PLAYER_REGEN_ENABLED(event)
 end
 
 function M:FIXGROUPS_PLAYER_CHANGED_GROUP(event, name, prevGroup, group)
-  if M:IsProcessing() and A.coreSort:DidActionFinish() then
+  if M:IsProcessing() and A.sortRaid:DidActionFinish() then
     M:ProcessStep()
   else
     if A.DEBUG >= 2 then A.console:Debugf(M, "someone else moved %s %d->%d", name, prevGroup, group) end
@@ -97,7 +97,7 @@ function M:CanBegin()
 end
 
 function M:Stop()
-  A.coreSort:CancelAction()
+  A.sortRaid:CancelAction()
   wipe(R.active)
   wipe(R.resumeAfterCombat)
   M:ClearTimeout(true)
@@ -193,8 +193,8 @@ function M:ProcessStep()
     R.stepCount = 0
     R.startTime = time()
   end
-  A.coreSort:BuildDelta()
-  if A.coreSort:IsDeltaEmpty() then
+  A.sortRaid:BuildDelta()
+  if A.sortRaid:IsDeltaEmpty() then
     M:AnnounceComplete()
     M:Stop()
     return
@@ -202,9 +202,9 @@ function M:ProcessStep()
     M:StopTimedOut()
     return
   end
-  A.coreSort:ProcessDelta()
-  if A.DEBUG >= 2 then A.coreSort:DebugPrintAction() end
-  if A.coreSort:IsActionScheduled() then
+  A.sortRaid:ProcessDelta()
+  if A.DEBUG >= 2 then A.sortRaid:DebugPrintAction() end
+  if A.sortRaid:IsActionScheduled() then
     R.stepCount = R.stepCount + 1
     M:ScheduleTimeout()
     A.buttonGui:Refresh()
@@ -227,7 +227,7 @@ function M:AnnounceComplete()
     -- Announce sort mode.
     local msg
     if M:IsSplittingRaid() then
-      msg = format(L["sorter.print.split"], A.coreSort:GetSplitGroups())
+      msg = format(L["sorter.print.split"], A.sortRaid:GetSplitGroups())
     else
       msg = format(L["sorter.print.sorted"], L["sorter.mode."..R.active.sortMode])
     end
