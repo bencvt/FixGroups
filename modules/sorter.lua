@@ -155,17 +155,11 @@ local function start(sortMode, clearGroups, skipGroups)
   M:ProcessStep()
 end
 
-function M:StartMeter()
-  start("meter", 0, 0)
-end
-
-function M:StartSplit()
-  start("split", 0, 0)
-end
-
-function M:StartDefault(clearGroups, skipGroups)
-  local mode = A.options.sortMode
-  if mode == "tmrh" or mode == "thmr" or mode == "meter" or (mode == "nosort" and clearGroups > 0) then
+function M:Start(mode, clearGroups, skipGroups)
+  mode = (not mode or mode == "default") and A.options.sortMode or mode
+  clearGroups = clearGroups or 0
+  skipGroups = skipGroups or 0
+  if mode == "tmrh" or mode == "thmr" or mode == "meter" or mode == "split" or (mode == "nosort" and clearGroups > 0) then
     start(mode, clearGroups, skipGroups)
   else
     M:Stop()
