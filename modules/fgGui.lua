@@ -9,6 +9,9 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
+local format, ipairs = format, ipairs
+local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
+
 local AceGUI = LibStub("AceGUI-3.0")
 
 local function addPadding(frame)
@@ -146,7 +149,7 @@ local function addHelpLines(t, cmd, noSameAs)
   end
   -- Main line.
   if cmd == "config" then
-    t:AddLine(format(L["gui.fixGroups.help."..cmd], A.NAME), 1,1,1, false)
+    t:AddLine(format(L["gui.fixGroups.help."..cmd], A.util:GetBindingKey("TOGGLEGAMEMENU", "ESCAPE"), A.NAME), 1,1,1, false)
   elseif cmd == "thmr" or cmd == "tmrh" or cmd == "meter" then
     t:AddLine(format("%s%s %s.", L["options.widget.sortMode.text"], (cmd ~= "meter" and ":" or ""), L["sorter.mode."..cmd]), 1,1,1, false)
   else

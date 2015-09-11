@@ -36,9 +36,9 @@ M.GROUP_COMP_STYLE = {
   VERBOSE = 999,
 }
 
-local floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe = floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, tinsert, tostring, tremove, wipe
+local floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, strsub, strupper, tinsert, tostring, tremove, wipe = floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, strsub, strupper, tinsert, tostring, tremove, wipe
 local tconcat = table.concat
-local ChatTypeInfo, GetAddOnMetadata, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = ChatTypeInfo, GetAddOnMetadata, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
+local ChatTypeInfo, GetAddOnMetadata, GetBindingKey, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = ChatTypeInfo, GetAddOnMetadata, GetBindingKey, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS
 
 local LOCALE_SERIAL_COMMA =  (GetLocale() == "enUS") and "," or ""
@@ -79,6 +79,19 @@ end
 
 function M:Escape(text)
   return gsub(text, "|", "||")
+end
+
+function M:InitCaps(text)
+  local t = wipe(R.tmp1)
+  for part in gmatch(strlower(text), "[%w]*[^%w]*") do
+    tinsert(t, strupper(strsub(part, 1, 1)))
+    tinsert(t, strsub(part, 2))
+  end
+  return tconcat(t, "")
+end
+
+function M:GetBindingKey(action, default)
+  return M:InitCaps(GetBindingKey(action) or default or "?")
 end
 
 local function buildWatchChatKeywords()

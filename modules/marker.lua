@@ -136,7 +136,7 @@ function M:FixRaid(isRequestFromAssist)
         A.utilGui:OpenRaidTab()
         return
       end
-      A.console:Print(L["marker.print.openRaidTab"])
+      A.console:Printf(L["marker.print.openRaidTab"], H(A.util:GetBindingKey("TOGGLESOCIAL", "O")))
     end
   end
 end

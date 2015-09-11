@@ -159,7 +159,7 @@ L["gui.fixGroups.help.list"] = "List players matching a certain criteria to raid
 L["gui.fixGroups.help.listself"] = "List players matching a certain criteria to yourself."
 L["gui.fixGroups.help.note.sameAsCommand"] = "Same as the %s command."
 L["gui.fixGroups.help.note.sameAsLeftClicking"] = "Same as left-clicking the minimap icon or the %s button in the raid tab."
-L["gui.fixGroups.help.config"] = "Same as Esc>Interface>AddOns>%s."
+L["gui.fixGroups.help.config"] = "Same as %s>Interface>AddOns>%s."
 L["gui.fixGroups.help.note.meter.1"] = "Overall damage/healing data requires %s to be running."
 L["gui.fixGroups.help.note.meter.2"] = "This sort method can be useful for making quick decisions on who's worth an emergency heal or brez in PUGs."
 L["gui.fixGroups.help.note.meter.3"] = "You can also type %s to do a one-off sort without changing the setting."
@@ -170,7 +170,7 @@ L["marker.print.needSetMainTank.plural"] = "%s are not set as main tanks!"
 L["marker.print.needClearMainTank.singular"] = "%s is incorrectly set as main tank!"
 L["marker.print.needClearMainTank.plural"] = "%s are incorrectly set as main tanks!"
 L["marker.print.useRaidTab"] = "To fix tanks, use the raid tab. WoW addons cannot set main tanks."
-L["marker.print.openRaidTab"] = "To fix tanks, press O to open the raid tab. WoW addons cannot set main tanks."
+L["marker.print.openRaidTab"] = "To fix tanks, press %s to open the raid tab. WoW addons cannot set main tanks."
 
 -- Meter module
 L["meter.print.noAddon"] = "No supported damage/healing meter addon found."
@@ -225,7 +225,7 @@ L["options.widget.partyMarkIcon.desc"] = "Party members are sorted alphabeticall
 
 L["options.widget.showMinimapIcon.text"] = "Show minimap icon"
 L["options.widget.addButtonToRaidTab.text"] = "Add button to raid tab"
-L["options.widget.addButtonToRaidTab.desc"] = "Add a %s button to the default Blizzard UI on the raid tab, functioning the same as the minimap icon. The default keybind to open the raid tab is O."
+L["options.widget.addButtonToRaidTab.desc"] = "Add a %s button to the default Blizzard UI on the raid tab, functioning the same as the minimap icon. The keybind to open the raid tab is %s."
 L["options.widget.watchChat.text"] = "Watch chat for requests to fix groups"
 L["options.widget.watchChat.desc"] = "When the keywords %s are seen in chat while not in combat, automatically open the raid tab."
 L["options.widget.announceChat.text"] = "Announce when players have been rearranged to instance chat"
