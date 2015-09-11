@@ -207,6 +207,10 @@ function M:ProcessStep()
   end
 end
 
+function M:ResetAnnounced()
+  R.announced = false
+end
+
 function M:AnnounceComplete()
   if R.lastComplete.key ~= R.active.key then
     R.announced = false

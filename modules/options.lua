@@ -418,7 +418,7 @@ R.optionsTable.args.sort.args = {
       [3] = L["options.value.never"],
     },
     get = function(i) if A.options.announceChatAlways then return 1 elseif A.options.announceChatPRN then return 2 end return 3 end,
-    set = function(i,v) A.options.announceChatAlways, A.options.announceChatPRN = (v==1), (v==2) end,
+    set = function(i,v) A.options.announceChatAlways, A.options.announceChatPRN = (v==1), (v==2) A.sorter:ResetAnnounced() end,
   },
   splitOddEven = {
     order = 40,
