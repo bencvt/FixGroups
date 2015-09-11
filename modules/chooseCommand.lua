@@ -742,7 +742,13 @@ function M:Command(cmd, args)
     A.console:Printf(L["phrase.print.badArgument"], H(args), H("/"..cmd))
     return
   end
-  R.lastCommand = args
+  if args ~= "" then
+    R.lastCommand = args
+  end
+end
+
+function M:GetLastCommand()
+  return R.lastCommand
 end
 
 function M:Mockup(addLine)

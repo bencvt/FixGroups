@@ -3,6 +3,7 @@ v1.3.4:
   - fix issue with /list not announcing to raid chat
   - fix /fg tmrh and /fg thmr commands
   - fix localization error when splitting the raid is paused due to combat
+  - display the last /choose, /list, or /listself command in the button tooltip
 
 v1.3.3:
   - ensure raid tab is open when using /fg clear1 and /fg clear2

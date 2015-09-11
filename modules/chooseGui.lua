@@ -206,7 +206,12 @@ function M:SetupTooltip(widget, cmd, mode, modeType)
   -- Title, split into two lines if too long.
   local title
   if mode == "last" then
-    title = format(L["choose.print.last"], "/"..cmd)
+    local last = A.chooseCommand:GetLastCommand()
+    if last then
+      title = format(L["choose.print.last"], ": "..H(format("/%s %s", cmd, last)))
+    else
+      title = format(L["choose.print.last"], "")
+    end
   else
     title = A.chooseCommand:GetChoosingDesc(true, cmd, mode, modeType, true)
   end
