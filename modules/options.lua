@@ -694,7 +694,7 @@ function M:OnInitialize()
   -- Can always do A:GetModule("options") if needed.
   A.options = A.db.profile.options
 
-  -- Fix renamed sort modes
+  -- Cleanup from legacy version of addon: fix renamed sort modes.
   if A.sortMode == "THMUR" then
     A.sortMode = "thmr"
   elseif A.sortMode == "TMURH" then

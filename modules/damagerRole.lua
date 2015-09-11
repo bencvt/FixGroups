@@ -87,7 +87,7 @@ function M:OnEnable()
       end
       cleanDbCache(R.dbGuildCache, DB_CLEANUP_GUILD_MAX_AGE_DAYS)
       cleanDbCache(R.dbNonGuildCache, DB_CLEANUP_NONGUILD_MAX_AGE_DAYS)
-      -- Cleanup from previous version of addon.
+      -- Cleanup from legacy version of addon.
       A.db.faction.dpsRoleCache = nil
     end, DELAY_DB_CLEANUP)
   end
