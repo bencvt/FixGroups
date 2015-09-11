@@ -1,3 +1,6 @@
+v1.3.4:
+  - pressing escape to close the /fg or /choose GUI no longer pops up the game menu
+
 v1.3.3:
   - ensure raid tab is open when using /fg clear1 and /fg clear2
   - stop rearranging when raid is disbanding

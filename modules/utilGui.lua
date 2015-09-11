@@ -71,6 +71,7 @@ function M:AddCloseButton(aceGuiWindow, closeButtonTable, closeFunc)
   C.button:SetScript("OnClick", closeFunc)
   C.button:SetScript("OnKeyDown", function (button, key)
     if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
+      RunBinding("TOGGLEGAMEMENU")
       closeFunc()
     end
   end)
