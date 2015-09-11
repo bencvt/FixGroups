@@ -47,8 +47,8 @@ local DELAY_DB_CLEANUP = 20.0
 local DB_CLEANUP_GUILD_MAX_AGE_DAYS = 21
 local DB_CLEANUP_NONGUILD_MAX_AGE_DAYS = 1.5
 
-local format, gsub, ipairs, max, pairs, select, time, tostring = format, gsub, ipairs, max, pairs, select, time, tostring
-local GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, GetSpellInfo, InCombatLockdown, UnitBuff, UnitClass, UnitExists, UnitIsInMyGuild, UnitIsUnit = GetInspectSpecialization, GetPlayerInfoByGUID, GetSpecialization, GetSpecializationInfo, GetSpellInfo, InCombatLockdown, UnitBuff, UnitClass, UnitExists, UnitIsInMyGuild, UnitIsUnit
+local format, ipairs, max, pairs, select, time, tostring = format, ipairs, max, pairs, select, time, tostring
+local GetSpecialization, GetSpecializationInfo, GetSpellInfo, InCombatLockdown, UnitBuff, UnitClass, UnitExists, UnitIsInMyGuild, UnitIsUnit = GetSpecialization, GetSpecializationInfo, GetSpellInfo, InCombatLockdown, UnitBuff, UnitClass, UnitExists, UnitIsInMyGuild, UnitIsUnit
 
 local function cleanDbCache(cache, maxAgeDays)
   local earliest = time() - (60*60*24*maxAgeDays)
@@ -94,18 +94,10 @@ function M:OnEnable()
 end
 
 function M:INSPECT_READY(event, guid)
-  -- Look up name, fullName, and specId.
-  local name, realm = select(6, GetPlayerInfoByGUID(guid))
-  if name and realm and realm ~= "" then
-    name = name.."-"..gsub(realm, "[ %-]", "")
-  end
-
-  -- Ignore any garbage responses from the server.
-  local specId = GetInspectSpecialization(name)
-  if not specId or not name then
+  local isValid, name, specId = A.inspect:GetInspectData(guid)
+  if not isValid then
     return
   end
-
   local fullName = R.needToInspect[name]
   local role = SPECID_ROLE[specId]
   if not fullName then

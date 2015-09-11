@@ -14,8 +14,8 @@ local DELAY_TIMER = 16.0
 local DELAY_NOTIFY = 1.0
 local DELAY_INSPECT_NEXT = 0.01
 
-local format, ipairs, pairs, select, time = format, ipairs, pairs, select, time
-local CanInspect, GetPlayerInfoByGUID, InCombatLockdown, NotifyInspect, UnitExists, UnitIsConnected = CanInspect, GetPlayerInfoByGUID, InCombatLockdown, NotifyInspect, UnitExists, UnitIsConnected
+local format, gsub, ipairs, pairs, select, time = format, gsub, ipairs, pairs, select, time
+local CanInspect, GetInspectSpecialization, GetPlayerInfoByGUID, InCombatLockdown, NotifyInspect, UnitExists, UnitIsConnected = CanInspect, GetInspectSpecialization, GetPlayerInfoByGUID, InCombatLockdown, NotifyInspect, UnitExists, UnitIsConnected
 
 function M:OnEnable()
   M:RegisterEvent("INSPECT_READY")
@@ -77,15 +77,11 @@ local function inspectTimerStart()
 end
 
 function M:INSPECT_READY(event, guid)
-  local name, realm = select(6, GetPlayerInfoByGUID(guid))
-  if not name then
-    return
+  local isValid, name = M:GetInspectData(guid)
+  if isValid then
+    if A.DEBUG >= 1 and R.requests[name] then A.console:Debugf(M, "recv %s", name) end
+    R.requests[name] = nil
   end
-  if realm and realm ~= "" then
-    name = name.."-"..gsub(realm, "[ %-]", "")
-  end
-  if A.DEBUG >= 1 and R.requests[name] then A.console:Debugf(M, "recv %s", name) end
-  R.requests[name] = nil
   if not InCombatLockdown() then
     -- Use a short delay to allow other modules and addons a chance to
     -- process the INSPECT_READY event.
@@ -95,6 +91,22 @@ end
 
 function M:PLAYER_REGEN_ENABLED(event)
   inspectTimerStart()
+end
+
+function M:GetInspectData(guid)
+  local name, realm = select(6, GetPlayerInfoByGUID(guid))
+  local specId
+  if name and realm and realm ~= "" then
+    name = name.."-"..gsub(realm, "[ %-]", "")
+  end
+  if not name then
+    return false, name, specId
+  end
+  specId = GetInspectSpecialization(name)
+  if not specId or specId == 0 then
+    return false, name, specId
+  end
+  return true, name, specId
 end
 
 function M:Request(name)
