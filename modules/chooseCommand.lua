@@ -171,7 +171,7 @@ end
 local function announceChoicesAndRoll(cmd, shouldRoll, line)
   -- Announce exactly what we'll be rolling on.
   -- Use on multiple lines if needed.
-  local localOnly = not shouldRoll
+  local localOnly = not shouldRoll and cmd ~= "list"
   local addPrefix = localOnly
   local numOptions = #R.options
   local numLines = 0
