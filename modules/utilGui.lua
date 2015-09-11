@@ -4,7 +4,7 @@ local M = A:NewModule("utilGui")
 A.utilGui = M
 
 local strmatch = strmatch
-local CreateFrame, ChatFrame_OpenChat, GetBindingFromClick, GetCurrentKeyBoardFocus, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, ToggleFriendsFrame = CreateFrame, ChatFrame_OpenChat, GetBindingFromClick, GetCurrentKeyBoardFocus, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, ToggleFriendsFrame
+local CreateFrame, ChatFrame_OpenChat, GetBindingFromClick, GetCurrentKeyBoardFocus, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, ToggleFriendsFrame = CreateFrame, ChatFrame_OpenChat, GetBindingFromClick, GetCurrentKeyBoardFocus, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, ToggleFriendsFrame
 -- GLOBALS: ElvUI
 
 function M:OpenRaidTab()

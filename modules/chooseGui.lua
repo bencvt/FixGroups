@@ -10,7 +10,7 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
-local format, gsub, ipairs, strlower, tinsert = format, gsub, ipairs, strlower, tinsert
+local format, gsub, ipairs, strlower, tinsert, tostring = format, gsub, ipairs, strlower, tinsert, tostring
 local tconcat = table.concat
 local GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE
