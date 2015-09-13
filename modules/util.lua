@@ -36,7 +36,7 @@ M.GROUP_COMP_STYLE = {
   VERBOSE = 999,
 }
 
-local floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, strsub, strupper, tinsert, tostring, tremove, wipe = floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, strsub, strupper, tinsert, tostring, tremove, wipe
+local floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, strsub, strtrim, strupper, tinsert, tostring, tremove, wipe = floor, format, gmatch, gsub, ipairs, max, pairs, select, sort, strfind, strlower, strmatch, strsplit, strsub, strtrim, strupper, tinsert, tostring, tremove, wipe
 local tconcat = table.concat
 local ChatTypeInfo, GetAddOnMetadata, GetBindingKey, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName = ChatTypeInfo, GetAddOnMetadata, GetBindingKey, GetInstanceInfo, GetRealmName, IsInGroup, IsInInstance, IsInRaid, UnitClass, UnitFullName, UnitIsGroupLeader, UnitIsRaidOfficer, UnitName
 local LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS = LE_PARTY_CATEGORY_INSTANCE, RAID_CLASS_COLORS
@@ -98,7 +98,8 @@ end
 local function buildWatchChatKeywords()
   WATCH_CHAT_KEYWORDS = {}
   WATCH_CHAT_KEYWORDS_LIST = {}
-  for kw in gmatch(gsub(L["gui.chatKeywords"], "%s+", ""), "[^,]+") do
+  for kw in gmatch(L["gui.chatKeywords"], "[^,]+") do
+    kw = strtrim(kw)
     if kw ~= "" then
       WATCH_CHAT_KEYWORDS[strlower(kw)] = true
       tinsert(WATCH_CHAT_KEYWORDS_LIST, M:Highlight(kw))
