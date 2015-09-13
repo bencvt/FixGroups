@@ -78,7 +78,8 @@ function M:AutoConvertTableConcat(t, sep)
 end
 
 function M:Escape(text)
-  return gsub(text, "|", "||")
+  text = gsub(text, "|", "||")
+  return text
 end
 
 function M:InitCaps(text)
