@@ -10,11 +10,22 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
-local strsplit = strsplit
+local strsplit, strtrim = strsplit, strtrim
 local IsInGroup, IsInRaid, RegisterAddonMessagePrefix, SendAddonMessage, UnitExists, UnitIsRaidOfficer, UnitName = IsInGroup, IsInRaid, RegisterAddonMessagePrefix, SendAddonMessage, UnitExists, UnitIsRaidOfficer, UnitName
 
 local PREFIX = "FIXGROUPS"
 local DELAY_BROADCAST_VERSION = 15.5
+local VERSION_STRING
+do
+  local r, i = 0, 0
+  for part in gmatch(text, "[%d]+") do
+    if i < 3 then
+      r = r + tonumber(part) * (i<1 and 1000 or 1) * (i<2 and 1000 or 1)
+      i = i + 1
+    end
+  end
+  VERSION_STRING = format("%d:%s", r, text)
+end
 
 function M:OnEnable()
   M:RegisterEvent("CHAT_MSG_ADDON")
@@ -36,9 +47,13 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   local cmd
   cmd, message = strsplit(":", message, 2)
   if cmd == "v" and not R.newerVersion then
-    if message and (message > A.VERSION) then
-      A.console:Printf(L["addonChannel.print.newerVersion"], A.NAME, H(A.util:Escape(message)), A.VERSION)
-      R.newerVersion = message
+    if message and (message > VERSION_STRING) then
+      message, R.newerVersion = strsplit(":", message, 2)
+      if R.newerVersion and strtrim(R.newerVersion) ~= "" then
+        A.console:Printf(L["addonChannel.print.newerVersion"], A.NAME, H(A.util:Escape(R.newerVersion)), A.VERSION)
+      else
+        R.newerVersion = false
+      end
     end
   elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and UnitIsRaidOfficer(sender) then
     A.marker:FixRaid(true)
@@ -52,7 +67,7 @@ function M:FIXGROUPS_PLAYER_JOINED(event, player)
         M:CancelTimer(R.broadcastVersionTimer)
       end
       R.broadcastVersionTimer = false
-      M:Broadcast("v:"..A.VERSION)
+      M:Broadcast("v:"..VERSION_STRING)
     end, DELAY_BROADCAST_VERSION)
   end
 end
