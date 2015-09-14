@@ -31,6 +31,7 @@ function M:Command(args)
     return
   elseif argsLower == "reannounce" or argsLower == "reann" then
     A.sorter:ResetAnnounced()
+    return
   elseif argsLower == "choose" or strmatch(argsLower, "^choose ") then
     A.chooseCommand:Command("choose", strsub(args, strlen("choose") + 1))
     return
