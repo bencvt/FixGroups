@@ -310,10 +310,10 @@ function M:GetRoleIconSamples()
 end
 function M:UpdateRoleIconSamples()
   for i, k in ipairs(ROLE_ICONS.keys) do
-    ROLE_ICONS.samples[i] = format("%s %s %s %s %s %s",
-      L["word.tank.singular"], M:GetRoleIcon("TANK", k),
-      L["word.healer.singular"], M:GetRoleIcon("HEALER", k),
-      L["word.damager.singular"], M:GetRoleIcon("DAMAGER", k))
+    ROLE_ICONS.samples[i] = format("%s %s / %s %s / %s %s",
+      M:GetRoleIcon("TANK", k), L["word.tank.singular"],
+      M:GetRoleIcon("HEALER", k), L["word.healer.singular"],
+      M:GetRoleIcon("DAMAGER", k), L["word.damager.singular"])
   end
 end
 do
