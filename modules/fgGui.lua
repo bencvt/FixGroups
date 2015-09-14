@@ -71,7 +71,7 @@ local function resetWindowSize()
   R.window:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
   R.window:SetWidth(540)
   local h = 380
-  if A.options.showMoreSortModes then
+  if A.options.showExtraSortModes then
     -- Expand as needed to make room for additional buttons.
     h = min(720, h + ceil(#A.sortModes:GetList() / 4) * 43)
   end
@@ -133,7 +133,7 @@ function M:Open()
   addButton(c, "meter", {"dps"})
   addButton(c, "nosort")
   addPadding(c)
-  if A.options.showMoreSortModes and #A.sortModes:GetList() > 0 then
+  if A.options.showExtraSortModes and #A.sortModes:GetList() > 0 then
     addIndent(c)
     for i, sortMode in ipairs(A.sortModes:GetList()) do
       if i > 1 and i % 4 == 1 then

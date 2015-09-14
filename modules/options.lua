@@ -15,7 +15,7 @@ M.private = {
         sortMode = "tmrh", -- other valid values: "thmr", "meter", "nosort"
         splitOddEven = true,
         resumeAfterCombat = true,
-        showMoreSortModes = false,
+        showExtraSortModes = false,
         tankMainTankAlways = false,
         tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
         openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
@@ -464,15 +464,14 @@ R.optionsTable.args.sort.args = {
     name = "", -- set in M:OnEnable
     fontSize = "medium",
   },
-  showMoreSortModes = {
+  showExtraSortModes = {
     order = 100,
-    name = L["options.widget.showMoreSortModes.text"],
-    desc = L["options.widget.showMoreSortModes.desc"],
+    name = L["options.widget.showExtraSortModes.text"],
+    desc = L["sorter.print.notUseful"],
     type = "toggle",
     width = "full",
-    get = function(i) return A.options.showMoreSortModes and #A.sortModes:GetList() > 0 end,
-    set = function(i,v) A.options.showMoreSortModes = v end,
-    disabled = function(i) return #A.sortModes:GetList() == 0 end,
+    get = function(i) return A.options.showExtraSortModes and #A.sortModes:GetList() > 0 end,
+    set = function(i,v) A.options.showExtraSortModes = v end,
   },
 }
 
