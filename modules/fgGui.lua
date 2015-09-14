@@ -70,7 +70,12 @@ local function resetWindowSize()
   R.window:ClearAllPoints()
   R.window:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
   R.window:SetWidth(540)
-  R.window:SetHeight(A.options.showMoreSortModes and 410 or 380)
+  local h = 380
+  if A.options.showMoreSortModes then
+    -- Expand as needed to make room for additional buttons.
+    h = min(720, h + ceil(#A.plugins:GetSortModeList() / 4) * 43)
+  end
+  R.window:SetHeight(h)
 end
 
 function M:Close()
@@ -128,9 +133,14 @@ function M:Open()
   addButton(c, "meter", {"dps"})
   addButton(c, "nosort")
   addPadding(c)
-  if A.options.showMoreSortModes then
+  if A.options.showMoreSortModes and #A.plugins:GetSortModeList() > 0 then
     addIndent(c)
-    for _, sortMode in ipairs(A.plugins:GetSortModeList()) do
+    for i, sortMode in ipairs(A.plugins:GetSortModeList()) do
+      if i > 1 and i % 4 == 1 then
+        -- Start a new row.
+        addPadding(c)
+        addIndent(c)
+      end
       sortMode = A.plugins:GetSortMode(sortMode)
       addButton(c, sortMode.key, sortMode.aliases)
     end
@@ -155,7 +165,7 @@ local function addHelpLines(t, cmd, noSameAs)
     if sortMode then
       t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], sortMode.name), 1,1,0, false)
       if sortMode.desc then
-        for _, desc in sortMode.desc do
+        for _, desc in ipairs(sortMode.desc) do
           t:AddLine(" ")
           t:AddLine(desc, 1,1,1, true)
         end
