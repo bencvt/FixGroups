@@ -155,8 +155,10 @@ local function addHelpLines(t, cmd, noSameAs)
     if sortMode then
       t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], sortMode.name), 1,1,0, false)
       if sortMode.desc then
-        t:AddLine(" ")
-        t:AddLine(sortMode.desc, 1,1,1, true)
+        for _, desc in sortMode.desc do
+          t:AddLine(" ")
+          t:AddLine(desc, 1,1,1, true)
+        end
       end
     else
       t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,0, true)

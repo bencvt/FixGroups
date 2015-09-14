@@ -14,7 +14,7 @@ local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
 -- key = "example",               -- required, string
 -- aliases = {"whatever"},        -- optional, array of strings
 -- name = "by whatever",          -- required, string
--- desc = "Do an example sort."   -- optional, string
+-- desc = {"Do an example sort."} -- optional, array of strings
 -- onSort = someFunc,             -- required, function(keys, players)
 -- onBeforeStart = someFunc,      -- optional, function()
 function M:RegisterSortMode(sortMode)

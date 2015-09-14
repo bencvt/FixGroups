@@ -1,7 +1,7 @@
 ## Interface: 60200
 ## Title: FixGroups_MoreSortModes
 ## Author: bencvt
-## Notes: Optional plugin that adds more sort modes to the FixGroups addon.
+## Notes: Optional plugin that adds more sort methods to the FixGroups addon.
 ## RequiredDeps: FixGroups
 ## DefaultState: Enabled
 
