@@ -61,7 +61,7 @@ function M:FIXGROUPS_GROUP_DISBANDING(event, numDropped)
 end
 
 function M:IsSortingHealersBeforeDamagers()
-  return A.options.sortMode == "thmr" and R.active.sortMode ~= "tmrh"
+  return A.options.sortMode == "thmr" and R.active.sortMode.key ~= "tmrh"
 end
 
 function M:IsGroupIncluded(group)
@@ -73,11 +73,11 @@ function M:GetGroupOffset()
 end
 
 function M:IsSortingByMeter()
-  return R.active.sortMode == "meter"
+  return R.active.sortMode.key == "meter"
 end
 
 function M:IsSplittingRaid()
-  return R.active.sortMode == "split"
+  return R.active.sortMode.key == "split"
 end
 
 function M:IsProcessing()
@@ -89,7 +89,7 @@ function M:IsPaused()
 end
 
 function M:GetPausedSortMode()
-  return format(L["sorter.print.combatPaused"], L["sorter.mode."..R.resumeAfterCombat.sortMode])
+  return format(L["sorter.print.combatPaused"], R.resumeAfterCombat.sortMode.name)
 end
 
 function M:CanBegin()
@@ -107,7 +107,7 @@ function M:Stop()
 end
 
 function M:StopTimedOut()
-  A.console:Printf(L["sorter.print.timedOut"], L["sorter.mode."..R.active.sortMode])
+  A.console:Printf(L["sorter.print.timedOut"], R.active.sortMode.name)
   if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
   M:Stop()
 end
@@ -126,7 +126,7 @@ function M:StopIfNeeded()
       A.console:Print(M:GetPausedSortMode())
       A.buttonGui:Refresh()
     else
-      A.console:Printf(L["sorter.print.combatCancelled"], L["sorter.mode."..R.resumeSave.sortMode])
+      A.console:Printf(L["sorter.print.combatCancelled"], R.resumeSave.sortMode.name)
     end
     return true
   end
@@ -137,7 +137,7 @@ local function start(sortMode, clearGroups, skipGroups)
   R.active.sortMode = sortMode
   R.active.clearGroups = clearGroups
   R.active.skipGroups = skipGroups
-  R.active.key = format("%s:%d:%d", sortMode, clearGroups, skipGroups)
+  R.active.key = format("%s:%d:%d", sortMode.key, clearGroups, skipGroups)
   if M:StopIfNeeded() then
     return
   end
@@ -155,12 +155,24 @@ local function start(sortMode, clearGroups, skipGroups)
   M:ProcessStep()
 end
 
+local builtInSortModes = {tmrh=true, thmr=true, meter=true, split=true, nosort=true}
+do
+  for mode, _ in pairs(builtInSortModes) do
+    builtInSortModes[mode] = {key=mode, name=L["sorter.mode."..mode]}
+  end
+end
+
 function M:Start(mode, clearGroups, skipGroups)
   mode = (not mode or mode == "default") and A.options.sortMode or mode
   clearGroups = clearGroups or 0
   skipGroups = skipGroups or 0
-  if mode == "tmrh" or mode == "thmr" or mode == "meter" or mode == "split" or (mode == "nosort" and clearGroups > 0) then
-    start(mode, clearGroups, skipGroups)
+  if mode == "nosort" and clearGroups == 0 then
+    M:Stop()
+    return
+  end
+  local sortMode = builtInSortModes[mode] or A.plugins:GetSortMode(mode)
+  if sortMode then
+    start(sortMode, clearGroups, skipGroups)
   else
     M:Stop()
     if mode ~= "nosort" then
@@ -173,7 +185,7 @@ function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
     swap(R, "resumeSave", "resumeAfterCombat")
     wipe(R.resumeAfterCombat)
-    A.console:Printf(L["sorter.print.combatResumed"], L["sorter.mode."..R.resumeSave.sortMode])
+    A.console:Printf(L["sorter.print.combatResumed"], R.resumeSave.sortMode.name)
     start(R.resumeSave.sortMode, R.resumeSave.clearGroups, R.resumeSave.skipGroups)
   end
 end
@@ -187,7 +199,7 @@ function M:ProcessStep()
     R.stepCount = 0
     R.startTime = time()
   end
-  A.sortRaid:BuildDelta()
+  A.sortRaid:BuildDelta(R.active.sortMode)
   if A.sortRaid:IsDeltaEmpty() then
     M:AnnounceComplete()
     M:Stop()
@@ -219,7 +231,7 @@ function M:AnnounceComplete()
     if M:IsSplittingRaid() then
       A.console:Print(L["sorter.print.alreadySplit"])
     else
-      A.console:Printf(L["sorter.print.alreadySorted"], L["sorter.mode."..R.active.sortMode])
+      A.console:Printf(L["sorter.print.alreadySorted"], R.active.sortMode.name)
     end
   else
     -- Announce sort mode.
@@ -227,7 +239,7 @@ function M:AnnounceComplete()
     if M:IsSplittingRaid() then
       msg = format(L["sorter.print.split"], A.sortRaid:GetSplitGroups())
     else
-      msg = format(L["sorter.print.sorted"], L["sorter.mode."..R.active.sortMode])
+      msg = format(L["sorter.print.sorted"], R.active.sortMode.name)
     end
     -- Announce group comp.
     msg = format("%s %s: %s.", msg, L["phrase.groupComp"], A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))

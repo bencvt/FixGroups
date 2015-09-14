@@ -5,4 +5,6 @@
 ## RequiredDeps: FixGroups
 ## DefaultState: Enabled
 
-addon.lua
+plugin.lua
+
+alpha.lua

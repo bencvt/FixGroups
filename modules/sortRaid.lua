@@ -28,7 +28,7 @@ local tconcat = table.concat
 local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 
 -- The delta table is an array of players who are in the wrong group.
-function M:BuildDelta()
+function M:BuildDelta(sortMode)
   -- Build temporary tables tracking players.
   local areHealersFirst = A.sorter:IsSortingHealersBeforeDamagers()
   local sortRoles = areHealersFirst and ROLE_SORT_CHAR_THMUR or ROLE_SORT_CHAR_TMURH
@@ -76,6 +76,8 @@ function M:BuildDelta()
       end
       return pa > pb
     end)
+  elseif sortMode.sortFunc then
+    sortMode.sortFunc(keys, playersByKey)
   else
     sort(keys)
   end

@@ -39,6 +39,7 @@ modules\marker.lua
 modules\meter.lua
 modules\modJoinLeave.lua
 modules\options.lua
+modules\plugins.lua
 modules\sorter.lua
 modules\sortRaid.lua
 modules\utilGui.lua

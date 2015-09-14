@@ -71,7 +71,11 @@ function M:Command(args)
   elseif argsLower == "skip2" or argsLower == "skip 2" or argsLower == "s2" or argsLower == "s 2" then
     A.sorter:Start("default", 0, 2)
   else
-    A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))
-    return
+    local sortMode = A.plugins:GetSortMode(argsLower)
+    if sortMode then
+      A.sorter:Start(sortMode.key, 0, 0)
+    else
+      A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))
+    end
   end
 end

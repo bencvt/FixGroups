@@ -15,6 +15,7 @@ M.private = {
         sortMode = "tmrh", -- other valid values: "thmr", "meter", "nosort"
         splitOddEven = true,
         resumeAfterCombat = true,
+        showMoreSortModes = false,
         tankMainTankAlways = false,
         tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
         openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
@@ -463,6 +464,15 @@ R.optionsTable.args.sort.args = {
     name = "", -- set in M:OnEnable
     fontSize = "medium",
   },
+  showMoreSortModes = {
+    order = 100,
+    name = L["options.widget.showMoreSortModes.text"],
+    desc = L["options.widget.showMoreSortModes.desc"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.showMoreSortModes end,
+    set = function(i,v) A.options.showMoreSortModes = v end,
+  },
 }
 
 R.optionsTable.args.mark.args = {
@@ -739,7 +749,7 @@ function M:OnEnable()
     format(L["gui.fixGroups.help.note.meter.3"], H("/fg meter")),
   })
 
-  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = "|n"..A.meter:TestInterop()
+  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = format("|n%s|n|n", A.meter:TestInterop())
 
   M:UpdateRoleIcons()
 end
