@@ -188,15 +188,15 @@ end
 function M:FormatGroupComp(style, t, h, m, r, u, isInRaid)
   if style == M.GROUP_COMP_STYLE.ICONS_FULL then
     return format("%d%s %d%s %d%s%s",
-      t, M:GetTankIcon(),
-      h, M:GetHealerIcon(),
-      m+r+u, M:GetDamagerIcon(),
+      t, M:GetRoleIcon("TANK"),
+      h, M:GetRoleIcon("HEALER"),
+      m+r+u, M:GetRoleIcon("DAMAGER"),
       M:HighlightDim(compMRU(m, r, u)))
   elseif style == M.GROUP_COMP_STYLE.ICONS_SHORT then
     return format("%d%s %d%s %d%s",
-      t, M:GetTankIcon(),
-      h, M:GetHealerIcon(),
-      m+r+u, M:GetDamagerIcon())
+      t, M:GetRoleIcon("TANK"),
+      h, M:GetRoleIcon("HEALER"),
+      m+r+u, M:GetRoleIcon("DAMAGER"))
   elseif style == M.GROUP_COMP_STYLE.GROUP_TYPE_FULL then
     return format("%s: %s",
       (isInRaid or IsInRaid()) and L["word.raid"] or L["word.party"],
@@ -272,19 +272,54 @@ function M:BlankInline(height, width)
   return format("|TInterface\\AddOns\\%s\\media\\blank.blp:%d:%d:0:0|t", A.NAME, height or 8, width or 8)
 end
 
--- TODO tank: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t"
--- TODO healer: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t"
--- TODO damager: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t"
--- TODO other alternative sets including LFGROLE_BW, UI-LFG-ICON-ROLES, UI-LFG-ICON-PORTRAITROLES
-
-function M:GetTankIcon()
-  return INLINE_TANK_ICON
+local ROLE_ICONS = {
+  TANK = {
+    default     = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES:%d:%d:0:0:64:64:0:19:22:41|t",
+    hires       = "|TInterface\\LFGFrame\\UI-LFG-ICON-ROLES:%d:%d:0:0:256:256:0:67:67:134|t",
+    lfgrole     = "|TInterface\\LFGFrame\\LFGROLE:%d:%d:0:0:64:16:32:48:0:16|t",
+    lfgrole_bw  = "|TInterface\\LFGFrame\\LFGROLE_BW:%d:%d:0:0:64:16:32:48:0:16|t",
+  },
+  HEALER = {
+    default     = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:%d:%d:0:0:64:64:20:39:1:20|t",
+    hires       = "|TInterface\\LFGFrame\\UI-LFG-ICON-ROLES:%d:%d:0:0:256:256:67:134:0:67|t",
+    lfgrole     = "|TInterface\\LFGFrame\\LFGROLE:%d:%d:0:0:64:16:48:64:0:16|t",
+    lfgrole_bw  = "|TInterface\\LFGFrame\\LFGROLE_BW:%d:%d:0:0:64:16:48:64:0:16|t",
+  },
+  DAMAGER = {
+    default     = "|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:%d:%d:0:0:64:64:20:39:22:41|t",
+    hires       = "|TInterface\\LFGFrame\\UI-LFG-ICON-ROLES:%d:%d:0:0:256:256:67:134:67:134|t",
+    lfgrole     = "|TInterface\\LFGFrame\\LFGROLE:%d:%d:0:0:64:16:16:32:0:16|t",
+    lfgrole_bw  = "|TInterface\\LFGFrame\\LFGROLE_BW:%d:%d:0:0:64:16:16:32:0:16|t",
+  },
+  indexes = {},
+  keys = {},
+  samples = {},
+}
+function M:GetRoleIcon(role, style, size)
+  size = size or (A.options and A.options.roleIconSize) or 16
+  return format(ROLE_ICONS[role][style or A.options.roleIconStyle or "default"] or ROLE_ICONS[role]["default"], size, size)
 end
-
-function M:GetHealerIcon()
-  return INLINE_HEALER_ICON
+function M:GetRoleIconIndex(key)
+  return ROLE_ICONS.indexes[key or "default"] or 1
 end
-
-function M:GetDamagerIcon()
-  return INLINE_DAMAGER_ICON
+function M:GetRoleIconKey(index)
+  return ROLE_ICONS.keys[index] or "default"
+end
+function M:GetRoleIconSamples()
+  return ROLE_ICONS.samples
+end
+function M:UpdateRoleIconSamples()
+  for i, k in ipairs(ROLE_ICONS.keys) do
+    ROLE_ICONS.samples[i] = format("%s %s %s %s %s %s",
+      L["word.tank.singular"], M:GetRoleIcon("TANK", k),
+      L["word.healer.singular"], M:GetRoleIcon("HEALER", k),
+      L["word.damager.singular"], M:GetRoleIcon("DAMAGER", k))
+  end
+end
+do
+  for i, k in ipairs({"default", "hires", "lfgrole", "lfgrole_bw"}) do
+    ROLE_ICONS.indexes[k] = i
+    tinsert(ROLE_ICONS.keys, k)
+  end
+  M:UpdateRoleIconSamples()
 end

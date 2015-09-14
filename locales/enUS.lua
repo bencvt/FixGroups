@@ -229,6 +229,8 @@ L["options.widget.addButtonToRaidTab.desc"] = "Add a %s button to the default Bl
 L["options.widget.watchChat.text"] = "Watch chat for requests to fix groups"
 L["options.widget.watchChat.desc"] = "When the keywords %s are seen in chat while not in combat, automatically open the raid tab."
 L["options.widget.announceChat.text"] = "Announce when players have been rearranged to instance chat"
+L["options.widget.roleIconStyle.text"] = "Role icon style"
+L["options.widget.roleIconSize.text"] = "Role icon size"
 
 L["options.header.sysMsg"] = "Enhance Joined/Left Messages"
 L["options.widget.sysMsg.desc"] = "The system message that appears whenever a player joins or leaves a group can be modified to make it more informative."

@@ -30,6 +30,8 @@ M.private = {
         watchChat = true,
         announceChatAlways = false,
         announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
+        roleIconStyle = "default", -- other valid values: "hires", "lfgrole", "lfgrole_bw"
+        roleIconSize = 16,
         sysMsg = {
           classColor = true,
           roleName = true,
@@ -263,6 +265,30 @@ R.optionsTable.args.ui.args = {
     set = function(i,v) A.options.watchChat = v end,
   },
   -- -------------------------------------------------------------------------
+  roleIconStyle = {
+    order = 110,
+    name = L["options.widget.roleIconStyle.text"],
+    type = "select",
+    width = "double",
+    style = "dropdown",
+    values = A.util:GetRoleIconSamples(),
+    get = function(i) return A.util:GetRoleIconIndex(A.options.roleIconStyle) end,
+    set = function(i,v) A.options.roleIconStyle = A.util:GetRoleIconKey(v) M:UpdateRoleIcons() end,
+    hidden = function(i) A.util:UpdateRoleIconSamples() end,
+  },
+  roleIconSize = {
+    order = 120,
+    name = L["options.widget.roleIconSize.text"],
+    type = "range",
+    softMin = 8,
+    softMax = 24,
+    min = 1,
+    max = 64,
+    step = 1,
+    bigStep = 2,
+    get = function(i) return A.options.roleIconSize or 16 end,
+    set = function(i,v) A.options.roleIconSize = v M:UpdateRoleIcons() end,
+  },
   headerSYSMSG = {
     order = 200,
     type = "header",
@@ -479,7 +505,7 @@ R.optionsTable.args.mark.args = {
   },
   tankMarkIcon1 = {
     order = 131,
-    name = format("%s %s 1", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s 1", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = L["options.widget.raidTank.desc"],
     type = "select",
     width = "half",
@@ -491,7 +517,7 @@ R.optionsTable.args.mark.args = {
   },
   tankMarkIcon2 = {
     order = 132,
-    name = format("%s %s 2", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s 2", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = L["options.widget.raidTank.desc"],
      type = "select",
     width = "half",
@@ -503,7 +529,7 @@ R.optionsTable.args.mark.args = {
   },
   tankMarkIcon3 = {
     order = 133,
-    name = format("%s %s 3", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s 3", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = L["options.widget.raidTank.desc"],
     type = "select",
     width = "half",
@@ -515,7 +541,7 @@ R.optionsTable.args.mark.args = {
   },
   tankMarkIcon4 = {
     order = 134,
-    name = format("%s %s 4", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s 4", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = L["options.widget.raidTank.desc"],
     type = "select",
     width = "half",
@@ -527,7 +553,7 @@ R.optionsTable.args.mark.args = {
   },
   tankMarkIcon5 = {
     order = 135,
-    name = format("%s %s 5", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s 5", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = L["options.widget.raidTank.desc"],
     type = "select",
     width = "half",
@@ -539,7 +565,7 @@ R.optionsTable.args.mark.args = {
   },
   tankMarkIcon6 = {
     order = 136,
-    name = format("%s %s 6", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s 6", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = L["options.widget.raidTank.desc"],
     type = "select",
     width = "half",
@@ -551,7 +577,7 @@ R.optionsTable.args.mark.args = {
   },
   tankMarkIcon7 = {
     order = 137,
-    name = format("%s %s 7", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s 7", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = L["options.widget.raidTank.desc"],
     type = "select",
     width = "half",
@@ -563,7 +589,7 @@ R.optionsTable.args.mark.args = {
   },
   tankMarkIcon8 = {
     order = 138,
-    name = format("%s %s 8", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s 8", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = L["options.widget.raidTank.desc"],
     type = "select",
     width = "half",
@@ -622,7 +648,7 @@ R.optionsTable.args.mark.args = {
   },
   partyMarkIcon1 = {
     order = 211,
-    name = format("%s %s", A.util:GetTankIcon(), L["word.tank.singular"]),
+    name = format("%s %s", A.util:GetRoleIcon("TANK"), L["word.tank.singular"]),
     desc = paragraphs({
       L["options.widget.partyMarkIcon1.desc"],
       L["options.widget.partyMarkIcon.desc"],
@@ -637,7 +663,7 @@ R.optionsTable.args.mark.args = {
   },
   partyMarkIcon2 = {
     order = 212,
-    name = format("%s %s", A.util:GetHealerIcon(), L["word.healer.singular"]),
+    name = format("%s %s", A.util:GetRoleIcon("HEALER"), L["word.healer.singular"]),
     desc = paragraphs({
       L["options.widget.partyMarkIcon2.desc"],
       L["options.widget.partyMarkIcon.desc"],
@@ -652,7 +678,7 @@ R.optionsTable.args.mark.args = {
   },
   partyMarkIcon3 = {
     order = 213,
-    name = format("%s %s 1", A.util:GetDamagerIcon(), L["word.damager.singular"]),
+    name = format("%s %s 1", A.util:GetRoleIcon("DAMAGER"), L["word.damager.singular"]),
     desc = L["options.widget.partyMarkIcon.desc"],
     type = "select",
     width = "half",
@@ -664,7 +690,7 @@ R.optionsTable.args.mark.args = {
   },
   partyMarkIcon4 = {
     order = 214,
-    name = format("%s %s 2", A.util:GetDamagerIcon(), L["word.damager.singular"]),
+    name = format("%s %s 2", A.util:GetRoleIcon("DAMAGER"), L["word.damager.singular"]),
     desc = L["options.widget.partyMarkIcon.desc"],
     type = "select",
     width = "half",
@@ -676,7 +702,7 @@ R.optionsTable.args.mark.args = {
   },
   partyMarkIcon5 = {
     order = 215,
-    name = format("%s %s 3", A.util:GetDamagerIcon(), L["word.damager.singular"]),
+    name = format("%s %s 3", A.util:GetRoleIcon("DAMAGER"), L["word.damager.singular"]),
     desc = L["options.widget.partyMarkIcon.desc"],
     type = "select",
     width = "half",
@@ -746,16 +772,16 @@ function M:UpdateSysMsgPreview(which, option)
   option.name = A.util:BlankInline(16, 24)..A.util:ColorSystem(A.modJoinLeave:Modify(msg, comp, player))
 end
 
-function M:UpdateRoleIcons(reopenConfig)
+function M:UpdateRoleIcons()
   local t = R.optionsTable.args.mark.args
   for i = 1, 8 do
-    t["tankMarkIcon"..i].name = format("%s %s %d", A.util:GetTankIcon(), L["word.tank.singular"], i)
+    t["tankMarkIcon"..i].name = format("%s %s %d", A.util:GetRoleIcon("TANK"), L["word.tank.singular"], i)
   end
-  t["partyMarkIcon1"].name = format("%s %s", A.util:GetTankIcon(), L["word.tank.singular"])
-  t["partyMarkIcon2"].name = format("%s %s", A.util:GetHealerIcon(), L["word.healer.singular"])
-  t["partyMarkIcon3"].name = format("%s %s 1", A.util:GetDamagerIcon(), L["word.damager.singular"])
-  t["partyMarkIcon4"].name = format("%s %s 2", A.util:GetDamagerIcon(), L["word.damager.singular"])
-  t["partyMarkIcon5"].name = format("%s %s 3", A.util:GetDamagerIcon(), L["word.damager.singular"])
+  t["partyMarkIcon1"].name = format("%s %s", A.util:GetRoleIcon("TANK"), L["word.tank.singular"])
+  t["partyMarkIcon2"].name = format("%s %s", A.util:GetRoleIcon("HEALER"), L["word.healer.singular"])
+  t["partyMarkIcon3"].name = format("%s %s 1", A.util:GetRoleIcon("DAMAGER"), L["word.damager.singular"])
+  t["partyMarkIcon4"].name = format("%s %s 2", A.util:GetRoleIcon("DAMAGER"), L["word.damager.singular"])
+  t["partyMarkIcon5"].name = format("%s %s 3", A.util:GetRoleIcon("DAMAGER"), L["word.damager.singular"])
   t = R.optionsTable.args.ui.args.dataBrokerGroupCompStyle.values
   for i = 1, #t do
     t[i] = A.util:FormatGroupComp(i, 2, 4, 6, 8, 0, true)
@@ -764,7 +790,5 @@ function M:UpdateRoleIcons(reopenConfig)
   for i = 1, 3 do
     M:UpdateSysMsgPreview(i, t["sysMsgPreview"..i])
   end
-  if reopenConfig then
-    A.utilGui:OpenConfig()
-  end
+  A.util:UpdateRoleIconSamples()
 end

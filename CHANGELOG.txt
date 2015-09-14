@@ -1,3 +1,6 @@
+v1.4:
+  - add option to use alternate role icons
+
 v1.3.4:
   - pressing escape to close the /fg or /choose GUI no longer pops up the game menu
   - fix issue with new version notifications always showing up as "0"

@@ -120,11 +120,11 @@ function M:Modify(message, previewComp, previewPlayer)
     end
     -- Determine roleIcon, and localize role.
     if role == "tank" then
-      roleIcon = A.util:GetTankIcon()
+      roleIcon = A.util:GetRoleIcon("TANK")
     elseif role == "healer" then
-      roleIcon = A.util:GetHealerIcon()
+      roleIcon = A.util:GetRoleIcon("HEALER")
     else
-      roleIcon = A.util:GetDamagerIcon()
+      roleIcon = A.util:GetRoleIcon("DAMAGER")
     end
     role = L["word."..role..".singular"]
     -- Combine roleIcon and role into role.
