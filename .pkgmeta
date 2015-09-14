@@ -2,5 +2,7 @@
 manual-changelog: CHANGELOG.txt
 ignore:
   - screenshots
+move-folders:
+  FixGroups/moreSortModes: FixGroups_MoreSortModes
 tools-used:
   - findglobals
