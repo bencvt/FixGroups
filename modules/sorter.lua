@@ -112,6 +112,15 @@ function M:StopTimedOut()
   M:Stop()
 end
 
+function M:StopManual()
+  if M:IsProcessing() or M:IsPaused() then
+    M:Stop()
+    A.console:Print(L["sorter.print.manualCancel"])
+  else
+    A.console:Print(L["sorter.print.notActive"])
+  end
+end
+
 function M:StopIfNeeded()
   if not A.util:IsLeaderOrAssist() or not IsInRaid() then
     A.console:Print(L["sorter.print.needRank"])

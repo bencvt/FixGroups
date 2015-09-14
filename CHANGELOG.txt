@@ -2,6 +2,7 @@ v1.4:
   - add option to use alternate role icons
   - group 7 is considered a bench group for mythic difficulty only
   - fix blank raid tab issue
+  - add message when cancelling sort
   - add extra sort methods: alpha, ralpha, random
 
 v1.3.4:

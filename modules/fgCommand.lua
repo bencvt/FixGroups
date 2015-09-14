@@ -27,7 +27,7 @@ function M:Command(args)
     A.utilGui:OpenConfig()
     return
   elseif argsLower == "cancel" then
-    A.sorter:Stop()
+    A.sorter:StopManual()
     return
   elseif argsLower == "reannounce" or argsLower == "reann" then
     A.sorter:ResetAnnounced()
