@@ -205,7 +205,7 @@ local function buildRoster()
   if IsInGroup() then
     R.size = GetNumGroupMembers()
     local p, _, unitRole
-    local lastGroup = A.util:GetMaxGroupsForInstance()
+    local firstSittingGroup = A.util:GetFirstSittingGroup()
     local nextGuess = 1
     for i = 1, R.size do
       p = wipe(R.rosterArray[i])
@@ -224,7 +224,7 @@ local function buildRoster()
         areAnyUnknown = true
         p.name = p.unitID
       end
-      if p.group > lastGroup then
+      if p.group >= firstSittingGroup then
         p.isSitting = true
       end
       R.groupSizes[p.group] = R.groupSizes[p.group] + 1
@@ -350,7 +350,7 @@ end
 
 function M:NumSitting()
   local t = 0
-  for i = (A.util:GetMaxGroupsForInstance() + 1), 8 do
+  for i = A.util:GetFirstSittingGroup(), 8 do
     t = t + R.groupSizes[i]
   end
   return t

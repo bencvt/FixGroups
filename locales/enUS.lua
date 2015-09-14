@@ -65,7 +65,7 @@ L["choose.list.tooltip"] = "List every %s."
 L["choose.list.print"] = "List of every %s:"
 L["choose.print.choosing.option"] = "option"
 L["choose.print.choosing.group"] = "group with players in it"
-L["choose.print.choosing.sitting"] = "player sitting in groups %d-8"
+L["choose.print.choosing.sitting"] = "player sitting in group %s"
 L["choose.print.choosing.sitting.noGroups"] = "sitting player"
 L["choose.print.choosing.notMe"] = "player other than %s"
 L["choose.print.choosing.guildmate"] = "<%s> member in the group"
@@ -125,7 +125,7 @@ L["choose.classAliases.demonhunter"] = "dh"
 
 -- DataBroker module
 L["dataBroker.groupComp.notInGroup"] = "not in group"
-L["dataBroker.groupComp.sitting"] = "Sitting in groups %d-8"
+L["dataBroker.groupComp.sitting"] = "Sitting in group %s"
 L["dataBroker.groupComp.groupQueued"] = "Your group is queued in LFG."
 L["dataBroker.groupComp.openRaidTab"] = "Open Raid Tab"
 
@@ -261,8 +261,8 @@ L["sorter.print.alreadySplit"] = "No change - the raid is already split."
 L["sorter.print.alreadySorted"] = "No change - the raid is already sorted %s."
 L["sorter.print.split"] = "Split players: groups %s."
 L["sorter.print.sorted"] = "Rearranged %s."
-L["sorter.print.excludedSitting.singular"] = "Excluded 1 player sitting in groups %d-8."
-L["sorter.print.excludedSitting.plural"] = "Excluded %d players sitting in groups %d-8."
+L["sorter.print.excludedSitting.singular"] = "Excluded 1 player sitting in group %s."
+L["sorter.print.excludedSitting.plural"] = "Excluded %d players sitting in group %s."
 
 -- Tooltips for minimap icon and raid tab button
 L["tooltip.right.fixGroups"] = "Rearrange players:"

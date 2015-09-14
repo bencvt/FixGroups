@@ -47,7 +47,7 @@ local function groupCompOnTooltipShow(tooltip)
     local sitting = A.group:NumSitting()
     if sitting > 0 then
       tooltip:AddLine(" ")
-      tooltip:AddDoubleLine(format(L["dataBroker.groupComp.sitting"], A.util:GetMaxGroupsForInstance() + 1), HD(tostring(sitting)), 1,1,1, 1,1,0)
+      tooltip:AddDoubleLine(format(L["dataBroker.groupComp.sitting"], A.util:GetSittingGroupList()), HD(tostring(sitting)), 1,1,1, 1,1,0)
     end
   else
     tooltip:AddDoubleLine(format("%s:", L["phrase.groupComp"]), NOT_IN_GROUP, 1,1,0, 1,1,0)

@@ -140,19 +140,39 @@ function M:IsLeaderOrAssist()
   return IsInGroup()  
 end
 
-function M:GetMaxGroupsForInstance()
+function M:GetFirstSittingGroup()
   if not IsInInstance() then
-    return 8
+    return 9
   end
-  return max(6, floor(select(5, GetInstanceInfo()) / 5))
+  local difficulty, _, maxPlayers = select(3, GetInstanceInfo())
+  if difficulty == 16 then
+    -- Mythic: support up to 10 benched players in raid, groups 7 and 8.
+    return 7
+  elseif maxPlayers > 35 then
+    -- 40 man instance: no bench.
+    return 9
+  end
+  -- Other raid sizes: just group 8.
+  return 8
+end
+
+function M:GetSittingGroupList()
+  local g = M:GetFirstSittingGroup()
+  if g == 9 then
+    return false
+  elseif g == 7 then
+    return format("7 %s 8", L["word.or"])
+  else
+    return "8"
+  end
 end
 
 function M:GetFixedInstanceSize()
-  local d = select(3, GetInstanceInfo())
-  if d == 16 then
+  local difficulty = select(3, GetInstanceInfo())
+  if difficulty == 16 then
     -- Mythic
     return 20
-  elseif d == 17 then
+  elseif difficulty == 17 then
     -- Raid Finder: technically flex but for our purposes it's fixed.
     return 25
   end

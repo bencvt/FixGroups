@@ -393,8 +393,8 @@ function M:GetChoosingDesc(isTooltip, cmd, mode, modeType, useColor, validClasse
   elseif modeType == "fromGroup" then
     arg1 = tonumber(strsub(mode, 2))
   elseif mode == "sitting" then
-    arg1 = A.util:GetMaxGroupsForInstance() + 1
-    if arg1 >= 8 then
+    arg1 = A.util:GetSittingGroupList()
+    if not arg1 then
       return formatCmd(isTooltip, cmd, L["choose.print.choosing.sitting.noGroups"])
     end
   elseif mode == "notMe" then

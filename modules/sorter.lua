@@ -234,9 +234,9 @@ function M:AnnounceComplete()
     -- Announce who we excluded, if any.
     local sitting = A.group:NumSitting()
     if sitting == 1 then
-      msg = msg.." "..format(L["sorter.print.excludedSitting.singular"], A.util:GetMaxGroupsForInstance()+1)
+      msg = msg.." "..format(L["sorter.print.excludedSitting.singular"], A.util:GetSittingGroupList())
     elseif sitting > 1 then
-      msg = msg.." "..format(L["sorter.print.excludedSitting.plural"], sitting, A.util:GetMaxGroupsForInstance()+1)
+      msg = msg.." "..format(L["sorter.print.excludedSitting.plural"], sitting, A.util:GetSittingGroupList())
     end
     -- Announce to group or to self.
     if A.options.announceChatAlways or (A.options.announceChatPRN and not R.announced) then

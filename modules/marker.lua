@@ -66,7 +66,7 @@ function M:FixRaid(isRequestFromAssist)
     if A.util:IsLeader() and A.options.fixOfflineML and isML and not online then
       SetLootMethod("master", "player")
     end
-    if subgroup >= 1 and subgroup <= A.util:GetMaxGroupsForInstance() then
+    if subgroup >= 1 and subgroup < A.util:GetFirstSittingGroup() then
       name = name or "Unknown"
       unitID = "raid"..i
       unitRole = UnitGroupRolesAssigned(unitID)
