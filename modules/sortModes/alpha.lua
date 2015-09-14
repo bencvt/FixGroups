@@ -11,8 +11,8 @@ function M:OnEnable()
     key = "alpha",
     aliases = {"az"},
     order = 5910,
-    name = L["plugin.moreSortModes.alpha"],
-    desc = {L["plugin.moreSortModes.note.notUseful"]},
+    name = L["sorter.mode.alpha"],
+    desc = {L["sorter.print.notUseful"]},
     onSort = function(keys, players)
       sort(keys, function(a, b)
         return players[a].name < players[b].name
@@ -23,8 +23,8 @@ function M:OnEnable()
     key = "ralpha",
     aliases = {"za"},
     order = 5910,
-    name = L["plugin.moreSortModes.ralpha"],
-    desc = {L["plugin.moreSortModes.note.notUseful"]},
+    name = L["sorter.mode.ralpha"],
+    desc = {L["sorter.print.notUseful"]},
     onSort = function(keys, players)
       sort(keys, function(a, b)
         return players[a].name > players[b].name

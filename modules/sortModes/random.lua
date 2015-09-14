@@ -35,8 +35,8 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "random",
     order = 5950,
-    name = L["plugin.moreSortModes.random"],
-    desc = {L["plugin.moreSortModes.note.notUseful"]},
+    name = L["sorter.mode.random"],
+    desc = {L["sorter.print.notUseful"]},
     onBeforeStart = function()
       salt = random()
       wipe(hashCache)
