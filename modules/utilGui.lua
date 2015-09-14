@@ -1,14 +1,27 @@
 --- Utility functions useful for defining GUIs.
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("utilGui")
+local M = A:NewModule("utilGui", "AceTimer-3.0")
 A.utilGui = M
+M.private = {
+  openRaidTabTimer = false,
+}
+local R = M.private
+
+local DELAY_OPEN_RAID_TAB = 0.01
 
 local strmatch = strmatch
 local CreateFrame, ChatFrame_OpenChat, GetBindingFromClick, GetCurrentKeyBoardFocus, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, RunBinding, ToggleFriendsFrame = CreateFrame, ChatFrame_OpenChat, GetBindingFromClick, GetCurrentKeyBoardFocus, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, RunBinding, ToggleFriendsFrame
 -- GLOBALS: ElvUI
 
 function M:OpenRaidTab()
-  OpenFriendsFrame(4)
+  if not R.openRaidTabTimer then
+    -- In case we just called SetRaidSubgroup or SwapRaidSubgroup, add in a
+    -- short delay to avoid confusing the Blizzard UI addon.
+    R.openRaidTabTimer = M:ScheduleTimer(function ()
+      R.openRaidTabTimer = false
+      OpenFriendsFrame(4)
+    end, DELAY_OPEN_RAID_TAB)
+  end
 end
 
 function M:ToggleRaidTab()
