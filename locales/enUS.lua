@@ -204,7 +204,7 @@ L["options.widget.fixOfflineML.text"] = "Fix offline master looter"
 L["options.widget.fixOfflineML.desc"] = "If the master looter is offline, make yourself the master looter instead."
 
 L["options.header.raidAssist"] = "When raid leader or assist"
-L["options.widget.sortMode.text"] = "Rearrange players"
+L["options.widget.sortMode.text"] = "Default sort method"
 L["options.widget.resumeAfterCombat.text"] = "Resume rearranging players when interrupted by combat"
 L["options.widget.tankMainTank.text"] = "Check whether main tanks are set"
 L["options.widget.tankMainTank.desc"] = "Unfortunately WoW does not allow addons to automatically set main tanks, but we can check for it at least."
@@ -272,7 +272,7 @@ L["sorter.print.excludedSitting.plural"] = "Excluded %d players sitting in group
 
 -- Tooltips for minimap icon and raid tab button
 L["tooltip.right.fixGroups"] = "Rearrange players"
-L["tooltip.right.gui"] = "Other rearranging methods"
+L["tooltip.right.gui"] = "Other sort methods"
 L["tooltip.right.moveMinimapIcon"] = "Move minimap icon"
 L["tooltip.right.meter.1"] = "Fix groups, sorting by"
 L["tooltip.right.meter.2"] = "overall damage/healing done"

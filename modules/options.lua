@@ -395,10 +395,23 @@ R.optionsTable.args.ui.args = {
 }
 
 R.optionsTable.args.sort.args = {
-  sortMode = {
+  announceChat = {
     order = 10,
+    name = L["options.widget.announceChat.text"],
+    type = "select",
+    width = "double",
+    style = "dropdown",
+    values = {
+      [1] = L["options.value.always"],
+      [2] = L["options.value.announceChatLimited"],
+      [3] = L["options.value.never"],
+    },
+    get = function(i) if A.options.announceChatAlways then return 1 elseif A.options.announceChatPRN then return 2 end return 3 end,
+    set = function(i,v) A.options.announceChatAlways, A.options.announceChatPRN = (v==1), (v==2) A.sorter:ResetAnnounced() end,
+  },
+  sortMode = {
+    order = 20,
     name = L["options.widget.sortMode.text"],
-    desc = "", -- set in M:OnEnable
     type = "select",
     width = "double",
     style = "dropdown",
@@ -424,30 +437,25 @@ R.optionsTable.args.sort.args = {
       end
     end,
   },
+  showExtraSortModes = {
+    order = 30,
+    name = L["options.widget.showExtraSortModes.text"],
+    desc = L["sorter.print.notUseful"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.showExtraSortModes and #A.sortModes:GetList() > 0 end,
+    set = function(i,v) A.options.showExtraSortModes = v end,
+  },
   resumeAfterCombat = {
-    order = 20,
+    order = 40,
     name = L["options.widget.resumeAfterCombat.text"],
     type = "toggle",
     width = "full",
     get = function(i) return A.options.resumeAfterCombat end,
     set = function(i,v) A.sorter:Stop() A.options.resumeAfterCombat = v end,
   },
-  announceChat = {
-    order = 30,
-    name = L["options.widget.announceChat.text"],
-    type = "select",
-    width = "double",
-    style = "dropdown",
-    values = {
-      [1] = L["options.value.always"],
-      [2] = L["options.value.announceChatLimited"],
-      [3] = L["options.value.never"],
-    },
-    get = function(i) if A.options.announceChatAlways then return 1 elseif A.options.announceChatPRN then return 2 end return 3 end,
-    set = function(i,v) A.options.announceChatAlways, A.options.announceChatPRN = (v==1), (v==2) A.sorter:ResetAnnounced() end,
-  },
   splitOddEven = {
-    order = 40,
+    order = 50,
     name = L["options.widget.splitOddEven.text"],
     desc = paragraphs({
       L["options.widget.splitOddEven.desc.1"],
@@ -459,19 +467,10 @@ R.optionsTable.args.sort.args = {
     set = function(i,v) A.sorter:Stop() A.options.splitOddEven = v end,
   },
   damageMeterAddonDesc = {
-    order = 50,
+    order = 60,
     type = "description",
     name = "", -- set in M:OnEnable
     fontSize = "medium",
-  },
-  showExtraSortModes = {
-    order = 100,
-    name = L["options.widget.showExtraSortModes.text"],
-    desc = L["sorter.print.notUseful"],
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.showExtraSortModes and #A.sortModes:GetList() > 0 end,
-    set = function(i,v) A.options.showExtraSortModes = v end,
   },
 }
 
@@ -741,16 +740,9 @@ function M:OnInitialize()
 end
 
 function M:OnEnable()
-  -- Set a couple texts that couldn't be done earlier because the meter module
+  -- Set a couple texts that couldn't be done earlier because various modules
   -- had not yet been initialized.
-  R.optionsTable.args.sort.args.sortMode.desc = paragraphs({
-    format(L["gui.fixGroups.help.note.meter.1"], A.meter:GetSupportedAddonList()),
-    L["gui.fixGroups.help.note.meter.2"],
-    format(L["gui.fixGroups.help.note.meter.3"], H("/fg meter")),
-  })
-
-  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = format("|n%s|n|n", A.meter:TestInterop())
-
+  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = "|n"..A.meter:TestInterop()
   M:UpdateRoleIcons()
 end
 
