@@ -9,12 +9,6 @@ M.private = {
 local R = M.private
 
 M.TEXT_ICON = {
-  ROLE = {
-    -- TODO: other alternative sets including LFGROLE_BW, UI-LFG-ICON-ROLES, UI-LFG-ICON-PORTRAITROLES
-    TANK      = INLINE_TANK_ICON,     -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t"
-    HEALER    = INLINE_HEALER_ICON,   -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t"
-    DAMAGER   = INLINE_DAMAGER_ICON,  -- alt: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t"
-  },
   MARK = {
     STAR      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16:16:0:0|t",
     CIRCLE    = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16:16:0:0|t",
@@ -194,15 +188,15 @@ end
 function M:FormatGroupComp(style, t, h, m, r, u, isInRaid)
   if style == M.GROUP_COMP_STYLE.ICONS_FULL then
     return format("%d%s %d%s %d%s%s",
-      t, M.TEXT_ICON.ROLE.TANK,
-      h, M.TEXT_ICON.ROLE.HEALER,
-      m+r+u, M.TEXT_ICON.ROLE.DAMAGER,
+      t, M:GetTankIcon(),
+      h, M:GetHealerIcon(),
+      m+r+u, M:GetDamagerIcon(),
       M:HighlightDim(compMRU(m, r, u)))
   elseif style == M.GROUP_COMP_STYLE.ICONS_SHORT then
     return format("%d%s %d%s %d%s",
-      t, M.TEXT_ICON.ROLE.TANK,
-      h, M.TEXT_ICON.ROLE.HEALER,
-      m+r+u, M.TEXT_ICON.ROLE.DAMAGER)
+      t, M:GetTankIcon(),
+      h, M:GetHealerIcon(),
+      m+r+u, M:GetDamagerIcon())
   elseif style == M.GROUP_COMP_STYLE.GROUP_TYPE_FULL then
     return format("%s: %s",
       (isInRaid or IsInRaid()) and L["word.raid"] or L["word.party"],
@@ -276,4 +270,21 @@ end
 
 function M:BlankInline(height, width)
   return format("|TInterface\\AddOns\\%s\\media\\blank.blp:%d:%d:0:0|t", A.NAME, height or 8, width or 8)
+end
+
+-- TODO tank: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:32:48:0:16|t"
+-- TODO healer: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:48:64:0:16|t"
+-- TODO damager: "|TInterface\\LFGFrame\\LFGRole:14:14:0:0:64:16:16:32:0:16|t"
+-- TODO other alternative sets including LFGROLE_BW, UI-LFG-ICON-ROLES, UI-LFG-ICON-PORTRAITROLES
+
+function M:GetTankIcon()
+  return INLINE_TANK_ICON
+end
+
+function M:GetHealerIcon()
+  return INLINE_HEALER_ICON
+end
+
+function M:GetDamagerIcon()
+  return INLINE_DAMAGER_ICON
 end

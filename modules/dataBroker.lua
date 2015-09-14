@@ -9,7 +9,6 @@ local R = M.private
 local H, HA, HD = A.util.Highlight, A.util.HighlightAddon, A.util.HighlightDim
 
 local NOT_IN_GROUP = HD(L["dataBroker.groupComp.notInGroup"])
-local ICON_TANK, ICON_HEALER, ICON_DAMAGER = A.util.TEXT_ICON.ROLE.TANK, A.util.TEXT_ICON.ROLE.HEALER, A.util.TEXT_ICON.ROLE.DAMAGER
 
 local format, tostring = format, tostring
 local IsAddOnLoaded, IsInGroup, IsInRaid, IsShiftKeyDown = IsAddOnLoaded, IsInGroup, IsInRaid, IsShiftKeyDown
@@ -34,9 +33,9 @@ local function groupCompOnTooltipShow(tooltip)
     local t, h, m, r, u = A.group:GetRoleCountsTHMRU()
     tooltip:AddDoubleLine(format("%s (%s):", L["phrase.groupComp"], (IsInRaid() and L["word.raid"] or L["word.party"])), A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_SHORT, t, h, m, r, u), 1,1,0, 1,1,0)
     tooltip:AddLine(" ")
-    tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.TANK.." "..L["word.tank.plural"],       tostring(t), 1,1,1, 1,1,0)
-    tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.HEALER.." "..L["word.healer.plural"],   tostring(h), 1,1,1, 1,1,0)
-    tooltip:AddDoubleLine(A.util.TEXT_ICON.ROLE.DAMAGER.." "..L["word.damager.plural"], tostring(m+r+u), 1,1,1, 1,1,0)
+    tooltip:AddDoubleLine(A.util:GetTankIcon().." "..L["word.tank.plural"],       tostring(t), 1,1,1, 1,1,0)
+    tooltip:AddDoubleLine(A.util:GetHealerIcon().." "..L["word.healer.plural"],   tostring(h), 1,1,1, 1,1,0)
+    tooltip:AddDoubleLine(A.util:GetDamagerIcon().." "..L["word.damager.plural"], tostring(m+r+u), 1,1,1, 1,1,0)
     local indent = "        "
     tooltip:AddDoubleLine(indent..L["word.melee.plural"],   HD(tostring(m)), 1,1,1, 1,1,0)
     tooltip:AddDoubleLine(indent..L["word.ranged.plural"],  HD(tostring(r)), 1,1,1, 1,1,0)
