@@ -173,7 +173,7 @@ function M:Start(mode, clearGroups, skipGroups)
     M:Stop()
     return
   end
-  local sortMode = builtInSortModes[mode] or A.plugins:GetSortMode(mode)
+  local sortMode = builtInSortModes[mode] or A.sortModes:GetObj(mode)
   if sortMode then
     start(sortMode, clearGroups, skipGroups)
   else

@@ -470,9 +470,9 @@ R.optionsTable.args.sort.args = {
     desc = L["options.widget.showMoreSortModes.desc"],
     type = "toggle",
     width = "full",
-    get = function(i) return A.options.showMoreSortModes and #A.plugins:GetSortModeList() > 0 end,
+    get = function(i) return A.options.showMoreSortModes and #A.sortModes:GetList() > 0 end,
     set = function(i,v) A.options.showMoreSortModes = v end,
-    disabled = function(i) return #A.plugins:GetSortModeList() == 0 end,
+    disabled = function(i) return #A.sortModes:GetList() == 0 end,
   },
 }
 

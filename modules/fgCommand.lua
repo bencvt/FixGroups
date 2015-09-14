@@ -71,7 +71,7 @@ function M:Command(args)
   elseif argsLower == "skip2" or argsLower == "skip 2" or argsLower == "s2" or argsLower == "s 2" then
     A.sorter:Start("default", 0, 2)
   else
-    local sortMode = A.plugins:GetSortMode(argsLower)
+    local sortMode = A.sortModes:GetObj(argsLower)
     if sortMode then
       A.sorter:Start(sortMode.key, 0, 0)
     else

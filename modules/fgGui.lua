@@ -9,7 +9,7 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
-local format, ipairs = format, ipairs
+local ceil, format, min, ipairs = ceil, format, min, ipairs
 local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
 
 local AceGUI = LibStub("AceGUI-3.0")
@@ -73,7 +73,7 @@ local function resetWindowSize()
   local h = 380
   if A.options.showMoreSortModes then
     -- Expand as needed to make room for additional buttons.
-    h = min(720, h + ceil(#A.plugins:GetSortModeList() / 4) * 43)
+    h = min(720, h + ceil(#A.sortModes:GetList() / 4) * 43)
   end
   R.window:SetHeight(h)
 end
@@ -133,15 +133,15 @@ function M:Open()
   addButton(c, "meter", {"dps"})
   addButton(c, "nosort")
   addPadding(c)
-  if A.options.showMoreSortModes and #A.plugins:GetSortModeList() > 0 then
+  if A.options.showMoreSortModes and #A.sortModes:GetList() > 0 then
     addIndent(c)
-    for i, sortMode in ipairs(A.plugins:GetSortModeList()) do
+    for i, sortMode in ipairs(A.sortModes:GetList()) do
       if i > 1 and i % 4 == 1 then
         -- Start a new row.
         addPadding(c)
         addIndent(c)
       end
-      sortMode = A.plugins:GetSortMode(sortMode)
+      sortMode = A.sortModes:GetObj(sortMode)
       addButton(c, sortMode.key, sortMode.aliases)
     end
     addPadding(c)
@@ -161,7 +161,7 @@ local function addHelpLines(t, cmd, noSameAs)
   elseif cmd == "thmr" or cmd == "tmrh" or cmd == "meter" then
     t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], L["sorter.mode."..cmd]), 1,1,0, false)
   else
-    local sortMode = A.plugins:GetSortMode(cmd)
+    local sortMode = A.sortModes:GetObj(cmd)
     if sortMode then
       t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], sortMode.name), 1,1,0, false)
       if sortMode.desc then
@@ -187,7 +187,7 @@ local function addHelpLines(t, cmd, noSameAs)
   -- Extra lines.
   if cmd == "sort" then
     t:AddLine(" ")
-    t:AddLine(format(L["gui.fixGroups.help.note.defaultMode"], H(A.plugins:GetSortModeName(A.options.sortMode))), 1,1,1, true)
+    t:AddLine(format(L["gui.fixGroups.help.note.defaultMode"], H(A.sortModes:GetName(A.options.sortMode))), 1,1,1, true)
   elseif cmd == "split" or cmd == "meter" then
     t:AddLine(" ")
     t:AddLine(format(L["gui.fixGroups.help.note.meter.1"], A.meter:GetSupportedAddonList()), 1,1,1, true)

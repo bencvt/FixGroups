@@ -1,11 +1,13 @@
 --- Alphabetic sort.
-local A, P, L = unpack(select(2, ...))
+local A, L = unpack(select(2, ...))
+local P = A.sortModes
 local M = P:NewModule("alpha", "AceEvent-3.0")
+P.alpha = M
 
 local sort = sort
 
 function M:OnEnable()
-  A.plugins:RegisterSortMode({
+  A.sortModes:Register({
     key = "alpha",
     aliases = {"az"},
     order = 5910,
@@ -17,7 +19,7 @@ function M:OnEnable()
       end)
     end,
   })
-  A.plugins:RegisterSortMode({
+  A.sortModes:Register({
     key = "ralpha",
     aliases = {"za"},
     order = 5910,

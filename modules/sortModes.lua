@@ -1,11 +1,10 @@
---- Plugin registry.
+--- Sort mode registry.
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("plugins")
-A.plugins = M
+local M = A:NewModule("sortModes")
+A.sortModes = M
 M.private = {
-  sortModes = {},
-  sortModeList = {},
-  sortModeOrders = {},
+  objs = {},
+  orderedList = {},
 }
 local R = M.private
 
@@ -19,7 +18,7 @@ local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
 -- desc = {"Do an example sort."} -- optional, array of strings
 -- onSort = someFunc,             -- required, function(keys, players)
 -- onBeforeStart = someFunc,      -- optional, function()
-function M:RegisterSortMode(sortMode)
+function M:Register(sortMode)
   if not sortMode then
     A.console:Errorf("attempting to register a nil sortMode")
     return
@@ -36,35 +35,34 @@ function M:RegisterSortMode(sortMode)
   if not sortMode.onSort then
     A.console:Errorf("missing onSort for sortMode %s", key)
   end
-  R.sortModes[key] = sortMode
-  R.sortModeOrders[key] = sortMode.order or 0
-  tinsert(R.sortModeList, key)
-  sort(R.sortModeList, function(a, b)
-    local oa, ob = R.sortModeOrders[a], R.sortModeOrders[b]
+  R.objs[key] = sortMode
+  tinsert(R.orderedList, key)
+  sort(R.orderedList, function(a, b)
+    local oa, ob = R.objs[a].order or 0, R.objs[b].order or 0
     return (oa == ob) and (a < b) or (oa < ob)
   end)
   if sortMode.aliases then
     for _, alias in ipairs(sortMode.aliases) do
-      if not alias or R.sortModes[alias] then
+      if not alias or R.objs[alias] then
         A.console:Errorf("invalid or duplicate alias %s for sortMode %s", tostring(alias), key)
       else
-        R.sortModes[alias] = sortMode
+        R.objs[alias] = sortMode
       end
     end
   end
 end
 
-function M:GetSortMode(alias)
-  return R.sortModes[alias]
+function M:GetObj(alias)
+  return R.objs[alias]
 end
 
-function M:GetSortModeList()
-  return R.sortModeList
+function M:GetList()
+  return R.orderedList
 end
 
-function M:GetSortModeName(key)
-  if R.sortModes[key] then
-    return R.sortModes[key].name
+function M:GetName(key)
+  if R.objs[key] then
+    return R.objs[key].name
   end
   -- Must be a built-in sort mode.
   return L["sorter.mode."..key]

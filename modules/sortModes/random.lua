@@ -1,6 +1,8 @@
 --- Pseudo-random sort.
-local A, P, L = unpack(select(2, ...))
+local A, L = unpack(select(2, ...))
+local P = A.sortModes
 local M = P:NewModule("random", "AceEvent-3.0")
+P.random = M
 
 local random, sort, strbyte, strlen, wipe = random, sort, strbyte, strlen, wipe
 local fmod = math.fmod
@@ -30,7 +32,7 @@ local function hash(text)
 end
 
 function M:OnEnable()
-  A.plugins:RegisterSortMode({
+  A.sortModes:Register({
     key = "random",
     order = 5950,
     name = L["plugin.moreSortModes.random"],
