@@ -116,8 +116,8 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
     tooltip:AddLine(A.util:Highlight(A.sorter:GetPausedSortMode()))
   end
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(L["phrase.mouse.clickLeft"], L["tooltip.right.fixGroups"], 1,1,1, 1,1,0)
-  tooltip:AddDoubleLine(" ", L["sorter.mode."..A.options.sortMode], 1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(L["phrase.mouse.clickLeft"], L["tooltip.right.fixGroups"]..":", 1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(" ", A.plugins:GetSortModeName(A.options.sortMode), 1,1,1, 1,1,0)
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["phrase.mouse.clickRight"], TOOLTIP_RIGHT_GUI, 1,1,1, 1,1,0)
   -- Ctrl + Left Click is an undocumented shortcut, subject to change or removal

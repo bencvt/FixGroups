@@ -1,7 +1,7 @@
 v1.4:
   - add option to use alternate role icons
   - group 7 is considered a bench group for mythic difficulty only
-  - add more sort modes as an optional plugin
+  - add more sort methods as an optional plugin
 
 v1.3.4:
   - pressing escape to close the /fg or /choose GUI no longer pops up the game menu

@@ -144,9 +144,9 @@ L["gui.choose.note.option.2"] = "You can use commas or spaces to separate the op
 
 -- FixGroups GUI module
 L["gui.fixGroups.intro"] = "The %s (or %s) command allows you to control the addon without using the GUI. You can use this in a macro, or just type it in chat."
-L["gui.fixGroups.help.sort"] = "Rearrange players using the default sort mode."
-L["gui.fixGroups.help.note.defaultMode"] = "The default sort mode is currently %s. It can be changed in the config."
-L["gui.fixGroups.help.nosort"] = "Fix groups, no sorting."
+L["gui.fixGroups.help.sort"] = "Rearrange players using the default sort method."
+L["gui.fixGroups.help.note.defaultMode"] = "The default sort method is currently %s. It can be changed in the config."
+L["gui.fixGroups.help.nosort"] = "Fix tanks and ML only, no sorting."
 L["gui.fixGroups.help.split"] = "Split raid into two sides based on overall damage/healing done."
 L["gui.fixGroups.help.cancel"] = "Stop rearranging players."
 L["gui.fixGroups.help.clear1"] = "Clear players out of group 1."
@@ -215,7 +215,7 @@ L["options.widget.clearRaidMarks.text"] = "Clear target markers from all other r
 L["options.widget.splitOddEven.text"] = "When splitting groups, use odd/even groups"
 L["options.widget.splitOddEven.desc.1"] = "If this option is not checked then groups will be adjacent instead (i.e., 1-2 and 3-4, 1-3 and 4-6, or 1-4 and 5-8.)"
 L["options.widget.splitOddEven.desc.2"] = "To split groups, type %s, click the %s button, or right click the minimap icon."
-L["options.widget.showMoreSortModes.text"] = "Show more sort modes"
+L["options.widget.showMoreSortModes.text"] = "Show more sort methods"
 L["options.widget.showMoreSortModes.desc"] = "Advanced options. Extra ways to rearrange your raid."
 
 L["options.header.party"] = "When in party (5 man content)"
@@ -267,8 +267,8 @@ L["sorter.print.excludedSitting.singular"] = "Excluded 1 player sitting in group
 L["sorter.print.excludedSitting.plural"] = "Excluded %d players sitting in group %s."
 
 -- Tooltips for minimap icon and raid tab button
-L["tooltip.right.fixGroups"] = "Rearrange players:"
-L["tooltip.right.gui"] = "Other rearranging modes"
+L["tooltip.right.fixGroups"] = "Rearrange players"
+L["tooltip.right.gui"] = "Other rearranging methods"
 L["tooltip.right.moveMinimapIcon"] = "Move minimap icon"
 L["tooltip.right.meter.1"] = "Fix groups, sorting by"
 L["tooltip.right.meter.2"] = "overall damage/healing done"
@@ -276,3 +276,9 @@ L["tooltip.right.nosort"] = "Fix tanks and ML only, no sorting"
 L["tooltip.right.split.1"] = "Split raid into two sides based on"
 L["tooltip.right.split.2"] = "overall damage/healing done"
 L["tooltip.right.config"] = "Open config"
+
+-- Built-in plugins
+L["plugin.moreSortModes.alpha"] = "by player name, A-Z"
+L["plugin.moreSortModes.ralpha"] = "by player name, Z-A"
+L["plugin.moreSortModes.random"] = "at random"
+L["plugin.moreSortModes.note.notUseful"] = "Obviously, this sort method is not a very useful way to organize a raid. It's included for the sake of completeness."

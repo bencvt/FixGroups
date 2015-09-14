@@ -1,5 +1,4 @@
---- Pseudo-random sort. Not a very useful way to organize a raid. Included for
--- the sake of completeness.
+--- Pseudo-random sort.
 local A, P, L = unpack(select(2, ...))
 local M = P:NewModule("random", "AceEvent-3.0")
 
@@ -32,8 +31,9 @@ end
 
 function M:OnEnable()
   A.plugins:RegisterSortMode({
-    aliases = {"random"},
-    name = "at random", --TODO localize
+    key = "random",
+    name = L["plugin.moreSortModes.random"],
+    desc = L["plugin.moreSortModes.note.notUseful"],
     onBeforeStart = function()
       salt = random()
       wipe(hashCache)

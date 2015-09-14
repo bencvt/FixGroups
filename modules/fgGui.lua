@@ -70,7 +70,7 @@ local function resetWindowSize()
   R.window:ClearAllPoints()
   R.window:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
   R.window:SetWidth(540)
-  R.window:SetHeight(380)
+  R.window:SetHeight(A.options.showMoreSortModes and 410 or 380)
 end
 
 function M:Close()
@@ -128,6 +128,14 @@ function M:Open()
   addButton(c, "meter", {"dps"})
   addButton(c, "nosort")
   addPadding(c)
+  if A.options.showMoreSortModes then
+    addIndent(c)
+    for _, sortMode in ipairs(A.plugins:GetSortModeList()) do
+      sortMode = A.plugins:GetSortMode(sortMode)
+      addButton(c, sortMode.key, sortMode.aliases)
+    end
+    addPadding(c)
+  end
   addButton(c, "config", {"options"}, true)
   addPadding(c)
   addIndent(c)
@@ -138,27 +146,36 @@ end
 
 local function addHelpLines(t, cmd, noSameAs)
   -- First line.
-  if not noSameAs then
-    if cmd == "sort" then
-      t:AddLine(format(L["gui.fixGroups.help.note.sameAsLeftClicking"], H(L["button.fixGroups.text"])), 1,1,1, true)
-      t:AddLine(" ")
-    elseif cmd == "choose" or cmd == "list" or cmd == "listself" then
-      t:AddLine(format(L["gui.fixGroups.help.note.sameAsCommand"], H("/"..cmd)), 1,1,1, false)
-      t:AddLine(" ")
+  if cmd == "config" then
+    t:AddLine(format(L["gui.fixGroups.help.config"], A.util:GetBindingKey("TOGGLEGAMEMENU", "ESCAPE"), A.NAME), 1,1,0, false)
+  elseif cmd == "thmr" or cmd == "tmrh" or cmd == "meter" then
+    t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], L["sorter.mode."..cmd]), 1,1,0, false)
+  else
+    local sortMode = A.plugins:GetSortMode(cmd)
+    if sortMode then
+      t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], sortMode.name), 1,1,0, false)
+      if sortMode.desc then
+        t:AddLine(" ")
+        t:AddLine(sortMode.desc, 1,1,1, true)
+      end
+    else
+      t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,0, true)
     end
   end
-  -- Main line.
-  if cmd == "config" then
-    t:AddLine(format(L["gui.fixGroups.help."..cmd], A.util:GetBindingKey("TOGGLEGAMEMENU", "ESCAPE"), A.NAME), 1,1,1, false)
-  elseif cmd == "thmr" or cmd == "tmrh" or cmd == "meter" then
-    t:AddLine(format("%s%s %s.", L["options.widget.sortMode.text"], (cmd ~= "meter" and ":" or ""), L["sorter.mode."..cmd]), 1,1,1, false)
-  else
-    t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,1, true)
+  -- Line noting aliases.
+  if not noSameAs then
+    if cmd == "sort" then
+      t:AddLine(" ")
+      t:AddLine(format(L["gui.fixGroups.help.note.sameAsLeftClicking"], H(L["button.fixGroups.text"])), 1,1,1, true)
+    elseif cmd == "choose" or cmd == "list" or cmd == "listself" then
+      t:AddLine(" ")
+      t:AddLine(format(L["gui.fixGroups.help.note.sameAsCommand"], H("/"..cmd)), 1,1,1, false)
+    end
   end
   -- Extra lines.
   if cmd == "sort" then
     t:AddLine(" ")
-    t:AddLine(format(L["gui.fixGroups.help.note.defaultMode"], H(L["sorter.mode."..A.options.sortMode])), 1,1,1, true)
+    t:AddLine(format(L["gui.fixGroups.help.note.defaultMode"], H(A.plugins:GetSortModeName(A.options.sortMode))), 1,1,1, true)
   elseif cmd == "split" or cmd == "meter" then
     t:AddLine(" ")
     t:AddLine(format(L["gui.fixGroups.help.note.meter.1"], A.meter:GetSupportedAddonList()), 1,1,1, true)
