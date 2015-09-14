@@ -18,13 +18,13 @@ local DELAY_BROADCAST_VERSION = 15.5
 local VERSION_STRING
 do
   local r, i = 0, 0
-  for part in gmatch(text, "[%d]+") do
+  for part in gmatch(A.VERSION, "[%d]+") do
     if i < 3 then
       r = r + tonumber(part) * (i<1 and 1000 or 1) * (i<2 and 1000 or 1)
       i = i + 1
     end
   end
-  VERSION_STRING = format("%d:%s", r, text)
+  VERSION_STRING = format("%d:%s", r, A.VERSION)
 end
 
 function M:OnEnable()
