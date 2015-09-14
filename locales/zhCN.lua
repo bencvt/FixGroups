@@ -194,6 +194,7 @@ L["phrase.print.notInRaid"] = "队伍只能在团队中排序." -- Needs review
 -- L["phrase.waitingOnDataFromServerFor"] = ""
 -- L["sorter.mode.meter"] = ""
 -- L["sorter.mode.nosort"] = ""
+-- L["sorter.mode.split"] = ""
 -- L["sorter.mode.thmr"] = ""
 -- L["sorter.mode.tmrh"] = ""
 L["sorter.print.alreadySorted"] = "无变化 - 团队已经按 %s 排序." -- Needs review

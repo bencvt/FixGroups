@@ -194,6 +194,7 @@ L["phrase.versionAuthor"] = "v%s by %s" -- Needs review
 -- L["phrase.waitingOnDataFromServerFor"] = ""
 -- L["sorter.mode.meter"] = ""
 -- L["sorter.mode.nosort"] = ""
+-- L["sorter.mode.split"] = ""
 L["sorter.mode.thmr"] = "탱커>힐러>근딜>원딜" -- Needs review
 L["sorter.mode.tmrh"] = "탱커>근딜>원딜>힐러" -- Needs review
 -- L["sorter.print.alreadySorted"] = ""
