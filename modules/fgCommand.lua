@@ -83,5 +83,5 @@ function M:Command(args)
   end
 
   -- Notify other people running this addon that we've started a new sort.
-  A.addonChannel:Broadcast("f:"..A.sorter:GetActiveKey())
+  A.addonChannel:Broadcast("f:"..A.sorter:GetKey())
 end

@@ -60,8 +60,8 @@ function M:FIXGROUPS_GROUP_DISBANDING(event, numDropped)
   end
 end
 
-function M:GetActiveKey()
-  return R.active.key or ""
+function M:GetKey()
+  return R.active.key or R.lastComplete.key or ""
 end
 
 function M:IsSortingHealersBeforeDamagers()
