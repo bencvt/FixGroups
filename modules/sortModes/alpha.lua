@@ -11,6 +11,7 @@ function M:OnEnable()
     key = "alpha",
     aliases = {"az"},
     order = 5910,
+    isExtra = true,
     name = L["sorter.mode.alpha"],
     desc = {L["sorter.print.notUseful"]},
     onSort = function(keys, players)
@@ -23,6 +24,7 @@ function M:OnEnable()
     key = "ralpha",
     aliases = {"za"},
     order = 5910,
+    isExtra = true,
     name = L["sorter.mode.ralpha"],
     desc = {L["sorter.print.notUseful"]},
     onSort = function(keys, players)

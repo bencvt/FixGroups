@@ -150,6 +150,9 @@ local function start(sortMode, clearGroups, skipGroups)
     A.utilGui:OpenRaidTab()
   end
   A.group:PrintIfThereAreUnknowns()
+  if sortMode.onStart then
+    sortMode.onStart()
+  end
   if M:IsSortingByMeter() or M:IsSplittingRaid() then
     -- Damage/healing meter snapshot is built once at the start,
     -- not once every step.

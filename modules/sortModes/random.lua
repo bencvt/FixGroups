@@ -35,6 +35,7 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "random",
     order = 5950,
+    isExtra = true,
     name = L["sorter.mode.random"],
     desc = {L["sorter.print.notUseful"]},
     onBeforeStart = function()
