@@ -106,8 +106,13 @@ R.optionsTable = {
       type = "group",
       name = L["options.tab.main"],
     },
-    ui = {
+    sort = {
       order = 20,
+      type = "group",
+      name = L["options.tab.sorting"],
+    },
+    ui = {
+      order = 40,
       type = "group",
       name = L["options.tab.userInterface"],
     },
@@ -115,11 +120,6 @@ R.optionsTable = {
       order = 30,
       type = "group",
       name = L["options.tab.marking"],
-    },
-    sort = {
-      order = 40,
-      type = "group",
-      name = L["options.tab.sorting"],
     },
   },
 }
