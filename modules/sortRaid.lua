@@ -76,8 +76,8 @@ function M:BuildDelta(sortMode)
       end
       return pa > pb
     end)
-  elseif sortMode.sortFunc then
-    sortMode.sortFunc(keys, playersByKey)
+  elseif sortMode.onSort then
+    sortMode.onSort(keys, playersByKey)
   else
     sort(keys)
   end

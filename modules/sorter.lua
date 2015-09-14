@@ -134,6 +134,11 @@ end
 
 local function start(sortMode, clearGroups, skipGroups)
   M:Stop()
+  if sortMode.onBeforeStart then
+    if sortMode.onBeforeStart() then
+      return
+    end
+  end
   R.active.sortMode = sortMode
   R.active.clearGroups = clearGroups
   R.active.skipGroups = skipGroups
