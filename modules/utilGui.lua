@@ -17,7 +17,7 @@ function M:OpenRaidTab()
   if not R.openRaidTabTimer then
     -- In case we just called SetRaidSubgroup or SwapRaidSubgroup, add in a
     -- short delay to avoid confusing the Blizzard UI addon.
-    R.openRaidTabTimer = M:ScheduleTimer(function ()
+    R.openRaidTabTimer = M:ScheduleTimer(function()
       R.openRaidTabTimer = false
       OpenFriendsFrame(4)
     end, DELAY_OPEN_RAID_TAB)
@@ -82,7 +82,7 @@ function M:AddCloseButton(aceGuiWindow, closeButtonTable, closeFunc)
   C.button:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Down.blp")
   C.button:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
   C.button:SetScript("OnClick", closeFunc)
-  C.button:SetScript("OnKeyDown", function (button, key)
+  C.button:SetScript("OnKeyDown", function(button, key)
     if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
       RunBinding("TOGGLEGAMEMENU")
       closeFunc()

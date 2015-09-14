@@ -78,7 +78,7 @@ function M:OnEnable()
   end
   R.dbNonGuildCache = A.db.faction.damagerRoleNonGuildCache
   if not R.dbCleanedUp and not InCombatLockdown() then
-    R.dbCleanedUp = M:ScheduleTimer(function ()
+    R.dbCleanedUp = M:ScheduleTimer(function()
       R.dbCleanedUp = true
       if InCombatLockdown() or A.sorter:IsProcessing() then
         -- Don't worry about trying to reschedule the timer. DB cleanup is

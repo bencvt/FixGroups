@@ -59,7 +59,7 @@ local function setupMinimapIcon()
     text = A.NAME,
     icon = CUBE_ICON_1,
     OnClick = handleClick,
-    OnTooltipShow = function (tooltip) M:SetupTooltip(tooltip, true) end,
+    OnTooltipShow = function(tooltip) M:SetupTooltip(tooltip, true) end,
   })
   R.icon = LibStub("LibDBIcon-1.0")
   R.icon:Register(A.NAME, R.iconLDB, A.options.minimapIcon)
@@ -76,8 +76,8 @@ local function setupRaidTabButton()
   b:SetText(L["button.fixGroups.text"])
   b:RegisterForClicks("AnyUp")
   b:SetScript("OnClick", handleClick)
-  b:SetScript("OnEnter", function (frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") M:SetupTooltip(GameTooltip, false) end)
-  b:SetScript("OnLeave", function () GameTooltip:Hide() end)
+  b:SetScript("OnEnter", function(frame) GameTooltip:SetOwner(frame, "ANCHOR_BOTTOMRIGHT") M:SetupTooltip(GameTooltip, false) end)
+  b:SetScript("OnLeave", function() GameTooltip:Hide() end)
   local skin = A.utilGui:GetElvUISkinModule()
   if skin then
     b:StripTextures()

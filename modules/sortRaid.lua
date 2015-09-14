@@ -180,7 +180,7 @@ function M:ProcessDelta()
   local name = R.deltaPlayers[1].name
   -- Simplest case: the new group has room.
   if A.group:GetGroupSize(newGroup) < 5 then
-    startAction(name, newGroup, function () SetRaidSubgroup(rindex, newGroup) end, "set "..rindex.." "..newGroup)
+    startAction(name, newGroup, function() SetRaidSubgroup(rindex, newGroup) end, "set "..rindex.." "..newGroup)
     return
   end
   -- Else find a partner to swap groups with.
@@ -188,7 +188,7 @@ function M:ProcessDelta()
   for d = 2, #R.deltaPlayers do
     if R.deltaPlayers[d].group == newGroup and R.deltaNewGroups[d] == R.deltaPlayers[1].group then
       local rindex2 = R.deltaPlayers[d].rindex
-      startAction(name, newGroup, function () SwapRaidSubgroup(rindex, rindex2) end, "swap "..rindex.." "..rindex2)
+      startAction(name, newGroup, function() SwapRaidSubgroup(rindex, rindex2) end, "swap "..rindex.." "..rindex2)
       return
     end
   end
@@ -198,7 +198,7 @@ function M:ProcessDelta()
   for d = 2, #R.deltaPlayers do
     if R.deltaPlayers[d].group == newGroup then
       local rindex2 = R.deltaPlayers[d].rindex
-      startAction(name, newGroup, function () SwapRaidSubgroup(rindex, rindex2) end, "swapX "..rindex.." "..rindex2)
+      startAction(name, newGroup, function() SwapRaidSubgroup(rindex, rindex2) end, "swapX "..rindex.." "..rindex2)
       return
     end
   end

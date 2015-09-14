@@ -282,7 +282,7 @@ end
 -- Another example: Good old-fashioned lag.
 function M:ScheduleTimeout()
   M:ClearTimeout(false)
-  R.timeoutTimer = M:ScheduleTimer(function ()
+  R.timeoutTimer = M:ScheduleTimer(function()
     M:ClearTimeout(false)
     R.timeoutCount = (R.timeoutCount or 0) + 1
     if A.DEBUG >= 1 then A.console:Debugf(M, "timeout %d of %d", R.timeoutCount, MAX_TIMEOUTS) end

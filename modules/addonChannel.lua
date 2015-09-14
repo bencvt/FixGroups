@@ -62,7 +62,7 @@ end
 
 function M:FIXGROUPS_PLAYER_JOINED(event, player)
   if not R.broadcastVersionTimer then
-    R.broadcastVersionTimer = M:ScheduleTimer(function ()
+    R.broadcastVersionTimer = M:ScheduleTimer(function()
       if R.broadcastVersionTimer then
         M:CancelTimer(R.broadcastVersionTimer)
       end
