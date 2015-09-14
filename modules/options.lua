@@ -274,7 +274,6 @@ R.optionsTable.args.ui.args = {
     values = A.util:GetRoleIconSamples(),
     get = function(i) return A.util:GetRoleIconIndex(A.options.roleIconStyle) end,
     set = function(i,v) A.options.roleIconStyle = A.util:GetRoleIconKey(v) M:UpdateRoleIcons() end,
-    hidden = function(i) A.util:UpdateRoleIconSamples() end,
   },
   roleIconSize = {
     order = 120,
@@ -741,6 +740,8 @@ function M:OnEnable()
   })
 
   R.optionsTable.args.sort.args.damageMeterAddonDesc.name = "|n"..A.meter:TestInterop()
+
+  M:UpdateRoleIcons()
 end
 
 function M:OptionsPaneLoaded()
