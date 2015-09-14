@@ -60,6 +60,10 @@ function M:FIXGROUPS_GROUP_DISBANDING(event, numDropped)
   end
 end
 
+function M:GetActiveKey()
+  return R.active.key or ""
+end
+
 function M:IsSortingHealersBeforeDamagers()
   return A.options.sortMode == "thmr" and R.active.sortMode.key ~= "tmrh"
 end
@@ -114,11 +118,25 @@ end
 
 function M:StopManual()
   if M:IsProcessing() or M:IsPaused() then
+    A.console:Printf(L["sorter.print.manualCancel"], R.active.sortMode.name)
     M:Stop()
-    A.console:Print(L["sorter.print.manualCancel"])
   else
     A.console:Print(L["sorter.print.notActive"])
   end
+end
+
+function M:StopYield(raidOfficerName, message)
+  local mode
+  if M:IsProcessing() then
+    mode = R.active.sortMode.name
+  elseif M:IsPaused() then
+    mode = R.resumeAfterCombat.sortMode.name
+  else
+    return
+  end
+  A.console:Print(L["sorter.print.yieldToRaidOfficer"], mode, A.util:UnitNameWithColor(raidOfficerName))
+  M:Stop()
+  R.lastComplete.key = message
 end
 
 function M:StopIfNeeded()

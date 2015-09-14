@@ -55,8 +55,11 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
         R.newerVersion = false
       end
     end
-  elseif cmd == "f" and A.util:IsLeader() and IsInRaid() and not A.sorter:IsProcessing() and UnitIsRaidOfficer(sender) then
-    A.marker:FixRaid(true)
+  elseif cmd == "f" and IsInRaid() and UnitIsRaidOfficer(sender) then
+    A.sorter:StopYield(sender, message)
+    if A.util:IsLeader() then
+      A.marker:FixRaid(true)
+    end
   end
 end
 

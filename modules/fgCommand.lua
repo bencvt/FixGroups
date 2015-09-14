@@ -44,6 +44,7 @@ function M:Command(args)
   end
 
   -- Okay, we have some actual work to do then.
+  -- Stop the current sort, if any.
   A.sorter:Stop()
 
   -- Set tank marks and such.
@@ -77,6 +78,10 @@ function M:Command(args)
       A.sorter:Start(sortMode.key, 0, 0)
     else
       A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))
+      return
     end
   end
+
+  -- Notify other people running this addon that we've started a new sort.
+  A.addonChannel:Broadcast("f:"..A.sorter:GetActiveKey())
 end
