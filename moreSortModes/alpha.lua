@@ -8,6 +8,7 @@ function M:OnEnable()
   A.plugins:RegisterSortMode({
     key = "alpha",
     aliases = {"az"},
+    order = 5910,
     name = L["plugin.moreSortModes.alpha"],
     desc = {L["plugin.moreSortModes.note.notUseful"]},
     onSort = function(keys, players)
@@ -19,6 +20,7 @@ function M:OnEnable()
   A.plugins:RegisterSortMode({
     key = "ralpha",
     aliases = {"za"},
+    order = 5910,
     name = L["plugin.moreSortModes.ralpha"],
     desc = {L["plugin.moreSortModes.note.notUseful"]},
     onSort = function(keys, players)

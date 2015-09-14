@@ -32,6 +32,7 @@ end
 function M:OnEnable()
   A.plugins:RegisterSortMode({
     key = "random",
+    order = 5950,
     name = L["plugin.moreSortModes.random"],
     desc = {L["plugin.moreSortModes.note.notUseful"]},
     onBeforeStart = function()

@@ -5,6 +5,7 @@ A.plugins = M
 M.private = {
   sortModes = {},
   sortModeList = {},
+  sortModeOrders = {},
 }
 local R = M.private
 
@@ -13,6 +14,7 @@ local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
 --- @param sortMode expected to be a table with the following keys:
 -- key = "example",               -- required, string
 -- aliases = {"whatever"},        -- optional, array of strings
+-- order = 100,                   -- optional, number
 -- name = "by whatever",          -- required, string
 -- desc = {"Do an example sort."} -- optional, array of strings
 -- onSort = someFunc,             -- required, function(keys, players)
@@ -35,8 +37,12 @@ function M:RegisterSortMode(sortMode)
     A.console:Errorf("missing onSort for sortMode %s", key)
   end
   R.sortModes[key] = sortMode
+  R.sortModeOrders[key] = sortMode.order or 0
   tinsert(R.sortModeList, key)
-  sort(R.sortModeList)
+  sort(R.sortModeList, function(a, b)
+    local oa, ob = R.sortModeOrders[a], R.sortModeOrders[b]
+    return (oa == ob) and (a < b) or (oa < ob)
+  end)
   if sortMode.aliases then
     for _, alias in ipairs(sortMode.aliases) do
       if not alias or R.sortModes[alias] then
