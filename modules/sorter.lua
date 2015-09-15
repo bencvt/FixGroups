@@ -76,14 +76,6 @@ function M:GetGroupOffset()
   return max(R.active.clearGroups, R.active.skipGroups)
 end
 
-function M:IsSortingByMeter()
-  return R.active.sortMode.key == "meter"
-end
-
-function M:IsSplittingRaid()
-  return R.active.sortMode.key == "split"
-end
-
 function M:IsProcessing()
   return R.stepCount and true or false
 end
@@ -180,11 +172,6 @@ local function start(sortMode, clearGroups, skipGroups)
   if sortMode.onStart then
     sortMode.onStart()
   end
-  if M:IsSortingByMeter() or M:IsSplittingRaid() then
-    -- Damage/healing meter snapshot is built once at the start,
-    -- not once every step.
-    A.meter:BuildSnapshot(M:IsSortingByMeter())
-  end
   M:ProcessStep()
 end
 
@@ -261,7 +248,7 @@ function M:AnnounceComplete()
     R.announced = false
   end
   if R.stepCount == 0 then
-    if M:IsSplittingRaid() then
+    if R.active.sortMode.isSplit then
       A.console:Print(L["sorter.print.alreadySplit"])
     else
       A.console:Printf(L["sorter.print.alreadySorted"], R.active.sortMode.name)
@@ -269,7 +256,7 @@ function M:AnnounceComplete()
   else
     -- Announce sort mode.
     local msg
-    if M:IsSplittingRaid() then
+    if R.active.sortMode.isSplit then
       msg = format(L["sorter.print.split"], A.sortRaid:GetSplitGroups())
     else
       msg = format(L["sorter.print.sorted"], R.active.sortMode.name)

@@ -37,7 +37,7 @@ function M:OnEnable()
     order = 5950,
     isExtra = true,
     name = L["sorter.mode.random"],
-    desc = {L["sorter.print.notUseful"]},
+    desc = L["sorter.print.notUseful"],
     onBeforeStart = function()
       salt = random()
       wipe(hashCache)

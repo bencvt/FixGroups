@@ -33,66 +33,43 @@ function M:BuildDelta(sortMode)
   local areHealersFirst = A.sorter:IsSortingHealersBeforeDamagers()
   local sortRoles = areHealersFirst and ROLE_SORT_CHAR_THMUR or ROLE_SORT_CHAR_TMURH
   local keys = wipe(R.tmp1)
-  local playersByKey = wipe(R.tmp2)
+  local players = wipe(R.tmp2)
   local k
   for name, p in pairs(A.group:GetRoster()) do
     if not p.isSitting and A.sorter:IsGroupIncluded(p.group) then
       k = sortRoles[p.role]..(p.class and CLASS_SORT_CHAR[p.class] or CLASS_SORT_CHAR["_unknown"])..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
-      playersByKey[k] = p
+      players[k] = p
     end
   end
 
   -- Insert dummy players for padding if we need to keep the healers in the
   -- last group.
-  if not areHealersFirst and not A.sorter:IsSplittingRaid() then
+  if not areHealersFirst and not sortMode.isSplit then
     local fixedSize = A.util:GetFixedInstanceSize()
     if fixedSize then
       while #keys < fixedSize do
         k = ROLE_PAD_CHAR..(#keys + 1)
         tinsert(keys, k)
-        playersByKey[k] = ROLE_PAD_PLAYER
+        players[k] = ROLE_PAD_PLAYER
       end
     end
   end
 
   -- Sort keys.
-  -- TODO: potential hook for plugins that want to implement a custom sort mode.
-  if A.sorter:IsSortingByMeter() or A.sorter:IsSplittingRaid() then
-    local TANK, HEALER = A.group.ROLE.TANK, A.group.ROLE.HEALER
-    local pa, pb
-    sort(keys, function(a, b)
-      pa, pb = playersByKey[a], playersByKey[b]
-      if pa.role ~= pb.role then
-        if pa.role == HEALER or pb.role == HEALER or pa.role == TANK or pb.role == TANK then
-          -- Tanks and healers are in their own brackets.
-          return a < b
-        end
-      end
-      pa, pb = A.meter:GetPlayerMeter(pa.name), A.meter:GetPlayerMeter(pb.name)
-      if pa == pb then
-        -- Tie, or no data. Fall back to default sort.
-        return a < b
-      end
-      return pa > pb
-    end)
-  elseif sortMode.onSort then
-    sortMode.onSort(keys, playersByKey)
-  else
-    sort(keys)
-  end
+  sortMode.onSort(keys, players)
 
   -- Determine which group each player needs to be in.
   -- If they're in the wrong group, add them to the delta tables.
   wipe(R.deltaPlayers)
   wipe(R.deltaNewGroups)
   local numGroups = floor((A.group:GetSize() - A.group:NumSitting() - 1) / 5) + 1
-  if A.sorter:IsSplittingRaid() and numGroups % 2 == 1 then
+  if sortMode.isSplit and numGroups % 2 == 1 then
     numGroups = numGroups + 1
   end
   local newGroup
   for i, k in ipairs(keys) do
-    if A.sorter:IsSplittingRaid() then
+    if sortMode.isSplit then
       if A.options.splitOddEven then
         -- Assign everyone in the raid to odd/even groups based on their ranking
         -- in the damage/healing meters. This is quick-and-dirty but it gets the
@@ -115,8 +92,8 @@ function M:BuildDelta(sortMode)
       newGroup = floor((i - 1) / 5) + 1
     end
     newGroup = newGroup + A.sorter:GetGroupOffset()
-    if newGroup ~= playersByKey[k].group and not playersByKey[k].isDummy then
-      tinsert(R.deltaPlayers, playersByKey[k])
+    if newGroup ~= players[k].group and not players[k].isDummy then
+      tinsert(R.deltaPlayers, players[k])
       tinsert(R.deltaNewGroups, newGroup)
     end
   end

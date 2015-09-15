@@ -45,4 +45,6 @@ modules\sortRaid.lua
 modules\utilGui.lua
 
 modules\sortModes\alpha.lua
+modules\sortModes\meter.lua
 modules\sortModes\random.lua
+modules\sortModes\split.lua

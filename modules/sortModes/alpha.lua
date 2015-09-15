@@ -13,7 +13,7 @@ function M:OnEnable()
     order = 5910,
     isExtra = true,
     name = L["sorter.mode.alpha"],
-    desc = {L["sorter.print.notUseful"]},
+    desc = L["sorter.print.notUseful"],
     onSort = function(keys, players)
       sort(keys, function(a, b)
         return players[a].name < players[b].name

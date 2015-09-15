@@ -162,7 +162,6 @@ L["gui.fixGroups.help.note.sameAsLeftClicking"] = "Same as left-clicking the min
 L["gui.fixGroups.help.config"] = "Same as %s>Interface>AddOns>%s."
 L["gui.fixGroups.help.note.meter.1"] = "Overall damage/healing data requires %s to be running."
 L["gui.fixGroups.help.note.meter.2"] = "This sort method can be useful for making quick decisions on who's worth an emergency heal or brez in PUGs."
-L["gui.fixGroups.help.note.meter.3"] = "You can also type %s to do a one-off sort without changing the setting."
 
 -- Marker module
 L["marker.print.needSetMainTank.singular"] = "%s is not set as main tank!"

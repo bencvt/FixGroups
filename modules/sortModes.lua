@@ -13,10 +13,11 @@ local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
 --- @param sortMode expected to be a table with the following keys:
 -- key = "example",               -- required, string
 -- aliases = {"whatever"},        -- optional, array of strings
+-- isSplit = false,               -- optional, boolean
 -- order = 100,                   -- optional, number
--- name = "by whatever",          -- required, string
--- desc = {"Do an example sort."} -- optional, array of strings
 -- isExtra = true,                -- optional, boolean
+-- name = "by whatever",          -- required, string
+-- desc = "Do an example sort."   -- optional, function(t), string, or array of strings
 -- onSort = someFunc,             -- required, function(keys, players)
 -- onBeforeStart = someFunc,      -- optional, function()
 -- onStart = someFunc,            -- optional, function()
