@@ -104,27 +104,31 @@ function M:StopTimedOut()
   M:Stop()
 end
 
+local function getModeToStop()
+  if M:IsProcessing() then
+    return R.active.sortMode.name
+  elseif M:IsPaused() then
+    return R.resumeAfterCombat.sortMode.name
+  end
+end
+
 function M:StopManual()
-  if M:IsProcessing() or M:IsPaused() then
-    A.console:Printf(L["sorter.print.manualCancel"], R.active.sortMode.name)
+  local mode = getModeToStop()
+  if mode then
     M:Stop()
+    A.console:Printf(L["sorter.print.manualCancel"], mode)
   else
     A.console:Print(L["sorter.print.notActive"])
   end
 end
 
 function M:StopYield(raidOfficerName, message)
-  local mode
-  if M:IsProcessing() then
-    mode = R.active.sortMode.name
-  elseif M:IsPaused() then
-    mode = R.resumeAfterCombat.sortMode.name
-  else
-    return
+  local mode = getModeToStop()
+  if mode then
+    M:Stop()
+    R.lastComplete.key = message
+    A.console:Print(L["sorter.print.yieldToRaidOfficer"], mode, A.util:UnitNameWithColor(raidOfficerName))
   end
-  A.console:Print(L["sorter.print.yieldToRaidOfficer"], mode, A.util:UnitNameWithColor(raidOfficerName))
-  M:Stop()
-  R.lastComplete.key = message
 end
 
 function M:StopIfNeeded()
