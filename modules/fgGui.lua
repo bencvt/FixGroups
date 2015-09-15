@@ -35,7 +35,7 @@ local function onLeaveButton(widget)
   R.window:SetStatusText("")
 end
 
-local function getCommand(cmd, aliases)
+local function getCommand(cmd)
   return "/fg "..cmd
 end
 
@@ -44,7 +44,7 @@ local function addButton(frame, cmd, aliases, forceClose)
   button:SetText(cmd)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
-      A.utilGui:InsertText(getCommand(cmd, aliases))
+      A.utilGui:InsertText(getCommand(cmd))
       return
     end
     A.fgCommand:Command(cmd)
@@ -52,6 +52,12 @@ local function addButton(frame, cmd, aliases, forceClose)
       R.window:Hide()
     end
   end)
+  if not aliases then
+    local sortMode = A.sortModes:GetMode(cmd)
+    if sortMode then
+      aliases = sortMode.aliases
+    end
+  end
   button:SetCallback("OnEnter", function(widget)
     M:SetupTooltip(widget, cmd, aliases)
   end)
@@ -112,26 +118,26 @@ function M:Open()
   widget:SetFullWidth(true)
   c:AddChild(widget)
 
-  addButton(c, "sort", {"default"})
+  addButton(c, "sort")
   addButton(c, "split")
   addButton(c, "cancel")
   addPadding(c)
   addIndent(c)
-  addButton(c, "clear1", {"c1"})
-  addButton(c, "clear2", {"c0"})
-  addButton(c, "skip1", {"s1"})
-  addButton(c, "skip2", {"s2"})
+  addButton(c, "clear1")
+  addButton(c, "clear2")
+  addButton(c, "skip1")
+  addButton(c, "skip2")
   addPadding(c)
   addIndent(c)
   addButton(c, "tmrh")
   addButton(c, "thmr")
-  addButton(c, "meter", {"dps"})
+  addButton(c, "meter")
   addButton(c, "nosort")
   addPadding(c)
   if A.options.showExtraSortModes then
     addIndent(c)
-    addButton(c, "alpha", {"az"})
-    addButton(c, "ralpha", {"za"})
+    addButton(c, "alpha")
+    addButton(c, "ralpha")
     addButton(c, "random")
     addPadding(c)
   end
@@ -163,12 +169,10 @@ local function addTooltipLines(t, cmd)
 end
 
 function M:SetupTooltip(widget, cmd, aliases)
-  R.window:SetStatusText(H(getCommand(cmd, aliases)))
+  R.window:SetStatusText(H(getCommand(cmd)))
   local t = GameTooltip
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
-
-  -- Populate lines.
   addTooltipLines(t, cmd)
 
   -- List aliases, if any.
