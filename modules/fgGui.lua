@@ -70,12 +70,7 @@ local function resetWindowSize()
   R.window:ClearAllPoints()
   R.window:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
   R.window:SetWidth(540)
-  local h = 380
-  if A.options.showExtraSortModes then
-    -- Expand as needed to make room for additional buttons.
-    h = min(720, h + ceil(#A.sortModes:GetList() / 4) * 43)
-  end
-  R.window:SetHeight(h)
+  R.window:SetHeight(A.options.showExtraSortModes and 430 or 380)
 end
 
 function M:Close()
@@ -133,17 +128,11 @@ function M:Open()
   addButton(c, "meter", {"dps"})
   addButton(c, "nosort")
   addPadding(c)
-  if A.options.showExtraSortModes and #A.sortModes:GetList() > 0 then
+  if A.options.showExtraSortModes then
     addIndent(c)
-    for i, sortMode in ipairs(A.sortModes:GetList()) do
-      if i > 1 and i % 4 == 1 then
-        -- Start a new row.
-        addPadding(c)
-        addIndent(c)
-      end
-      sortMode = A.sortModes:GetObj(sortMode)
-      addButton(c, sortMode.key, sortMode.aliases)
-    end
+    addButton(c, "alpha", {"az"})
+    addButton(c, "ralpha", {"za"})
+    addButton(c, "random")
     addPadding(c)
   end
   addButton(c, "config", {"options"}, true)
@@ -160,7 +149,7 @@ local function addTooltipLines(t, cmd)
   elseif cmd == "choose" or cmd == "list" or cmd == "listself" then
     t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,0, true)
   else
-    local sortMode = A.sortModes:GetObj(cmd)
+    local sortMode = A.sortModes:GetMode(cmd)
     t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], sortMode.name), 1,1,0, false)
     if sortMode.desc then
       if type(sortMode.desc) == "function" then

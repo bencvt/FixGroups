@@ -48,7 +48,7 @@ function M:Command(args)
 
   -- Determine sort mode.
   cmd = gsub(cmd, "%s+", "")
-  local sortMode = A.sortModes:GetObj(cmd)
+  local sortMode = A.sortModes:GetMode(cmd)
   if sortMode then
     if sortMode.key == "sort" then
       sortMode = A.sortModes:GetDefault()

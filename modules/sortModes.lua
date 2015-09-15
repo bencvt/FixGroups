@@ -3,7 +3,7 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("sortModes")
 A.sortModes = M
 M.private = {
-  objs = {},
+  modes = {},
   orderedList = {},
 }
 local R = M.private
@@ -39,47 +39,35 @@ function M:Register(sortMode)
     A.console:Errorf("missing name for sortMode %s", key)
     return
   end
-  R.objs[key] = sortMode
+  R.modes[key] = sortMode
   tinsert(R.orderedList, key)
   sort(R.orderedList, function(a, b)
-    local oa, ob = R.objs[a].order or 0, R.objs[b].order or 0
+    local oa, ob = R.modes[a].order or 0, R.modes[b].order or 0
     return (oa == ob) and (a < b) or (oa < ob)
   end)
   if sortMode.aliases then
     for _, alias in ipairs(sortMode.aliases) do
-      if not alias or R.objs[alias] then
+      if not alias or R.modes[alias] then
         A.console:Errorf("invalid or duplicate alias %s for sortMode %s", tostring(alias), key)
       else
-        R.objs[alias] = sortMode
+        R.modes[alias] = sortMode
       end
     end
   end
 end
 
-function M:GetObj(alias)
-  return R.objs[alias]
-end
-
-function M:GetList()
-  return R.orderedList
-end
-
-function M:GetName(key)
-  if R.objs[key] then
-    return R.objs[key].name
-  end
-  -- Must be a built-in sort mode.
-  return L["sorter.mode."..key]
+function M:GetMode(alias)
+  return R.modes[alias]
 end
 
 function M:GetDefault()
-  return A.options.sortMode and R.objs[A.options.sortMode] or R.objs.tmrh
+  return A.options.sortMode and R.modes[A.options.sortMode] or R.modes.tmrh
 end
 
 function M:BaseGetCompareFunc(players)
   local base = M:GetDefault()
   if not base.getCompareFunc then
-    base = R.objs.tmrh
+    base = R.modes.tmrh
   end
   return base.getCompareFunc(players)
 end
@@ -87,7 +75,7 @@ end
 function M:BaseOnBeforeSort(sortMode, keys, players)
   local base = M:GetDefault()
   if not base.getCompareFunc then
-    R.objs.tmrh.onBeforeSort()
+    R.modes.tmrh.onBeforeSort()
   end
   if sortMode ~= base and base.onBeforeSort then
     base.onBeforeSort()

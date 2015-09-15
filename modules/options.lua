@@ -443,7 +443,7 @@ R.optionsTable.args.sort.args = {
     desc = L["sorter.print.notUseful"],
     type = "toggle",
     width = "full",
-    get = function(i) return A.options.showExtraSortModes and #A.sortModes:GetList() > 0 end,
+    get = function(i) return A.options.showExtraSortModes end,
     set = function(i,v) A.options.showExtraSortModes = v end,
   },
   resumeAfterCombat = {
