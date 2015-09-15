@@ -76,7 +76,7 @@ function M:IsPaused()
 end
 
 function M:GetPausedSortMode()
-  return format(L["sorter.print.combatPaused"], R.resumeAfterCombat.sortMode.name)
+  return format(L["sorter.print.combatPaused"], R.resumeAfterCombat.sortMode.getFullName())
 end
 
 function M:CanBegin()
@@ -92,16 +92,16 @@ function M:Stop()
 end
 
 function M:StopTimedOut()
-  A.console:Printf(L["sorter.print.timedOut"], R.active.sortMode.name)
+  A.console:Printf(L["sorter.print.timedOut"], R.active.sortMode.getFullName())
   if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.active.stepCount, (time() - R.active.startTime), R.active.timeoutCount) end
   M:Stop()
 end
 
 local function getModeToStop()
   if M:IsProcessing() then
-    return R.active.sortMode.name
+    return R.active.sortMode.getFullName()
   elseif M:IsPaused() then
-    return R.resumeAfterCombat.sortMode.name
+    return R.resumeAfterCombat.sortMode.getFullName()
   end
 end
 
@@ -138,7 +138,7 @@ function M:StopIfNeeded()
       A.console:Print(M:GetPausedSortMode())
       A.buttonGui:Refresh()
     else
-      A.console:Printf(L["sorter.print.combatCancelled"], R.resumeSave.sortMode.name)
+      A.console:Printf(L["sorter.print.combatCancelled"], R.resumeSave.sortMode.getFullName())
     end
     return true
   end
@@ -151,7 +151,7 @@ function M:Start(sortMode)
     return true
   end
   R.active.sortMode = sortMode
-  R.active.key = sortMode.key
+  R.active.key = sortMode.getFullKey()
   R.active.stepCount = 0
   R.active.startTime = time()
   if M:StopIfNeeded() then
@@ -173,7 +173,7 @@ function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
     swap(R, "resumeSave", "resumeAfterCombat")
     wipe(R.resumeAfterCombat)
-    A.console:Printf(L["sorter.print.combatResumed"], R.resumeSave.sortMode.name)
+    A.console:Printf(L["sorter.print.combatResumed"], R.resumeSave.sortMode.getFullName())
     M:Start(R.resumeSave.sortMode)
   end
 end
@@ -218,7 +218,7 @@ function M:AnnounceComplete()
     if R.active.sortMode.isSplit then
       A.console:Print(L["sorter.print.alreadySplit"])
     else
-      A.console:Printf(L["sorter.print.alreadySorted"], R.active.sortMode.name)
+      A.console:Printf(L["sorter.print.alreadySorted"], R.active.sortMode.getFullName())
     end
   else
     -- Announce sort mode.
@@ -226,7 +226,7 @@ function M:AnnounceComplete()
     if R.active.sortMode.isSplit then
       msg = format(L["sorter.print.split"], A.sortRaid:GetSplitGroups())
     else
-      msg = format(L["sorter.print.sorted"], R.active.sortMode.name)
+      msg = format(L["sorter.print.sorted"], R.active.sortMode.getFullName())
     end
     -- Announce group comp.
     msg = format("%s %s: %s.", msg, L["phrase.groupComp"], A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))

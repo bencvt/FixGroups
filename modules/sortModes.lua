@@ -7,7 +7,7 @@ M.private = {
 }
 local R = M.private
 
-local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
+local format, ipairs, sort, tinsert, tostring = format, ipairs, sort, tinsert, tostring
 
 --- @param sortMode expected to be a table with the following keys:
 -- key = "example",               -- (required) string
@@ -46,6 +46,13 @@ function M:Register(sortMode)
         R.modes[alias] = sortMode
       end
     end
+  end
+  if sortMode.onSort then
+    sortMode.getFullKey = function() return sortMode.key end
+    sortMode.getFullName = function() return sortMode.name end
+  else
+    sortMode.getFullKey = function() return format("%s:%s", M:GetDefault().key, sortMode.key) end
+    sortMode.getFullName = function() return format("%s, %s", M:GetDefault().name, sortMode.name) end
   end
 end
 

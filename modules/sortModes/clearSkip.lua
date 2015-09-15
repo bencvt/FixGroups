@@ -16,7 +16,7 @@ local function isRaidTooBig(sortMode, groupOffset, skipFirstGroups)
   end
   -- Too many?
   local maxPlayers = (A.util:GetFirstSittingGroup() - groupOffset - 1) * 5
-  if A.DEBUG >= 1 then A.console:Debugf(M, "sortMode=%s groupOffset=%d skipFirstGroups=%d numPlayers=%d maxPlayers=%d", sortMode, groupOffset, skipFirstGroups, numPlayers, maxPlayers) end
+  if A.DEBUG >= 2 then A.console:Debugf(M, "sortMode=%s groupOffset=%d skipFirstGroups=%d numPlayers=%d maxPlayers=%d", sortMode, groupOffset, skipFirstGroups, numPlayers, maxPlayers) end
   if numPlayers > maxPlayers then
     A.console:Printf(L["sorter.print.tooLarge"], A.util:Highlight(sortMode))
     return true
