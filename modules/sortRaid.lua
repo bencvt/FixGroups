@@ -7,8 +7,8 @@ M.private = {
   deltaNewGroups = {},
   action = {},
   splitGroups = {{}, {}},
-  tmp1 = {},
-  tmp2 = {},
+  keys = {},
+  players = {},
 }
 local R = M.private
 
@@ -27,8 +27,8 @@ local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 -- The delta table is an array of players who are in the wrong group.
 function M:BuildDelta(sortMode)
   -- Build temporary tables tracking players.
-  local keys = wipe(R.tmp1)
-  local players = wipe(R.tmp2)
+  local keys = wipe(R.keys)
+  local players = wipe(R.players)
   local k
   for name, p in pairs(A.group:GetRoster()) do
     if not p.isSitting and A.sorter:IsGroupIncluded(p.group) then
