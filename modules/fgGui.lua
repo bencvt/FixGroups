@@ -134,16 +134,18 @@ function M:Open()
   addButton(c, "meter")
   addButton(c, "nosort")
   addPadding(c)
+  addIndent(c)
+  addButton(c, "sort")--TODO:core
+  addPadding(c)
   if A.options.showExtraSortModes then
     addIndent(c)
     addButton(c, "alpha")
     addButton(c, "ralpha")
+    addButton(c, "sort")--TODO:class
     addButton(c, "random")
     addPadding(c)
   end
   addButton(c, "config", true, {"options"})
-  addPadding(c)
-  addIndent(c)
   addButton(c, "choose", true)
   addButton(c, "list", true)
   addButton(c, "listself", true)
@@ -152,17 +154,15 @@ end
 local function addTooltipLines(t, cmd)
   if cmd == "config" then
     t:AddLine(format(L["gui.fixGroups.help.config"], A.util:GetBindingKey("TOGGLEGAMEMENU", "ESCAPE"), A.NAME), 1,1,0, false)
-  elseif cmd == "choose" or cmd == "list" or cmd == "listself" then
+  elseif cmd == "choose" or cmd == "list" or cmd == "listself" or cmd == "cancel" then
     t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,0, true)
   else
     local sortMode = A.sortModes:GetMode(cmd)
-    t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], sortMode.name), 1,1,0, false)
     if sortMode.desc then
       if type(sortMode.desc) == "function" then
         sortMode.desc(t)
       else
-        t:AddLine(" ")
-        t:AddLine(sortMode.desc, 1,1,1, true)
+        t:AddLine(sortMode.desc, 1,1,0, true)
       end
     end
   end

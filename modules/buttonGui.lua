@@ -25,7 +25,11 @@ local TOOLTIP_RIGHT_GUI = format(L["tooltip.right.gui"], A.util:Highlight("/fg")
 
 local function handleClick(_, button)
   if button == "RightButton" then
-    A.fgCommand:Command("")
+    if IsControlKeyDown() then
+      A.fgCommand:Command("config")
+    else
+      A.fgCommand:Command("")
+    end
   else
     if IsControlKeyDown() then
       A.fgCommand:Command("cancel")
@@ -120,10 +124,12 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
   tooltip:AddDoubleLine(" ", A.sortModes:GetDefault().name, 1,1,1, 1,1,0)
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["phrase.mouse.clickRight"], TOOLTIP_RIGHT_GUI, 1,1,1, 1,1,0)
-  -- Ctrl + Left Click is an undocumented shortcut, subject to change or removal
+  -- There are a couple undocumented shortcuts, subject to change or removal
   -- in a future version of this addon. We could make the mouse shortcuts
   -- user-configurable, but that's probably overkill... the default shortcuts
   -- are pretty reasonable as-is.
+  --tooltip:AddLine(" ")
+  --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickRight"], L["tooltip.right.config"], 1,1,1, 1,1,0)
   --tooltip:AddLine(" ")
   --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickLeft"], L["tooltip.right.cancel"], 1,1,1, 1,1,0)
   if isMinimapIcon then

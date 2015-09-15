@@ -36,7 +36,11 @@ function M:OnEnable()
     key = "random",
     name = L["sorter.mode.random"],
     isExtra = true,
-    desc = L["sorter.print.notUseful"],
+    desc = function(t)
+      t:AddLine(format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.random"]), 1,1,0, true)
+      t:AddLine(" ")
+      t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
+    end,
     onBeforeStart = function()
       salt = random()
       wipe(hashCache)

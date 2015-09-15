@@ -25,7 +25,7 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "tmrh",
     name = L["sorter.mode.tmrh"],
-    desc = format("%s:|n%s.", L["options.widget.sortMode.text"], L["sorter.mode.tmrh"]),
+    desc = format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.tmrh"]),
     getCompareFunc = getCompareFunc,
     onBeforeSort = function(keys, players)
       -- Insert dummy players for padding to keep the healers in the last group.

@@ -10,9 +10,9 @@ function M:OnEnable()
     name = L["sorter.mode.split"],
     isSplit = true,
     desc = function(t)
-      t:AddLine(L["gui.fixGroups.help.split"], 1,1,0)
+      t:AddLine(L["gui.fixGroups.help.split"], 1,1,0, true)
       t:AddLine(" ")
-      t:AddLine(L["gui.fixGroups.help.note.meter.1"], A.meter:GetSupportedAddonList(), 1,1,1, true)
+      t:AddLine(format(L["gui.fixGroups.help.note.meter.1"], A.meter:GetSupportedAddonList()), 1,1,1, true)
       t:AddLine(" ")
       t:AddLine(A.meter:TestInterop(), 1,1,1, true)
     end,

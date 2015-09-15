@@ -24,7 +24,7 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "thmr",
     name = L["sorter.mode.thmr"],
-    desc = format("%s:|n%s.", L["options.widget.sortMode.text"], L["sorter.mode.thmr"]),
+    desc = format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.thmr"]),
     getCompareFunc = getCompareFunc,
     onSort = function(keys, players)
       sort(keys, getCompareFunc(players))

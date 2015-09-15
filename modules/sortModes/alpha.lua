@@ -12,7 +12,11 @@ function M:OnEnable()
     name = L["sorter.mode.alpha"],
     aliases = {"az"},
     isExtra = true,
-    desc = L["sorter.print.notUseful"],
+    desc = function(t)
+      t:AddLine(format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.alpha"]), 1,1,0, true)
+      t:AddLine(" ")
+      t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
+    end,
     onSort = function(keys, players)
       sort(keys, function(a, b)
         return players[a].name < players[b].name
@@ -24,7 +28,11 @@ function M:OnEnable()
     name = L["sorter.mode.ralpha"],
     aliases = {"za"},
     isExtra = true,
-    desc = L["sorter.print.notUseful"],
+    desc = function(t)
+      t:AddLine(format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.ralpha"]), 1,1,0, true)
+      t:AddLine(" ")
+      t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
+    end,
     onSort = function(keys, players)
       sort(keys, function(a, b)
         return players[a].name > players[b].name
