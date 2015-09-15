@@ -142,6 +142,7 @@ function M:StopIfNeeded()
     end
     return true
   end
+  return not M:IsProcessing()
 end
 
 function M:Start(sortMode)
@@ -151,6 +152,8 @@ function M:Start(sortMode)
   end
   R.active.sortMode = sortMode
   R.active.key = sortMode.key
+  R.active.stepCount = 0
+  R.active.startTime = time()
   if M:StopIfNeeded() then
     return
   end
@@ -180,10 +183,6 @@ function M:ProcessStep()
     return
   end
   M:ClearTimeout(false)
-  if not M:IsProcessing() then
-    R.active.stepCount = 0
-    R.active.startTime = time()
-  end
   A.sortRaid:BuildDelta(R.active.sortMode)
   if A.sortRaid:IsDeltaEmpty() then
     M:AnnounceComplete()
