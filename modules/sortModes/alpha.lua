@@ -26,7 +26,7 @@ function M:OnEnable()
     order = 5910,
     isExtra = true,
     name = L["sorter.mode.ralpha"],
-    desc = {L["sorter.print.notUseful"]},
+    desc = L["sorter.print.notUseful"],
     onSort = function(keys, players)
       sort(keys, function(a, b)
         return players[a].name > players[b].name

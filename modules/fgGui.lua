@@ -9,7 +9,7 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
-local ceil, format, min, ipairs = ceil, format, min, ipairs
+local ceil, format, ipairs, min, type = ceil, format, ipairs, min, type
 local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
 
 local AceGUI = LibStub("AceGUI-3.0")
@@ -154,54 +154,22 @@ function M:Open()
   addButton(c, "listself", nil, true)
 end
 
-local function addHelpLines(t, cmd, noSameAs)
-  -- First line.
+local function addTooltipLines(t, cmd)
   if cmd == "config" then
     t:AddLine(format(L["gui.fixGroups.help.config"], A.util:GetBindingKey("TOGGLEGAMEMENU", "ESCAPE"), A.NAME), 1,1,0, false)
-  elseif cmd == "thmr" or cmd == "tmrh" or cmd == "meter" then
-    t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], L["sorter.mode."..cmd]), 1,1,0, false)
+  elseif cmd == "choose" or cmd == "list" or cmd == "listself" then
+    t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,0, true)
   else
     local sortMode = A.sortModes:GetObj(cmd)
-    if sortMode then
-      t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], sortMode.name), 1,1,0, false)
-      if sortMode.desc then
-        for _, desc in ipairs(sortMode.desc) do
-          t:AddLine(" ")
-          t:AddLine(desc, 1,1,1, true)
-        end
+    t:AddLine(format("%s:|n%s.", L["options.widget.sortMode.text"], sortMode.name), 1,1,0, false)
+    if sortMode.desc then
+      if type(sortMode.desc) == "function" then
+        sortMode.desc(t)
+      else
+        t:AddLine(" ")
+        t:AddLine(sortMode.desc, 1,1,1, true)
       end
-    else
-      t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,0, true)
     end
-  end
-  -- Line noting aliases.
-  if not noSameAs then
-    if cmd == "sort" then
-      t:AddLine(" ")
-      t:AddLine(format(L["gui.fixGroups.help.note.sameAsLeftClicking"], H(L["button.fixGroups.text"])), 1,1,1, true)
-    elseif cmd == "choose" or cmd == "list" or cmd == "listself" then
-      t:AddLine(" ")
-      t:AddLine(format(L["gui.fixGroups.help.note.sameAsCommand"], H("/"..cmd)), 1,1,1, false)
-    end
-  end
-  -- Extra lines.
-  if cmd == "sort" then
-    t:AddLine(" ")
-    t:AddLine(format(L["gui.fixGroups.help.note.defaultMode"], H(A.sortModes:GetName(A.options.sortMode))), 1,1,1, true)
-  elseif cmd == "split" or cmd == "meter" then
-    t:AddLine(" ")
-    t:AddLine(format(L["gui.fixGroups.help.note.meter.1"], A.meter:GetSupportedAddonList()), 1,1,1, true)
-    t:AddLine(" ")
-    t:AddLine(A.meter:TestInterop(), 1,1,1, true)
-    if cmd == "meter" then
-      t:AddLine(" ")
-      t:AddLine(L["gui.fixGroups.help.note.meter.2"], 1,1,1, true)
-    end
-  elseif cmd == "clear1" or cmd == "clear2" or cmd == "skip1" or cmd == "skip2" then
-    t:AddLine(" ")
-    addHelpLines(t, "sort", true)
-    t:AddLine(" ")
-    t:AddLine(L["gui.fixGroups.help.note.clearSkip"], 1,1,1, true)
   end
 end
 
@@ -210,7 +178,11 @@ function M:SetupTooltip(widget, cmd, aliases)
   local t = GameTooltip
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
-  addHelpLines(t, cmd)
+
+  -- Populate lines.
+  addTooltipLines(t, cmd)
+
+  -- List aliases, if any.
   if aliases and #aliases > 0 then
     local left, right
     if #aliases == 1 then
