@@ -73,19 +73,20 @@ function M:GetName(key)
   return L["sorter.mode."..key]
 end
 
+function M:GetDefault()
+  return A.options.sortMode and R.objs[A.options.sortMode] or R.objs.tmrh
+end
+
 function M:InitBaseSort(isOnBeforeSort, keys, players)
-  local b = A.options.sortMode
-  if b then
-    b = R.objs[b]
-  end
-  if not b or not b.getCompareFunc then
-    b = R.objs.tmrh
+  local mode = M:GetDefault()
+  if not mode.getCompareFunc then
+    mode = R.objs.tmrh
   end
   if isOnBeforeSort then
-    if b.onBeforeSort then
-      b.onBeforeSort()
+    if mode.onBeforeSort then
+      mode.onBeforeSort()
     end
   else
-    return b.getCompareFunc(players)
+    return mode.getCompareFunc(players)
   end
 end
