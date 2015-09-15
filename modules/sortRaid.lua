@@ -40,8 +40,8 @@ function M:BuildDelta(sortMode)
   end
 
   -- Sort keys.
-  if sortMode.onBeforeSort then
-    sortMode.onBeforeSort(keys, players)
+  if sortMode.onBeforeSort and sortMode.onBeforeSort(keys, players) then
+    return true
   end
   if sortMode.onSort then
     sortMode.onSort(keys, players)

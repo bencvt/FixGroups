@@ -148,14 +148,14 @@ end
 function M:Start(sortMode)
   M:Stop()
   if sortMode.onBeforeStart and sortMode.onBeforeStart() then
-    return
+    return true
   end
   R.active.sortMode = sortMode
   R.active.key = sortMode.key
   R.active.stepCount = 0
   R.active.startTime = time()
   if M:StopIfNeeded() then
-    return
+    return true
   end
   if sortMode.key == "clear1" or sortMode.key == "clear2" then
     -- The whole point of these sort modes is so the user can manually
@@ -183,7 +183,10 @@ function M:ProcessStep()
     return
   end
   M:ClearTimeout(false)
-  A.sortRaid:BuildDelta(R.active.sortMode)
+  if A.sortRaid:BuildDelta(R.active.sortMode) then
+    M:Stop()
+    return
+  end
   if A.sortRaid:IsDeltaEmpty() then
     M:AnnounceComplete()
     M:Stop()

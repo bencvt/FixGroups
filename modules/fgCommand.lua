@@ -69,8 +69,10 @@ function M:Command(args)
   A.marker:FixRaid(false)
 
   -- Start sort.
-  A.sorter:Start(sortMode)
+  local cancelled = A.sorter:Start(sortMode)
 
-  -- Notify other people running this addon that we've started a new sort.
-  A.addonChannel:Broadcast("f:"..A.sorter:GetKey())
+  if not cancelled or A.sorter:IsPaused() then
+    -- Notify other people running this addon that we've started a new sort.
+    A.addonChannel:Broadcast("f:"..A.sorter:GetKey())
+  end
 end

@@ -247,10 +247,10 @@ L["options.widget.dataBrokerGroupCompStyle.desc.2"] = "There are many Data Broke
 
 -- Sorter module
 L["sorter.mode.default"] = "sort"
-L["sorter.mode.clear1"] = "clear group 1"
-L["sorter.mode.clear2"] = "clear groups 1 and 2"
-L["sorter.mode.skip1"] = "skip group 1"
-L["sorter.mode.skip2"] = "skip groups 1 and 2"
+L["sorter.mode.clear1"] = "clearing group 1"
+L["sorter.mode.clear2"] = "clearing groups 1 and 2"
+L["sorter.mode.skip1"] = "skipping group 1"
+L["sorter.mode.skip2"] = "skipping groups 1 and 2"
 L["sorter.mode.meter"] = "by damage/healing done"
 L["sorter.mode.tmrh"] = "tanks>melee>ranged>healers"
 L["sorter.mode.thmr"] = "tanks>healers>melee>ranged"
@@ -260,6 +260,7 @@ L["sorter.mode.alpha"] = "by player name, A-Z"
 L["sorter.mode.ralpha"] = "by player name, Z-A"
 L["sorter.mode.random"] = "at random"
 
+L["sorter.print.tooLarge"] = "The raid has too many players to use the %s sort method."
 L["sorter.print.notUseful"] = "Some sort methods are not very useful for organizing a raid, but they're available for the sake of completeness."
 L["sorter.print.notActive"] = "You are not currently rearranging the group."
 L["sorter.print.groupDisbanding"] = "Rearranging cancelled because the group appears to be disbanding."
