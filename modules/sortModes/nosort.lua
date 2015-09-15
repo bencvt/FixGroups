@@ -8,12 +8,12 @@ local format, sort = format, sort
 
 function M:OnEnable()
   A.sortModes:Register({
-    key = "thmr",
+    key = "nosort",
     order = 3900,
     name = L["sorter.mode.nosort"],
     desc = L["gui.fixGroups.help.nosort"],
-    onSort = function(keys, players)
-      -- Do nothing.
+    onBeforeStart = function()
+      return true
     end,
   })
 end

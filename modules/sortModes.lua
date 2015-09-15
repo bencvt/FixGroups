@@ -11,18 +11,20 @@ local R = M.private
 local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
 
 --- @param sortMode expected to be a table with the following keys:
--- key = "example",               -- required, string
--- aliases = {"whatever"},        -- optional, array of strings
--- isSplit = false,               -- optional, boolean
--- order = 100,                   -- optional, number
--- isExtra = true,                -- optional, boolean
--- name = "by whatever",          -- required, string
--- desc = "Do an example sort.",  -- optional, string or function(t)
--- getCompareFunc = someFunc,     -- optional, function(players)
--- onBeforeStart = someFunc,      -- optional, function()
--- onStart = someFunc,            -- optional, function()
--- onBeforeSort = someFunc,       -- optional, function(keys, players)
--- onSort = someFunc,             -- required, function(keys, players)
+-- key = "example",               -- (required) string
+-- name = "by whatever",          -- (required) string
+-- aliases = {"whatever"},        -- array of strings
+-- isSplit = false,               -- boolean
+-- order = 100,                   -- number
+-- isExtra = true,                -- boolean
+-- desc = "Do an example sort.",  -- string or function(t)
+-- getCompareFunc = someFunc,     -- function(players)
+-- onBeforeStart = someFunc,      -- function()
+-- onStart = someFunc,            -- function()
+-- onBeforeSort = someFunc,       -- function(keys, players)
+-- onSort = someFunc,             -- function(keys, players)
+-- groupOffset = 0,               -- number
+-- skipFirstGroups = 0,           -- number
 function M:Register(sortMode)
   if not sortMode then
     A.console:Errorf("attempting to register a nil sortMode")
@@ -36,9 +38,6 @@ function M:Register(sortMode)
   if not sortMode.name then
     A.console:Errorf("missing name for sortMode %s", key)
     return
-  end
-  if not sortMode.onSort then
-    A.console:Errorf("missing onSort for sortMode %s", key)
   end
   R.objs[key] = sortMode
   tinsert(R.orderedList, key)

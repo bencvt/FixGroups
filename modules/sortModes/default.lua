@@ -19,6 +19,5 @@ function M:OnEnable()
       t:AddLine(" ")
       t:AddLine(format(L["gui.fixGroups.help.note.defaultMode"], A.util:Highlight(A.sortModes:GetDefault().name)), 1,1,1, true)
     end,
-    onSort = true, -- never called
   })
 end

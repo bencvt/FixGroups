@@ -29,9 +29,10 @@ function M:BuildDelta(sortMode)
   -- Build temporary tables tracking players.
   local keys = wipe(R.keys)
   local players = wipe(R.players)
+  local skipFirstGroups = sortMode.skipFirstGroups or 0
   local k
   for name, p in pairs(A.group:GetRoster()) do
-    if not p.isSitting and A.sorter:IsGroupIncluded(p.group) then
+    if not p.isSitting and p.group > skipFirstGroups then
       k = (p.class and CLASS_SORT_CHAR[p.class] or "Z")..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       players[k] = p
@@ -42,7 +43,11 @@ function M:BuildDelta(sortMode)
   if sortMode.onBeforeSort then
     sortMode.onBeforeSort(keys, players)
   end
-  sortMode.onSort(keys, players)
+  if sortMode.onSort then
+    sortMode.onSort(keys, players)
+  else
+    A.sortModes:GetDefault().onSort(keys, players)
+  end
 
   -- Determine which group each player needs to be in.
   -- If they're in the wrong group, add them to the delta tables.
@@ -76,7 +81,7 @@ function M:BuildDelta(sortMode)
       -- Just sorting the raid, not splitting it.
       newGroup = floor((i - 1) / 5) + 1
     end
-    newGroup = newGroup + A.sorter:GetGroupOffset()
+    newGroup = newGroup + (sortMode.groupOffset or 0)
     if newGroup ~= players[k].group and not players[k].isDummy then
       tinsert(R.deltaPlayers, players[k])
       tinsert(R.deltaNewGroups, newGroup)

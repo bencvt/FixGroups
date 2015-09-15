@@ -43,15 +43,25 @@ function M:Command(args)
     return
   end
 
-  -- Okay, we have some actual work to do then.
   -- Stop the current sort, if any.
   A.sorter:Stop()
+
+  -- Determine sort mode.
   cmd = gsub(cmd, "%s+", "")
+  local sortMode = A.sortModes:GetObj(cmd)
+  if sortMode then
+    if sortMode.key == "sort" then
+      sortMode = A.sortModes:GetDefault()
+    end
+  else
+    A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))
+    return
+  end
 
   -- Set tank marks and such.
   if IsInGroup() and not IsInRaid() then
     A.marker:FixParty()
-    if cmd ~= "nosort" and cmd ~= "default" and cmd ~= "sort" then
+    if sortMode.key ~= "nosort" and sortMode.key ~= "sort" then
       A.console:Print(L["phrase.print.notInRaid"])
     end
     return
@@ -59,24 +69,7 @@ function M:Command(args)
   A.marker:FixRaid(false)
 
   -- Start sort.
-  local sortMode = A.sortModes:GetObj(cmd)
-  if sortMode then
-    if sortMode.key == "sort" then
-      sortMode = A.sortModes:GetDefault()
-    end
-    A.sorter:Start(sortMode, 0, 0)
-  elseif cmd == "clear1" or cmd == "c1" then
-    A.sorter:Start(A.sortModes:GetDefault(), 1, 0)
-  elseif cmd == "clear2" or cmd == "c2" then
-    A.sorter:Start(A.sortModes:GetDefault(), 2, 0)
-  elseif cmd == "skip1" or cmd == "s1" then
-    A.sorter:Start(A.sortModes:GetDefault(), 0, 1)
-  elseif cmd == "skip2" or cmd == "s2" then
-    A.sorter:Start(A.sortModes:GetDefault(), 0, 2)
-  else
-    A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))
-    return
-  end
+  A.sorter:Start(sortMode)
 
   -- Notify other people running this addon that we've started a new sort.
   A.addonChannel:Broadcast("f:"..A.sorter:GetKey())

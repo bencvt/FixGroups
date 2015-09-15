@@ -247,6 +247,10 @@ L["options.widget.dataBrokerGroupCompStyle.desc.2"] = "There are many Data Broke
 
 -- Sorter module
 L["sorter.mode.default"] = "sort"
+L["sorter.mode.clear1"] = "clear group 1"
+L["sorter.mode.clear2"] = "clear groups 1 and 2"
+L["sorter.mode.skip1"] = "skip group 1"
+L["sorter.mode.skip2"] = "skip groups 1 and 2"
 L["sorter.mode.meter"] = "by damage/healing done"
 L["sorter.mode.tmrh"] = "tanks>melee>ranged>healers"
 L["sorter.mode.thmr"] = "tanks>healers>melee>ranged"

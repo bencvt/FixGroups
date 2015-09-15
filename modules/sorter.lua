@@ -5,7 +5,7 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("sorter", "AceEvent-3.0", "AceTimer-3.0")
 A.sorter = M
 M.private = {
-  active = {sortMode=false, clearGroups=false, skipGroups=false, key=false},
+  active = {sortMode=false, key=false},
   resumeAfterCombat = {},
   resumeSave = {},
   lastComplete = {},
@@ -62,14 +62,6 @@ end
 
 function M:GetKey()
   return R.active.key or R.lastComplete.key or ""
-end
-
-function M:IsGroupIncluded(group)
-  return group > R.active.skipGroups
-end
-
-function M:GetGroupOffset()
-  return max(R.active.clearGroups, R.active.skipGroups)
 end
 
 function M:IsProcessing()
@@ -151,20 +143,18 @@ function M:StopIfNeeded()
   end
 end
 
-local function start(sortMode, clearGroups, skipGroups)
+function M:Start(sortMode)
   M:Stop()
   if sortMode.onBeforeStart and sortMode.onBeforeStart() then
     return
   end
   R.active.sortMode = sortMode
-  R.active.clearGroups = clearGroups
-  R.active.skipGroups = skipGroups
-  R.active.key = format("%s:%d:%d", sortMode.key, clearGroups, skipGroups)
+  R.active.key = sortMode.key
   if M:StopIfNeeded() then
     return
   end
-  if clearGroups > 0 then
-    -- The whole point of having clearGroups is so the user can manually
+  if sortMode.key == "clear1" or sortMode.key == "clear2" then
+    -- The whole point of these sort modes is so the user can manually
     -- populate those groups, so make it easy for them.
     A.utilGui:OpenRaidTab()
   end
@@ -175,38 +165,12 @@ local function start(sortMode, clearGroups, skipGroups)
   M:ProcessStep()
 end
 
-local builtInSortModes = {tmrh=true, thmr=true, meter=true, split=true, nosort=true}
-do
-  for mode, _ in pairs(builtInSortModes) do
-    builtInSortModes[mode] = {key=mode, name=L["sorter.mode."..mode]}
-  end
-end
-
-function M:Start(mode, clearGroups, skipGroups)
-  mode = (not mode or mode == "default") and A.options.sortMode or mode
-  clearGroups = clearGroups or 0
-  skipGroups = skipGroups or 0
-  if mode == "nosort" and clearGroups == 0 then
-    M:Stop()
-    return
-  end
-  local sortMode = builtInSortModes[mode] or A.sortModes:GetObj(mode)
-  if sortMode then
-    start(sortMode, clearGroups, skipGroups)
-  else
-    M:Stop()
-    if mode ~= "nosort" then
-      A.console:Errorf(M, "invalid sort mode %s!", tostring(mode))
-    end
-  end
-end
-
 function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
     swap(R, "resumeSave", "resumeAfterCombat")
     wipe(R.resumeAfterCombat)
     A.console:Printf(L["sorter.print.combatResumed"], R.resumeSave.sortMode.name)
-    start(R.resumeSave.sortMode, R.resumeSave.clearGroups, R.resumeSave.skipGroups)
+    M:Start(R.resumeSave.sortMode)
   end
 end
 
