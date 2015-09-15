@@ -64,10 +64,6 @@ function M:GetKey()
   return R.active.key or R.lastComplete.key or ""
 end
 
-function M:IsSortingHealersBeforeDamagers()
-  return A.options.sortMode == "thmr" and R.active.sortMode.key ~= "tmrh"
-end
-
 function M:IsGroupIncluded(group)
   return group > R.active.skipGroups
 end

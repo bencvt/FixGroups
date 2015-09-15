@@ -19,9 +19,10 @@ local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
 -- name = "by whatever",          -- required, string
 -- desc = "Do an example sort.",  -- optional, function(t), string, or array of strings
 -- getCompareFunc = someFunc,     -- optional, function(players)
--- onSort = someFunc,             -- required, function(keys, players)
 -- onBeforeStart = someFunc,      -- optional, function()
 -- onStart = someFunc,            -- optional, function()
+-- onBeforeSort = someFunc,       -- optional, function(keys, players)
+-- onSort = someFunc,             -- required, function(keys, players)
 function M:Register(sortMode)
   if not sortMode then
     A.console:Errorf("attempting to register a nil sortMode")
@@ -72,16 +73,19 @@ function M:GetName(key)
   return L["sorter.mode."..key]
 end
 
-function M:GetDefaultCompareFunc(players)
-  local x = A.options.sortMode
-  if x then
-    x = R.objs[x]
-    if x then
-      x = x.getCompareFunc
+function M:InitBaseSort(isOnBeforeSort, keys, players)
+  local b = A.options.sortMode
+  if b then
+    b = R.objs[b]
+  end
+  if not b or not b.getCompareFunc then
+    b = R.objs.tmrh
+  end
+  if isOnBeforeSort then
+    if b.onBeforeSort then
+      b.onBeforeSort()
     end
+  else
+    return b.getCompareFunc(players)
   end
-  if not x then
-    x = R.objs.tmrh.getCompareFunc
-  end
-  return x(players)
 end

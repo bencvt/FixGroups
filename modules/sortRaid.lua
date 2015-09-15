@@ -13,12 +13,12 @@ M.private = {
 local R = M.private
 
 local DELAY_ACTION = 0.01
-local ROLE_PAD_CHAR, ROLE_PAD_PLAYER = "e", {name="_unknown", role=5, isDummy=true}
 local CLASS_SORT_CHAR = {}
-for i, class in ipairs(CLASS_SORT_ORDER) do
-  CLASS_SORT_CHAR[class] = string.char(64 + i)
+do
+  for i, class in ipairs(CLASS_SORT_ORDER) do
+    CLASS_SORT_CHAR[class] = string.char(64 + i)
+  end
 end
-CLASS_SORT_CHAR["_unknown"] = "Z"
 
 local format, floor, ipairs, pairs, sort, tinsert, tostring, wipe = format, floor, ipairs, pairs, sort, tinsert, tostring, wipe
 local tconcat = table.concat
@@ -27,32 +27,21 @@ local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 -- The delta table is an array of players who are in the wrong group.
 function M:BuildDelta(sortMode)
   -- Build temporary tables tracking players.
-  local areHealersFirst = A.sorter:IsSortingHealersBeforeDamagers()
   local keys = wipe(R.tmp1)
   local players = wipe(R.tmp2)
   local k
   for name, p in pairs(A.group:GetRoster()) do
     if not p.isSitting and A.sorter:IsGroupIncluded(p.group) then
-      k = (p.class and CLASS_SORT_CHAR[p.class] or CLASS_SORT_CHAR["_unknown"])..(p.isUnknown and ("_"..name) or name)
+      k = (p.class and CLASS_SORT_CHAR[p.class] or "Z")..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       players[k] = p
     end
   end
 
-  -- Insert dummy players for padding if we need to keep the healers in the
-  -- last group.
-  if not areHealersFirst and not sortMode.isSplit then
-    local fixedSize = A.util:GetFixedInstanceSize()
-    if fixedSize then
-      while #keys < fixedSize do
-        k = ROLE_PAD_CHAR..(#keys + 1)
-        tinsert(keys, k)
-        players[k] = ROLE_PAD_PLAYER
-      end
-    end
-  end
-
   -- Sort keys.
+  if sortMode.onBeforeSort then
+    sortMode.onBeforeSort(keys, players)
+  end
   sortMode.onSort(keys, players)
 
   -- Determine which group each player needs to be in.

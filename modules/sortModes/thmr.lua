@@ -5,7 +5,7 @@ local M = P:NewModule("thmr", "AceEvent-3.0")
 P.thmr = M
 
 -- Indexes correspond to A.group.ROLE constants (THMRU).
-local ROLE_KEY = {1, 4, 2, 3, 3}
+local ROLE_KEY = {1, 2, 3, 4, 4}
 
 local format, sort = format, sort
 

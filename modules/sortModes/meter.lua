@@ -23,6 +23,9 @@ function M:OnEnable()
     onStart = function()
       A.meter:BuildSnapshot(true)
     end,
+    onBeforeSort = function(keys, players)
+      P:InitBaseSort(true, keys, players)
+    end,
     onSort = M.onSort,
   })
 end
@@ -30,7 +33,7 @@ end
 local TANK, HEALER = A.group.ROLE.TANK, A.group.ROLE.HEALER
 
 function M.onSort(keys, players)
-  local defaultCompare = P:GetDefaultCompareFunc(players)
+  local defaultCompare = P:InitBaseSort(false, keys, players)
   local pa, pb
   sort(keys, function(a, b)
     pa, pb = players[a], players[b]
