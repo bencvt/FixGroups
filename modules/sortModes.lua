@@ -77,16 +77,20 @@ function M:GetDefault()
   return A.options.sortMode and R.objs[A.options.sortMode] or R.objs.tmrh
 end
 
-function M:InitBaseSort(isOnBeforeSort, keys, players)
-  local mode = M:GetDefault()
-  if not mode.getCompareFunc then
-    mode = R.objs.tmrh
+function M:BaseGetCompareFunc(players)
+  local base = M:GetDefault()
+  if not base.getCompareFunc then
+    base = R.objs.tmrh
   end
-  if isOnBeforeSort then
-    if mode.onBeforeSort then
-      mode.onBeforeSort()
-    end
-  else
-    return mode.getCompareFunc(players)
+  return base.getCompareFunc(players)
+end
+
+function M:BaseOnBeforeSort(sortMode, keys, players)
+  local base = M:GetDefault()
+  if not base.getCompareFunc then
+    R.objs.tmrh.onBeforeSort()
+  end
+  if sortMode ~= base and base.onBeforeSort then
+    base.onBeforeSort()
   end
 end
