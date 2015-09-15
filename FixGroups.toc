@@ -45,6 +45,7 @@ modules\sortRaid.lua
 modules\utilGui.lua
 
 modules\sortModes\alpha.lua
+modules\sortModes\default.lua
 modules\sortModes\meter.lua
 modules\sortModes\nosort.lua
 modules\sortModes\random.lua

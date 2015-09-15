@@ -246,6 +246,7 @@ L["options.widget.dataBrokerGroupCompStyle.desc.1"] = "%s is available as a Data
 L["options.widget.dataBrokerGroupCompStyle.desc.2"] = "There are many Data Broker display addons out there. Some of the more popular ones are %s."
 
 -- Sorter module
+L["sorter.mode.default"] = "sort"
 L["sorter.mode.meter"] = "by damage/healing done"
 L["sorter.mode.tmrh"] = "tanks>melee>ranged>healers"
 L["sorter.mode.thmr"] = "tanks>healers>melee>ranged"

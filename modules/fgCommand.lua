@@ -58,28 +58,23 @@ function M:Command(args)
   A.marker:FixRaid(false)
 
   -- Start sort.
-  if argsLower == "default" or argsLower == "split" or argsLower == "thmr" or argsLower == "tmrh" or argsLower == "meter" or argsLower == "nosort" then
-    A.sorter:Start(argsLower, 0, 0)
-  elseif argsLower == "sort" then
-    A.sorter:Start("default", 0, 0)
-  elseif argsLower == "dps" then
-    A.sorter:Start("meter", 0, 0)
-  elseif argsLower == "clear1" or argsLower == "clear 1" or argsLower == "c1" or argsLower == "c 1" then
-    A.sorter:Start("default", 1, 0)
-  elseif argsLower == "clear2" or argsLower == "clear 2" or argsLower == "c2" or argsLower == "c 2" then
-    A.sorter:Start("default", 2, 0)
-  elseif argsLower == "skip1" or argsLower == "skip 1" or argsLower == "s1" or argsLower == "s 1" then
-    A.sorter:Start("default", 0, 1)
-  elseif argsLower == "skip2" or argsLower == "skip 2" or argsLower == "s2" or argsLower == "s 2" then
-    A.sorter:Start("default", 0, 2)
-  else
-    local sortMode = A.sortModes:GetObj(argsLower)
-    if sortMode then
-      A.sorter:Start(sortMode.key, 0, 0)
-    else
-      A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))
-      return
+  local sortMode = A.sortModes:GetObj(argsLower)
+  if sortMode then
+    if sortMode.key == "sort" then
+      sortMode = A.sortModes:GetDefault()
     end
+    A.sorter:Start(sortMode, 0, 0)
+  elseif argsLower == "clear1" or argsLower == "clear 1" or argsLower == "c1" or argsLower == "c 1" then
+    A.sorter:Start(A.sortModes:GetDefault(), 1, 0)
+  elseif argsLower == "clear2" or argsLower == "clear 2" or argsLower == "c2" or argsLower == "c 2" then
+    A.sorter:Start(A.sortModes:GetDefault(), 2, 0)
+  elseif argsLower == "skip1" or argsLower == "skip 1" or argsLower == "s1" or argsLower == "s 1" then
+    A.sorter:Start(A.sortModes:GetDefault(), 0, 1)
+  elseif argsLower == "skip2" or argsLower == "skip 2" or argsLower == "s2" or argsLower == "s 2" then
+    A.sorter:Start(A.sortModes:GetDefault(), 0, 2)
+  else
+    A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))
+    return
   end
 
   -- Notify other people running this addon that we've started a new sort.

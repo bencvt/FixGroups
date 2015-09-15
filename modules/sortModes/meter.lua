@@ -9,6 +9,7 @@ local format, sort = format, sort
 function M:OnEnable()
   A.sortModes:Register({
     key = "meter",
+    aliases = {"dps"},
     order = 2100,
     name = L["sorter.mode.meter"],
     desc = function(t)
