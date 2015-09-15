@@ -8,7 +8,7 @@ P.tmrh = M
 local ROLE_KEY = {1, 4, 2, 3, 3}
 local PADDING_PLAYER = {name="_unknown", role=5, isDummy=true}
 
-local format, sort = format, sort
+local format, sort, tinsert = format, sort, tinsert
 
 local function getCompareFunc(players)
   local ra, rb
@@ -31,6 +31,7 @@ function M:OnEnable()
       -- Insert dummy players for padding to keep the healers in the last group.
       local fixedSize = A.util:GetFixedInstanceSize()
       if fixedSize then
+        local k
         while #keys < fixedSize do
           k = format("_pad%02d", #keys)
           tinsert(keys, k)
