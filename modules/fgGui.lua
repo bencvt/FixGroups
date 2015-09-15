@@ -39,7 +39,7 @@ local function getCommand(cmd)
   return "/fg "..cmd
 end
 
-local function addButton(frame, cmd, aliases, forceClose)
+local function addButton(frame, cmd, forceClose, aliases)
   local button = AceGUI:Create("Button")
   button:SetText(cmd)
   button:SetCallback("OnClick", function(widget)
@@ -141,12 +141,12 @@ function M:Open()
     addButton(c, "random")
     addPadding(c)
   end
-  addButton(c, "config", {"options"}, true)
+  addButton(c, "config", true, {"options"})
   addPadding(c)
   addIndent(c)
-  addButton(c, "choose", nil, true)
-  addButton(c, "list", nil, true)
-  addButton(c, "listself", nil, true)
+  addButton(c, "choose", true)
+  addButton(c, "list", true)
+  addButton(c, "listself", true)
 end
 
 local function addTooltipLines(t, cmd)
