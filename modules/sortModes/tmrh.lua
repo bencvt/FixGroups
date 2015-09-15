@@ -24,7 +24,6 @@ end
 function M:OnEnable()
   A.sortModes:Register({
     key = "tmrh",
-    order = 3000,
     name = L["sorter.mode.tmrh"],
     desc = format("%s:|n%s.", L["options.widget.sortMode.text"], L["sorter.mode.tmrh"]),
     getCompareFunc = getCompareFunc,

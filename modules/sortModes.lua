@@ -4,7 +4,6 @@ local M = A:NewModule("sortModes")
 A.sortModes = M
 M.private = {
   modes = {},
-  orderedList = {},
 }
 local R = M.private
 
@@ -15,7 +14,6 @@ local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
 -- name = "by whatever",          -- (required) string
 -- aliases = {"whatever"},        -- array of strings
 -- isSplit = false,               -- boolean
--- order = 100,                   -- number
 -- isExtra = true,                -- boolean
 -- desc = "Do an example sort.",  -- string or function(t)
 -- getCompareFunc = someFunc,     -- function(players)
@@ -40,11 +38,6 @@ function M:Register(sortMode)
     return
   end
   R.modes[key] = sortMode
-  tinsert(R.orderedList, key)
-  sort(R.orderedList, function(a, b)
-    local oa, ob = R.modes[a].order or 0, R.modes[b].order or 0
-    return (oa == ob) and (a < b) or (oa < ob)
-  end)
   if sortMode.aliases then
     for _, alias in ipairs(sortMode.aliases) do
       if not alias or R.modes[alias] then

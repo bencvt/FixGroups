@@ -9,7 +9,6 @@ local format, sort = format, sort
 function M:OnEnable()
   A.sortModes:Register({
     key = "nosort",
-    order = 3900,
     name = L["sorter.mode.nosort"],
     desc = L["gui.fixGroups.help.nosort"],
     onBeforeStart = function()

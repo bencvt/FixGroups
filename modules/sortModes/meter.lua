@@ -9,9 +9,8 @@ local format, sort = format, sort
 function M:OnEnable()
   A.sortModes:Register({
     key = "meter",
-    aliases = {"dps"},
-    order = 2100,
     name = L["sorter.mode.meter"],
+    aliases = {"dps"},
     desc = function(t)
       t:AddLine(format("%s: |n%s.", L["options.widget.sortMode.text"], L["sorter.mode.meter"]), 1,1,0)
       t:AddLine(" ")

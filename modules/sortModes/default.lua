@@ -9,9 +9,8 @@ local format = format
 function M:OnEnable()
   A.sortModes:Register({
     key = "sort",
-    aliases = {"default"},
-    order = 1000,
     name = L["sorter.mode.default"],
+    aliases = {"default"},
     desc = function(t)
       t:AddLine(L["gui.fixGroups.help.sort"], 1,1,0, true)
       t:AddLine(" ")

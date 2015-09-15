@@ -21,34 +21,30 @@ end
 function M:OnEnable()
   A.sortModes:Register({
     key = "clear1",
-    aliases = {"c1"},
-    order = 2001,
     name = L["sorter.mode.clear1"],
+    aliases = {"c1"},
     desc = getDescFunc("clear1"),
     groupOffset = 1,
   })
   A.sortModes:Register({
     key = "clear2",
-    aliases = {"c2"},
-    order = 2002,
     name = L["sorter.mode.clear2"],
+    aliases = {"c2"},
     desc = getDescFunc("clear2"),
     groupOffset = 2,
   })
   A.sortModes:Register({
     key = "skip1",
-    aliases = {"s1"},
-    order = 2101,
     name = L["sorter.mode.skip1"],
+    aliases = {"s1"},
     desc = getDescFunc("skip1"),
     groupOffset = 1,
     skipFirstGroups = 1,
   })
   A.sortModes:Register({
     key = "skip2",
-    aliases = {"s2"},
-    order = 2102,
     name = L["sorter.mode.skip2"],
+    aliases = {"s2"},
     desc = getDescFunc("skip2"),
     groupOffset = 2,
     skipFirstGroups = 2,

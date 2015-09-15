@@ -9,10 +9,9 @@ local sort = sort
 function M:OnEnable()
   A.sortModes:Register({
     key = "alpha",
-    aliases = {"az"},
-    order = 5910,
-    isExtra = true,
     name = L["sorter.mode.alpha"],
+    aliases = {"az"},
+    isExtra = true,
     desc = L["sorter.print.notUseful"],
     onSort = function(keys, players)
       sort(keys, function(a, b)
@@ -22,10 +21,9 @@ function M:OnEnable()
   })
   A.sortModes:Register({
     key = "ralpha",
-    aliases = {"za"},
-    order = 5910,
-    isExtra = true,
     name = L["sorter.mode.ralpha"],
+    aliases = {"za"},
+    isExtra = true,
     desc = L["sorter.print.notUseful"],
     onSort = function(keys, players)
       sort(keys, function(a, b)

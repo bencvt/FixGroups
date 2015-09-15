@@ -7,9 +7,8 @@ P.split = M
 function M:OnEnable()
   A.sortModes:Register({
     key = "split",
-    isSplit = true,
-    order = 1000,
     name = L["sorter.mode.split"],
+    isSplit = true,
     desc = function(t)
       t:AddLine(L["gui.fixGroups.help.split"], 1,1,0)
       t:AddLine(" ")

@@ -23,7 +23,6 @@ end
 function M:OnEnable()
   A.sortModes:Register({
     key = "thmr",
-    order = 3010,
     name = L["sorter.mode.thmr"],
     desc = format("%s:|n%s.", L["options.widget.sortMode.text"], L["sorter.mode.thmr"]),
     getCompareFunc = getCompareFunc,
