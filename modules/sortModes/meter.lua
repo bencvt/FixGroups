@@ -30,19 +30,20 @@ end
 local TANK, HEALER = A.group.ROLE.TANK, A.group.ROLE.HEALER
 
 function M.onSort(keys, players)
+  local defaultCompare = P:GetDefaultCompareFunc(players)
   local pa, pb
   sort(keys, function(a, b)
     pa, pb = players[a], players[b]
     if pa.role ~= pb.role then
       if pa.role == HEALER or pb.role == HEALER or pa.role == TANK or pb.role == TANK then
         -- Tanks and healers are in their own brackets.
-        return a < b
+        return defaultCompare(a, b)
       end
     end
     pa, pb = A.meter:GetPlayerMeter(pa.name), A.meter:GetPlayerMeter(pb.name)
     if pa == pb then
       -- Tie, or no data. Fall back to default sort.
-      return a < b
+      return defaultCompare(a, b)
     end
     return pa > pb
   end)

@@ -17,7 +17,8 @@ local ipairs, sort, tinsert, tostring = ipairs, sort, tinsert, tostring
 -- order = 100,                   -- optional, number
 -- isExtra = true,                -- optional, boolean
 -- name = "by whatever",          -- required, string
--- desc = "Do an example sort."   -- optional, function(t), string, or array of strings
+-- desc = "Do an example sort.",  -- optional, function(t), string, or array of strings
+-- getCompareFunc = someFunc,     -- optional, function(players)
 -- onSort = someFunc,             -- required, function(keys, players)
 -- onBeforeStart = someFunc,      -- optional, function()
 -- onStart = someFunc,            -- optional, function()
@@ -69,4 +70,18 @@ function M:GetName(key)
   end
   -- Must be a built-in sort mode.
   return L["sorter.mode."..key]
+end
+
+function M:GetDefaultCompareFunc(players)
+  local x = A.options.sortMode
+  if x then
+    x = R.objs[x]
+    if x then
+      x = x.getCompareFunc
+    end
+  end
+  if not x then
+    x = R.objs.tmrh.getCompareFunc
+  end
+  return x(players)
 end

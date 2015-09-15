@@ -48,3 +48,5 @@ modules\sortModes\alpha.lua
 modules\sortModes\meter.lua
 modules\sortModes\random.lua
 modules\sortModes\split.lua
+modules\sortModes\thmr.lua
+modules\sortModes\tmrh.lua

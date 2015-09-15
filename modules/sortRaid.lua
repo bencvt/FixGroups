@@ -13,9 +13,6 @@ M.private = {
 local R = M.private
 
 local DELAY_ACTION = 0.01
--- ROLE_SORT_CHAR_x indexes correspond to A.group.ROLE constants (THMRU).
-local ROLE_SORT_CHAR_TMURH = {"a", "z", "b", "c", "c"}
-local ROLE_SORT_CHAR_THMUR = {"a", "b", "c", "d", "d"}
 local ROLE_PAD_CHAR, ROLE_PAD_PLAYER = "e", {name="_unknown", role=5, isDummy=true}
 local CLASS_SORT_CHAR = {}
 for i, class in ipairs(CLASS_SORT_ORDER) do
@@ -31,13 +28,12 @@ local SetRaidSubgroup, SwapRaidSubgroup = SetRaidSubgroup, SwapRaidSubgroup
 function M:BuildDelta(sortMode)
   -- Build temporary tables tracking players.
   local areHealersFirst = A.sorter:IsSortingHealersBeforeDamagers()
-  local sortRoles = areHealersFirst and ROLE_SORT_CHAR_THMUR or ROLE_SORT_CHAR_TMURH
   local keys = wipe(R.tmp1)
   local players = wipe(R.tmp2)
   local k
   for name, p in pairs(A.group:GetRoster()) do
     if not p.isSitting and A.sorter:IsGroupIncluded(p.group) then
-      k = sortRoles[p.role]..(p.class and CLASS_SORT_CHAR[p.class] or CLASS_SORT_CHAR["_unknown"])..(p.isUnknown and ("_"..name) or name)
+      k = (p.class and CLASS_SORT_CHAR[p.class] or CLASS_SORT_CHAR["_unknown"])..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       players[k] = p
     end
