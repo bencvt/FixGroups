@@ -5,15 +5,18 @@ local A, L = unpack(select(2, ...))
 local M = A:NewModule("sorter", "AceEvent-3.0", "AceTimer-3.0")
 A.sorter = M
 M.private = {
-  active = {sortMode=false, key=false},
+  active = {
+    key = false,
+    sortMode = false,
+    startTime = false,
+    stepCount = false,
+    timeoutCount = false,
+  },
   resumeAfterCombat = {},
   resumeSave = {},
   lastComplete = {},
   announced = false,
-  startTime = false,
-  stepCount = false,
   timeoutTimer = false,
-  timeoutCount = false,
 }
 local R = M.private
 
@@ -65,11 +68,11 @@ function M:GetKey()
 end
 
 function M:IsProcessing()
-  return R.stepCount and true or false
+  return R.active.sortMode and true or false
 end
 
 function M:IsPaused()
-  return R.resumeAfterCombat.key and true or false
+  return R.resumeAfterCombat.sortMode and true or false
 end
 
 function M:GetPausedSortMode()
@@ -85,14 +88,12 @@ function M:Stop()
   wipe(R.active)
   wipe(R.resumeAfterCombat)
   M:ClearTimeout(true)
-  R.stepCount = false
-  R.startTime = false
   A.buttonGui:Refresh()
 end
 
 function M:StopTimedOut()
   A.console:Printf(L["sorter.print.timedOut"], R.active.sortMode.name)
-  if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
+  if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.active.stepCount, (time() - R.active.startTime), R.active.timeoutCount) end
   M:Stop()
 end
 
@@ -180,22 +181,22 @@ function M:ProcessStep()
   end
   M:ClearTimeout(false)
   if not M:IsProcessing() then
-    R.stepCount = 0
-    R.startTime = time()
+    R.active.stepCount = 0
+    R.active.startTime = time()
   end
   A.sortRaid:BuildDelta(R.active.sortMode)
   if A.sortRaid:IsDeltaEmpty() then
     M:AnnounceComplete()
     M:Stop()
     return
-  elseif R.stepCount > MAX_STEPS then
+  elseif R.active.stepCount > MAX_STEPS then
     M:StopTimedOut()
     return
   end
   A.sortRaid:ProcessDelta()
   if A.DEBUG >= 2 then A.sortRaid:DebugPrintAction() end
   if A.sortRaid:IsActionScheduled() then
-    R.stepCount = R.stepCount + 1
+    R.active.stepCount = R.active.stepCount + 1
     M:ScheduleTimeout()
     A.buttonGui:Refresh()
   else
@@ -211,7 +212,7 @@ function M:AnnounceComplete()
   if R.lastComplete.key ~= R.active.key then
     R.announced = false
   end
-  if R.stepCount == 0 then
+  if R.active.stepCount == 0 then
     if R.active.sortMode.isSplit then
       A.console:Print(L["sorter.print.alreadySplit"])
     else
@@ -241,7 +242,7 @@ function M:AnnounceComplete()
     else
       A.console:Print(msg)
     end
-    if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.stepCount, (time() - R.startTime), R.timeoutCount) end
+    if A.DEBUG >= 1 then A.console:Debugf(M, "steps=%d seconds=%.1f timeouts=%d", R.active.stepCount, (time() - R.active.startTime), R.active.timeoutCount) end
   end
   swap(R, "lastComplete", "active")
 end
@@ -252,7 +253,7 @@ function M:ClearTimeout(resetCount)
   end
   R.timeoutTimer = false
   if resetCount then
-    R.timeoutCount = false
+    R.active.timeoutCount = false
   end
 end
 
@@ -265,9 +266,9 @@ function M:ScheduleTimeout()
   M:ClearTimeout(false)
   R.timeoutTimer = M:ScheduleTimer(function()
     M:ClearTimeout(false)
-    R.timeoutCount = (R.timeoutCount or 0) + 1
-    if A.DEBUG >= 1 then A.console:Debugf(M, "timeout %d of %d", R.timeoutCount, MAX_TIMEOUTS) end
-    if R.timeoutCount >= MAX_TIMEOUTS then
+    R.active.timeoutCount = (R.active.timeoutCount or 0) + 1
+    if A.DEBUG >= 1 then A.console:Debugf(M, "timeout %d of %d", R.active.timeoutCount, MAX_TIMEOUTS) end
+    if R.active.timeoutCount >= MAX_TIMEOUTS then
       M:StopTimedOut()
       return
     end
