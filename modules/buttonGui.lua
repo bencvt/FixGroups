@@ -185,6 +185,7 @@ local function setUI(buttonText, iconTexture)
 end
 
 function M:Refresh()
+  A.fgGui:Refresh()
   if not M:IsEnabled() then
     R.icon:Hide(A.NAME)
     R.raidTabButton:Hide()

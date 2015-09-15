@@ -4,6 +4,7 @@ local M = A:NewModule("fgGui")
 A.fgGui = M
 M.private = {
   window = false,
+  label = false,
   closeButton = {},
 }
 local R = M.private
@@ -13,6 +14,10 @@ local ceil, format, ipairs, min, type = ceil, format, ipairs, min, type
 local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
 
 local AceGUI = LibStub("AceGUI-3.0")
+
+local CUBE_ICON_0 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga"
+local CUBE_ICON_1 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga"
+local CUBE_ICON_BW = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIconBW_64.tga"
 
 local function addPadding(frame)
   local padding = AceGUI:Create("Label")
@@ -69,6 +74,7 @@ end
 
 local function onCloseWindow(widget)
   R.window = false
+  R.label = false
   AceGUI:Release(widget)
 end
 
@@ -105,18 +111,18 @@ function M:Open()
   c:SetLayout("Flow")
   R.window:AddChild(c)
 
-  local widget = AceGUI:Create("Label")
-  widget:SetImage("Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga")
-  widget:SetImageSize(64, 64)
-  widget:SetFontObject(GameFontHighlight)
-  widget:SetText(format(L["gui.fixGroups.intro"], H("/fg"), H("/fixgroups")))
-  widget:SetFullWidth(true)
-  c:AddChild(widget)
+  R.label = AceGUI:Create("Label")
+  M:Refresh()
+  R.label:SetImageSize(64, 64)
+  R.label:SetFontObject(GameFontHighlight)
+  R.label:SetText(format(L["gui.fixGroups.intro"], H("/fg"), H("/fixgroups")))
+  R.label:SetFullWidth(true)
+  c:AddChild(R.label)
 
-  widget = AceGUI:Create("Heading")
-  widget:SetText(format(L["gui.header.buttons"], H("/fg")))
-  widget:SetFullWidth(true)
-  c:AddChild(widget)
+  local header = AceGUI:Create("Heading")
+  header:SetText(format(L["gui.header.buttons"], H("/fg")))
+  header:SetFullWidth(true)
+  c:AddChild(header)
 
   addButton(c, "sort")
   addButton(c, "split")
@@ -190,4 +196,16 @@ function M:SetupTooltip(widget, cmd, aliases)
     t:AddDoubleLine(left, right, 1,1,1, 1,1,1)
   end
   t:Show()
+end
+
+function M:Refresh()
+  if R.label then
+    if A.sorter:IsPaused() then
+      R.label:SetImage(CUBE_ICON_BW)
+    elseif A.sorter:IsProcessing() and time() % 2 == 0 then
+      R.label:SetImage(CUBE_ICON_0)
+    else
+      R.label:SetImage(CUBE_ICON_1)
+    end
+  end
 end

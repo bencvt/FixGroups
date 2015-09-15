@@ -4,6 +4,7 @@ v1.4:
   - fix blank raid tab issue
   - add message when cancelling sort
   - adjust clear/skip message to make it more clear what they're doing
+  - animate the icon when busy sorting
   - add extra sort methods: alpha, ralpha, random
 
 v1.3.4:
