@@ -162,8 +162,10 @@ local function guessMeleeOrRangedFromBuffs(name)
     for buff, role in pairs({
       [156064]  = A.group.ROLE.MELEE,   -- Greater Draenic Agility Flask
       [156073]  = A.group.ROLE.MELEE,   -- Draenic Agility Flask
+      [175456]  = A.group.ROLE.MELEE,   -- Hyper Augmentation
       [156079]  = A.group.ROLE.RANGED,  -- Greater Draenic Intellect Flask
       [156070]  = A.group.ROLE.RANGED,  -- Draenic Intellect Flask
+      [175457]  = A.group.ROLE.MELEE,   -- Focus Augmentation
       [24858]   = A.group.ROLE.RANGED,  -- Moonkin Form
     }) do
       buff = GetSpellInfo(buff)
