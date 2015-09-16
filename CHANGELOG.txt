@@ -1,5 +1,6 @@
 v1.4:
   - add core raider sort method
+  - add /fg last command
   - add extra sort methods: alpha, ralpha, class, random
   - add option to use alternate role icons
   - add total to group comp tooltip
