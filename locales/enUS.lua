@@ -44,6 +44,7 @@ L["phrase.print.notInRaid"] = "Groups can only be sorted while in a raid."
 L["character.thrall"] = "Thrall"
 L["character.liadrin"] = "Liadrin"
 L["character.velen"] = "Velen"
+L["character.chen"] = "Chen"
 
 -- AddonChannel module
 L["addonChannel.print.newerVersion"] = "%s version %s is available. You're currently running version %s."

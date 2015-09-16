@@ -74,7 +74,7 @@ local DELAY_OPTIONS_PANE_LOADED = 0.01
 local format, gsub, ipairs, min, max, tinsert = format, gsub, ipairs, min, max, tinsert
 local tconcat = table.concat
 local GetGuildInfo = GetGuildInfo
-local DAMAGER, ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, INLINE_DAMAGER_ICON, ROLE_CHANGED_INFORM = DAMAGER, ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, INLINE_DAMAGER_ICON, ROLE_CHANGED_INFORM
+local ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, INLINE_TANK_ICON, ROLE_CHANGED_INFORM, TANK = ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, INLINE_TANK_ICON, ROLE_CHANGED_INFORM, TANK
 -- GLOBALS: LibStub
 
 local function paragraphs(lines)
@@ -793,7 +793,7 @@ function M:UpdateSysMsgPreview(which, option)
   local comp, player, msg
   if which == 1 then
     comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 4, 4, 6, 0)
-    player = A.group.EXAMPLE_PLAYER
+    player = A.group.EXAMPLE_PLAYER1
     msg = format(ERR_RAID_MEMBER_ADDED_S, player.name)
   elseif which == 2 then
     comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 3, 4, 6, 0)
@@ -802,7 +802,7 @@ function M:UpdateSysMsgPreview(which, option)
   elseif which == 3 then
     comp = A.util:FormatGroupComp(A.util.GROUP_COMP_STYLE.TEXT_FULL, 2, 2, 5, 6, 0)
     player = A.group.EXAMPLE_PLAYER3
-    msg = format(ROLE_CHANGED_INFORM, player.name, INLINE_DAMAGER_ICON.." "..DAMAGER)
+    msg = format(ROLE_CHANGED_INFORM, player.name, INLINE_TANK_ICON.." "..TANK)
   else
     return
   end

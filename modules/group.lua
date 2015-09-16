@@ -40,9 +40,9 @@ local DELAY_REBUILD_FOR_EVENT = 1.0
 
 M.ROLE = {TANK=1, HEALER=2, MELEE=3, RANGED=4, UNKNOWN=5}
 M.ROLE_NAME = {"tank", "healer", "melee", "ranged", "unknown"}
-M.EXAMPLE_PLAYER = {rindex=4, name=L["character.thrall"], rank=1, group=2, class="SHAMAN", zone="Tanaan", unitID="raid4", role=M.ROLE.MELEE, isDamager=true}
+M.EXAMPLE_PLAYER1 = {rindex=4, name=L["character.thrall"], rank=1, group=2, class="SHAMAN", zone="Tanaan", unitID="raid4", role=M.ROLE.MELEE, isDamager=true}
 M.EXAMPLE_PLAYER2 = {rindex=18, name=L["character.liadrin"], rank=1, group=5, class="PALADIN", zone="Orgrimmar", unitID="raid18", role=M.ROLE.HEALER}
-M.EXAMPLE_PLAYER3 = {rindex=7, name=L["character.velen"], rank=1, group=5, class="PRIEST", zone="Tanaan", unitID="raid7", role=M.ROLE.HEALER}
+M.EXAMPLE_PLAYER3 = {rindex=7, name=L["character.chen"], rank=1, group=5, class="MONK", zone="Tanaan", unitID="raid7", role=M.ROLE.TANK}
 
 -- Maintain rosterArray to avoid creating up to 40 new tables every time
 -- we build the roster. The individual tables are wiped on demand.
