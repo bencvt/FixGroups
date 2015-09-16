@@ -208,9 +208,9 @@ function M:SetupTooltip(widget, cmd, mode, modeType)
   if mode == "last" then
     local last = A.chooseCommand:GetLastCommand()
     if last then
-      title = format(L["choose.print.last"], ": "..H(format("/%s %s", cmd, last)))
+      title = format("%s: %s.". L["choose.print.last"], H(format("/%s %s", cmd, last)))
     else
-      title = format(L["choose.print.last"], "")
+      title = L["choose.print.last"].."."
     end
   else
     title = A.chooseCommand:GetChoosingDesc(true, cmd, mode, modeType, true)
