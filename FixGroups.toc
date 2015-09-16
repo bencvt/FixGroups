@@ -45,6 +45,7 @@ modules\sortRaid.lua
 modules\utilGui.lua
 
 modules\sortModes\alpha.lua
+modules\sortModes\class.lua
 modules\sortModes\clearSkip.lua
 modules\sortModes\default.lua
 modules\sortModes\meter.lua

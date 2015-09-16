@@ -32,7 +32,7 @@ function M:BuildDelta(sortMode)
   local skipFirstGroups = sortMode.skipFirstGroups or 0
   local k
   for name, p in pairs(A.group:GetRoster()) do
-    if not p.isSitting and p.group > skipFirstGroups then
+    if (not p.isSitting and p.group > skipFirstGroups) or sortMode.isIncludingSitting then
       k = (p.class and CLASS_SORT_CHAR[p.class] or "Z")..(p.isUnknown and ("_"..name) or name)
       tinsert(keys, k)
       players[k] = p
@@ -53,10 +53,7 @@ function M:BuildDelta(sortMode)
   -- If they're in the wrong group, add them to the delta tables.
   wipe(R.deltaPlayers)
   wipe(R.deltaNewGroups)
-  local numGroups = floor((A.group:GetSize() - A.group:NumSitting() - 1) / 5) + 1
-  if sortMode.isSplit and numGroups % 2 == 1 then
-    numGroups = numGroups + 1
-  end
+  local numGroups = M:GetNumGroups(sortMode)
   local newGroup
   for i, k in ipairs(keys) do
     if sortMode.isSplit then
@@ -91,11 +88,20 @@ function M:BuildDelta(sortMode)
   if A.DEBUG >= 2 then M:DebugPrintDelta() end
 end
 
-function M:GetSplitGroups()
-  local numGroups = floor((A.group:GetSize() - A.group:NumSitting() - 1) / 5) + 1
-  if numGroups % 2 == 1 then
+function M:GetNumGroups(sortMode)
+  local numPlayers = A.group:GetSize()
+  if not sortMode.isIncludingSitting then
+    numPlayers = numPlayers - A.group:NumSitting()
+  end
+  local numGroups = floor((numPlayers - 1) / 5) + 1
+  if sortMode.isSplit and numGroups % 2 == 1 then
     numGroups = numGroups + 1
   end
+  return numGroups
+end
+
+function M:GetSplitGroups(sortMode)
+  local numGroups = M:GetNumGroups(sortMode)
   if numGroups < 2 then
     return "1 "..L["word.and"].." 2"
   end

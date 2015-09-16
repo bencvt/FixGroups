@@ -147,7 +147,7 @@ function M:Open()
     addIndent(c)
     addButton(c, "alpha")
     addButton(c, "ralpha")
-    addButton(c, "sort")--TODO:class
+    addButton(c, "class")
     addButton(c, "random")
     addPadding(c)
   end

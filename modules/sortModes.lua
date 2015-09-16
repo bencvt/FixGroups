@@ -14,6 +14,7 @@ local format, ipairs, sort, tinsert, tostring = format, ipairs, sort, tinsert, t
 -- name = "by whatever",          -- (required) string
 -- aliases = {"whatever"},        -- array of strings
 -- isSplit = false,               -- boolean
+-- isIncludingSitting = false,    -- boolean
 -- isExtra = true,                -- boolean
 -- desc = "Do an example sort.",  -- string or function(t)
 -- getCompareFunc = someFunc,     -- function(players)

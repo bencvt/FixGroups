@@ -224,7 +224,7 @@ function M:AnnounceComplete()
     -- Announce sort mode.
     local msg
     if R.active.sortMode.isSplit then
-      msg = format(L["sorter.print.split"], A.sortRaid:GetSplitGroups())
+      msg = format(L["sorter.print.split"], A.sortRaid:GetSplitGroups(R.active.sortMode))
     else
       msg = format(L["sorter.print.sorted"], R.active.sortMode.getFullName())
     end
