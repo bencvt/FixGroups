@@ -4,6 +4,7 @@ local M = A:NewModule("chooseGui")
 A.chooseGui = M
 M.private = {
   window = false,
+  cmd = false,
   closeButton = {},
   mockSession = false,
 }
@@ -71,6 +72,7 @@ end
 
 local function onCloseWindow(widget)
   R.window = false
+  R.cmd = false
   AceGUI:Release(widget)
 end
 
@@ -91,9 +93,14 @@ end
 function M:Open(cmd)
   if A.DEBUG >= 1 then A.console:Debugf(M, "open cmd=%s", tostring(cmd)) end
   if R.window then
-    resetWindowSize()
-    return
+    if cmd == R.cmd then
+      resetWindowSize()
+      return
+    else
+      R.window.frame:Hide()
+    end
   end
+  R.cmd = cmd
   R.window = AceGUI:Create("Frame")
   R.window:SetTitle(A.NAME.." "..format(L["gui.title"], "/"..cmd))
   resetWindowSize()
