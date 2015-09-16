@@ -729,10 +729,10 @@ function M:OnInitialize()
   A.options = A.db.profile.options
 
   -- Cleanup from legacy version of addon: fix renamed sort modes.
-  if A.sortMode == "THMUR" then
-    A.sortMode = "thmr"
-  elseif A.sortMode == "TMURH" then
-    A.sortMode = "tmrh"
+  if A.options.sortMode == "THMUR" then
+    A.options.sortMode = "thmr"
+  elseif A.options.sortMode == "TMURH" then
+    A.options.sortMode = "tmrh"
   end
 
   LibStub("AceConfig-3.0"):RegisterOptionsTable(A.NAME, R.optionsTable)
