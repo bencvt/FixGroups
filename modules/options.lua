@@ -10,29 +10,34 @@ M.private = {
   defaults = {
     profile = {
       options = {
-        tankAssist = true,
-        fixOfflineML = true,
+        -- Sorting tab
+        announceChatAlways = false,
+        announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
         sortMode = "tmrh", -- other valid values: "thmr", "nosort"
         splitOddEven = true,
         resumeAfterCombat = true,
         showExtraSortModes = false,
-        coreRaiderRank = {},
-        tankMainTankAlways = false,
-        tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
-        openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
+        coreRaiderRank = {}, -- key: guild+realm name, value: rank index
+
+        -- Marking tab
+        tankAssist = true,
+        fixOfflineML = true,
         tankMark = true,
         tankMarkIcons = {4, 6, 1, 2, 3, 7, 9, 9},
         clearRaidMarks = false,
+        tankMainTankAlways = false,
+        tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
+        openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
         partyMark = true,
         partyMarkIcons = {4, 6, 9, 9, 9},
-        minimapIcon = {}, -- handled by LibDBIcon
+
+        -- User Interface tab
         showMinimapIconAlways = true,
         showMinimapIconPRN = false, -- ignored (implied false) if showMinimapIconAlways == true
+        minimapIcon = {}, -- handled by LibDBIcon
         addButtonToRaidTab = true,
         watchChat = true,
         notifyNewVersion = true,
-        announceChatAlways = false,
-        announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
         roleIconStyle = "default", -- other valid values: "hires", "lfgrole", "lfgrole_bw"
         roleIconSize = 16,
         sysMsg = {
@@ -232,180 +237,6 @@ R.optionsTable.args.main.args = {
       A.console:Print(L["button.resetAllOptions.print"])
       A.buttonGui:Refresh()
     end,
-  },
-}
-
-R.optionsTable.args.ui.args = {
-  showMinimapIcon = {
-    order = 10,
-    name = L["options.widget.showMinimapIcon.text"],
-    type = "select",
-    width = "double",
-    style = "dropdown",
-    values = {
-      [1] = L["options.value.always"],
-      [2] = L["options.value.onlyWhenLeadOrAssist"],
-      [3] = L["options.value.never"],
-    },
-    get = function(i) if A.options.showMinimapIconAlways then return 1 elseif A.options.showMinimapIconPRN then return 2 end return 3 end,
-    set = function(i,v) A.options.showMinimapIconAlways, A.options.showMinimapIconPRN = (v==1), (v==2) A.buttonGui:Refresh() end,
-  },
-  addButtonToRaidTab = {
-    order = 20,
-    name = L["options.widget.addButtonToRaidTab.text"],
-    desc = format(L["options.widget.addButtonToRaidTab.desc"], H(L["button.fixGroups.text"]), H(A.util:GetBindingKey("TOGGLESOCIAL", "O"))),
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.addButtonToRaidTab end,
-    set = function(i,v) A.options.addButtonToRaidTab = v A.buttonGui:Refresh() end,
-  },
-  watchChat = {
-    order = 30,
-    name = L["options.widget.watchChat.text"],
-    desc = format(L["options.widget.watchChat.desc"], A.util:GetWatchChatKeywordList()),
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.watchChat end,
-    set = function(i,v) A.options.watchChat = v end,
-  },
-  notifyNewVersion = {
-    order = 40,
-    name = L["options.widget.notifyNewVersion.text"],
-    desc = paragraphs({
-      format(L["options.widget.notifyNewVersion.desc"], HA(A.NAME)),
-      format(L["addonChannel.print.newerVersion"], A.NAME, H("9000.1"), A.VERSION),
-    }),
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.notifyNewVersion end,
-    set = function(i,v) A.options.notifyNewVersion = v end,
-  },
-  -- -------------------------------------------------------------------------
-  roleIconStyle = {
-    order = 110,
-    name = L["options.widget.roleIconStyle.text"],
-    type = "select",
-    width = "double",
-    style = "dropdown",
-    values = A.util:GetRoleIconSamples(),
-    get = function(i) return A.util:GetRoleIconIndex(A.options.roleIconStyle) end,
-    set = function(i,v) A.options.roleIconStyle = A.util:GetRoleIconKey(v) M:UpdateRoleIcons() end,
-  },
-  roleIconSize = {
-    order = 120,
-    name = L["options.widget.roleIconSize.text"],
-    type = "range",
-    softMin = 8,
-    softMax = 24,
-    min = 1,
-    max = 64,
-    step = 1,
-    bigStep = 2,
-    get = function(i) return A.options.roleIconSize or 16 end,
-    set = function(i,v) A.options.roleIconSize = v M:UpdateRoleIcons() end,
-  },
-  headerSYSMSG = {
-    order = 200,
-    type = "header",
-    name = L["options.header.sysMsg"],
-  },
-  sysMsgPreview1 = {
-    order = 211,
-    type = "description",
-    width = "full",
-    name = "",
-    fontSize = "medium",
-    hidden = function(i) M:UpdateSysMsgPreview(1, i.option) end,
-  },
-  sysMsgPreview2 = {
-    order = 212,
-    type = "description",
-    width = "full",
-    name = "",
-    fontSize = "medium",
-    hidden = function(i) M:UpdateSysMsgPreview(2, i.option) end,
-  },
-  sysMsgPreview3 = {
-    order = 213,
-    type = "description",
-    width = "full",
-    name = "",
-    fontSize = "medium",
-    hidden = function(i) M:UpdateSysMsgPreview(3, i.option) end,
-  },
-  sysMsgClassColor = {
-    order = 230,
-    name = L["options.widget.sysMsgClassColor.text"],
-    desc = L["options.widget.sysMsg.desc"],
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.sysMsg.classColor end,
-    set = function(i,v) A.options.sysMsg.classColor = v end,
-  },
-  sysMsgRoleName = {
-    order = 240,
-    name = L["options.widget.sysMsgRoleName.text"],
-    desc = L["options.widget.sysMsg.desc"],
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.sysMsg.roleName end,
-    set = function(i,v) A.options.sysMsg.roleName = v end,
-  },
-  sysMsgRoleIcon = {
-    order = 250,
-    name = L["options.widget.sysMsgRoleIcon.text"],
-    desc = L["options.widget.sysMsg.desc"],
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.sysMsg.roleIcon end,
-    set = function(i,v) A.options.sysMsg.roleIcon = v end,
-  },
-  sysMsgGroupComp = {
-    order = 260,
-    name = L["options.widget.sysMsgGroupComp.text"],
-    desc = L["options.widget.sysMsg.desc"],
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.sysMsg.groupComp end,
-    set = function(i,v) A.options.sysMsg.groupComp = v A.options.sysMsg.groupCompHighlight = v end,
-  },
-  sysMsgGroupCompHighlight = {
-    order = 270,
-    name = L["options.widget.sysMsgGroupCompHighlight.text"],
-    desc = L["options.widget.sysMsg.desc"],
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.sysMsg.groupCompHighlight end,
-    set = function(i,v) A.options.sysMsg.groupCompHighlight = v end,
-    disabled = function(i) return not A.options.sysMsg.groupComp end,
-  },
-  -- -------------------------------------------------------------------------
-  headerINTEROP = {
-    order = 400,
-    type = "header",
-    name = L["options.header.interop"],
-  },
-  dataBrokerGroupCompStyle = {
-    order = 410,
-    name = format(L["options.widget.dataBrokerGroupCompStyle.text"], L["phrase.groupComp"]),
-    desc = paragraphs({
-      format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["phrase.groupComp"])),
-      format(L["options.widget.dataBrokerGroupCompStyle.desc.2"], A.util:LocaleTableConcat({HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")})),
-    }),
-    type = "select",
-    width = "double",
-    style = "dropdown",
-    values = {
-      -- Indexes correspond to A.util.GROUP_COMP_STYLE.
-      [1] = A.util:FormatGroupComp(1, 2, 4, 6, 8, 0, true),
-      [2] = A.util:FormatGroupComp(2, 2, 4, 6, 8, 0, true),
-      [3] = A.util:FormatGroupComp(3, 2, 4, 6, 8, 0, true),
-      [4] = A.util:FormatGroupComp(4, 2, 4, 6, 8, 0, true),
-      [5] = A.util:FormatGroupComp(5, 2, 4, 6, 8, 0, true),
-      [6] = A.util:FormatGroupComp(6, 2, 4, 6, 8, 0, true),
-    },
-    get = function(i) return max(1, min(6, A.options.dataBrokerGroupCompStyle)) end,
-    set = function(i,v) A.options.dataBrokerGroupCompStyle = max(1, min(6, v)) A.dataBroker:RefreshGroupComp() end,
   },
 }
 
@@ -751,6 +582,180 @@ R.optionsTable.args.mark.args = {
     get = function(i) return getOptionMark(A.options.partyMarkIcons, 5) end,
     set = function(i,v) setOptionMark(A.options.partyMarkIcons, 5, v) end,
     disabled = function(i) return not A.options.partyMark end,
+  },
+}
+
+R.optionsTable.args.ui.args = {
+  showMinimapIcon = {
+    order = 10,
+    name = L["options.widget.showMinimapIcon.text"],
+    type = "select",
+    width = "double",
+    style = "dropdown",
+    values = {
+      [1] = L["options.value.always"],
+      [2] = L["options.value.onlyWhenLeadOrAssist"],
+      [3] = L["options.value.never"],
+    },
+    get = function(i) if A.options.showMinimapIconAlways then return 1 elseif A.options.showMinimapIconPRN then return 2 end return 3 end,
+    set = function(i,v) A.options.showMinimapIconAlways, A.options.showMinimapIconPRN = (v==1), (v==2) A.buttonGui:Refresh() end,
+  },
+  addButtonToRaidTab = {
+    order = 20,
+    name = L["options.widget.addButtonToRaidTab.text"],
+    desc = format(L["options.widget.addButtonToRaidTab.desc"], H(L["button.fixGroups.text"]), H(A.util:GetBindingKey("TOGGLESOCIAL", "O"))),
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.addButtonToRaidTab end,
+    set = function(i,v) A.options.addButtonToRaidTab = v A.buttonGui:Refresh() end,
+  },
+  watchChat = {
+    order = 30,
+    name = L["options.widget.watchChat.text"],
+    desc = format(L["options.widget.watchChat.desc"], A.util:GetWatchChatKeywordList()),
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.watchChat end,
+    set = function(i,v) A.options.watchChat = v end,
+  },
+  notifyNewVersion = {
+    order = 40,
+    name = L["options.widget.notifyNewVersion.text"],
+    desc = paragraphs({
+      format(L["options.widget.notifyNewVersion.desc"], HA(A.NAME)),
+      format(L["addonChannel.print.newerVersion"], A.NAME, H("9000.1"), A.VERSION),
+    }),
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.notifyNewVersion end,
+    set = function(i,v) A.options.notifyNewVersion = v end,
+  },
+  -- -------------------------------------------------------------------------
+  roleIconStyle = {
+    order = 110,
+    name = L["options.widget.roleIconStyle.text"],
+    type = "select",
+    width = "double",
+    style = "dropdown",
+    values = A.util:GetRoleIconSamples(),
+    get = function(i) return A.util:GetRoleIconIndex(A.options.roleIconStyle) end,
+    set = function(i,v) A.options.roleIconStyle = A.util:GetRoleIconKey(v) M:UpdateRoleIcons() end,
+  },
+  roleIconSize = {
+    order = 120,
+    name = L["options.widget.roleIconSize.text"],
+    type = "range",
+    softMin = 8,
+    softMax = 24,
+    min = 1,
+    max = 64,
+    step = 1,
+    bigStep = 2,
+    get = function(i) return A.options.roleIconSize or 16 end,
+    set = function(i,v) A.options.roleIconSize = v M:UpdateRoleIcons() end,
+  },
+  headerSYSMSG = {
+    order = 200,
+    type = "header",
+    name = L["options.header.sysMsg"],
+  },
+  sysMsgPreview1 = {
+    order = 211,
+    type = "description",
+    width = "full",
+    name = "",
+    fontSize = "medium",
+    hidden = function(i) M:UpdateSysMsgPreview(1, i.option) end,
+  },
+  sysMsgPreview2 = {
+    order = 212,
+    type = "description",
+    width = "full",
+    name = "",
+    fontSize = "medium",
+    hidden = function(i) M:UpdateSysMsgPreview(2, i.option) end,
+  },
+  sysMsgPreview3 = {
+    order = 213,
+    type = "description",
+    width = "full",
+    name = "",
+    fontSize = "medium",
+    hidden = function(i) M:UpdateSysMsgPreview(3, i.option) end,
+  },
+  sysMsgClassColor = {
+    order = 230,
+    name = L["options.widget.sysMsgClassColor.text"],
+    desc = L["options.widget.sysMsg.desc"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.sysMsg.classColor end,
+    set = function(i,v) A.options.sysMsg.classColor = v end,
+  },
+  sysMsgRoleName = {
+    order = 240,
+    name = L["options.widget.sysMsgRoleName.text"],
+    desc = L["options.widget.sysMsg.desc"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.sysMsg.roleName end,
+    set = function(i,v) A.options.sysMsg.roleName = v end,
+  },
+  sysMsgRoleIcon = {
+    order = 250,
+    name = L["options.widget.sysMsgRoleIcon.text"],
+    desc = L["options.widget.sysMsg.desc"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.sysMsg.roleIcon end,
+    set = function(i,v) A.options.sysMsg.roleIcon = v end,
+  },
+  sysMsgGroupComp = {
+    order = 260,
+    name = L["options.widget.sysMsgGroupComp.text"],
+    desc = L["options.widget.sysMsg.desc"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.sysMsg.groupComp end,
+    set = function(i,v) A.options.sysMsg.groupComp = v A.options.sysMsg.groupCompHighlight = v end,
+  },
+  sysMsgGroupCompHighlight = {
+    order = 270,
+    name = L["options.widget.sysMsgGroupCompHighlight.text"],
+    desc = L["options.widget.sysMsg.desc"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.sysMsg.groupCompHighlight end,
+    set = function(i,v) A.options.sysMsg.groupCompHighlight = v end,
+    disabled = function(i) return not A.options.sysMsg.groupComp end,
+  },
+  -- -------------------------------------------------------------------------
+  headerINTEROP = {
+    order = 400,
+    type = "header",
+    name = L["options.header.interop"],
+  },
+  dataBrokerGroupCompStyle = {
+    order = 410,
+    name = format(L["options.widget.dataBrokerGroupCompStyle.text"], L["phrase.groupComp"]),
+    desc = paragraphs({
+      format(L["options.widget.dataBrokerGroupCompStyle.desc.1"], H(L["phrase.groupComp"])),
+      format(L["options.widget.dataBrokerGroupCompStyle.desc.2"], A.util:LocaleTableConcat({HA("Titan Panel"), HA("ChocolateBar"), HA("Bazooka"), HA("NinjaPanel"), HA("ElvUI")})),
+    }),
+    type = "select",
+    width = "double",
+    style = "dropdown",
+    values = {
+      -- Indexes correspond to A.util.GROUP_COMP_STYLE.
+      [1] = A.util:FormatGroupComp(1, 2, 4, 6, 8, 0, true),
+      [2] = A.util:FormatGroupComp(2, 2, 4, 6, 8, 0, true),
+      [3] = A.util:FormatGroupComp(3, 2, 4, 6, 8, 0, true),
+      [4] = A.util:FormatGroupComp(4, 2, 4, 6, 8, 0, true),
+      [5] = A.util:FormatGroupComp(5, 2, 4, 6, 8, 0, true),
+      [6] = A.util:FormatGroupComp(6, 2, 4, 6, 8, 0, true),
+    },
+    get = function(i) return max(1, min(6, A.options.dataBrokerGroupCompStyle)) end,
+    set = function(i,v) A.options.dataBrokerGroupCompStyle = max(1, min(6, v)) A.dataBroker:RefreshGroupComp() end,
   },
 }
 
