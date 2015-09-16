@@ -15,7 +15,7 @@ local NUM_FLASHES = 3
 local DELAY_FLASH = 0.5
 
 local format, strfind, strlower, time, tostring = format, strfind, strlower, time, tostring
-local CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, UnitName = CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, UnitName
+local CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName = CreateFrame, InCombatLockdown, IsControlKeyDown, IsInGroup, IsShiftKeyDown, UnitName
 -- GLOBALS: LibStub, GameTooltip, RaidFrame, RaidFrameRaidInfoButton
 
 local CUBE_ICON_0 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga"
@@ -33,6 +33,8 @@ local function handleClick(_, button)
   else
     if IsControlKeyDown() then
       A.fgCommand:Command("cancel")
+    elseif IsShiftKeyDown() then
+      A.fgCommand:Command("last")
     else
       A.fgCommand:Command("default")
     end
@@ -124,14 +126,16 @@ function M:SetupTooltip(tooltip, isMinimapIcon)
   tooltip:AddDoubleLine(" ", A.sortModes:GetDefault().name, 1,1,1, 1,1,0)
   tooltip:AddLine(" ")
   tooltip:AddDoubleLine(L["phrase.mouse.clickRight"], TOOLTIP_RIGHT_GUI, 1,1,1, 1,1,0)
-  -- There are a couple undocumented shortcuts, subject to change or removal
+  -- There are a few undocumented shortcuts, subject to change or removal
   -- in a future version of this addon. We could make the mouse shortcuts
   -- user-configurable, but that's probably overkill... the default shortcuts
   -- are pretty reasonable as-is.
   --tooltip:AddLine(" ")
-  --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickRight"], L["tooltip.right.config"], 1,1,1, 1,1,0)
+  --tooltip:AddDoubleLine(L["phrase.mouse.shiftClickLeft"], L["sorter.print.last"], 1,1,1, 1,1,0)
   --tooltip:AddLine(" ")
   --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickLeft"], L["tooltip.right.cancel"], 1,1,1, 1,1,0)
+  --tooltip:AddLine(" ")
+  --tooltip:AddDoubleLine(L["phrase.mouse.ctrlClickRight"], L["tooltip.right.config"], 1,1,1, 1,1,0)
   if isMinimapIcon then
     tooltip:AddLine(" ")
     tooltip:AddDoubleLine(L["phrase.mouse.drag"], L["tooltip.right.moveMinimapIcon"], 1,1,1, 1,1,0)
