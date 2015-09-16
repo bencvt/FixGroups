@@ -46,7 +46,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
   end
   local cmd
   cmd, message = strsplit(":", message, 2)
-  if cmd == "v" and not R.newerVersion then
+  if cmd == "v" and not R.newerVersion and A.options.notifyNewVersion then
     if message and (message > VERSION_STRING) then
       message, R.newerVersion = strsplit(":", message, 2)
       if R.newerVersion and strtrim(R.newerVersion) ~= "" then

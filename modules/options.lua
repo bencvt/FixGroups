@@ -30,6 +30,7 @@ M.private = {
         showMinimapIconPRN = false, -- ignored (implied false) if showMinimapIconAlways == true
         addButtonToRaidTab = true,
         watchChat = true,
+        notifyNewVersion = true,
         announceChatAlways = false,
         announceChatPRN = true, -- ignored (implied false) if announceChatAlways == true
         roleIconStyle = "default", -- other valid values: "hires", "lfgrole", "lfgrole_bw"
@@ -72,6 +73,7 @@ local DELAY_OPTIONS_PANE_LOADED = 0.01
 
 local format, gsub, ipairs, min, max, tinsert = format, gsub, ipairs, min, max, tinsert
 local tconcat = table.concat
+local GetGuildInfo = GetGuildInfo
 local DAMAGER, ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, INLINE_DAMAGER_ICON, ROLE_CHANGED_INFORM = DAMAGER, ERR_RAID_MEMBER_ADDED_S, ERR_RAID_MEMBER_REMOVED_S, INLINE_DAMAGER_ICON, ROLE_CHANGED_INFORM
 -- GLOBALS: LibStub
 
@@ -265,6 +267,18 @@ R.optionsTable.args.ui.args = {
     width = "full",
     get = function(i) return A.options.watchChat end,
     set = function(i,v) A.options.watchChat = v end,
+  },
+  notifyNewVersion = {
+    order = 40,
+    name = L["options.widget.notifyNewVersion.text"],
+    desc = paragraphs({
+      format(L["options.widget.notifyNewVersion.desc"], HA(A.NAME)),
+      format(L["addonChannel.print.newerVersion"], A.NAME, H("9000.1"), A.VERSION),
+    }),
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.notifyNewVersion end,
+    set = function(i,v) A.options.notifyNewVersion = v end,
   },
   -- -------------------------------------------------------------------------
   roleIconStyle = {
