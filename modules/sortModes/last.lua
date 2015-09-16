@@ -12,7 +12,7 @@ function M:OnEnable()
     desc = function(t)
       local last = A.sorter:GetLastSortModeName()
       if last then
-        last = format("%s: %s.", L["sorter.print.last"], H(last))
+        last = format("%s: %s.", L["sorter.print.last"], A.util:Highlight(last))
       else
         last = L["sorter.print.last"].."."
       end
