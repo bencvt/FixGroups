@@ -22,6 +22,7 @@ local function assignClassToGroups(curGroup, curGroupSize, keys, players, class)
       end
     end
   end
+  R.classCounts[class] = nil
   return curGroup, curGroupSize
 end
 
@@ -41,16 +42,14 @@ local function assignGroups(keys, players)
 
   -- First pass: classes with exactly 5/10/15/etc. players.
   for _, class in ipairs(CLASS_SORT_ORDER) do
-    if counts[class] and counts[class] > 0 and counts[class] % 5 == 0 then
-      counts[class] = 0
+    if counts[class] and counts[class] % 5 == 0 then
       curGroup, curGroupSize = assignClassToGroups(curGroup, curGroupSize, keys, players, class)
     end
   end
 
   -- Second pass: classes with some other number of players.
   for _, class in ipairs(CLASS_SORT_ORDER) do
-    if counts[class] and counts[class] > 0 then
-      counts[class] = 0
+    if counts[class] then
       curGroup, curGroupSize = assignClassToGroups(curGroup, curGroupSize, keys, players, class)
 
       -- Attempt to find another class to share the last group with.
@@ -59,18 +58,16 @@ local function assignGroups(keys, players)
       for _, otherClass in ipairs(CLASS_SORT_ORDER) do
         if not found and counts[otherClass] and curGroupSize + (counts[otherClass] % 5) == 5 then
           found = true
-          counts[otherClass] = 0
           curGroup, curGroupSize = assignClassToGroups(curGroup, curGroupSize, keys, players, otherClass)
         end
       end
       if not found then
         -- Second and third passes: add in an under-represented class,
         -- then try to find a perfect match again.
-        for _, otherClass in ipairs(CLASS_SORT_ORDER) do
-          if not found and counts[otherClass] and counts[otherClass] > 0 and counts[otherClass] + curGroupSize < 5 then
+        for _, smallClass in ipairs(CLASS_SORT_ORDER) do
+          if not found and counts[smallClass] and curGroupSize + counts[smallClass] < 5 then
             found = true
-            counts[otherClass] = 0
-            curGroup, curGroupSize = assignClassToGroups(curGroup, curGroupSize, keys, players, otherClass)
+            curGroup, curGroupSize = assignClassToGroups(curGroup, curGroupSize, keys, players, smallClass)
           end
         end
         if found then
@@ -78,7 +75,6 @@ local function assignGroups(keys, players)
           for _, otherClass in ipairs(CLASS_SORT_ORDER) do
             if not found and counts[otherClass] and curGroupSize + (counts[otherClass] % 5) == 5 then
               found = true
-              counts[otherClass] = 0
               curGroup, curGroupSize = assignClassToGroups(curGroup, curGroupSize, keys, players, otherClass)
             end
           end
