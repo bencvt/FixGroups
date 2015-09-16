@@ -1,4 +1,4 @@
---- Tanks > Healers > Melee > Ranged.
+--- Stub for default sort mode.
 local A, L = unpack(select(2, ...))
 local P = A.sortModes
 local M = P:NewModule("default", "AceEvent-3.0")
