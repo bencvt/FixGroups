@@ -452,25 +452,14 @@ R.optionsTable.args.sort.args = {
       end
     end,
   },
-  showExtraSortModes = {
+  damageMeterAddonDesc = {
     order = 30,
-    name = L["options.widget.showExtraSortModes.text"],
-    desc = L["sorter.print.notUseful"],
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.showExtraSortModes end,
-    set = function(i,v) A.options.showExtraSortModes = v end,
-  },
-  resumeAfterCombat = {
-    order = 40,
-    name = L["options.widget.resumeAfterCombat.text"],
-    type = "toggle",
-    width = "full",
-    get = function(i) return A.options.resumeAfterCombat end,
-    set = function(i,v) A.sorter:Stop() A.options.resumeAfterCombat = v end,
+    type = "description",
+    name = "", -- set in M:OnEnable
+    fontSize = "medium",
   },
   splitOddEven = {
-    order = 50,
+    order = 40,
     name = L["options.widget.splitOddEven.text"],
     desc = paragraphs({
       L["options.widget.splitOddEven.desc.1"],
@@ -481,11 +470,22 @@ R.optionsTable.args.sort.args = {
     get = function(i) return A.options.splitOddEven end,
     set = function(i,v) A.sorter:Stop() A.options.splitOddEven = v end,
   },
-  damageMeterAddonDesc = {
+  resumeAfterCombat = {
+    order = 50,
+    name = L["options.widget.resumeAfterCombat.text"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.resumeAfterCombat end,
+    set = function(i,v) A.sorter:Stop() A.options.resumeAfterCombat = v end,
+  },
+  showExtraSortModes = {
     order = 60,
-    type = "description",
-    name = "", -- set in M:OnEnable
-    fontSize = "medium",
+    name = L["options.widget.showExtraSortModes.text"],
+    desc = L["sorter.print.notUseful"],
+    type = "toggle",
+    width = "full",
+    get = function(i) return A.options.showExtraSortModes end,
+    set = function(i,v) A.options.showExtraSortModes = v end,
   },
   coreRaiderRank = {
     order = 70,
