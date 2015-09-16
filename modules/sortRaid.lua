@@ -54,23 +54,24 @@ function M:BuildDelta(sortMode)
   wipe(R.deltaPlayers)
   wipe(R.deltaNewGroups)
   local numGroups = M:GetNumGroups(sortMode)
-  local newGroup
+  local newGroup, iMod4
   for i, k in ipairs(keys) do
     if sortMode.isSplit then
+      -- Assign everyone in the raid to a set of groups based on their ranking
+      -- in the damage/healing meters. This is quick-and-dirty but it gets the
+      -- job done. We don't attempt to balance ranged and melee.
+      iMod4 = i % 4
       if A.options.splitOddEven then
-        -- Assign everyone in the raid to odd/even groups based on their ranking
-        -- in the damage/healing meters. This is quick-and-dirty but it gets the
-        -- job done. A better algorithm, perhaps for a future version of this
-        -- addon, could attempt to balance ranged and melee.
+        -- Split using odd/even groups (1,3,5,7/2,4,6,8).
         newGroup = floor((i - 1) / 10) * 2 + 1
-        if i % 2 == 0 then
+        if iMod4 == 2 or iMod4 == 3 then
+          -- Zig-zag (abbaabba...) for a more even distribution.
           newGroup = newGroup + 1
         end
       else
-        -- Split using adjacent groups (1-2/3-4, 1-3/4-6, or 1-4/5-8) instead
-        -- of odd/even.
+        -- Split using adjacent groups (1-2/3-4, 1-3/4-6, or 1-4/5-8).
         newGroup = floor((i - 1) / 10) + 1
-        if i % 2 == 0 then
+        if iMod4 == 2 or iMod4 == 3 then
           newGroup = newGroup + floor(numGroups / 2)
         end
       end
