@@ -4,7 +4,7 @@ local P = A.sortModes
 local M = P:NewModule("random", "AceEvent-3.0")
 P.random = M
 
-local random, sort, strbyte, strlen, wipe = random, sort, strbyte, strlen, wipe
+local format, random, sort, strbyte, strlen, wipe = format, random, sort, strbyte, strlen, wipe
 local fmod = math.fmod
 
 local salt = ""

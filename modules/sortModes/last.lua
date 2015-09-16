@@ -4,6 +4,8 @@ local P = A.sortModes
 local M = P:NewModule("last", "AceEvent-3.0")
 P.last = M
 
+local format = format
+
 function M:OnEnable()
   A.sortModes:Register({
     key = "last",

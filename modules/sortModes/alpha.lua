@@ -4,7 +4,7 @@ local P = A.sortModes
 local M = P:NewModule("alpha", "AceEvent-3.0")
 P.alpha = M
 
-local sort = sort
+local format, sort = format, sort
 
 function M:OnEnable()
   A.sortModes:Register({

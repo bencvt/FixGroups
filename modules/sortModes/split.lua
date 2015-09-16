@@ -4,6 +4,8 @@ local P = A.sortModes
 local M = P:NewModule("split", "AceEvent-3.0")
 P.split = M
 
+local format = format
+
 function M:OnEnable()
   A.sortModes:Register({
     key = "split",

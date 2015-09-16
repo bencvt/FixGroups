@@ -16,7 +16,7 @@ function M:OnEnable()
   M:RegisterChatCommand("fg", slashCmd)
 end
 
-function handleBasicCommands(cmd)
+local function handleBasicCommands(cmd, args)
   if cmd == "" or cmd == "gui" or cmd == "ui" or cmd == "window" or cmd == "about" or cmd == "help" then
     A.fgGui:Open()
   elseif cmd == "config" or cmd == "options" then
@@ -38,7 +38,7 @@ end
 
 function M:Command(args)
   local cmd = strlower(strtrim(args))
-  if not handleBasicCommands(cmd) then
+  if not handleBasicCommands(cmd, args) then
     return
   end
 
