@@ -16,6 +16,7 @@ M.private = {
         splitOddEven = true,
         resumeAfterCombat = true,
         showExtraSortModes = false,
+        coreRaiderRank = {},
         tankMainTankAlways = false,
         tankMainTankPRN = true, -- ignored (implied false) if tankMainTankAlways == true
         openRaidTabPRN = true, -- ignored (implied false) if tankMainTankAlways == true and tankMainTankPRN = false
@@ -472,6 +473,25 @@ R.optionsTable.args.sort.args = {
     name = "", -- set in M:OnEnable
     fontSize = "medium",
   },
+  coreRaiderRank = {
+    order = 70,
+    name = L["options.widget.coreRaiderRank.text"],
+    desc = "", -- dynamic
+    type = "select",
+    width = "double",
+    style = "dropdown",
+    values = {}, -- dynamic
+    get = function(i) return A.sortModes.core:GetCoreRank() end,
+    set = function(i,v) A.sortModes.core:SetCoreRank(v) end,
+    hidden = function(i)
+      local guildName = GetGuildInfo("player")
+      if not guildName then
+        return true
+      end
+      i.option.desc = format(L["options.widget.coreRaiderRank.desc"], H("core"), A.util:HighlightGuild(guildName))
+      i.option.values = A.sortModes.core:GetGuildRanks()
+    end,
+  },
 }
 
 R.optionsTable.args.mark.args = {
@@ -742,7 +762,7 @@ end
 function M:OnEnable()
   -- Set a couple texts that couldn't be done earlier because various modules
   -- had not yet been initialized.
-  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = "|n"..A.meter:TestInterop()
+  R.optionsTable.args.sort.args.damageMeterAddonDesc.name = "|n"..A.meter:TestInterop().."|n|n"
   M:UpdateRoleIcons()
 end
 

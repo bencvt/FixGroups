@@ -8,6 +8,7 @@ v1.4:
   - improve message when using the clear/skip sort methods
   - improve spec detection for DPS Shamans and Druids by looking for augment rune buffs
   - animate the icon when rearranging
+  - add core raider sort method
   - add extra sort methods: alpha, ralpha, class, random
 
 v1.3.4:

@@ -412,7 +412,7 @@ function M:GetChoosingDesc(isTooltip, cmd, mode, modeType, useColor, validClasse
     if not arg1 then
       return formatCmd(isTooltip, cmd, L["choose.print.choosing.guildmate.noGuild"])
     elseif useColor then
-      arg1 = format("|cff40ff40%s|r", arg1)
+      arg1 = A.util:HighlightGuild(arg1)
     end
   elseif mode == "last" then
     arg1 = H("/"..cmd)

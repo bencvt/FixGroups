@@ -255,6 +255,10 @@ function M:HighlightDim(text)
   return "|cff999999"..(text or self).."|r"
 end
 
+function M:HighlightGuild(text)
+  return "|cff40ff40"..(text or self).."|r"
+end
+
 function M:ColorSystem(text)
   local c = format("|cff%02x%02x%02x", ChatTypeInfo["SYSTEM"].r*0xff, ChatTypeInfo["SYSTEM"].g*0xff, ChatTypeInfo["SYSTEM"].b*0xff)
   return c..gsub(text, "%|r", "%|r%"..c).."|r"

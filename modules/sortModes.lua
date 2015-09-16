@@ -26,23 +26,23 @@ local format, ipairs, sort, tinsert, tostring = format, ipairs, sort, tinsert, t
 -- skipFirstGroups = 0,           -- number
 function M:Register(sortMode)
   if not sortMode then
-    A.console:Errorf("attempting to register a nil sortMode")
+    A.console:Errorf(M, "attempting to register a nil sortMode")
     return
   end
   local key = sortMode.key
   if not key then
-    A.console:Errorf("missing key for sortMode")
+    A.console:Errorf(M, "missing key for sortMode")
     return
   end
   if not sortMode.name then
-    A.console:Errorf("missing name for sortMode %s", key)
+    A.console:Errorf(M, "missing name for sortMode %s", key)
     return
   end
   R.modes[key] = sortMode
   if sortMode.aliases then
     for _, alias in ipairs(sortMode.aliases) do
       if not alias or R.modes[alias] then
-        A.console:Errorf("invalid or duplicate alias %s for sortMode %s", tostring(alias), key)
+        A.console:Errorf(M, "invalid or duplicate alias %s for sortMode %s", tostring(alias), key)
       else
         R.modes[alias] = sortMode
       end

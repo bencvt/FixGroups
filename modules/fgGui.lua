@@ -141,7 +141,7 @@ function M:Open()
   addButton(c, "nosort")
   addPadding(c)
   addIndent(c)
-  addButton(c, "sort")--TODO:core
+  addButton(c, "core")
   addPadding(c)
   if A.options.showExtraSortModes then
     addIndent(c)

@@ -6,7 +6,7 @@ P.tmrh = M
 
 -- Indexes correspond to A.group.ROLE constants (THMRU).
 local ROLE_KEY = {1, 4, 2, 3, 3}
-local PADDING_PLAYER = {name="_unknown", role=5, isDummy=true}
+local PADDING_PLAYER = {role=5, isDummy=true}
 
 local format, sort, tinsert = format, sort, tinsert
 
