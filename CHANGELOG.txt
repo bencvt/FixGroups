@@ -12,7 +12,8 @@ v1.4:
   - improve split algorithm to distribute more evenly
   - group 7 is only considered a bench group for mythic difficulty
   - add option to disable new version notifications
-  - fix error for users who set a custom sort mode on a pre-1.3 version of this addon
+  - change default sort method option to only allow tmrh, thmr, and nosort
+  - fix error for users who set a custom sort method on a pre-1.3 version of this addon
   - fix a couple minor issues with the /fg and /choose GUIs
 
 v1.3.4:

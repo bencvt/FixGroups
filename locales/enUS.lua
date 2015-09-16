@@ -187,7 +187,6 @@ L["options.value.never"] = "Never"
 L["options.value.onlyWhenLeadOrAssist"] = "Only when lead or assist"
 L["options.value.onlyInRaidInstances"] = "Only in raid instances"
 L["options.value.announceChatLimited"] = "Only after changing group sorting method"
-L["options.value.sortMode.meter"] = "Overall damage/healing done"
 L["options.value.sortMode.nosort"] = "Do not rearrange players"
 
 -- Options module: tabs

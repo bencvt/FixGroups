@@ -433,20 +433,17 @@ R.optionsTable.args.sort.args = {
     values = {
       [1] = format("%s > %s > %s > %s", L["word.tank.plural"], L["word.melee.plural"], L["word.ranged.plural"], L["word.healer.plural"]),
       [2] = format("%s > %s > %s > %s", L["word.tank.plural"], L["word.healer.plural"], L["word.melee.plural"], L["word.ranged.plural"]),
-      [3] = L["options.value.sortMode.meter"],
-      [4] = L["options.value.sortMode.nosort"],
+      [3] = L["options.value.sortMode.nosort"],
     },
     get = function(i)
-      if A.options.sortMode == "nosort" then return 4
-      elseif A.options.sortMode == "meter" then return 3
+      if A.options.sortMode == "nosort" then return 3
       elseif A.options.sortMode == "thmr" then return 2
       else return 1
       end
     end,
     set = function(i,v)
       A.sorter:Stop()
-      if v == 4 then A.options.sortMode = "nosort"
-      elseif v == 3 then A.options.sortMode = "meter"
+      if v == 3 then A.options.sortMode = "nosort"
       elseif v == 2 then A.options.sortMode = "thmr"
       else A.options.sortMode = "tmrh"
       end
@@ -763,8 +760,8 @@ function M:OnInitialize()
   -- Can always do A:GetModule("options") if needed.
   A.options = A.db.profile.options
 
-  -- Cleanup from legacy version of addon: fix renamed sort modes.
-  if A.options.sortMode == "THMUR" then
+  -- Cleanup from legacy version of addon: fix renamed/removed sort modes.
+  if A.options.sortMode == "THMUR" or A.options.sortMode == "meter" then
     A.options.sortMode = "thmr"
   elseif A.options.sortMode == "TMURH" then
     A.options.sortMode = "tmrh"
