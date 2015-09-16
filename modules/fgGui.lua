@@ -5,13 +5,12 @@ A.fgGui = M
 M.private = {
   window = false,
   label = false,
-  closeButton = {},
 }
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local ceil, format, ipairs, min, time, type = ceil, format, ipairs, min, time, type
-local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
+local GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -98,14 +97,19 @@ function M:Open()
     resetWindowSize()
     return
   end
-  R.window = AceGUI:Create("Frame")
+  R.window = AceGUI:Create("Window")
   R.window:SetTitle(A.NAME.." "..format(L["gui.title"], "/fg"))
   resetWindowSize()
   R.window:SetStatusText("")
   R.window:SetCallback("OnClose", onCloseWindow)
+  R.window.frame:SetPropagateKeyboardInput(true)
+  R.window.frame:SetScript("OnKeyDown", function(frame, key)
+    if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
+      frame:SetPropagateKeyboardInput(false)
+      M:Close()
+    end
+  end)
   R.window:SetLayout("Fill")
-
-  A.utilGui:AddCloseButton(R.window, R.closeButton, M.Close)
 
   local c = AceGUI:Create("ScrollFrame")
   c:SetLayout("Flow")

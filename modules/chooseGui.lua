@@ -5,7 +5,6 @@ A.chooseGui = M
 M.private = {
   window = false,
   cmd = false,
-  closeButton = {},
   mockSession = false,
 }
 local R = M.private
@@ -101,14 +100,19 @@ function M:Open(cmd)
     end
   end
   R.cmd = cmd
-  R.window = AceGUI:Create("Frame")
+  R.window = AceGUI:Create("Window")
   R.window:SetTitle(A.NAME.." "..format(L["gui.title"], "/"..cmd))
   resetWindowSize()
   R.window:SetStatusText("")
   R.window:SetCallback("OnClose", onCloseWindow)
+  R.window.frame:SetPropagateKeyboardInput(true)
+  R.window.frame:SetScript("OnKeyDown", function(frame, key)
+    if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
+      frame:SetPropagateKeyboardInput(false)
+      M:Close()
+    end
+  end)
   R.window:SetLayout("Fill")
-
-  A.utilGui:AddCloseButton(R.window, R.closeButton, M.Close)
 
   local c = AceGUI:Create("ScrollFrame")
   c:SetLayout("Flow")
