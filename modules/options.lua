@@ -502,6 +502,7 @@ R.optionsTable.args.sort.args = {
       if not guildName then
         return true
       end
+      A.sortModes.core:UpdateGuildRanks()
       i.option.desc = format(L["options.widget.coreRaiderRank.desc"], H("core"), A.util:HighlightGuild(guildName))
       i.option.values = A.sortModes.core:GetGuildRanks()
     end,
