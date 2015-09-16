@@ -10,7 +10,7 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "split",
     name = L["sorter.mode.split"],
-    isSplit = true,
+    isSplit = true, -- The magic happens in the sortRaid module.
     desc = function(t)
       t:AddLine(L["gui.fixGroups.help.split"], 1,1,0, true)
       t:AddLine(" ")

@@ -18,5 +18,9 @@ function M:OnEnable()
       t:AddLine(" ")
       t:AddLine(format(L["gui.fixGroups.help.note.defaultMode"], A.util:Highlight(A.sortModes:GetDefault().name)), 1,1,1, true)
     end,
+    onBeforeStart = function()
+      A.console:Errorf(M, "this func should never be called - the sorter module should be handling this sort mode")
+      return true
+    end,
   })
 end
