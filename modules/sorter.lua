@@ -169,6 +169,16 @@ function M:Start(sortMode)
   M:ProcessStep()
 end
 
+function M:GetLastSortModeName()
+  if R.lastComplete.sortMode then
+    return R.lastComplete.sortMode.getFullName()
+  end
+end
+
+function M:StartLast()
+  M:Start(R.lastComplete.sortMode or A.sortModes:GetDefault())
+end
+
 function M:ResumeIfPaused()
   if M:IsPaused() and not InCombatLockdown() then
     swap(R, "resumeSave", "resumeAfterCombat")

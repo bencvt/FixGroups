@@ -29,6 +29,9 @@ function M:Command(args)
   elseif cmd == "cancel" then
     A.sorter:StopManual()
     return
+  elseif cmd == "last" or cmd == "again" or cmd == "repeat" or cmd == "^" or cmd == "\"" or cmd == "previous" or cmd == "prev" then
+    A.sorter:StartLast()
+    return
   elseif cmd == "reannounce" or cmd == "reann" then
     A.sorter:ResetAnnounced()
     return
