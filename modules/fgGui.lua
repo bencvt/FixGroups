@@ -130,7 +130,7 @@ function M:Open()
 
   addButton(c, "sort")
   addButton(c, "split")
-  addButton(c, "last", nil, {"again", "repeat", "^", "\"", "previous", "prev"})
+  addButton(c, "last")
   addButton(c, "cancel")
   addPadding(c)
   addIndent(c)
@@ -165,14 +165,6 @@ end
 local function addTooltipLines(t, cmd)
   if cmd == "config" then
     t:AddLine(format(L["gui.fixGroups.help.config"], A.util:GetBindingKey("TOGGLEGAMEMENU", "ESCAPE"), A.NAME), 1,1,0, false)
-  elseif cmd == "last" then
-    local last = A.sorter:GetLastSortModeName()
-    if last then
-      last = format("%s: %s.", L["sorter.print.last"], H(last))
-    else
-      last = L["sorter.print.last"].."."
-    end
-    t:AddLine(last, 1,1,0, true)
   elseif cmd == "choose" or cmd == "list" or cmd == "listself" or cmd == "cancel" then
     t:AddLine(L["gui.fixGroups.help."..cmd], 1,1,0, true)
   else

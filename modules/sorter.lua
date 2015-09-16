@@ -175,8 +175,8 @@ function M:GetLastSortModeName()
   end
 end
 
-function M:StartLast()
-  M:Start(R.lastComplete.sortMode or A.sortModes:GetDefault())
+function M:GetLastOrDefaultSortMode()
+  return R.lastComplete.sortMode or A.sortModes:GetDefault()
 end
 
 function M:ResumeIfPaused()

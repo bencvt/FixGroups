@@ -16,33 +16,29 @@ function M:OnEnable()
   M:RegisterChatCommand("fg", slashCmd)
 end
 
-function M:Command(args)
-  local cmd = strlower(strtrim(args))
-
-  -- Simple arguments.
+function handleBasicCommands(cmd)
   if cmd == "" or cmd == "gui" or cmd == "ui" or cmd == "window" or cmd == "about" or cmd == "help" then
     A.fgGui:Open()
-    return
   elseif cmd == "config" or cmd == "options" then
     A.utilGui:OpenConfig()
-    return
   elseif cmd == "cancel" then
     A.sorter:StopManual()
-    return
-  elseif cmd == "last" or cmd == "again" or cmd == "repeat" or cmd == "^" or cmd == "\"" or cmd == "previous" or cmd == "prev" then
-    A.sorter:StartLast()
-    return
   elseif cmd == "reannounce" or cmd == "reann" then
     A.sorter:ResetAnnounced()
-    return
   elseif cmd == "choose" or strmatch(cmd, "^choose ") then
     A.chooseCommand:Command("choose", strsub(args, strlen("choose") + 1))
-    return
   elseif cmd == "list" or strmatch(cmd, "^list ") then
     A.chooseCommand:Command("list", strsub(args, strlen("list") + 1))
-    return
   elseif cmd == "listself" or strmatch(cmd, "^listself ") then
     A.chooseCommand:Command("listself", strsub(args, strlen("listself") + 1))
+  else
+    return true
+  end
+end
+
+function M:Command(args)
+  local cmd = strlower(strtrim(args))
+  if not handleBasicCommands(cmd) then
     return
   end
 
@@ -55,6 +51,8 @@ function M:Command(args)
   if sortMode then
     if sortMode.key == "sort" then
       sortMode = A.sortModes:GetDefault()
+    elseif sortMode.key == "last" then
+      sortMode = A.sorter:GetLastOrDefaultSortMode()
     end
   else
     A.console:Printf(L["phrase.print.badArgument"], H(args), H("/fg help"))

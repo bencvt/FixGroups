@@ -254,7 +254,8 @@ L["options.widget.dataBrokerGroupCompStyle.desc.1"] = "%s is available as a Data
 L["options.widget.dataBrokerGroupCompStyle.desc.2"] = "There are many Data Broker display addons out there. Some of the more popular ones are %s."
 
 -- Sorter module
-L["sorter.mode.default"] = "sort"
+L["sorter.mode.default"] = "using default sort method"
+L["sorter.mode.last"] = "repeat last sort method"
 L["sorter.mode.clear1"] = "clearing group 1"
 L["sorter.mode.clear2"] = "clearing groups 1 and 2"
 L["sorter.mode.skip1"] = "skipping group 1"
