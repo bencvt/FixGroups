@@ -36,13 +36,16 @@ local function groupCompOnTooltipShow(tooltip)
     tooltip:AddDoubleLine(A.util:GetRoleIcon("TANK").." "..L["word.tank.plural"],       tostring(t), 1,1,1, 1,1,0)
     tooltip:AddDoubleLine(A.util:GetRoleIcon("HEALER").." "..L["word.healer.plural"],   tostring(h), 1,1,1, 1,1,0)
     tooltip:AddDoubleLine(A.util:GetRoleIcon("DAMAGER").." "..L["word.damager.plural"], tostring(m+r+u), 1,1,1, 1,1,0)
-    local indent = "        "
+    local indent = A.util:BlankInline(8, A.options.roleIconSize).."    "
     tooltip:AddDoubleLine(indent..L["word.melee.plural"],   HD(tostring(m)), 1,1,1, 1,1,0)
     tooltip:AddDoubleLine(indent..L["word.ranged.plural"],  HD(tostring(r)), 1,1,1, 1,1,0)
     if u > 0 then
       tooltip:AddDoubleLine(indent..L["word.unknown.plural"], HD(tostring(u)), 1,1,1, 1,1,0)
+    end
+    tooltip:AddDoubleLine(A.util:BlankInline(8, A.options.roleIconSize).." "..L["word.total"], tostring(t+h+m+r+u), 1,1,1, 1,1,0)
+    if u > 0 then
       tooltip:AddLine(" ")
-      tooltip:AddLine(format(L["phrase.waitingOnDataFromServerFor"], ((u > 1) and "|n" or "")..A.group:GetUnknownNames()))
+      tooltip:AddLine(format(L["phrase.waitingOnDataFromServerFor"], A.group:GetUnknownNames()), 1,1,1, true)
     end
     local sitting = A.group:NumSitting()
     if sitting > 0 then
