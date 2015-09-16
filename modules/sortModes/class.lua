@@ -38,6 +38,7 @@ local function assignGroups(keys, players)
   -- Assign groups, class-by-class.
   wipe(R.assignedGroup)
   local curGroup, curGroupSize = 1, 0
+
   -- First pass: classes with exactly 5/10/15/etc. players.
   for _, class in ipairs(CLASS_SORT_ORDER) do
     if counts[class] and counts[class] > 0 and counts[class] % 5 == 0 then
@@ -45,6 +46,7 @@ local function assignGroups(keys, players)
       curGroup, curGroupSize = assignClassToGroups(curGroup, curGroupSize, keys, players, class)
     end
   end
+
   -- Second pass: classes with some other number of players.
   for _, class in ipairs(CLASS_SORT_ORDER) do
     if counts[class] and counts[class] > 0 then
@@ -53,7 +55,7 @@ local function assignGroups(keys, players)
 
       -- Attempt to find another class to share the last group with.
       local found
-      -- First pass: find a perfect match.
+      -- First pass: try to find a perfect match.
       for _, otherClass in ipairs(CLASS_SORT_ORDER) do
         if not found and counts[otherClass] and curGroupSize + (counts[otherClass] % 5) == 5 then
           found = true
@@ -62,7 +64,8 @@ local function assignGroups(keys, players)
         end
       end
       if not found then
-        -- Second and third passes: add in an under-represented class, then try to find a perfect match again.
+        -- Second and third passes: add in an under-represented class,
+        -- then try to find a perfect match again.
         for _, otherClass in ipairs(CLASS_SORT_ORDER) do
           if not found and counts[otherClass] and counts[otherClass] > 0 and counts[otherClass] + curGroupSize < 5 then
             found = true
