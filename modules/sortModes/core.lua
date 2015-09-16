@@ -123,7 +123,9 @@ function M.onSort(keys, players)
   sort(keys, P:BaseGetCompareFunc(players))
 
   -- Split keys into core/nonCore.
-  local maxRank = M:GetCoreRank()
+  -- Subtract 1 because GetGuildInfo is 0-based, but
+  -- GuildControlGetRankName is 1-based.
+  local maxRank = M:GetCoreRank() - 1
   local core, nonCore = wipe(R.core), wipe(R.nonCore)
   local unitID
   for _, k in ipairs(keys) do
@@ -138,7 +140,7 @@ function M.onSort(keys, players)
     end
   end
 
-  -- Recombine into keys, inserting padding to force nonCore to group 8.
+  -- Recombine into keys, inserting padding to force nonCore into group 8.
   wipe(keys)
   for _, k in ipairs(core) do
     tinsert(keys, k)
