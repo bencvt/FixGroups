@@ -10,7 +10,7 @@ M.private = {
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
-local ceil, format, ipairs, min, type = ceil, format, ipairs, min, type
+local ceil, format, ipairs, min, time, type = ceil, format, ipairs, min, time, type
 local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
 
 local AceGUI = LibStub("AceGUI-3.0")
