@@ -60,6 +60,7 @@ function M:GetElvUISkinModule()
   end
 end
 
+local FILL_PLUS_STATUS_BAR = A.NAME.."FillPlusStatusBar"
 local AceGUI = LibStub("AceGUI-3.0")
 local noop = function() return 0 end
 local dummy = {
@@ -72,7 +73,7 @@ local dummy = {
     },
   },
 }
-AceGUI:RegisterLayout("FixGroupsStatusBar", function(content, children)
+AceGUI:RegisterLayout(FILL_PLUS_STATUS_BAR, function(content, children)
   if #children < 2 or #children[2].children < 2 then
     return
   end
@@ -91,7 +92,7 @@ AceGUI:RegisterLayout("FixGroupsStatusBar", function(content, children)
   bottom:SetHeight(barHeight)
   bottom.frame:Show()
 
-  -- Ensure LayoutFinished gets called
+  -- Ensure content.obj:LayoutFinished gets called
   dummy[1].frame.GetHeight = function() return top.frame:GetHeight() + barHeight end
   AceGUI.LayoutRegistry.FILL(content, dummy)
 end)
@@ -108,7 +109,7 @@ function M:SetupWindow(window)
   window:SetLayout("Fill")
 
   local container = AceGUI:Create("SimpleGroup")
-  container:SetLayout("FixGroupsStatusBar")
+  container:SetLayout(FILL_PLUS_STATUS_BAR)
   -- Explicitly set an empty backdrop so ElvUI won't skin this frame.
   container.frame:SetBackdrop(nil)
   window:AddChild(container)
