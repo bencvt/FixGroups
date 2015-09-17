@@ -109,6 +109,8 @@ function M:SetupWindow(window)
 
   local container = AceGUI:Create("SimpleGroup")
   container:SetLayout("FixGroupsStatusBar")
+  -- Explicitly set an empty backdrop so ElvUI won't skin this frame.
+  container.frame:SetBackdrop(nil)
   window:AddChild(container)
 
   local top = AceGUI:Create("ScrollFrame")
@@ -117,6 +119,8 @@ function M:SetupWindow(window)
 
   local bottom = AceGUI:Create("SimpleGroup")
   bottom:SetLayout("Flow")
+  -- Explicitly set an empty backdrop so ElvUI won't skin this frame.
+  bottom.frame:SetBackdrop(nil)
   container:AddChild(bottom)
 
   local statusBar = AceGUI:Create("Label")
