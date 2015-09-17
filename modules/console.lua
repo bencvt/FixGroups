@@ -17,7 +17,7 @@ function M:Printf(...)
 end
 
 function M:Errorf(module, ...)
-  print(PREFIX.." internal error in "..module:GetName().." module:", format(...))
+  print(format("%s: internal error in %s module:", A.util:HighlightAddon(A.NAME.." v"..A.VERSION_PACKAGED)), format(...))
 end
 
 local function isDebuggingModule(module)
