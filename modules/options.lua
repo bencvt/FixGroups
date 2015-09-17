@@ -108,7 +108,7 @@ end
 R.optionsTable = {
   type = "group",
   childGroups = "tab",
-  name = HA(A.NAME).." "..format(L["phrase.versionAuthor"], A.VERSION, HA(A.AUTHOR)),
+  name = HA(A.NAME).." "..format(L["phrase.versionAuthor"], A.VERSION_PACKAGED, HA(A.AUTHOR)),
   args = {
     main = {
       order = 10,
@@ -623,7 +623,7 @@ R.optionsTable.args.ui.args = {
     name = L["options.widget.notifyNewVersion.text"],
     desc = paragraphs({
       format(L["options.widget.notifyNewVersion.desc"], HA(A.NAME)),
-      format(L["addonChannel.print.newerVersion"], A.NAME, H("9000.1"), A.VERSION),
+      format(L["addonChannel.print.newerVersion"], A.NAME, H("9000.1"), A.VERSION_PACKAGED),
     }),
     type = "toggle",
     width = "full",

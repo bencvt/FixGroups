@@ -179,7 +179,6 @@ function M:GetFixedInstanceSize()
 end
 
 function M:GetAddonNameAndVersion(name)
-  name = name or A.NAME
   local v = GetAddOnMetadata(name, "Version")
   if v then
     if strmatch(v, "v.*") then

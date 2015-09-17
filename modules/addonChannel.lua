@@ -18,13 +18,13 @@ local DELAY_BROADCAST_VERSION = 15.5
 local VERSION_STRING
 do
   local r, i = 0, 0
-  for part in gmatch(A.VERSION, "[%d]+") do
+  for part in gmatch(A.VERSION_RELEASED, "[%d]+") do
     if i < 3 then
       r = r + tonumber(part) * (i<1 and 1000 or 1) * (i<2 and 1000 or 1)
       i = i + 1
     end
   end
-  VERSION_STRING = format("%d:%s", r, A.VERSION)
+  VERSION_STRING = format("%d:%s", r, A.VERSION_RELEASED)
 end
 
 function M:OnEnable()
@@ -50,7 +50,7 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
     if message and (message > VERSION_STRING) then
       message, R.newerVersion = strsplit(":", message, 2)
       if R.newerVersion and strtrim(R.newerVersion) ~= "" then
-        A.console:Printf(L["addonChannel.print.newerVersion"], A.NAME, H(A.util:Escape(R.newerVersion)), A.VERSION)
+        A.console:Printf(L["addonChannel.print.newerVersion"], A.NAME, H(A.util:Escape(R.newerVersion)), A.VERSION_PACKAGED)
       else
         R.newerVersion = false
       end
