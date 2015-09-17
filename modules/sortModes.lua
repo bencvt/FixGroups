@@ -20,7 +20,7 @@ local format, ipairs, sort, tinsert, tostring = format, ipairs, sort, tinsert, t
 -- isExtra = true,                    -- boolean
 -- groupOffset = 0,                   -- number
 -- skipFirstGroups = 0,               -- number
--- getDefaultCompareFunc = someFunc,  -- function(sortMode, keys, players)
+-- getDefaultCompareFunc = someFunc,  -- function(sortMode, keys, players) or boolean
 -- onBeforeStart = someFunc,          -- function() -> return true to cancel sort
 -- onStart = someFunc,                -- function()
 -- onBeforeSort = someFunc,           -- function(sortMode, keys, players) -> return true to cancel sort
@@ -53,7 +53,7 @@ function M:Register(sortMode)
     sortMode.getFullKey = function() return sortMode.key end
     sortMode.getFullName = function() return sortMode.name end
   else
-    sortMode.getFullKey = function() return format("%s:%s", M:GetDefault().key, sortMode.key) end
+    sortMode.getFullKey = function() return format("%s:%s", sortMode.key, M:GetDefault().key) end
     sortMode.getFullName = function()
       local d = M:GetDefault()
       if sortMode.doesNameIncludesDefault and d.key ~= "nosort" then

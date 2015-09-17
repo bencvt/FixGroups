@@ -17,6 +17,7 @@ function M:OnEnable()
     end,
     aliases = {"az"},
     isExtra = true,
+    getDefaultCompareFunc = true,
     onSort = function(sortMode, keys, players)
       sort(keys, function(a, b)
         return players[a].name < players[b].name
@@ -33,6 +34,7 @@ function M:OnEnable()
     end,
     aliases = {"za"},
     isExtra = true,
+    getDefaultCompareFunc = true,
     onSort = function(sortMode, keys, players)
       sort(keys, function(a, b)
         return players[a].name > players[b].name

@@ -41,6 +41,7 @@ function M:OnEnable()
       t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
     end,
     isExtra = true,
+    getDefaultCompareFunc = true,
     onBeforeStart = function()
       salt = random()
       wipe(hashCache)

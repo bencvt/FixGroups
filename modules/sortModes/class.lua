@@ -16,13 +16,14 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "class",
     name = L["sorter.mode.class"],
-    isExtra = true,
-    isIncludingSitting = true,
     desc = function(t)
       t:AddLine(format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.class"]), 1,1,0, true)
       t:AddLine(" ")
       t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
     end,
+    isExtra = true,
+    isIncludingSitting = true,
+    getDefaultCompareFunc = true,
     onSort = M.onSort,
   })
 end
