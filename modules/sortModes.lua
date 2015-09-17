@@ -17,7 +17,6 @@ local format, ipairs, sort, tinsert, tostring = format, ipairs, sort, tinsert, t
 -- doesNameIncludesDefault = false,   -- boolean
 -- isSplit = false,                   -- boolean
 -- isIncludingSitting = false,        -- boolean
--- isExtra = true,                    -- boolean
 -- groupOffset = 0,                   -- number
 -- skipFirstGroups = 0,               -- number
 -- getDefaultCompareFunc = someFunc,  -- function(sortMode, keys, players) or boolean

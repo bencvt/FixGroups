@@ -16,7 +16,6 @@ function M:OnEnable()
       t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
     end,
     aliases = {"az"},
-    isExtra = true,
     getDefaultCompareFunc = true,
     onSort = function(sortMode, keys, players)
       sort(keys, function(a, b)
@@ -33,7 +32,6 @@ function M:OnEnable()
       t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
     end,
     aliases = {"za"},
-    isExtra = true,
     getDefaultCompareFunc = true,
     onSort = function(sortMode, keys, players)
       sort(keys, function(a, b)

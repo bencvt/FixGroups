@@ -21,7 +21,6 @@ function M:OnEnable()
       t:AddLine(" ")
       t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
     end,
-    isExtra = true,
     isIncludingSitting = true,
     getDefaultCompareFunc = true,
     onSort = M.onSort,
