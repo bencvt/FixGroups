@@ -12,7 +12,7 @@ local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local format, gsub, ipairs, strlower, tinsert, tostring = format, gsub, ipairs, strlower, tinsert, tostring
 local tconcat = table.concat
-local GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
+local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, UIParent
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_MALE
 
 local AceGUI = LibStub("AceGUI-3.0")
@@ -69,6 +69,14 @@ local function addPadding(frame)
   return padding
 end
 
+local function addIndent(frame, isLarge)
+  local indent = AceGUI:Create("Label")
+  indent:SetText(" ")
+  indent:SetWidth(isLarge and 52 or 4)
+  frame:AddChild(indent)
+  return indent
+end
+
 local function onCloseWindow(widget)
   R.window = false
   R.cmd = false
@@ -103,20 +111,8 @@ function M:Open(cmd)
   R.window = AceGUI:Create("Window")
   R.window:SetTitle(A.NAME.." "..format(L["gui.title"], "/"..cmd))
   resetWindowSize()
-  R.window:SetStatusText("")
   R.window:SetCallback("OnClose", onCloseWindow)
-  R.window.frame:SetPropagateKeyboardInput(true)
-  R.window.frame:SetScript("OnKeyDown", function(frame, key)
-    if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
-      frame:SetPropagateKeyboardInput(false)
-      M:Close()
-    end
-  end)
-  R.window:SetLayout("Fill")
-
-  local c = AceGUI:Create("ScrollFrame")
-  c:SetLayout("Flow")
-  R.window:AddChild(c)
+  local c = A.utilGui:SetupWindow(R.window)
 
   local widget = AceGUI:Create("Label")
   if cmd == "choose" then

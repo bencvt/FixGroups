@@ -10,7 +10,7 @@ local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
 local ceil, format, ipairs, min, time, type = ceil, format, ipairs, min, time, type
-local GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent = GameFontHighlight, GameTooltip, GetBindingFromClick, IsControlKeyDown, IsShiftKeyDown, PlaySound, UIParent
+local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, UIParent
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -84,13 +84,6 @@ local function resetWindowSize()
   R.window:SetHeight(A.options.showExtraSortModes and 430 or 380)
 end
 
-function M:Close()
-  if R.window then
-    PlaySound("gsTitleOptionExit")
-    R.window.frame:Hide()
-  end
-end
-
 function M:Open()
   if A.DEBUG >= 1 then A.console:Debugf(M, "open") end
   if R.window then
@@ -100,20 +93,8 @@ function M:Open()
   R.window = AceGUI:Create("Window")
   R.window:SetTitle(A.NAME.." "..format(L["gui.title"], "/fg"))
   resetWindowSize()
-  R.window:SetStatusText("")
   R.window:SetCallback("OnClose", onCloseWindow)
-  R.window.frame:SetPropagateKeyboardInput(true)
-  R.window.frame:SetScript("OnKeyDown", function(frame, key)
-    if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
-      frame:SetPropagateKeyboardInput(false)
-      M:Close()
-    end
-  end)
-  R.window:SetLayout("Fill")
-
-  local c = AceGUI:Create("ScrollFrame")
-  c:SetLayout("Flow")
-  R.window:AddChild(c)
+  local c = A.utilGui:SetupWindow(R.window)
 
   R.label = AceGUI:Create("Label")
   M:Refresh()
