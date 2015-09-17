@@ -12,5 +12,8 @@ function M:OnEnable()
     onBeforeStart = function()
       return true
     end,
+    onSort = function(players, keys)
+      -- Do nothing.
+    end,
   })
 end
