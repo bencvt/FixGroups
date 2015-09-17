@@ -76,9 +76,9 @@ end
 function M:BaseOnBeforeSort(sortMode, keys, players)
   local base = M:GetDefault()
   if not base.getCompareFunc then
-    R.modes.tmrh.onBeforeSort()
+    R.modes.tmrh.onBeforeSort(keys, players)
   end
   if sortMode ~= base and base.onBeforeSort then
-    base.onBeforeSort()
+    base.onBeforeSort(keys, players)
   end
 end
