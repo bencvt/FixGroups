@@ -5,6 +5,7 @@ A.fgGui = M
 M.private = {
   window = false,
   label = false,
+  texturedButtons = {},
 }
 local R = M.private
 local H, HA = A.util.Highlight, A.util.HighlightAddon
@@ -18,20 +19,12 @@ local CUBE_ICON_0 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga"
 local CUBE_ICON_1 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga"
 local CUBE_ICON_BW = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIconBW_64.tga"
 
-local function addPadding(frame)
+local function newRow(frame)
   local padding = AceGUI:Create("Label")
   padding:SetText(" ")
   padding:SetFullWidth(true)
   frame:AddChild(padding)
   return padding
-end
-
-local function addIndent(frame)
-  local indent = AceGUI:Create("Label")
-  indent:SetText(" ")
-  indent:SetWidth(52)
-  frame:AddChild(indent)
-  return indent
 end
 
 local function onLeaveButton(widget)
@@ -43,8 +36,11 @@ local function getCommand(cmd)
   return "/fg "..cmd
 end
 
-local function addButton(frame, cmd, forceClose, aliases)
+local function addButton(altColor, frame, cmd, forceClose, aliases)
   local button = AceGUI:Create("Button")
+  if altColor then
+    A.utilGui:AddTexturedButton(R.texturedButtons, button, "Blue")
+  end
   button:SetText(cmd)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
@@ -74,6 +70,7 @@ end
 local function onCloseWindow(widget)
   R.window = false
   R.label = false
+  A.utilGui:CleanupTexturedButton(R.texturedButtons)
   AceGUI:Release(widget)
 end
 
@@ -109,38 +106,34 @@ function M:Open()
   header:SetFullWidth(true)
   c:AddChild(header)
 
-  addButton(c, "sort")
-  addButton(c, "split")
-  addButton(c, "last")
-  addButton(c, "cancel")
-  addPadding(c)
-  addIndent(c)
-  addButton(c, "clear1")
-  addButton(c, "clear2")
-  addButton(c, "skip1")
-  addButton(c, "skip2")
-  addPadding(c)
-  addIndent(c)
-  addButton(c, "tmrh")
-  addButton(c, "thmr")
-  addButton(c, "nosort")
-  addPadding(c)
-  addIndent(c)
-  addButton(c, "meter")
-  addButton(c, "core")
-  addPadding(c)
+  addButton(false, c, "sort")
+  addButton(false, c, "split")
+  addButton(false, c, "last")
+  addButton(false, c, "cancel")
+  newRow(c)
+  addButton(true, c, "clear1")
+  addButton(true, c, "clear2")
+  addButton(true, c, "skip1")
+  addButton(true, c, "skip2")
+  newRow(c)
+  addButton(true, c, "tmrh")
+  addButton(true, c, "thmr")
+  addButton(true, c, "nosort")
+  newRow(c)
+  addButton(true, c, "core")
+  addButton(true, c, "meter")
+  newRow(c)
   if A.options.showExtraSortModes then
-    addIndent(c)
-    addButton(c, "alpha")
-    addButton(c, "ralpha")
-    addButton(c, "class")
-    addButton(c, "random")
-    addPadding(c)
+    addButton(true, c, "alpha")
+    addButton(true, c, "ralpha")
+    addButton(true, c, "class")
+    addButton(true, c, "random")
+    newRow(c)
   end
-  addButton(c, "config", true, {"options"})
-  addButton(c, "choose", true)
-  addButton(c, "list", true)
-  addButton(c, "listself", true)
+  addButton(false, c, "config", true, {"options"})
+  addButton(false, c, "choose", true)
+  addButton(false, c, "list", true)
+  addButton(false, c, "listself", true)
 end
 
 local function addTooltipLines(t, cmd)

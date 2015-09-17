@@ -5,6 +5,7 @@ A.chooseGui = M
 M.private = {
   window = false,
   cmd = false,
+  texturedButtons = {},
   mockSession = false,
 }
 local R = M.private
@@ -26,8 +27,11 @@ local function getCommand(cmd, mode, modeType)
   return format("/%s %s", cmd, mode)
 end
 
-local function addModeButton(frame, cmd, mode, modeType)
+local function addButton(altColor, frame, cmd, mode, modeType)
   local button = AceGUI:Create("Button")
+  if altColor then
+    A.utilGui:AddTexturedButton(R.texturedButtons, button, "Blue")
+  end
   local label
   if mode == "option2" then
     mode = format("%s %s %s", L["letter.1"], L["word.or"], L["letter.2"])
@@ -61,7 +65,7 @@ local function addModeButton(frame, cmd, mode, modeType)
   return button
 end
 
-local function addPadding(frame)
+local function newRow(frame)
   local padding = AceGUI:Create("Label")
   padding:SetText(" ")
   padding:SetFullWidth(true)
@@ -69,17 +73,10 @@ local function addPadding(frame)
   return padding
 end
 
-local function addIndent(frame, isLarge)
-  local indent = AceGUI:Create("Label")
-  indent:SetText(" ")
-  indent:SetWidth(isLarge and 52 or 4)
-  frame:AddChild(indent)
-  return indent
-end
-
 local function onCloseWindow(widget)
   R.window = false
   R.cmd = false
+  A.utilGui:CleanupTexturedButton(R.texturedButtons)
   AceGUI:Release(widget)
 end
 
@@ -138,59 +135,63 @@ function M:Open(cmd)
   widget:SetFullWidth(true)
   c:AddChild(widget)
 
-  addModeButton(c, cmd, "any")
-  addModeButton(c, cmd, "tank")
-  addModeButton(c, cmd, "healer")
-  addModeButton(c, cmd, "damager")
-  addModeButton(c, cmd, "melee")
-  addModeButton(c, cmd, "ranged")
-  addModeButton(c, cmd, "notMe")
-  addModeButton(c, cmd, "guildmate")
-  addModeButton(c, cmd, "dead")
-  addModeButton(c, cmd, "alive")
-  addPadding(c)
-  for i, class in ipairs(CLASS_SORT_ORDER) do
-    addModeButton(c, cmd, strlower(class), "class")
-  end
-  addPadding(c)
-  addModeButton(c, cmd, "conqueror", "tierToken")
-  addModeButton(c, cmd, "protector", "tierToken")
-  addModeButton(c, cmd, "vanquisher", "tierToken")
-  addPadding(c)
-  addModeButton(c, cmd, "intellect", "primaryStat")
-  addModeButton(c, cmd, "agility", "primaryStat")
-  addModeButton(c, cmd, "strength", "primaryStat")
-  addPadding(c)
-  addModeButton(c, cmd, "cloth", "armor")
-  addModeButton(c, cmd, "leather", "armor")
-  addModeButton(c, cmd, "mail", "armor")
-  addModeButton(c, cmd, "plate", "armor")
-  addPadding(c)
-  addModeButton(c, cmd, "g1", "fromGroup")
-  addModeButton(c, cmd, "g2", "fromGroup")
-  addModeButton(c, cmd, "g3", "fromGroup")
-  addModeButton(c, cmd, "g4", "fromGroup")
-  addModeButton(c, cmd, "g5", "fromGroup")
-  addModeButton(c, cmd, "g6", "fromGroup")
-  addModeButton(c, cmd, "g7", "fromGroup")
-  addModeButton(c, cmd, "g8", "fromGroup")
-  addModeButton(c, cmd, "sitting")
-  addModeButton(c, cmd, "anyIncludingSitting")
-  addModeButton(c, cmd, "group")
-  addPadding(c)
-  addModeButton(c, cmd, "last")
+  addButton(false, c, cmd, "any")
+  addButton(false, c, cmd, "tank")
+  addButton(false, c, cmd, "healer")
+  addButton(false, c, cmd, "damager")
+  addButton(false, c, cmd, "melee")
+  addButton(false, c, cmd, "ranged")
+  addButton(false, c, cmd, "notMe")
+  addButton(false, c, cmd, "guildmate")
+  addButton(false, c, cmd, "dead")
+  addButton(false, c, cmd, "alive")
+  newRow(c)
 
+  for i, class in ipairs(CLASS_SORT_ORDER) do
+    addButton(true, c, cmd, strlower(class), "class")
+  end
+  newRow(c)
+
+  addButton(false, c, cmd, "conqueror", "tierToken")
+  addButton(false, c, cmd, "protector", "tierToken")
+  addButton(false, c, cmd, "vanquisher", "tierToken")
+  newRow(c)
+
+  addButton(false, c, cmd, "intellect", "primaryStat")
+  addButton(false, c, cmd, "agility", "primaryStat")
+  addButton(false, c, cmd, "strength", "primaryStat")
+  newRow(c)
+
+  addButton(false, c, cmd, "cloth", "armor")
+  addButton(false, c, cmd, "leather", "armor")
+  addButton(false, c, cmd, "mail", "armor")
+  addButton(false, c, cmd, "plate", "armor")
+  newRow(c)
+
+  addButton(true, c, cmd, "g1", "fromGroup")
+  addButton(true, c, cmd, "g2", "fromGroup")
+  addButton(true, c, cmd, "g3", "fromGroup")
+  addButton(true, c, cmd, "g4", "fromGroup")
+  addButton(true, c, cmd, "g5", "fromGroup")
+  addButton(true, c, cmd, "g6", "fromGroup")
+  addButton(true, c, cmd, "g7", "fromGroup")
+  addButton(true, c, cmd, "g8", "fromGroup")
+  addButton(true, c, cmd, "sitting")
+  addButton(true, c, cmd, "anyIncludingSitting")
+  addButton(true, c, cmd, "group")
+  newRow(c)
+
+  addButton(false, c, cmd, "last")
   if cmd == "choose" then
-    addModeButton(c, cmd, "option2", "option")
-    addModeButton(c, cmd, "option3+", "option")
-    addPadding(c)
+    addButton(false, c, cmd, "option2", "option")
+    addButton(false, c, cmd, "option3+", "option")
+    newRow(c)
 
     widget = AceGUI:Create("Heading")
     widget:SetText(format(L["gui.header.examples"], "/"..cmd))
     widget:SetFullWidth(true)
     c:AddChild(widget)
-
-    addPadding(c)
+    newRow(c)
 
     if not R.mockSession then
       R.mockSession = {}

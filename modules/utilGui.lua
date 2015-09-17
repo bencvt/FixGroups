@@ -9,7 +9,7 @@ local R = M.private
 
 local DELAY_OPEN_RAID_TAB = 0.01
 local ChatFrame_OpenChat, GameFontHighlightLarge, GetCurrentKeyBoardFocus, GetBindingFromClick, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, PlaySound, ToggleFriendsFrame = ChatFrame_OpenChat, GameFontHighlightLarge, GetCurrentKeyBoardFocus, GetBindingFromClick, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, PlaySound, ToggleFriendsFrame
-local max, strmatch = max, strmatch
+local format, max, strmatch = format, max, strmatch
 
 -- GLOBALS: ElvUI
 
@@ -57,6 +57,25 @@ function M:GetElvUISkinModule()
     if E.private.skins.blizzard.enable and E.private.skins.blizzard.nonraid then
       return E:GetModule("Skins")
     end
+  end
+end
+
+function M:AddTexturedButton(registry, button, style)
+  button.frame:SetNormalTexture(format("Interface\\Addons\\%s\\media\\button%sUp.tga", A.NAME, style))
+  button.frame:GetNormalTexture():SetTexCoord(0, 1, 0, 0.71875)
+  button.frame:SetHighlightTexture(format("Interface\\Addons\\%s\\media\\button%sHighlight.tga", A.NAME, style))
+  button.frame:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.71875)
+  registry[button] = true
+end
+
+--- Remove the custom button textures from AceGUI button objects. This should
+-- be called prior to releasing button widgets back into the pool (i.e.,
+-- calling AceGUI:Release).
+function M:CleanupTexturedButton(registry)
+  for button, _ in pairs(registry) do
+    registry[button] = nil
+    button.frame:SetNormalTexture(nil)
+    button.frame:SetHighlightTexture(nil)
   end
 end
 
