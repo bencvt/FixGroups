@@ -115,12 +115,14 @@ function M:StopManual()
   end
 end
 
-function M:StopYield(raidOfficerName, message)
+function M:StopYield(raidOfficerName, message, isCancel)
   local mode = getModeToStop()
   if mode then
     M:Stop()
+    A.console:Print(L["sorter.print.raidOfficer."..(isCancel and "cancel" or "yield")], mode, A.util:UnitNameWithColor(raidOfficerName))
+  end
+  if not isCancel then
     R.lastComplete.key = message
-    A.console:Print(L["sorter.print.yieldToRaidOfficer"], mode, A.util:UnitNameWithColor(raidOfficerName))
   end
 end
 

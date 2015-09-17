@@ -23,6 +23,7 @@ local function handleBasicCommands(cmd, args)
     A.utilGui:OpenConfig()
   elseif cmd == "cancel" then
     A.sorter:StopManual()
+    A.addonChannel:Broadcast("f:cancel")
   elseif cmd == "reannounce" or cmd == "reann" then
     A.sorter:ResetAnnounced()
   elseif cmd == "choose" or strmatch(cmd, "^choose ") then

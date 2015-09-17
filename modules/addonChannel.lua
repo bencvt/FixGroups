@@ -56,9 +56,13 @@ function M:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
       end
     end
   elseif cmd == "f" and IsInRaid() and UnitIsRaidOfficer(sender) then
-    A.sorter:StopYield(sender, message)
-    if A.util:IsLeader() then
-      A.marker:FixRaid(true)
+    if message == "cancel" then
+      A.sorter:StopYield(sender, message, true)
+    else
+      A.sorter:StopYield(sender, message, false)
+      if A.util:IsLeader() then
+        A.marker:FixRaid(true)
+      end
     end
   end
 end
