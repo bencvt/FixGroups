@@ -83,8 +83,8 @@ end
 local function resetWindowSize()
   R.window:ClearAllPoints()
   R.window:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-  R.window:SetWidth(700)
-  R.window:SetHeight(569)
+  R.window:SetWidth(675)
+  R.window:SetHeight(568)
 end
 
 function M:Close()
@@ -152,9 +152,9 @@ function M:Open(cmd)
   end
   newRow(c)
 
-  addButton(false, c, cmd, "conqueror", "tierToken")
-  addButton(false, c, cmd, "protector", "tierToken")
-  addButton(false, c, cmd, "vanquisher", "tierToken")
+  addButton(true, c, cmd, "conqueror", "tierToken")
+  addButton(true, c, cmd, "protector", "tierToken")
+  addButton(true, c, cmd, "vanquisher", "tierToken")
   newRow(c)
 
   addButton(false, c, cmd, "intellect", "primaryStat")

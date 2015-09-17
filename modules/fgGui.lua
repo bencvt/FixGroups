@@ -77,8 +77,8 @@ end
 local function resetWindowSize()
   R.window:ClearAllPoints()
   R.window:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-  R.window:SetWidth(540)
-  R.window:SetHeight(A.options.showExtraSortModes and 430 or 380)
+  R.window:SetWidth(490)
+  R.window:SetHeight(A.options.showExtraSortModes and 415 or 375)
 end
 
 function M:Open()
