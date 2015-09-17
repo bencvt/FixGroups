@@ -228,6 +228,7 @@ L["sorter.print.needRank"] = "You must be a raid leader or assistant to fix grou
 L["sorter.print.notActive"] = "You are not currently rearranging the group."
 L["sorter.print.notInGuild"] = "The %s sort method is only available when you are in a guild."
 L["sorter.print.notUseful"] = "Some sort methods are not very useful for organizing a raid, but they're available for the sake of completeness."
+L["sorter.print.nosortDone"] = "Fixed tanks and master looter."
 L["sorter.print.sorted"] = "Rearranged %s."
 L["sorter.print.split"] = "Split players: groups %s."
 L["sorter.print.timedOut"] = "Rearranging %s cancelled because it's taking too long. Perhaps someone else is simultaneously rearranging players?"

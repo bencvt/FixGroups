@@ -7,6 +7,7 @@ v1.4:
   - animate the icon when rearranging
   - stop rearranging when another raid assist starts rearranging
   - add message when cancelling sort
+  - add message after /fg nosort
   - improve message when using the clear/skip sort methods
   - improve spec detection for DPS Shamans and Druids by looking for augment rune buffs
   - improve split algorithm to distribute more evenly

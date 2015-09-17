@@ -15,6 +15,7 @@ function M:OnEnable()
       end
     end,
     onBeforeStart = function()
+      A.console:Print(L["sorter.print.nosortDone"])
       return true
     end,
   })

@@ -49,7 +49,7 @@ function M:BuildDelta(sortMode)
   end
   if sortMode.onSort then
     sortMode.onSort(sortMode, keys, players)
-  else
+  elseif d.onSort then
     d.onSort(sortMode, keys, players)
   end
 
