@@ -35,17 +35,17 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "random",
     name = L["sorter.mode.random"],
-    isExtra = true,
     desc = function(t)
       t:AddLine(format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.random"]), 1,1,0, true)
       t:AddLine(" ")
       t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
     end,
+    isExtra = true,
     onBeforeStart = function()
       salt = random()
       wipe(hashCache)
     end,
-    onSort = function(keys, players)
+    onSort = function(sortMode, keys, players)
       sort(keys, function(a, b)
         return hash(a) < hash(b)
       end)

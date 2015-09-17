@@ -118,9 +118,9 @@ function M.verifyInGuild()
   end
 end
 
-function M.onSort(keys, players)
+function M.onSort(sortMode, keys, players)
   -- Perform an initial sort.
-  sort(keys, P:BaseGetCompareFunc(players))
+  sort(keys, P:GetDefault().getDefaultCompareFunc(sortMode, keys, players))
 
   -- Split keys into core/nonCore.
   -- Subtract 1 because GetGuildInfo is 0-based, but

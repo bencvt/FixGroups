@@ -9,11 +9,13 @@ function M:OnEnable()
     key = "nosort",
     name = L["sorter.mode.nosort"],
     desc = L["gui.fixGroups.help.nosort"],
+    getDefaultCompareFunc = function(sortMode, keys, players)
+      return function(a, b)
+        return a < b
+      end
+    end,
     onBeforeStart = function()
       return true
-    end,
-    onSort = function(players, keys)
-      -- Do nothing.
     end,
   })
 end

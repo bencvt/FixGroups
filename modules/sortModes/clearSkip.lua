@@ -39,39 +39,43 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "clear1",
     name = L["sorter.mode.clear1"],
-    aliases = {"c1"},
     desc = getDescFunc("clear1"),
+    aliases = {"c1"},
+    doesNameIncludesDefault = true,
     groupOffset = 1,
     onBeforeStart = function() return isRaidTooBig("clear1", 1, 0) end,
-    onBeforeSort = function(keys, players) return isRaidTooBig("clear1", 1, 0) end,
+    onBeforeSort = function() return isRaidTooBig("clear1", 1, 0) end,
   })
   A.sortModes:Register({
     key = "clear2",
     name = L["sorter.mode.clear2"],
-    aliases = {"c2"},
     desc = getDescFunc("clear2"),
+    aliases = {"c2"},
+    doesNameIncludesDefault = true,
     groupOffset = 2,
     onBeforeStart = function() return isRaidTooBig("clear2", 2, 0) end,
-    onBeforeSort = function(keys, players) return isRaidTooBig("clear2", 2, 0) end,
+    onBeforeSort = function() return isRaidTooBig("clear2", 2, 0) end,
   })
   A.sortModes:Register({
     key = "skip1",
     name = L["sorter.mode.skip1"],
-    aliases = {"s1"},
     desc = getDescFunc("skip1"),
+    aliases = {"s1"},
+    doesNameIncludesDefault = true,
     groupOffset = 1,
     skipFirstGroups = 1,
     onBeforeStart = function() return isRaidTooBig("skip1", 1, 1) end,
-    onBeforeSort = function(keys, players) return isRaidTooBig("skip1", 1, 1) end,
+    onBeforeSort = function() return isRaidTooBig("skip1", 1, 1) end,
   })
   A.sortModes:Register({
     key = "skip2",
     name = L["sorter.mode.skip2"],
-    aliases = {"s2"},
     desc = getDescFunc("skip2"),
+    aliases = {"s2"},
+    doesNameIncludesDefault = true,
     groupOffset = 2,
     skipFirstGroups = 2,
     onBeforeStart = function() return isRaidTooBig("skip2", 2, 2) end,
-    onBeforeSort = function(keys, players) return isRaidTooBig("skip2", 2, 2) end,
+    onBeforeSort = function() return isRaidTooBig("skip2", 2, 2) end,
   })
 end

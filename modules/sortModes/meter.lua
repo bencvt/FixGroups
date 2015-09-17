@@ -6,6 +6,8 @@ P.meter = M
 
 local format, sort = format, sort
 
+local TANK, HEALER = A.group.ROLE.TANK, A.group.ROLE.HEALER
+
 function M:OnEnable()
   A.sortModes:Register({
     key = "meter",
@@ -23,31 +25,24 @@ function M:OnEnable()
     onStart = function()
       A.meter:BuildSnapshot(true)
     end,
-    onBeforeSort = function(keys, players)
-      P:BaseOnBeforeSort(keys, players)
+    onSort = function(sortMode, keys, players)
+      local defaultCompare = P:GetDefault().getDefaultCompareFunc(sortMode, keys, players)
+      local pa, pb
+      sort(keys, function(a, b)
+        pa, pb = players[a], players[b]
+        if pa.role ~= pb.role then
+          if pa.role == HEALER or pb.role == HEALER or pa.role == TANK or pb.role == TANK then
+            -- Tanks and healers are in their own brackets.
+            return defaultCompare(a, b)
+          end
+        end
+        pa, pb = A.meter:GetPlayerMeter(pa.name), A.meter:GetPlayerMeter(pb.name)
+        if pa == pb then
+          -- Tie, or no data. Fall back to default sort.
+          return defaultCompare(a, b)
+        end
+        return pa > pb
+      end)
     end,
-    onSort = M.onSort,
   })
-end
-
-local TANK, HEALER = A.group.ROLE.TANK, A.group.ROLE.HEALER
-
-function M.onSort(keys, players)
-  local baseCompare = P:BaseGetCompareFunc(players)
-  local pa, pb
-  sort(keys, function(a, b)
-    pa, pb = players[a], players[b]
-    if pa.role ~= pb.role then
-      if pa.role == HEALER or pb.role == HEALER or pa.role == TANK or pb.role == TANK then
-        -- Tanks and healers are in their own brackets.
-        return baseCompare(a, b)
-      end
-    end
-    pa, pb = A.meter:GetPlayerMeter(pa.name), A.meter:GetPlayerMeter(pb.name)
-    if pa == pb then
-      -- Tie, or no data. Fall back to default sort.
-      return baseCompare(a, b)
-    end
-    return pa > pb
-  end)
 end

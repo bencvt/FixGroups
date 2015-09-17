@@ -12,6 +12,21 @@ M.private = R
 local format, ipairs, pairs, sort, wipe = format, ipairs, pairs, sort, wipe
 local CLASS_SORT_ORDER = CLASS_SORT_ORDER
 
+function M:OnEnable()
+  A.sortModes:Register({
+    key = "class",
+    name = L["sorter.mode.class"],
+    isExtra = true,
+    isIncludingSitting = true,
+    desc = function(t)
+      t:AddLine(format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.class"]), 1,1,0, true)
+      t:AddLine(" ")
+      t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
+    end,
+    onSort = M.onSort,
+  })
+end
+
 local function assignClassToGroups(curGroup, curGroupSize, keys, players, class)
   for _, k in ipairs(keys) do
     if (class == "unknown" and not players[k].class) or players[k].class == class then
@@ -26,8 +41,8 @@ local function assignClassToGroups(curGroup, curGroupSize, keys, players, class)
   return curGroup, curGroupSize
 end
 
-local function assignGroups(keys, players)
-  -- Perform an initial sort.
+function M.onSort(sortMode, keys, players)
+  -- Perform an initial sort by name.
   sort(keys)
 
   -- Count the number of players for each class.
@@ -99,19 +114,4 @@ local function assignGroups(keys, players)
     end
     return ga < gb
   end)
-end
-
-function M:OnEnable()
-  A.sortModes:Register({
-    key = "class",
-    name = L["sorter.mode.class"],
-    isExtra = true,
-    isIncludingSitting = true,
-    desc = function(t)
-      t:AddLine(format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.class"]), 1,1,0, true)
-      t:AddLine(" ")
-      t:AddLine(L["sorter.print.notUseful"], 1,1,1, true)
-    end,
-    onSort = assignGroups,
-  })
 end

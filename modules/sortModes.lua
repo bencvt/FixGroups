@@ -10,20 +10,21 @@ local R = M.private
 local format, ipairs, sort, tinsert, tostring = format, ipairs, sort, tinsert, tostring
 
 --- @param sortMode expected to be a table with the following keys:
--- key = "example",               -- (required) string
--- name = "by whatever",          -- (required) string
--- aliases = {"whatever"},        -- array of strings
--- isSplit = false,               -- boolean
--- isIncludingSitting = false,    -- boolean
--- isExtra = true,                -- boolean
--- desc = "Do an example sort.",  -- string or function(t)
--- getCompareFunc = someFunc,     -- function(players)
--- onBeforeStart = someFunc,      -- function()
--- onStart = someFunc,            -- function()
--- onBeforeSort = someFunc,       -- function(keys, players)
--- onSort = someFunc,             -- function(keys, players)
--- groupOffset = 0,               -- number
--- skipFirstGroups = 0,           -- number
+-- key = "example",                   -- (required) string
+-- name = "by whatever",              -- (required) string
+-- aliases = {"whatever"},            -- array of strings
+-- desc = "Do an example sort.",      -- string or function(t)
+-- doesNameIncludesDefault = false,   -- boolean
+-- isSplit = false,                   -- boolean
+-- isIncludingSitting = false,        -- boolean
+-- isExtra = true,                    -- boolean
+-- groupOffset = 0,                   -- number
+-- skipFirstGroups = 0,               -- number
+-- getDefaultCompareFunc = someFunc,  -- function(sortMode, keys, players)
+-- onBeforeStart = someFunc,          -- function() -> return true to cancel sort
+-- onStart = someFunc,                -- function()
+-- onBeforeSort = someFunc,           -- function(sortMode, keys, players) -> return true to cancel sort
+-- onSort = someFunc,                 -- function(sortMode, keys, players)
 function M:Register(sortMode)
   if not sortMode then
     A.console:Errorf(M, "attempting to register a nil sortMode")
@@ -48,12 +49,18 @@ function M:Register(sortMode)
       end
     end
   end
-  if sortMode.onSort then
+  if sortMode.getDefaultCompareFunc then
     sortMode.getFullKey = function() return sortMode.key end
     sortMode.getFullName = function() return sortMode.name end
   else
     sortMode.getFullKey = function() return format("%s:%s", M:GetDefault().key, sortMode.key) end
-    sortMode.getFullName = function() return format("%s, %s", M:GetDefault().name, sortMode.name) end
+    sortMode.getFullName = function()
+      local d = M:GetDefault()
+      if sortMode.doesNameIncludesDefault and d.key ~= "nosort" then
+        return format("%s, %s", d.name, sortMode.name)
+      end
+      return sortMode.name
+    end
   end
 end
 
@@ -65,20 +72,3 @@ function M:GetDefault()
   return A.options.sortMode and R.modes[A.options.sortMode] or R.modes.tmrh
 end
 
-function M:BaseGetCompareFunc(players)
-  local base = M:GetDefault()
-  if not base.getCompareFunc then
-    base = R.modes.tmrh
-  end
-  return base.getCompareFunc(players)
-end
-
-function M:BaseOnBeforeSort(sortMode, keys, players)
-  local base = M:GetDefault()
-  if not base.getCompareFunc then
-    R.modes.tmrh.onBeforeSort(keys, players)
-  end
-  if sortMode ~= base and base.onBeforeSort then
-    base.onBeforeSort(keys, players)
-  end
-end

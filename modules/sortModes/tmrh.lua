@@ -10,7 +10,7 @@ local PADDING_PLAYER = {role=5, isDummy=true}
 
 local format, sort, tinsert = format, sort, tinsert
 
-local function getCompareFunc(players)
+local function getDefaultCompareFunc(sortMode, keys, players)
   local ra, rb
   return function(a, b)
     ra, rb = ROLE_KEY[players[a].role or 5] or 4, ROLE_KEY[players[b].role or 5] or 4
@@ -26,8 +26,11 @@ function M:OnEnable()
     key = "tmrh",
     name = L["sorter.mode.tmrh"],
     desc = format("%s:|n%s.", L["tooltip.right.fixGroups"], L["sorter.mode.tmrh"]),
-    getCompareFunc = getCompareFunc,
-    onBeforeSort = function(keys, players)
+    getDefaultCompareFunc = getDefaultCompareFunc,
+    onBeforeSort = function(sortMode, keys, players)
+      if sortMode.isIncludingSitting then
+        return
+      end
       -- Insert dummy players for padding to keep the healers in the last group.
       local fixedSize = A.util:GetFixedInstanceSize()
       if fixedSize then
@@ -39,8 +42,8 @@ function M:OnEnable()
         end
       end
     end,
-    onSort = function(keys, players)
-      sort(keys, getCompareFunc(players))
+    onSort = function(sortMode, keys, players)
+      sort(keys, getDefaultCompareFunc(sortMode, keys, players))
     end,
   })
 end

@@ -40,13 +40,17 @@ function M:BuildDelta(sortMode)
   end
 
   -- Sort keys.
-  if sortMode.onBeforeSort and sortMode.onBeforeSort(keys, players) then
+  local d = A.sortModes:GetDefault()
+  if d.onBeforeSort and d.onBeforeSort(sortMode, keys, players) then
+    return true
+  end
+  if sortMode.onBeforeSort and sortMode.onBeforeSort(sortMode, keys, players) then
     return true
   end
   if sortMode.onSort then
-    sortMode.onSort(keys, players)
+    sortMode.onSort(sortMode, keys, players)
   else
-    A.sortModes:GetDefault().onSort(keys, players)
+    d.onSort(sortMode, keys, players)
   end
 
   -- Determine which group each player needs to be in.
