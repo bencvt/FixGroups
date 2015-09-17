@@ -86,8 +86,7 @@ local function setupRaidTabButton()
   b:SetScript("OnLeave", function() GameTooltip:Hide() end)
   local skin = A.utilGui:GetElvUISkinModule()
   if skin then
-    b:StripTextures()
-    skin:HandleButton(b)
+    skin:HandleButton(b, true)
   end
   if A.options.addButtonToRaidTab then
     b:Show()

@@ -61,10 +61,15 @@ function M:GetElvUISkinModule()
 end
 
 function M:AddTexturedButton(registry, button, style)
-  button.frame:SetNormalTexture(format("Interface\\Addons\\%s\\media\\button%sUp.tga", A.NAME, style))
-  button.frame:GetNormalTexture():SetTexCoord(0, 1, 0, 0.71875)
-  button.frame:SetHighlightTexture(format("Interface\\Addons\\%s\\media\\button%sHighlight.tga", A.NAME, style))
-  button.frame:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.71875)
+  if M:GetElvUISkinModule() then
+    button.frame:SetNormalTexture(format("Interface\\Addons\\%s\\media\\button%sFlat.tga", A.NAME, style))
+    button.frame:GetNormalTexture():SetTexCoord(0, 1, 0, 0.71875)
+  else
+    button.frame:SetNormalTexture(format("Interface\\Addons\\%s\\media\\button%sUp.tga", A.NAME, style))
+    button.frame:GetNormalTexture():SetTexCoord(0, 1, 0, 0.71875)
+    button.frame:SetHighlightTexture(format("Interface\\Addons\\%s\\media\\button%sHighlight.tga", A.NAME, style))
+    button.frame:GetHighlightTexture():SetTexCoord(0, 1, 0, 0.71875)
+  end
   registry[button] = true
 end
 
