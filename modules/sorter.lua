@@ -121,7 +121,8 @@ function M:StopYield(raidOfficerName, message, isCancel)
     M:Stop()
     A.console:Print(L["sorter.print.raidOfficer."..(isCancel and "cancel" or "yield")], mode, A.util:UnitNameWithColor(raidOfficerName))
   end
-  if not isCancel then
+  message = message and strtrim(message) or ""
+  if not isCancel and message ~= "" then
     R.lastComplete.key = message
   end
 end
