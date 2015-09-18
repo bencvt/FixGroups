@@ -28,6 +28,7 @@ modules\addonChannel.lua
 modules\buttonGui.lua
 modules\chooseCommand.lua
 modules\chooseGui.lua
+modules\chooseMockup.lua
 modules\console.lua
 modules\damagerRole.lua
 modules\dataBroker.lua

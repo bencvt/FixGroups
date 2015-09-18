@@ -36,7 +36,7 @@ L["choose.print.choosing.damager"]  = A.util:LocaleLowerNoun(L["word.damager.sin
 L["choose.print.choosing.ranged"]   = A.util:LocaleLowerNoun(L["word.ranged.singular"])
 L["choose.print.choosing.melee"]    = A.util:LocaleLowerNoun(L["word.melee.singular"])
 
-local format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, print, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
+local format, gmatch, gsub, ipairs, pairs, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe = format, gmatch, gsub, ipairs, pairs, select, sort, strfind, strlen, strlower, strmatch, strsplit, strsub, strtrim, time, tinsert, tonumber, tostring, unpack, wipe
 local tconcat = table.concat
 local GetGuildInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned = GetGuildInfo, IsInGroup, IsInRaid, RandomRoll, SendChatMessage, UnitClass, UnitExists, UnitIsDeadOrGhost, UnitIsInMyGuild, UnitIsUnit, UnitName, UnitGroupRolesAssigned
 local CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT = CLASS_SORT_ORDER, LOCALIZED_CLASS_NAMES_FEMALE, LOCALIZED_CLASS_NAMES_MALE, RANDOM_ROLL_RESULT
@@ -739,67 +739,6 @@ end
 
 function M:GetLastCommand()
   return R.lastCommand
-end
-
-function M:Mockup(addLine)
-  local cmd = function(t) return format("|cffffffff> %s|r", t) end
-  local THRALL = format("|r|c%s%s|r", A.util:ClassColor("SHAMAN"), L["character.thrall"])
-  local lead = function(t) return format("|cffff7f00[Raid] [%s|cffff7f00] %s|r", THRALL, t) end
-  local raid = function(s, c, t) return format("|cffff7f00[Raid] [|c%s%s|r|cffff7f00] %s|r", A.util:ClassColor(c), s, t) end
-  local roll = function(r, lo, hi) return A.util:ColorSystem(format(RANDOM_ROLL_RESULT, L["character.thrall"], r, lo, hi)) end
-  addLine(lead("who is kiting the siegemakers?"))
-  addLine(lead("no volunteers...i'll just pick someone"))
-  addLine(cmd("/choose hunter"))
-  addLine(lead(format(L["choose.print.choosing.class"], "hunter").." 1=Hemet 2=Rexxar 3=Sylvanas"))
-  addLine(roll(2, 1, 3))
-  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 2, "Rexxar", 4)))
-  addLine(" ")
-  addLine(" ")
-  addLine(lead("any volunteers to get the first interrupt?"))
-  addLine(lead("no one? okay, i'll find a \"volunteer\" =p"))
-  addLine(cmd("/choose melee"))
-  addLine(lead(format(L["choose.print.choosing.melee"]).." 1=Darion 2=Garona 3=Garrosh 4=Staghelm 5=Taran 6="..L["character.thrall"].." 7=Valeera 8=Varian 9=Yrel"))
-  addLine(roll(9, 1, 9))
-  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 9, "Yrel", 2)))
-  addLine(" ")
-  addLine(" ")
-  addLine(lead("let's flip a coin to see what boss we do next lol"))
-  addLine(cmd("/choose high council or kormrok"))
-  addLine(lead(format(L["choose.print.choosing.option"]).." 1=high council 2=kormrok"))
-  addLine(roll(1, 1, 2))
-  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.option"], 1, "high council")))
-  addLine(" ")
-  addLine(" ")
-  addLine(raid("Garona", "ROGUE", "sorry guys I need to be afk for this next pull, my kid just made a mess"))
-  addLine(lead("okay, i know everyone sitting out wants to get in for these mythic bosses"))
-  addLine(lead("you're all equally skilled so i'm just going to roll the dice to see who gets to sub in"))
-  addLine(cmd("/choose sitting"))
-  addLine(lead(format(L["choose.print.choosing.sitting"], 7).." 1=Edwin 2=Rhonin 3=Senjin 4=Vanessa"))
-  addLine(roll(2, 1, 4))
-  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 2, "Rhonin", 8)))
-  addLine(" ")
-  addLine(" ")
-  addLine(lead("which healer wants to go in the second portal?"))
-  addLine(raid("Liadrin", "PALADIN", "me i guess"))
-  addLine(raid("Anduin", "PRIEST", "I can"))
-  addLine(raid("Drekthar", "SHAMAN", "doesn't matter, i can if you want"))
-  addLine(lead("yay, volunteers!"))
-  addLine(lead("we only need one, so"))
-  addLine(cmd("/choose Liadrin, Anduin, Drek"))
-  addLine(lead(format(L["choose.print.choosing.option"]).." 1=Liadrin 2=Anduin 3=Drek"))
-  addLine(roll(1, 1, 3))
-  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.option"], 1, "Liadrin")))
-  addLine(" ")
-  addLine(" ")
-  addLine(lead("since no one rolled on this tier token, i'll just loot it to someone at random for a chance at warforged/socket/etc."))
-  addLine(cmd("/choose vanq"))
-  addLine(lead(format(L["choose.print.choosing.tierToken"], "Vanquisher", "Death Knight/Druid/Rogue/Mage").." 1=Celestine 2=Darion 3=Garona 4=Jaina 5=Khadgar 6=Malfurion 7=Staghelm 8=Valeera"))
-  addLine(roll(5, 1, 8))
-  addLine(lead("["..A.NAME.."] "..format(L["choose.print.chose.player"], 5, "Khadgar", 4)))
-end
-
-function M:PrintMockup()
-  M:Mockup(function(line) print(line) end)
 end
 
 function M:DebugPrintDispatchTable()

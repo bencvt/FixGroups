@@ -195,7 +195,7 @@ function M:Open(cmd)
 
     if not R.mockSession then
       R.mockSession = {}
-      A.chooseCommand:Mockup(function(line) tinsert(R.mockSession, line) end)
+      A.chooseMockup:Mockup(function(line) tinsert(R.mockSession, line) end)
       R.mockSession = tconcat(R.mockSession, "|n")
     end
     widget = AceGUI:Create("Label")
