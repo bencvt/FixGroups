@@ -64,7 +64,7 @@ function M:FIXGROUPS_GROUP_DISBANDING(event, numDropped)
 end
 
 function M:GetKey()
-  return R.active.key or R.lastComplete.key or ""
+  return R.active.key or R.resumeAfterCombat.key or R.lastComplete.key or ""
 end
 
 function M:IsProcessing()
