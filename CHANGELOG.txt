@@ -1,3 +1,6 @@
+v1.4.1:
+  - remove AceConsole dependency
+
 v1.4:
   - add core raider sort method
   - add /fg last command

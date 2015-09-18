@@ -1,6 +1,6 @@
 --- Implement the /fg (/fixgroups) console command.
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("fgCommand", "AceConsole-3.0")
+local M = A:NewModule("fgCommand")
 A.fgCommand = M
 local H, HA = A.util.Highlight, A.util.HighlightAddon
 
@@ -8,12 +8,7 @@ local format, gsub, print, strlen, strlower, strmatch, strsub, strtrim = format,
 local IsInGroup, IsInRaid = IsInGroup, IsInRaid
 
 function M:OnEnable()
-  local function slashCmd(args)
-    M:Command(args)
-  end
-  M:RegisterChatCommand("fixgroups", slashCmd)
-  M:RegisterChatCommand("fixgroup", slashCmd)
-  M:RegisterChatCommand("fg", slashCmd)
+  A.console:RegisterSlashCommand({"fixgroups", "fixgroup", "fg"}, function(args) M:Command(args) end)
 end
 
 local function handleBasicCommands(cmd, args)

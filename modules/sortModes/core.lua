@@ -96,7 +96,11 @@ function M:OnEnable()
       if guildName then
         M:UpdateGuildRanks()
         local rank = M:GetCoreRank()
-        t:AddLine(format(L["gui.fixGroups.help.note.core.1"], A.util:HighlightGuild(guildName), A.util:HighlightGuild(M:GetGuildRanks()[rank]), rank), 1,1,1, true)
+        t:AddLine(format(L["gui.fixGroups.help.note.core.1"],
+            A.util:HighlightGuild(format("<%s>", guildName)),
+            A.util:HighlightGuild(M:GetGuildRanks()[rank]),
+            rank),
+          1,1,1, true)
         t:AddLine(" ")
         t:AddLine(L["gui.fixGroups.help.note.core.2"], 1,1,1, true)
       else

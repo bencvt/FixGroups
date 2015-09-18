@@ -331,7 +331,7 @@ R.optionsTable.args.sort.args = {
         return true
       end
       A.sortModes.core:UpdateGuildRanks()
-      i.option.desc = format(L["options.widget.coreRaiderRank.desc"], H("core"), A.util:HighlightGuild(guildName))
+      i.option.desc = format(L["options.widget.coreRaiderRank.desc"], H("core"), A.util:HighlightGuild(format("<%s>", guildName)))
       i.option.values = A.sortModes.core:GetGuildRanks()
     end,
   },

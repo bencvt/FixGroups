@@ -1,6 +1,6 @@
 --- Implement the /choose, /list, and /listself console commands.
 local A, L = unpack(select(2, ...))
-local M = A:NewModule("chooseCommand", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
+local M = A:NewModule("chooseCommand", "AceEvent-3.0", "AceTimer-3.0")
 A.chooseCommand = M
 M.private = {
   options = {},
@@ -102,23 +102,11 @@ local function watchChat(event, message, sender)
 end
 
 function M:OnEnable()
-  local function slashChoose(args)
-    M:Command("choose", args)
-  end
-  local function slashList(args)
-    M:Command("list", args)
-  end
-  local function slashListSelf(args)
-    M:Command("listself", args)
-  end
   -- "/pick" would be better, but that's already an emote.
   -- "/fg choose <args>" works as well, defined in the console module.
-  M:RegisterChatCommand("choose", slashChoose)
-  M:RegisterChatCommand("chose", slashChoose)
-  M:RegisterChatCommand("choo", slashChoose)
-  M:RegisterChatCommand("cho", slashChoose)
-  M:RegisterChatCommand("list", slashList)
-  M:RegisterChatCommand("listself", slashListSelf)
+  A.console:RegisterSlashCommand({"choose", "chose", "choo", "cho"}, function(args) M:Command("choose", args) end)
+  A.console:RegisterSlashCommand({"list"}, function(args) M:Command("list", args) end)
+  A.console:RegisterSlashCommand({"listself"}, function(args) M:Command("listself", args) end)
   M:RegisterEvent("CHAT_MSG_SYSTEM")
   M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT",         watchChat)
   M:RegisterEvent("CHAT_MSG_INSTANCE_CHAT_LEADER",  watchChat)
@@ -411,7 +399,9 @@ function M:GetChoosingDesc(isTooltip, cmd, mode, modeType, useColor, validClasse
     arg1 = GetGuildInfo("player")
     if not arg1 then
       return formatCmd(isTooltip, cmd, L["choose.print.choosing.guildmate.noGuild"])
-    elseif useColor then
+    end
+    arg1 = format("<%s>", arg1)
+    if useColor then
       arg1 = A.util:HighlightGuild(arg1)
     end
   elseif mode == "last" then

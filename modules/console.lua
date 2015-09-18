@@ -5,8 +5,18 @@ A.console = M
 
 local PREFIX = A.util:HighlightAddon(A.NAME)..":"
 
-local date, format, print, select, strfind, tinsert, tostring, type = date, format, print, select, strfind, tinsert, tostring, type
+local date, format, ipairs, print, select, strfind, strlower, strupper, tinsert, tostring, type = date, format, ipairs, print, select, strfind, strlower, strupper, tinsert, tostring, type
 local tconcat = table.concat
+local _G = _G
+-- GLOBALS: SlashCmdList
+
+function M:RegisterSlashCommand(cmds, func)
+  for _, cmd in ipairs(cmds) do
+    local name = strlower(cmd), A.NAME..strupper(cmd)
+    SlashCmdList[name] = func
+    _G["SLASH_"..name.."1"] = "/"..strlower(cmd)
+  end
+end
 
 function M:Print(...)
   print(PREFIX, ...)
