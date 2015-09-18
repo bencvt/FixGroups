@@ -55,6 +55,9 @@ local function addButton(altColor, frame, cmd, forceClose, aliases)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
       A.utilGui:InsertText(getCommand(cmd, aliases, true))
+      if IsControlKeyDown() then
+        R.window:Hide()
+      end
       return
     end
     A.fgCommand:Command(cmd)
