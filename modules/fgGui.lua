@@ -8,7 +8,7 @@ M.private = {
   texturedButtons = {},
 }
 local R = M.private
-local H, HA = A.util.Highlight, A.util.HighlightAddon
+local H, HA, HD = A.util.Highlight, A.util.HighlightAddon, A.util.HighlightDim
 
 local ceil, format, ipairs, min, time, type = ceil, format, ipairs, min, time, type
 local GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, UIParent = GameFontHighlight, GameTooltip, IsControlKeyDown, IsShiftKeyDown, UIParent
@@ -32,8 +32,18 @@ local function onLeaveButton(widget)
   R.window:SetStatusText("")
 end
 
-local function getCommand(cmd)
-  return "/fg "..cmd
+local function getCommand(cmd, aliases, isShiftClick)
+  if isShiftClick then
+    return "/fg "..cmd
+  elseif aliases and #aliases > 0 then
+    local text = format("%s %s %s", H("/fg "..cmd), HD(L["word.or"]), H("/fg "..aliases[1]))
+    if #aliases > 1 then
+      return text.." "..HD(L["word.or"].."...")
+    end
+    return text
+  else
+    return H("/fg "..cmd)
+  end
 end
 
 local function addButton(altColor, frame, cmd, forceClose, aliases)
@@ -44,7 +54,7 @@ local function addButton(altColor, frame, cmd, forceClose, aliases)
   button:SetText(cmd)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
-      A.utilGui:InsertText(getCommand(cmd))
+      A.utilGui:InsertText(getCommand(cmd, aliases, true))
       return
     end
     A.fgCommand:Command(cmd)
@@ -154,7 +164,7 @@ local function addTooltipLines(t, cmd)
 end
 
 function M:SetupTooltip(widget, cmd, aliases)
-  R.window:SetStatusText(H(getCommand(cmd)))
+  R.window:SetStatusText(getCommand(cmd, aliases, false))
   local t = GameTooltip
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
