@@ -4,16 +4,21 @@ local M = A:NewModule("chooseMockup")
 A.chooseMockup = M
 
 local format, print = format, print
-local RANDOM_ROLL_RESULT = RANDOM_ROLL_RESULT
+local ChatTypeInfo = ChatTypeInfo
+local CHAT_MSG_RAID, RANDOM_ROLL_RESULT = CHAT_MSG_RAID, RANDOM_ROLL_RESULT
 
 local THRALL = format("|r|c%s%s|r", A.util:ClassColor("SHAMAN"), L["character.thrall"])
 
 local function lead(message)
-  return format("|cffff7f00[Raid] [%s|cffff7f00] %s|r", THRALL, message)
+  -- Using RAID instead of RAID_LEADER because the latter can be hard to read
+  -- when it's a lot of text, which this is.
+  local c = format("|cff%02x%02x%02x", ChatTypeInfo["RAID"].r*0xff, ChatTypeInfo["RAID"].g*0xff, ChatTypeInfo["RAID"].b*0xff)
+  return format("%s[%s] [%s%s] %s|r", c, CHAT_MSG_RAID, THRALL, c, message)
 end
 
 local function raid(sender, class, message)
-  return format("|cffff7f00[Raid] [|c%s%s|r|cffff7f00] %s|r", A.util:ClassColor(class), sender, message)
+  local c = format("|cff%02x%02x%02x", ChatTypeInfo["RAID"].r*0xff, ChatTypeInfo["RAID"].g*0xff, ChatTypeInfo["RAID"].b*0xff)
+  return format("%s[%s] [|c%s%s%s] %s|r", c, CHAT_MSG_RAID, A.util:ClassColor(class), sender, c, message)
 end
 
 local function inpt(cmd)
