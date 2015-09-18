@@ -646,18 +646,21 @@ local function buildDispatchTable()
 
   -- Populate M.MODE_ALIAS.
   M.MODE_ALIAS = {}
-  local key, keyAlt, primaryAlias, aliasSet, aliasList
+  local ma, key, keyAlt, aliasSet, aliasList
   for mode, _ in pairs(aliasLocal) do
-    -- Move the aliases to a set, adding highlighting.
+    -- Initialize the table entry.
+    ma = {primary=false}
+    M.MODE_ALIAS[mode] = ma
+
+    -- Move the aliases to a set, decorating with a prefix for sorting.
     aliasSet = wipe(R.tmp1)
-    primaryAlias = false
     for i, alias in ipairs(aliasLocal[mode]) do
       key = "a"..clean(alias)
       if not aliasSet[key] then
-        if not primaryAlias then
-          primaryAlias = alias
+        if not ma.primary then
+          ma.primary = alias
         end
-        aliasSet[key] = H(alias)
+        aliasSet[key] = alias
       end
     end
     wipe(aliasLocal[mode])
@@ -665,41 +668,44 @@ local function buildDispatchTable()
       keyAlt = "a"..clean(alias)
       key = "b"..clean(alias)
       if not aliasSet[keyAlt] and not aliasSet[key] then
-        if not primaryAlias then
-          primaryAlias = alias
+        if not ma.primary then
+          ma.primary = alias
         end
-        aliasSet[key] = H(alias)
+        aliasSet[key] = alias
       end
     end
     wipe(aliasNonLocal[mode])
 
     -- Remove the primary alias.
-    aliasSet["a"..clean(primaryAlias)] = nil
-    aliasSet["b"..clean(primaryAlias)] = nil
+    aliasSet["a"..clean(ma.primary)] = nil
+    aliasSet["b"..clean(ma.primary)] = nil
 
-    -- Move the aliases to a list and sort it. Localized aliases first.
+    -- Copy the decorated aliases to a list and sort.
+    -- The decorating ensures localized aliases get listed first.
     aliasList = wipe(R.tmp2)
     for key, _ in pairs(aliasSet) do
       tinsert(aliasList, key)
     end
     sort(aliasList)
 
-    -- Get the true alias.
+    -- Get a reference to the first alias (after excluding the primary).
+    if #aliasList > 0 then
+      ma.secondary = aliasSet[aliasList[1]]
+    end
+
+    -- Undecorate. Add highlighting.
     for i, key in ipairs(aliasList) do
-      aliasList[i] = aliasSet[key]
+      aliasList[i] = H(aliasSet[key])
     end
 
     -- Convert to a flat string.
-    M.MODE_ALIAS[mode] = {primary=primaryAlias}
-    if #aliasList == 0 then
-      M.MODE_ALIAS[mode].left = L["word.alias.plural"]..":"
-      M.MODE_ALIAS[mode].right = HD(L["word.none"])
-    elseif #aliasList == 1 then
+    if #aliasList == 1 then
       M.MODE_ALIAS[mode].left = L["word.alias.singular"]..":"
       M.MODE_ALIAS[mode].right = aliasList[1]
-    else
+    elseif #aliasList > 1 then
       M.MODE_ALIAS[mode].left = L["word.alias.plural"]..":"
       M.MODE_ALIAS[mode].right = tconcat(aliasList, ", ")
+      M.MODE_ALIAS[mode].isMore = true
     end
   end
   wipe(aliasLocal)

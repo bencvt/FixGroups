@@ -9,7 +9,7 @@ M.private = {
   mockSession = false,
 }
 local R = M.private
-local H, HA = A.util.Highlight, A.util.HighlightAddon
+local H, HA, HD = A.util.Highlight, A.util.HighlightAddon, A.util.HighlightDim
 
 local format, gsub, ipairs, strlower, tinsert, tostring = format, gsub, ipairs, strlower, tinsert, tostring
 local tconcat = table.concat
@@ -23,8 +23,20 @@ local function onLeaveButton(widget)
   R.window:SetStatusText("")
 end
 
-local function getCommand(cmd, mode, modeType)
-  return format("/%s %s", cmd, mode)
+local function getCommand(cmd, mode, isShiftClick)
+  local text = format("/%s %s", cmd, mode)
+  if isShiftClick then
+    return text
+  end
+  local m = A.chooseCommand.MODE_ALIAS[mode]
+  if not m.secondary then
+    return H(text)
+  end
+  text = format("%s %s %s", H(text), HD(L["word.or"]), H(format("/%s %s", cmd, m.secondary)))
+  if m.isMore then
+    return text.." "..HD(L["word.or"].."...")
+  end
+  return text
 end
 
 local function addButton(altColor, frame, cmd, mode, modeType)
@@ -48,7 +60,7 @@ local function addButton(altColor, frame, cmd, mode, modeType)
   button:SetText(label)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
-      A.utilGui:InsertText(getCommand(cmd, mode, modeType))
+      A.utilGui:InsertText(getCommand(cmd, mode, true))
       return
     end
     A.chooseCommand:Command(cmd, mode)
@@ -207,7 +219,7 @@ function M:Open(cmd)
 end
 
 function M:SetupTooltip(widget, cmd, mode, modeType)
-  R.window:SetStatusText(H(getCommand(cmd, mode, modeType)))
+  R.window:SetStatusText(getCommand(cmd, mode, false))
   local t = GameTooltip
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
@@ -232,13 +244,14 @@ function M:SetupTooltip(widget, cmd, mode, modeType)
     local example = format("/%s %s/%s", cmd, A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["MAGE"]), A.util:LocaleLowerNoun(LOCALIZED_CLASS_NAMES_MALE["DRUID"]))
     t:AddLine(format(L["gui.choose.note.multipleClasses"], H(example)), 1,1,1, true)
   end
-  t:AddLine(" ")
   if modeType == "option" then
+    t:AddLine(" ")
     t:AddLine(format(L["gui.choose.note.option.1"], H("/"..cmd)), 1,1,1, true)
     t:AddLine(" ")
     t:AddLine(L["gui.choose.note.option.2"], 1,1,1, true)
-  else
-    -- Aliases.
+  elseif A.chooseCommand.MODE_ALIAS[mode].left then
+    -- List aliases.
+    t:AddLine(" ")
     t:AddDoubleLine(A.chooseCommand.MODE_ALIAS[mode].left, A.chooseCommand.MODE_ALIAS[mode].right, 1,1,1, 1,1,1)
   end
   t:Show()
