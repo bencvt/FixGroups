@@ -2,6 +2,7 @@ v1.4.1:
   - remove AceConsole dependency
   - fix formatting errors in /choose examples
   - improve algorithm for guessing what guild rank is for core raiders
+  - add "/fg ." as an alias for "/fg sort"
 
 v1.4:
   - add core raider sort method

@@ -10,7 +10,7 @@ function M:OnEnable()
   A.sortModes:Register({
     key = "sort",
     name = L["sorter.mode.default"],
-    aliases = {"default"},
+    aliases = {"default", "."},
     desc = function(t)
       t:AddLine(L["gui.fixGroups.help.sort"], 1,1,0, true)
       t:AddLine(" ")
