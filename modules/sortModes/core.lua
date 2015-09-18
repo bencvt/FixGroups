@@ -54,35 +54,31 @@ function M:UpdateGuildRanks()
     tinsert(ranks, GuildControlGetRankName(i))
   end
   local rank = M:GetCoreRank()
-  if not rank or rank < 1 or rank > #ranks then
-    -- Guess which rank is for core raiders.
-    rank = nil
-    local name
-    -- First pass: first rank containing "core".
-    for i = #ranks, 1, -1 do
-      name = strlower(ranks[i])
-      if not rank and strfind(name, "core") then
-        rank = i
-      end
-    end
-    if not rank then
-      -- Second pass: last rank containing "raid" but not a keyword indicating
-      -- the player is a fresh recruit or a non-raider.
-      for i = 1, #ranks do
-        name = strlower(ranks[i])
-        if not rank and strfind(name, "raid") and not strfind(name, "no[nt]") and not strfind(name, "trial") and not strfind(name, "new") and not strfind(name, "recruit") and not strfind(name, "backup") and not strfind(name, "ex") and not strfind(name, "retire") and not strfind(name, "former") and not strfind(name, "casual") and not strfind(name, "alt") then
-          rank = i
-        end
-      end
-    end
-    if not rank then
-      -- Otherwise just guess 4, on the theory that many guilds' ranks are
-      -- similar to:
-      -- GM > Officer > Veteran > Core > Recruit > Alt > Casual > Muted.
-      rank = min(#ranks, 4)
-    end
-    M:SetCoreRank(rank)
+  if rank and rank >= 1 and rank <= #ranks then
+    return
   end
+  -- New set of guild ranks.
+  -- Make an intelligent guess which one is for core raiders.
+  -- First pass: highest (i.e. closest to GM) rank containing "core".
+  for i = 1, #ranks do
+    if strfind(strlower(ranks[i]), "core") then
+      M:SetCoreRank(i)
+      return
+    end
+  end
+  -- Second pass: lowest (i.e. furthest from GM) rank containing "raid", but
+  -- not a keyword indicating the player is a fresh recruit or a non-raider.
+  for i = #ranks, 1, -1 do
+    local name = strlower(ranks[i])
+    if strfind(name, "raid") and not strfind(name, "no[nt]") and not strfind(name, "trial") and not strfind(name, "new") and not strfind(name, "recruit") and not strfind(name, "backup") and not strfind(name, "ex") and not strfind(name, "retire") and not strfind(name, "former") and not strfind(name, "casual") and not strfind(name, "alt") then
+      M:SetCoreRank(i)
+      return
+    end
+  end
+  -- Otherwise just guess 4, on the theory that many guilds have a rank
+  -- structure similar to:
+  -- GM > Officer > Veteran > Core > Recruit > Alt > Casual > Muted.
+  M:SetCoreRank(min(#ranks, 4))
 end
 
 function M:OnEnable()
