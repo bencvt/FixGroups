@@ -5,7 +5,7 @@ A.console = M
 
 local PREFIX = A.util:HighlightAddon(A.NAME)..":"
 
-local date, format, print, select, strfind, tinsert, tostring = date, format, print, select, strfind, tinsert, tostring
+local date, format, print, select, strfind, tinsert, tostring, type = date, format, print, select, strfind, tinsert, tostring, type
 local tconcat = table.concat
 
 function M:Print(...)
@@ -17,7 +17,15 @@ function M:Printf(...)
 end
 
 function M:Errorf(module, ...)
-  print(format("%s: internal error in %s module:", A.util:HighlightAddon(A.NAME.." v"..A.VERSION_PACKAGED)), format(...))
+  local message
+  if type(module) == "string" then
+    message = format(module, ...)
+    module = false
+  else
+    message = format(...)
+  end
+  module = module and module.GetName and format(" in %s module", module:GetName()) or ""
+  print(format("%s: |cffff3333internal error%s:|r", A.util:HighlightAddon(A.NAME.." v"..A.VERSION_PACKAGED), module), message)
 end
 
 local function isDebuggingModule(module)
