@@ -23,10 +23,12 @@ local function onLeaveButton(widget)
   R.window:SetStatusText("")
 end
 
-local function getCommand(cmd, mode, isShiftClick)
+local function getCommand(cmd, mode, modeType, isShiftClick)
   local text = format("/%s %s", cmd, mode)
   if isShiftClick then
     return text
+  elseif modeType == "option" then
+    return H(text)
   end
   local m = A.chooseCommand.MODE_ALIAS[mode]
   if not m.secondary then
@@ -60,7 +62,7 @@ local function addButton(altColor, frame, cmd, mode, modeType)
   button:SetText(label)
   button:SetCallback("OnClick", function(widget)
     if IsShiftKeyDown() then
-      A.utilGui:InsertText(getCommand(cmd, mode, true))
+      A.utilGui:InsertText(getCommand(cmd, mode, modeType, true))
       return
     end
     A.chooseCommand:Command(cmd, mode)
@@ -219,7 +221,7 @@ function M:Open(cmd)
 end
 
 function M:SetupTooltip(widget, cmd, mode, modeType)
-  R.window:SetStatusText(getCommand(cmd, mode, false))
+  R.window:SetStatusText(getCommand(cmd, mode, modeType, false))
   local t = GameTooltip
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
