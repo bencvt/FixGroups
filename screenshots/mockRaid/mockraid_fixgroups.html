@@ -4,109 +4,117 @@
 <title>WoW Mock Raid</title>
 <meta charset="UTF-8" />
 <link rel="stylesheet" type="text/css" href="mockraid.css">
+<style type="text/css">
+body {
+  background:url(../screenshots/background2.png);
+  padding:16px;
+  font-family:Friz Quadrata;
+  color:#ffffff;
+}
+.outlined-font {
+  text-shadow:
+    -3px -3px 1px #000000, -3px -2px 1px #000000, -3px -1px 1px #000000, -3px 0px 1px #000000, -3px 1px 1px #000000, -3px 2px 1px #000000, -3px 3px 1px #000000, -2px -3px 1px #000000, -2px -2px 1px #000000, -2px -1px 1px #000000, -2px 0px 1px #000000, -2px 1px 1px #000000, -2px 2px 1px #000000, -2px 3px 1px #000000, -1px -3px 1px #000000, -1px -2px 1px #000000, -1px -1px 1px #000000, -1px 0px 1px #000000, -1px 1px 1px #000000, -1px 2px 1px #000000, -1px 3px 1px #000000, 0px -3px 1px #000000, 0px -2px 1px #000000, 0px -1px 1px #000000, 0px 0px 1px #000000, 0px 1px 1px #000000, 0px 2px 1px #000000, 0px 3px 1px #000000, 1px -3px 1px #000000, 1px -2px 1px #000000, 1px -1px 1px #000000, 1px 0px 1px #000000, 1px 1px 1px #000000, 1px 2px 1px #000000, 1px 3px 1px #000000, 2px -3px 1px #000000, 2px -2px 1px #000000, 2px -1px 1px #000000, 2px 0px 1px #000000, 2px 1px 1px #000000, 2px 2px 1px #000000, 2px 3px 1px #000000, 3px -3px 1px #000000, 3px -2px 1px #000000, 3px -1px 1px #000000, 3px 0px 1px #000000, 3px 1px 1px #000000, 3px 2px 1px #000000, 3px 3px 1px #000000;
+  color: #ffffff;
+}
+</style>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="mockraid.js"></script>
 <script type="text/javascript">
 <!--
 $(function() {
-  var which = "split"; // "orig"/"sortrole"/"split"
-  if (which == "orig") {
-    MockRaid
-      .add("Varian",     "warrior",      "melee",   63.4,    0.9)
-      .add("Velen",      "priest",       "healer",   0.2,   49.7)
-      .add("Jaina",      "mage",         "ranged",  83.3,    0.0)
-      .add("Malfurion",  "druid",        "ranged",  69.0,    4.9)
-      .add("Drekthar",   "shaman",       "healer",   0.4,   55.8)
-      .add("Anduin",     "priest",       "healer",   2.5,   87.3)
-      .add("Staghelm",   "druid",        "melee",   63.7,   11.9)
-      .add("Wilfred",    "warlock",      "ranged",  43.7,    2.9)
-      .add("Taran",      "monk",         "melee",   72.8,    3.6)
-      .add("Garrosh",    "warrior",      "melee",   62.0,    1.3)
-      .add("Milhouse",   "mage",         "ranged",  64.1,    0.0)
-      .add("Khadgar",    "mage",         "ranged",  73.1,    0.0)
-      .add("Thrall",     "shaman",       "melee",   77.6,    7.2)
-      .add("Rexxar",     "hunter",       "ranged",  73.2,    0.6)
-      .add("Hemet",      "hunter",       "ranged",  69.9,    0.8)
-      .add("Valeera",    "rogue",        "melee",   72.2,    0.5)
-      .add("Darion",     "deathknight",  "melee",   71.7,    2.0)
-      .add("Uther",      "paladin",      "tank",    41.7,   27.0)
-      .add("Yrel",       "paladin",      "melee",   68.2,    1.5)
-      .add("Garona",     "rogue",        "melee",   92.5,    0.4)
-      .add("Liandrin",   "paladin",      "healer",   1.0,   70.4)
-      .add("Chen",       "monk",         "tank",    34.2,   34.5)
-      .add("Senjin",     "priest",       "ranged",  64.3,    9.5)
-      .add("Guldan",     "warlock",      "ranged",  76.3,    4.4)
-      .add("Celestine",  "druid",        "healer",   0.9,   59.0);
-  } else if (which == "sortrole") {
-    MockRaid
-      .add("Chen",       "monk",         "tank",    34.2,   34.5)
-      .add("Uther",      "paladin",      "tank",    41.7,   27.0)
-      .add("Garrosh",    "warrior",      "melee",   62.0,    1.3)
-      .add("Varian",     "warrior",      "melee",   63.4,    0.9)
-      .add("Darion",     "deathknight",  "melee",   71.7,    2.0)
-      .add("Yrel",       "paladin",      "melee",   68.2,    1.5)
-      .add("Taran",      "monk",         "melee",   72.8,    3.6)
-      .add("Thrall",     "shaman",       "melee",   77.6,    7.2)
-      .add("Staghelm",   "druid",        "melee",   63.7,   11.9)
-      .add("Garona",     "rogue",        "melee",   92.5,    0.4)
-      .add("Valeera",    "rogue",        "melee",   72.2,    0.5)
-      .add("Senjin",     "priest",       "ranged",  64.3,    9.5)
-      .add("Malfurion",  "druid",        "ranged",  69.0,    4.9)
-      .add("Jaina",      "mage",         "ranged",  83.3,    0.0)
-      .add("Khadgar",    "mage",         "ranged",  73.1,    0.0)
-      .add("Milhouse",   "mage",         "ranged",  64.1,    0.0)
-      .add("Guldan",     "warlock",      "ranged",  76.3,    4.4)
-      .add("Wilfred",    "warlock",      "ranged",  43.7,    2.9)
-      .add("Rexxar",     "hunter",       "ranged",  73.2,    0.6)
-      .add("Hemet",      "hunter",       "ranged",  69.9,    0.8)
-      .add("Liandrin",   "paladin",      "healer",   1.0,   70.4)
-      .add("Anduin",     "priest",       "healer",   2.5,   87.3)
-      .add("Velen",      "priest",       "healer",   0.2,   49.7)
-      .add("Drekthar",   "shaman",       "healer",   0.4,   55.8)
-      .add("Celestine",  "druid",        "healer",   0.9,   59.0);
-  } else if (which == "split") {
-    MockRaid
-      .add("Chen",       "monk",         "tank",    34.2,   34.5)
-      .add("Varian",     "warrior",      "melee",   63.4,    0.9)
-      .add("Garrosh",    "warrior",      "melee",   62.0,    1.3)
-      .add("Taran",      "monk",         "melee",   72.8,    3.6)
-      .add("Garona",     "rogue",        "melee",   92.5,    0.4)
-      .add("Senjin",     "priest",       "ranged",  64.3,    9.5)
-      .add("Malfurion",  "druid",        "ranged",  69.0,    4.9)
-      .add("Jaina",      "mage",         "ranged",  83.3,    0.0)
-      .add("Khadgar",    "mage",         "ranged",  73.1,    0.0)
-      .add("Hemet",      "hunter",       "ranged",  69.9,    0.8)
-      .add("Anduin",     "priest",       "healer",   2.5,   87.3)
-      .add("Velen",      "priest",       "healer",   0.2,   49.7)
-      .add("Celestine",  "druid",        "healer",   0.9,   59.0)
+  var isSplit = true;
+  if (isSplit) {
+    $("#title").text("Split groups by overall damage/healing done");
+    var MR = MockRaid.create()
+      .add("Chen",      "monk", "tank", 34.2, 34.5)
+      .add("Thrall",    "shaman", "melee", 77.6, 7.2)
+      .add("Jaina",     "mage", "ranged", 83.3, 0)
+      .add("Staghelm",  "druid", "melee", 63.7, 11.9)
+      .add("Malfurion", "druid", "ranged", 69, 4.9)
       .newGroup()
+      .add("Uther",     "paladin", "tank", 41.7, 27)
+      .add("Garona",    "rogue", "melee", 92.5, 0.4)
+      .add("Guldan",    "warlock", "ranged", 76.3, 4.4)
+      .add("Taran",     "monk", "melee", 72.8, 3.6)
+      .add("Senjin",    "priest", "ranged", 64.3, 9.5)
+      .newGroup()
+      .add("Darion",    "deathknight", "melee", 71.7, 2)
+      .add("Khadgar",   "mage", "ranged", 73.1, 0)
+      .add("Yrel",      "paladin", "melee", 68.2, 1.5)
+      .add("Varian",    "warrior", "melee", 63.4, 0.9)
+      .add("Wilfred",   "warlock", "ranged", 43.7, 2.9)
+      .newGroup()
+      .add("Rexxar",    "hunter", "ranged", 73.2, 0.6)
+      .add("Valeera",   "rogue", "melee", 72.2, 0.5)
+      .add("Hemet",     "hunter", "ranged", 69.9, 0.8)
+      .add("Milhouse",  "mage", "ranged", 64.1, 0)
+      .add("Garrosh",   "warrior", "melee", 62, 1.3)
+      .newGroup()
+      .add("Anduin",    "priest", "healer", 2.5, 87.3)
+      .add("Drekthar",  "shaman", "healer", 0.4, 55.8)
+      .add("Velen",     "priest", "healer", 0.2, 49.7)
+      .newGroup()
+      .add("Liandrin",  "paladin", "healer", 1, 70.4)
+      .add("Celestine", "druid", "healer", 0.9, 59)
+      .done();
+    MR.div.grid.appendTo("#sorted");
+    MR.div.grid.find(".mockraid-header").each(function(i, header) {
+      console.log(i, $(header));
+      $(header).attr("style", i % 2 ? "color:#0099ff;" : "color:#ff3300;");
+    });
+    $("#meter-hps")
+      .append("<div class='mockraid-font' style='font-size:16px;text-align:center;color:#ff3300;'>&#9664;&#9664;&#9664; Odd groups to the left! &#9664;&#9664;&#9664;</div>")
+      .append("<div class='mockraid-font' style='font-size:16px;text-align:center;color:#0099ff;margin-bottom:16px;'>&#9654;&#9654;&#9654; Even groups to the right! &#9654;&#9654;&#9654;</div>");
+    MR.div.dps.appendTo("#meter-dps");
+    MR.div.hps.appendTo("#meter-hps");
+  } else {
+    $("#title").text("Sort tanks > melee > ranged > healers");
+    MockRaid.create()
+      .add("Chen",       "monk",         "tank",    34.2,   34.5)
       .add("Uther",      "paladin",      "tank",    41.7,   27.0)
+      .add("Garrosh",    "warrior",      "melee",   62.0,    1.3)
+      .add("Varian",     "warrior",      "melee",   63.4,    0.9)
       .add("Darion",     "deathknight",  "melee",   71.7,    2.0)
       .add("Yrel",       "paladin",      "melee",   68.2,    1.5)
+      .add("Taran",      "monk",         "melee",   72.8,    3.6)
       .add("Thrall",     "shaman",       "melee",   77.6,    7.2)
       .add("Staghelm",   "druid",        "melee",   63.7,   11.9)
+      .add("Garona",     "rogue",        "melee",   92.5,    0.4)
       .add("Valeera",    "rogue",        "melee",   72.2,    0.5)
+      .add("Senjin",     "priest",       "ranged",  64.3,    9.5)
+      .add("Malfurion",  "druid",        "ranged",  69.0,    4.9)
+      .add("Jaina",      "mage",         "ranged",  83.3,    0.0)
+      .add("Khadgar",    "mage",         "ranged",  73.1,    0.0)
       .add("Milhouse",   "mage",         "ranged",  64.1,    0.0)
       .add("Guldan",     "warlock",      "ranged",  76.3,    4.4)
       .add("Wilfred",    "warlock",      "ranged",  43.7,    2.9)
       .add("Rexxar",     "hunter",       "ranged",  73.2,    0.6)
-      .add("Liandrin",   "paladin",      "healer",   1.0,   70.4)
-      .add("Drekthar",   "shaman",       "healer",   0.4,   55.8);
+      .add("Hemet",      "hunter",       "ranged",  69.9,    0.8)
+      .add("Liadrin",    "paladin",      "healer",   1.0,   70.4)
+      .add("Anduin",     "priest",       "healer",   2.5,   87.3)
+      .add("Velen",      "priest",       "healer",   0.2,   49.7)
+      .add("Drekthar",   "shaman",       "healer",   0.4,   55.8)
+      .add("Celestine",  "druid",        "healer",   0.9,   59.0)
+      .div.grid.appendTo("#sorted");
   }
-  MockRaid.loadMeter("dps", 20).loadMeter("hps", 10);
 })
 //-->
 </script>
 </head>
 <body>
+<div align="center">
 
-<div id="generatedby">Generated by <a href="https://github.com/bencvt/MockRaid">github.com/bencvt/MockRaid</a></div>
+<div id="title" class="outlined-font" style="text-align:center;font-size:32px;padding-bottom:16px;"></div>
 
-<table id="grid"><tr><td><div class="header">Group 1</div></td></tr></table>
+<div id="sorted"></div>
 
-<div id="dps" class="meter"><div class="title">Overall damage done</div><div class="bars"></div></div>
+<table style="margin-top:16px;">
+<tr>
+  <td id="meter-dps" style="vertical-align:top;padding-right:32px;"></td>
+  <td id="meter-hps" style="vertical-align:top;"></td>
+</tr>
+</table>
 
-<div id="hps" class="meter"><div class="title">Overall healing done</div><div class="bars"></div></div>
-
+</div>
 </body>
 </html>
