@@ -23,7 +23,11 @@ local function groupCompOnClick(frame, button)
       A.utilGui:InsertText(A.group:GetComp(A.util.GROUP_COMP_STYLE.TEXT_FULL))
     end
   else
-    A.utilGui:ToggleRaidTab()
+    if button == "RightButton" then
+      A.fgGui:Toggle()
+    else
+      A.utilGui:ToggleRaidTab()
+    end
   end
 end
 
@@ -60,7 +64,10 @@ local function groupCompOnTooltipShow(tooltip)
     tooltip:AddLine(L["dataBroker.groupComp.groupQueued"], 0,1,0)
   end
   tooltip:AddLine(" ")
-  tooltip:AddDoubleLine(format("%s:", L["phrase.mouse.clickLeft"]), L["dataBroker.groupComp.openRaidTab"], 1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(format("%s:", L["phrase.mouse.clickLeft"]), L["dataBroker.groupComp.toggleRaidTab"], 1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(format("%s:", L["phrase.mouse.clickRight"]), format(L["dataBroker.groupComp.toggleAddonWindow"], A.NAME), 1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(format("%s:", L["phrase.mouse.shiftClickLeft"]), L["dataBroker.groupComp.linkShortComp"], 1,1,1, 1,1,0)
+  tooltip:AddDoubleLine(format("%s:", L["phrase.mouse.shiftClickRight"]), L["dataBroker.groupComp.linkFullComp"], 1,1,1, 1,1,0)
   tooltip:Show()
 end
 

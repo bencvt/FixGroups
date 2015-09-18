@@ -126,8 +126,7 @@ function M:SetupWindow(window)
   window.frame:SetScript("OnKeyDown", function(frame, key)
     if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
       frame:SetPropagateKeyboardInput(false)
-      PlaySound("gsTitleOptionExit")
-      window.frame:Hide()
+      window:CloseWithSound()
     end
   end)
   window:SetLayout("Fill")
@@ -152,6 +151,12 @@ function M:SetupWindow(window)
   statusBar:SetFontObject(GameFontHighlightLarge)
   statusBar:SetText(" ")
   bottom:AddChild(statusBar)
+
+  -- Add custom functions to window.
+  window.CloseWithSound = function()
+    PlaySound("gsTitleOptionExit")
+    window.frame:Hide()
+  end
   window.SetStatusText = function(_, text)
     statusBar:SetText("  "..text)
   end
@@ -159,10 +164,7 @@ function M:SetupWindow(window)
   local closeButton = AceGUI:Create("Button")
   closeButton:SetText(L["button.close.text"])
   closeButton:SetWidth(104)
-  closeButton:SetCallback("OnClick", function()
-    PlaySound("gsTitleOptionExit")
-    window.frame:Hide()
-  end)
+  closeButton:SetCallback("OnClick", window.CloseWithSound)
   bottom:AddChild(closeButton)
 
   return top

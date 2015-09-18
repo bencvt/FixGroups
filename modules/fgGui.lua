@@ -91,6 +91,14 @@ local function resetWindowSize()
   R.window:SetHeight(A.options.showExtraSortModes and 415 or 375)
 end
 
+function M:Toggle()
+  if R.window then
+    R.window:CloseWithSound()
+  else
+    M:Open()
+  end
+end
+
 function M:Open()
   if A.DEBUG >= 1 then A.console:Debugf(M, "open") end
   if R.window then
