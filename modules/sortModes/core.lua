@@ -11,7 +11,7 @@ M.private = R
 
 local PADDING_PLAYER = {isDummy=true}
 
-local format, gsub, ipairs, min, select, sort, strfind, strlower, tinsert, wipe = format, gsub, ipairs, min, select, sort, strfind, strlower, tinsert, wipe
+local format, gsub, ipairs, max, min, select, sort, strfind, strlower, tinsert, wipe = format, gsub, ipairs, max, min, select, sort, strfind, strlower, tinsert, wipe
 local GuildControlGetNumRanks, GuildControlGetRankName, GetGuildInfo, GetRealmName, UnitIsInMyGuild = GuildControlGetNumRanks, GuildControlGetRankName, GetGuildInfo, GetRealmName, UnitIsInMyGuild
 
 local function getGuildFullName()
@@ -78,7 +78,7 @@ function M:UpdateGuildRanks()
   -- Otherwise just guess 4, on the theory that many guilds have a rank
   -- structure similar to:
   -- GM > Officer > Veteran > Core > Recruit > Alt > Casual > Muted.
-  M:SetCoreRank(min(#ranks, 4))
+  M:SetCoreRank(max(1, min(4, #ranks - 1)))
 end
 
 function M:OnEnable()
