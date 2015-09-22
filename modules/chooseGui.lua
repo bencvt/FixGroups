@@ -20,7 +20,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local function onLeaveButton(widget)
   GameTooltip:Hide()
-  R.window:SetStatusText("")
+  R.window:_SetStatusText("")
 end
 
 local function getCommand(cmd, mode, modeType, isShiftClick)
@@ -41,7 +41,7 @@ local function getCommand(cmd, mode, modeType, isShiftClick)
   return text
 end
 
-local function addButton(altColor, frame, cmd, mode, modeType)
+local function addButton(altColor, container, cmd, mode, modeType)
   local button = AceGUI:Create("Button")
   if altColor then
     A.utilGui:AddTexturedButton(R.texturedButtons, button, "Blue")
@@ -78,22 +78,23 @@ local function addButton(altColor, frame, cmd, mode, modeType)
   end)
   button:SetCallback("OnLeave", onLeaveButton)
   button:SetWidth(104)
-  frame:AddChild(button)
+  container:AddChild(button)
   return button
 end
 
-local function newRow(frame)
+local function newRow(container)
   local padding = AceGUI:Create("Label")
   padding:SetText(" ")
   padding:SetFullWidth(true)
-  frame:AddChild(padding)
+  container:AddChild(padding)
   return padding
 end
 
 local function onCloseWindow(widget)
+  A.utilGui:CleanupTexturedButton(R.texturedButtons)
+  A.utilGui:CleanupWindow(R.window)
   R.window = false
   R.cmd = false
-  A.utilGui:CleanupTexturedButton(R.texturedButtons)
   AceGUI:Release(widget)
 end
 
@@ -224,7 +225,7 @@ function M:Open(cmd)
 end
 
 function M:SetupTooltip(widget, cmd, mode, modeType)
-  R.window:SetStatusText(getCommand(cmd, mode, modeType, false))
+  R.window:_SetStatusText(getCommand(cmd, mode, modeType, false))
   local t = GameTooltip
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()

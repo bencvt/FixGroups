@@ -121,12 +121,22 @@ AceGUI:RegisterLayout(FILL_PLUS_STATUS_BAR, function(content, children)
   AceGUI.LayoutRegistry.FILL(content, dummy)
 end)
 
+--- Remove custom modifications done to an AceGUI window object. This should
+-- be called prior to releasing the widget back into the pool (i.e.,
+-- calling AceGUI:Release).
+function M:CleanupWindow(window)
+  window.frame:SetPropagateKeyboardInput(false)
+  window.frame:SetScript("OnKeyDown", nil)
+  window._CloseWithSound = nil
+  window._SetStatusText = nil
+end
+
 function M:SetupWindow(window)
   window.frame:SetPropagateKeyboardInput(true)
   window.frame:SetScript("OnKeyDown", function(frame, key)
     if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then
       frame:SetPropagateKeyboardInput(false)
-      window:CloseWithSound()
+      window:_CloseWithSound()
     end
   end)
   window:SetLayout("Fill")
@@ -153,18 +163,18 @@ function M:SetupWindow(window)
   bottom:AddChild(statusBar)
 
   -- Add custom functions to window.
-  window.CloseWithSound = function()
+  window._CloseWithSound = function()
     PlaySound("gsTitleOptionExit")
     window.frame:Hide()
   end
-  window.SetStatusText = function(_, text)
+  window._SetStatusText = function(_, text)
     statusBar:SetText("  "..text)
   end
 
   local closeButton = AceGUI:Create("Button")
   closeButton:SetText(L["button.close.text"])
   closeButton:SetWidth(104)
-  closeButton:SetCallback("OnClick", window.CloseWithSound)
+  closeButton:SetCallback("OnClick", window._CloseWithSound)
   bottom:AddChild(closeButton)
 
   return top

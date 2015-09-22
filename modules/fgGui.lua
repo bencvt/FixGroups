@@ -19,17 +19,17 @@ local CUBE_ICON_0 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon0_64.tga"
 local CUBE_ICON_1 = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_64.tga"
 local CUBE_ICON_BW = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIconBW_64.tga"
 
-local function newRow(frame)
+local function newRow(container)
   local padding = AceGUI:Create("Label")
   padding:SetText(" ")
   padding:SetFullWidth(true)
-  frame:AddChild(padding)
+  container:AddChild(padding)
   return padding
 end
 
 local function onLeaveButton(widget)
   GameTooltip:Hide()
-  R.window:SetStatusText("")
+  R.window:_SetStatusText("")
 end
 
 local function getCommand(cmd, aliases, isShiftClick)
@@ -46,7 +46,7 @@ local function getCommand(cmd, aliases, isShiftClick)
   end
 end
 
-local function addButton(altColor, frame, cmd, forceClose, aliases)
+local function addButton(altColor, container, cmd, forceClose, aliases)
   local button = AceGUI:Create("Button")
   if altColor then
     A.utilGui:AddTexturedButton(R.texturedButtons, button, "Blue")
@@ -76,14 +76,15 @@ local function addButton(altColor, frame, cmd, forceClose, aliases)
   end)
   button:SetCallback("OnLeave", onLeaveButton)
   button:SetWidth(104)
-  frame:AddChild(button)
+  container:AddChild(button)
   return button
 end
 
 local function onCloseWindow(widget)
+  A.utilGui:CleanupTexturedButton(R.texturedButtons)
+  A.utilGui:CleanupWindow(R.window)
   R.window = false
   R.label = false
-  A.utilGui:CleanupTexturedButton(R.texturedButtons)
   AceGUI:Release(widget)
 end
 
@@ -96,7 +97,7 @@ end
 
 function M:Toggle()
   if R.window then
-    R.window:CloseWithSound()
+    R.window:_CloseWithSound()
   else
     M:Open()
   end
@@ -175,7 +176,7 @@ local function addTooltipLines(t, cmd)
 end
 
 function M:SetupTooltip(widget, cmd, aliases)
-  R.window:SetStatusText(getCommand(cmd, aliases, false))
+  R.window:_SetStatusText(getCommand(cmd, aliases, false))
   local t = GameTooltip
   t:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
   t:ClearLines()
