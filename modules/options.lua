@@ -74,7 +74,6 @@ local MARKS = {
   A.util.TEXT_ICON.MARK.SKULL,     -- 9
   L["options.value.noMark"],
 }
-local DELAY_OPTIONS_PANE_LOADED = 0.01
 
 local format, gsub, ipairs, min, max, tinsert = format, gsub, ipairs, min, max, tinsert
 local tconcat = table.concat
@@ -138,46 +137,10 @@ R.optionsTable.args.main.args = {
     order = 0,
     type = "description",
     image = "Interface\\Addons\\"..A.NAME.."\\media\\cubeIcon1_classIcons_256.tga",
-    imageWidth = 192,
-    imageHeight = 192,
+    imageWidth = 256,
+    imageHeight = 256,
     name = format(L["options.widget.top.desc"], HA(A.NAME)),
     fontSize = "medium",
-    hidden = function(i)
-      -- For consistency's sake, we want the Fix Groups button in the options
-      -- pane to be right-click-able, just like its twin on the raid tab.
-      --
-      -- Getting a reference to the button frame is a little kludgey.
-      -- It's auto-created by Ace libraries, which doesn't give us an easy
-      -- reference to the frame. So we walk the AceGUI tree each time the
-      -- options pane is displayed.
-      --
-      -- We use a short timer to delay the tree walk: at the time the hidden
-      -- function is called, the tree hasn't been built yet.
-      M:ScheduleTimer(function()
-        -- Ensure the GUI tree exists. It won't if the player closes the
-        -- options pane immediately.
-        if R.optionsGUI.obj.children[1] then
-          M:OptionsPaneLoaded()
-        end
-      end, DELAY_OPTIONS_PANE_LOADED)
-    end,
-  },
-  -- -------------------------------------------------------------------------
-  buttonCommandDefault = {
-    order = 110,
-    type = "execute",
-    name = L["button.fixGroups.text"],
-    desc = L["button.fixGroups.desc"],
-    func = function(_, button) A.buttonGui:ButtonPress(button) end,
-    --disabled = function(i) return not IsInGroup() end,
-  },
-  buttonCommandSplit = {
-    order = 120,
-    type = "execute",
-    name = L["button.splitGroups.text"],
-    desc = L["button.splitGroups.desc"],
-    func = function() A.fgCommand:Command("split") end,
-    --disabled = function(i) return not IsInRaid() end,
   },
   -- -------------------------------------------------------------------------
   spacerConsole = {
@@ -781,15 +744,6 @@ function M:OnEnable()
   -- had not yet been initialized.
   R.optionsTable.args.sort.args.damageMeterAddonDesc.name = "|n"..A.meter:TestInterop().."|n|n"
   M:UpdateRoleIcons()
-end
-
-function M:OptionsPaneLoaded()
-  for _, g in ipairs(R.optionsGUI.obj.children[1].frame.obj.children) do
-    if g.type == "Button" then
-      -- Enable right-click on all buttons in the options pane.
-      g.frame:RegisterForClicks("AnyUp")
-    end
-  end
 end
 
 function M:UpdateSysMsgPreview(which, option)
