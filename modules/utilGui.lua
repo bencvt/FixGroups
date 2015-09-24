@@ -1,4 +1,15 @@
---- Utility functions useful for defining GUIs.
+--- Utility functions useful for defining GUIs. This addon uses AceGUI wherever
+-- possible, but there are a number of use cases that AceGUI does not cover.
+--
+-- We implement these by modifying the WoW frame object, taking care to reverse
+-- the modifications when done. The frames need to be in their original
+-- condition when returned to the AceGUI pool.
+--
+-- These use cases are:
+--  * Buttons with custom textures.
+--  * Windows draggable by clicking anywhere, not just the title bar.
+--  * Windows that capture the Escape key to close.
+--
 local A, L = unpack(select(2, ...))
 local M = A:NewModule("utilGui", "AceTimer-3.0")
 A.utilGui = M
@@ -7,7 +18,10 @@ M.private = {
 }
 local R = M.private
 
+local FILL_PLUS_STATUS_BAR = A.NAME.."FillPlusStatusBar"
 local DELAY_OPEN_RAID_TAB = 0.01
+local AceGUI = LibStub("AceGUI-3.0")
+
 local ChatFrame_OpenChat, GameFontHighlightLarge, GetCurrentKeyBoardFocus, GetBindingFromClick, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, PlaySound, ToggleFriendsFrame = ChatFrame_OpenChat, GameFontHighlightLarge, GetCurrentKeyBoardFocus, GetBindingFromClick, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, PlaySound, ToggleFriendsFrame
 local format, max, pairs, strmatch = format, max, pairs, strmatch
 
@@ -73,58 +87,55 @@ function M:AddTexturedButton(registry, button, style)
   registry[button] = true
 end
 
---- Remove the custom button textures from AceGUI button objects. This should
--- be called prior to releasing button widgets back into the pool (i.e.,
--- calling AceGUI:Release).
-function M:CleanupTexturedButton(registry)
-  for button, _ in pairs(registry) do
-    registry[button] = nil
-    button.frame:SetNormalTexture(nil)
-    button.frame:SetHighlightTexture(nil)
-  end
+-- Define a custom AceGUI layout named FILL_PLUS_STATUS_BAR for our window.
+do
+  local noop = function() return 0 end
+  local dummy = {
+    [1] = {
+      SetWidth = noop,
+      SetHeight = noop,
+      frame = {
+        SetAllPoints = noop,
+        Show = noop,
+      },
+    },
+  }
+  AceGUI:RegisterLayout(FILL_PLUS_STATUS_BAR, function(content, children)
+    if #children < 2 or #children[2].children < 2 then
+      return
+    end
+    local top, bottom = children[1], children[2]
+    local statusBar, closeButton = bottom.children[1], bottom.children[2]
+    local barHeight = max(statusBar.frame:GetHeight(), closeButton.frame:GetHeight())
+
+    top.frame:SetPoint("TOPLEFT")
+    top:SetWidth(content:GetWidth() or 0)
+    top:SetHeight((content:GetHeight() or 0) - barHeight)
+    top.frame:Show()
+
+    statusBar:SetWidth((content:GetWidth() or 0) - closeButton.frame:GetWidth() - 4)
+    bottom.frame:SetPoint("BOTTOMLEFT")
+    bottom:SetWidth(content:GetWidth() or 0)
+    bottom:SetHeight(barHeight)
+    bottom.frame:Show()
+
+    -- Ensure content.obj:LayoutFinished gets called.
+    dummy[1].frame.GetHeight = function() return top.frame:GetHeight() + barHeight end
+    AceGUI.LayoutRegistry.FILL(content, dummy)
+  end)
 end
 
-local FILL_PLUS_STATUS_BAR = A.NAME.."FillPlusStatusBar"
-local AceGUI = LibStub("AceGUI-3.0")
-local noop = function() return 0 end
-local dummy = {
-  [1] = {
-    SetWidth = noop,
-    SetHeight = noop,
-    frame = {
-      SetAllPoints = noop,
-      Show = noop,
-    },
-  },
-}
-AceGUI:RegisterLayout(FILL_PLUS_STATUS_BAR, function(content, children)
-  if #children < 2 or #children[2].children < 2 then
-    return
-  end
-  local top, bottom = children[1], children[2]
-  local statusBar, closeButton = bottom.children[1], bottom.children[2]
-  local barHeight = max(statusBar.frame:GetHeight(), closeButton.frame:GetHeight())
-
-	top.frame:SetPoint("TOPLEFT")
-  top:SetWidth(content:GetWidth() or 0)
-  top:SetHeight((content:GetHeight() or 0) - barHeight)
-  top.frame:Show()
-
-  statusBar:SetWidth((content:GetWidth() or 0) - closeButton.frame:GetWidth() - 4)
-	bottom.frame:SetPoint("BOTTOMLEFT")
-  bottom:SetWidth(content:GetWidth() or 0)
-  bottom:SetHeight(barHeight)
-  bottom.frame:Show()
-
-  -- Ensure content.obj:LayoutFinished gets called
-  dummy[1].frame.GetHeight = function() return top.frame:GetHeight() + barHeight end
-  AceGUI.LayoutRegistry.FILL(content, dummy)
-end)
-
---- Remove custom modifications done to an AceGUI window object. This should
+--- Remove custom modifications done to frames owned by AceGUI. This should
 -- be called prior to releasing the widget back into the pool (i.e.,
 -- calling AceGUI:Release).
-function M:CleanupWindow(window)
+function M:CleanupWindow(window, texturedButtonRegistry)
+  if texturedButtonRegistry then
+    for button, _ in pairs(texturedButtonRegistry) do
+      texturedButtonRegistry[button] = nil
+      button.frame:SetNormalTexture(nil)
+      button.frame:SetHighlightTexture(nil)
+    end
+  end
   window.frame:SetPropagateKeyboardInput(false)
   window.frame:SetScript("OnKeyDown", nil)
   window.frame:SetScript("OnDragStart", nil)
@@ -135,6 +146,7 @@ function M:CleanupWindow(window)
 end
 
 function M:SetupWindow(window)
+  -- Add custom scripts and properties to the window's frame.
   window.frame:SetPropagateKeyboardInput(true)
   window.frame:SetScript("OnKeyDown", function(frame, key)
     if GetBindingFromClick(key) == "TOGGLEGAMEMENU" then

@@ -91,8 +91,7 @@ local function newRow(container)
 end
 
 local function onCloseWindow(widget)
-  A.utilGui:CleanupTexturedButton(R.texturedButtons)
-  A.utilGui:CleanupWindow(R.window)
+  A.utilGui:CleanupWindow(R.window, R.texturedButtons)
   R.window = false
   R.cmd = false
   AceGUI:Release(widget)

@@ -81,8 +81,7 @@ local function addButton(altColor, container, cmd, forceClose, aliases)
 end
 
 local function onCloseWindow(widget)
-  A.utilGui:CleanupTexturedButton(R.texturedButtons)
-  A.utilGui:CleanupWindow(R.window)
+  A.utilGui:CleanupWindow(R.window, R.texturedButtons)
   R.window = false
   R.label = false
   AceGUI:Release(widget)
