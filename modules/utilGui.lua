@@ -9,7 +9,7 @@ local R = M.private
 
 local DELAY_OPEN_RAID_TAB = 0.01
 local ChatFrame_OpenChat, GameFontHighlightLarge, GetCurrentKeyBoardFocus, GetBindingFromClick, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, PlaySound, ToggleFriendsFrame = ChatFrame_OpenChat, GameFontHighlightLarge, GetCurrentKeyBoardFocus, GetBindingFromClick, InterfaceOptionsFrame, InterfaceOptionsFrame_OpenToCategory, IsAddOnLoaded, OpenFriendsFrame, PlaySound, ToggleFriendsFrame
-local format, max, strmatch = format, max, strmatch
+local format, max, pairs, strmatch = format, max, pairs, strmatch
 
 -- GLOBALS: ElvUI
 
@@ -141,20 +141,16 @@ function M:SetupWindow(window)
   end)
   window:SetLayout("Fill")
 
-  local container = AceGUI:Create("SimpleGroup")
+  local container = AceGUI:Create(A.NAME.."SimpleGroup")
   container:SetLayout(FILL_PLUS_STATUS_BAR)
-  -- Explicitly set an empty backdrop so ElvUI won't skin this frame.
-  container.frame:SetBackdrop(nil)
   window:AddChild(container)
 
   local top = AceGUI:Create("ScrollFrame")
   top:SetLayout("Flow")
   container:AddChild(top)
 
-  local bottom = AceGUI:Create("SimpleGroup")
+  local bottom = AceGUI:Create(A.NAME.."SimpleGroup")
   bottom:SetLayout("Flow")
-  -- Explicitly set an empty backdrop so ElvUI won't skin this frame.
-  bottom.frame:SetBackdrop(nil)
   container:AddChild(bottom)
 
   local statusBar = AceGUI:Create("Label")
