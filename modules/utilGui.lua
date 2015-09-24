@@ -127,6 +127,9 @@ end)
 function M:CleanupWindow(window)
   window.frame:SetPropagateKeyboardInput(false)
   window.frame:SetScript("OnKeyDown", nil)
+  window.frame:SetScript("OnDragStart", nil)
+  window.frame:SetScript("OnDragStop", nil)
+  window.frame:RegisterForDrag()
   window._CloseWithSound = nil
   window._SetStatusText = nil
 end
@@ -139,6 +142,10 @@ function M:SetupWindow(window)
       window:_CloseWithSound()
     end
   end)
+  window.frame:SetScript("OnDragStart", window.frame.StartMoving)
+  window.frame:SetScript("OnDragStop", window.frame.StopMovingOrSizing)
+  window.frame:RegisterForDrag("LeftButton", "RightButton")
+
   window:SetLayout("Fill")
 
   local container = AceGUI:Create(A.NAME.."SimpleGroup")
